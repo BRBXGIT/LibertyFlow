@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "LibertyFlow"
 include(":app")
+include("core")
+include("feature")
  
