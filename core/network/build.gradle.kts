@@ -15,9 +15,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    kotlinOptions { jvmTarget = "11" }
 }
 
-dependencies {}
+dependencies {
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    // Paging
+    implementation(libs.androidx.paging.runtime.ktx)
+}
