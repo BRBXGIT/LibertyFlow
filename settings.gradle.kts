@@ -23,4 +23,9 @@ rootProject.name = "LibertyFlow"
 include(":app")
 include("core")
 include("feature")
- 
+
+include(":core:network")
+include(":core:local")
+include(":core:design-system")
+include(":core:data")
+include(":core:common")

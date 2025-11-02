@@ -1,7 +1,7 @@
 plugins {
     // Application
     alias(libs.plugins.android.application)
-    // Android
+    // Kotlin
     alias(libs.plugins.kotlin.android)
     // Compose
     alias(libs.plugins.kotlin.compose)
