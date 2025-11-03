@@ -1,4 +1,4 @@
-package com.example.network.common.anime_item_response
+package com.example.network.common.common_models
 
 import com.google.gson.annotations.SerializedName
 
