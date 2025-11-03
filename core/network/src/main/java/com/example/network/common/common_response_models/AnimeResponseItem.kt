@@ -1,7 +1,5 @@
 package com.example.network.common.common_response_models
 
-import com.example.network.common.common_models.AnimeItemResponseBase
-import com.example.network.common.common_models.Genre
 import com.example.network.common.common_models.Name
 import com.example.network.common.common_models.Poster
 import com.google.gson.annotations.SerializedName

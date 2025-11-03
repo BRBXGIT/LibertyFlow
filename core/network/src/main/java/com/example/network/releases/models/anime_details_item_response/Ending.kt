@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Ending(
     @SerializedName("start")
-    val start: Any?,
+    val start: Int?,
     @SerializedName("stop")
-    val stop: Any?
+    val stop: Int?
 )

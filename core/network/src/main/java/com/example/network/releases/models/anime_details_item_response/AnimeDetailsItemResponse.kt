@@ -1,8 +1,8 @@
 package com.example.network.releases.models.anime_details_item_response
 
 
-import com.example.network.common.common_models.AnimeItemResponseBase
-import com.example.network.common.common_models.Genre
+import com.example.network.common.common_response_models.AnimeItemResponseBase
+import com.example.network.common.common_response_models.Genre
 import com.example.network.common.common_models.Name
 import com.example.network.common.common_models.Poster
 import com.google.gson.annotations.SerializedName
