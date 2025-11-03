@@ -9,5 +9,5 @@ import retrofit2.http.POST
 interface AuthApi {
 
     @POST("accounts/users/auth/login")
-    suspend fun getSessionToken(@Body authBody: SessionTokenRequest): Response<SessionTokenResponse>
+    suspend fun getSessionToken(@Body request: SessionTokenRequest): Response<SessionTokenResponse>
 }
