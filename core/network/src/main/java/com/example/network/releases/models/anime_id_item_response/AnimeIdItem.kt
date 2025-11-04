@@ -1,8 +1,8 @@
 package com.example.network.releases.models.anime_id_item_response
 
-import com.example.network.common.common_response_models.AnimeItemResponseBase
+import com.example.network.common.anime_item_base.AnimeItemBase
 import com.google.gson.annotations.SerializedName
 
-data class AnimeIdItemResponse(
+data class AnimeIdItem(
     @SerializedName("id") override val id: Int
-): AnimeItemResponseBase(id)
+): AnimeItemBase(id)

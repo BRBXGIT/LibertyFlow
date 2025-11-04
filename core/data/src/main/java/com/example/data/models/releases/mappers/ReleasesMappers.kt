@@ -10,17 +10,17 @@ import com.example.data.models.releases.anime_details.UiMember
 import com.example.data.models.releases.anime_details.UiOpening
 import com.example.data.models.releases.anime_details.UiTorrent
 import com.example.data.models.releases.anime_id.UiAnimeId
-import com.example.network.releases.models.anime_details_item_response.AnimeDetailsItemResponse
+import com.example.network.releases.models.anime_details_item_response.AnimeDetailsItem
 import com.example.network.releases.models.anime_details_item_response.Ending
 import com.example.network.releases.models.anime_details_item_response.Episode
 import com.example.network.releases.models.anime_details_item_response.Member
 import com.example.network.releases.models.anime_details_item_response.Opening
 import com.example.network.releases.models.anime_details_item_response.Torrent
-import com.example.network.releases.models.anime_id_item_response.AnimeIdItemResponse
+import com.example.network.releases.models.anime_id_item_response.AnimeIdItem
 
-fun AnimeIdItemResponse.toUiAnimeId() = UiAnimeId(id)
+fun AnimeIdItem.toUiAnimeId() = UiAnimeId(id)
 
-fun AnimeDetailsItemResponse.toUiAnimeDetails(): UiAnimeDetails {
+fun AnimeDetailsItem.toUiAnimeDetails(): UiAnimeDetails {
     return UiAnimeDetails(
         id = id,
         description = description,

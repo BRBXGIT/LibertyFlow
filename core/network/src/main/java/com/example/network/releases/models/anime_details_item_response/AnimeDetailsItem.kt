@@ -1,13 +1,13 @@
 package com.example.network.releases.models.anime_details_item_response
 
 
-import com.example.network.common.common_response_models.AnimeItemResponseBase
+import com.example.network.common.anime_item_base.AnimeItemBase
 import com.example.network.common.common_response_models.Genre
 import com.example.network.common.common_response_models.Name
 import com.example.network.common.common_response_models.Poster
 import com.google.gson.annotations.SerializedName
 
-data class AnimeDetailsItemResponse(
+data class AnimeDetailsItem(
     @SerializedName("id") override val id: Int,
 
     @SerializedName("description") val description: String,
@@ -21,4 +21,4 @@ data class AnimeDetailsItemResponse(
     @SerializedName("torrents") val torrents: List<Torrent>,
     @SerializedName("type") val type: Type,
     @SerializedName("year") val year: Int,
-): AnimeItemResponseBase(id)
+): AnimeItemBase(id)
