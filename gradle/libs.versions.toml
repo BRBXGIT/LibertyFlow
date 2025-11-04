@@ -5,6 +5,9 @@ agp = "8.13.0"
 # Kotlin
 kotlin = "2.2.21"
 
+# Kotlin jvm
+jetbrainsKotlinJvm = "2.2.21"
+
 # Core
 coreKtx = "1.17.0"
 
@@ -73,8 +76,6 @@ junit = "4.13.2"
 coroutinesTest = "1.10.2"
 turbine = "1.2.1"
 espressoCore = "3.7.0"
-appcompat = "1.7.1"
-materialVersion = "1.13.0"
 
 
 [libraries]
@@ -152,8 +153,6 @@ androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version = "androidxTestExtJunit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 
 
 [plugins]
@@ -162,6 +161,9 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 
 # Kotlin
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+# Kotlin jvm
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
 # Kotlin compose
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
@@ -174,4 +176,6 @@ hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndro
 
 # Ksp
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspPlugin" }
+
+# Android
 android-library = { id = "com.android.library", version.ref = "agp" }
