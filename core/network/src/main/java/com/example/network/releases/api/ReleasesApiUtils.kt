@@ -14,6 +14,6 @@ internal object ReleasesApiUtils {
             "genres.id," +
             "members.role.description,members.nickname," +
             "episodes.opening,episodes.ending,episodes.hls_480,episodes.hls_720,episodes.hls_1080,episodes.name," +
-            "torrents.filename,torrents.leechers,torrents.seeders,torrents.size," +
+            "torrents.filename,torrents.leechers,torrents.seeders,torrents.size,torrents.magnet," +
             "id"
 }

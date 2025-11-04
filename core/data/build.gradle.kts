@@ -15,9 +15,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    kotlinOptions { jvmTarget = "11" }
 }
 
-dependencies {}
+dependencies {
+
+    // Core modules
+    implementation(project(":core:network"))
+
+    // Retrofit for `Response<T>`
+    implementation(libs.retrofit)
+}
