@@ -10,7 +10,7 @@ inline fun <T> NetworkResult<T>.onSuccess(block: (T) -> Unit): NetworkResult<T> 
     return this
 }
 
-inline fun <T> NetworkResult<T>.onError(block: (NetworkError, String) -> Unit): NetworkResult<T> {
-    if (this is NetworkResult.Error) block(error, message)
+inline fun <T> NetworkResult<T>.onError(block: (String) -> Unit): NetworkResult<T> {
+    if (this is NetworkResult.Error) block(message)
     return this
 }

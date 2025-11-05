@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CatalogRepoImpl @Inject constructor(
-    private val api: CatalogApi
+    private val catalogApi: CatalogApi
 ): CatalogRepo {
 
     override fun getAnimeByQuery(request: UiCommonRequest): Flow<PagingData<UiAnimeItem>> {
@@ -25,7 +25,7 @@ class CatalogRepoImpl @Inject constructor(
             config = PagingConfig(pageSize = CommonNetworkUtils.COMMON_LIMIT, enablePlaceholders = false),
             pagingSourceFactory = {
                 CommonPagingSource(
-                    apiCall = { api.getAnimeByFilters(request.toCommonRequest()) },
+                    apiCall = { catalogApi.getAnimeByFilters(request.toCommonRequest()) },
                     baseRequest = request.toCommonRequest()
                 )
             }

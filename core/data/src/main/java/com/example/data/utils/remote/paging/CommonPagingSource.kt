@@ -30,12 +30,12 @@ internal class CommonPagingSource(
             call = { apiCall(currentRequest) },
             map = { it }
         ).onSuccess {
-            LoadResult.Page(
+            loadResult = LoadResult.Page(
                 data = it.data,
                 prevKey = it.meta.pagination.previousPage(),
                 nextKey = it.meta.pagination.nextPage()
             )
-        }.onError { _, message ->
+        }.onError { message ->
             loadResult = LoadResult.Error(Exception(message))
         }
 
