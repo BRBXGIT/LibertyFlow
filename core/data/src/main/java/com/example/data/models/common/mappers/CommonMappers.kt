@@ -52,12 +52,10 @@ fun Name.toUiName(): UiName {
 }
 
 fun UiCommonRequest.toCommonRequest(): CommonRequest {
-    return CommonRequest(
-        requestParameters = requestParameters.toShortRequestParameters()
-    )
+    return CommonRequest(requestParameters = requestParameters.toRequestParametersBase())
 }
 
-fun UiRequestParametersBase.toShortRequestParameters(): RequestParametersBase {
+fun UiRequestParametersBase.toRequestParametersBase(): RequestParametersBase {
     return when (this) {
         is UiShortRequestParameters -> this.toShortRequestParameters()
         is UiFullRequestParameters -> this.toFullRequestParameters()
@@ -68,10 +66,11 @@ fun UiRequestParametersBase.toShortRequestParameters(): RequestParametersBase {
 fun UiShortRequestParameters.toShortRequestParameters(): ShortRequestParameters {
     return ShortRequestParameters(
         ageRatings = ageRatings.map { it.name },
-        genres = genres.joinToString(",") { it.id.toString() },
+        genres = genres.joinToString(", ") { it.id.toString() },
         search = search,
         types = types.map { it.name },
-        years = years.joinToString(",")
+        sorting = sorting.name,
+        years = years.joinToString(", ") { it.toString() }
     )
 }
 

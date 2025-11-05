@@ -4,4 +4,5 @@ abstract class RequestParametersBase(
     open val types: List<String>,
     open val search: String,
     open val ageRatings: List<String>,
+    open val sorting: String
 )
