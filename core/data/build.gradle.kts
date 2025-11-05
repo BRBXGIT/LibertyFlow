@@ -26,6 +26,7 @@ dependencies {
 
     // Core modules
     implementation(project(":core:network"))
+    implementation(project(":core:local"))
 
     // Retrofit for `Response<T>`
     implementation(libs.retrofit)

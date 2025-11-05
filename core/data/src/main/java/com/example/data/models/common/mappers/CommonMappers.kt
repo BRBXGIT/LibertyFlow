@@ -19,7 +19,7 @@ import com.example.network.common.common_response_models.Genre
 import com.example.network.common.common_response_models.Name
 import com.example.network.common.common_response_models.Poster
 
-fun AnimeResponseItem.toUiAnimeItem(): UiAnimeItem {
+internal fun AnimeResponseItem.toUiAnimeItem(): UiAnimeItem {
     return UiAnimeItem(
         id = id,
         genres = genres.map { it.toUiGenre() },
@@ -28,14 +28,14 @@ fun AnimeResponseItem.toUiAnimeItem(): UiAnimeItem {
     )
 }
 
-fun Genre.toUiGenre(): UiGenre {
+internal fun Genre.toUiGenre(): UiGenre {
     return UiGenre(
         id = id,
         name = name
     )
 }
 
-fun Poster.toUiPoster(): UiPoster {
+internal fun Poster.toUiPoster(): UiPoster {
     return UiPoster(
         thumbnail = thumbnail,
         preview = preview,
@@ -43,7 +43,7 @@ fun Poster.toUiPoster(): UiPoster {
     )
 }
 
-fun Name.toUiName(): UiName {
+internal fun Name.toUiName(): UiName {
     return UiName(
         russian = main,
         english = english,
@@ -51,11 +51,11 @@ fun Name.toUiName(): UiName {
     )
 }
 
-fun UiCommonRequest.toCommonRequest(): CommonRequest {
+internal fun UiCommonRequest.toCommonRequest(): CommonRequest {
     return CommonRequest(requestParameters = requestParameters.toRequestParametersBase())
 }
 
-fun UiRequestParametersBase.toRequestParametersBase(): RequestParametersBase {
+internal fun UiRequestParametersBase.toRequestParametersBase(): RequestParametersBase {
     return when (this) {
         is UiShortRequestParameters -> this.toShortRequestParameters()
         is UiFullRequestParameters -> this.toFullRequestParameters()
@@ -63,7 +63,7 @@ fun UiRequestParametersBase.toRequestParametersBase(): RequestParametersBase {
     }
 }
 
-fun UiShortRequestParameters.toShortRequestParameters(): ShortRequestParameters {
+internal fun UiShortRequestParameters.toShortRequestParameters(): ShortRequestParameters {
     return ShortRequestParameters(
         ageRatings = ageRatings.map { it.name },
         genres = genres.joinToString(", ") { it.id.toString() },
@@ -74,7 +74,7 @@ fun UiShortRequestParameters.toShortRequestParameters(): ShortRequestParameters 
     )
 }
 
-fun UiFullRequestParameters.toFullRequestParameters(): FullRequestParameters {
+internal fun UiFullRequestParameters.toFullRequestParameters(): FullRequestParameters {
     return FullRequestParameters(
         ageRatings = ageRatings.map { it.name },
         genres = genres.map { it.id },
@@ -88,7 +88,7 @@ fun UiFullRequestParameters.toFullRequestParameters(): FullRequestParameters {
     )
 }
 
-fun UiYear.toYears(): Years {
+internal fun UiYear.toYears(): Years {
     return Years(
         fromYear = from,
         toYear = to

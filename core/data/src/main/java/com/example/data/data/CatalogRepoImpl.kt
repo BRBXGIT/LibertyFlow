@@ -11,6 +11,7 @@ import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.data.utils.remote.paging.CommonPagingSource
 import com.example.network.catalog.api.CatalogApi
+import com.example.network.common.common_utils.CommonNetworkUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -21,7 +22,7 @@ class CatalogRepoImpl @Inject constructor(
 
     override fun getAnimeByQuery(request: UiCommonRequest): Flow<PagingData<UiAnimeItem>> {
         return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            config = PagingConfig(pageSize = CommonNetworkUtils.COMMON_LIMIT, enablePlaceholders = false),
             pagingSourceFactory = {
                 CommonPagingSource(
                     apiCall = { api.getAnimeByFilters(request.toCommonRequest()) },

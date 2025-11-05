@@ -18,9 +18,9 @@ import com.example.network.releases.models.anime_details_item_response.Opening
 import com.example.network.releases.models.anime_details_item_response.Torrent
 import com.example.network.releases.models.anime_id_item_response.AnimeIdItem
 
-fun AnimeIdItem.toUiAnimeId() = UiAnimeId(id)
+internal fun AnimeIdItem.toUiAnimeId() = UiAnimeId(id)
 
-fun AnimeDetailsItem.toUiAnimeDetails(): UiAnimeDetails {
+internal fun AnimeDetailsItem.toUiAnimeDetails(): UiAnimeDetails {
     return UiAnimeDetails(
         id = id,
         description = description,
@@ -37,7 +37,7 @@ fun AnimeDetailsItem.toUiAnimeDetails(): UiAnimeDetails {
     )
 }
 
-fun Episode.toUiEpisode(): UiEpisode {
+internal fun Episode.toUiEpisode(): UiEpisode {
     return UiEpisode(
         opening = opening.toUiOpening(),
         ending = ending.toUiEnding(),
@@ -48,28 +48,28 @@ fun Episode.toUiEpisode(): UiEpisode {
     )
 }
 
-fun Opening.toUiOpening(): UiOpening {
+internal fun Opening.toUiOpening(): UiOpening {
     return UiOpening(
         start = start,
         end = stop
     )
 }
 
-fun Ending.toUiEnding(): UiEnding {
+internal fun Ending.toUiEnding(): UiEnding {
     return UiEnding(
         start = start,
         end = stop
     )
 }
 
-fun Member.toUiMember(): UiMember {
+internal fun Member.toUiMember(): UiMember {
     return UiMember(
         name = nickname,
         role = role.description
     )
 }
 
-fun Torrent.toUiTorrent(): UiTorrent {
+internal fun Torrent.toUiTorrent(): UiTorrent {
     return UiTorrent(
         filename = filename,
         leechers = leechers,

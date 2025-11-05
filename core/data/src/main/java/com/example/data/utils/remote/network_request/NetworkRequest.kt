@@ -6,7 +6,7 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-object NetworkRequest {
+internal object NetworkRequest {
 
     suspend fun <T, R> safeApiCall(
         call: suspend () -> Response<T>,

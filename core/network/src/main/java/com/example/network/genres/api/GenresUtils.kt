@@ -1,5 +1,5 @@
 package com.example.network.genres.api
 
-object GenresUtils {
+internal object GenresUtils {
     const val GENRES_INCLUDE = "name,id"
 }
