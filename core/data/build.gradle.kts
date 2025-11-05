@@ -28,8 +28,9 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:local"))
 
-    // Retrofit for `Response<T>`
+    // Retrofit for hilt injection
     implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
