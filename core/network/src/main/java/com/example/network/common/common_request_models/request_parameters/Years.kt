@@ -1,6 +1,5 @@
 package com.example.network.common.common_request_models.request_parameters
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Years(
