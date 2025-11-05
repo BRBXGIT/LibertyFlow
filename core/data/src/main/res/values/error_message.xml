@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="request_timeout_message">Request timeout, please retry</string>
+    <string name="conflict_message">Conflict, please retry</string>
+    <string name="payload_too_large_message">Payload too large, please retry</string>
+    <string name="too_many_requests_message">Too many requests, retry later</string>
+    <string name="server_error_message">Server error, please retry</string>
+    <string name="internet_message">Please connect to network ;)</string>
+    <string name="serialization_message">Something wrong with serialization, please retry</string>
+    <string name="no_email_or_password_message">There is no email or password :)</string>
+    <string name="incorrect_email_or_password_message">Incorrect email or password :*)</string>
+    <string name="unknown_message">Mystic and unknown error👻</string>
+</resources>

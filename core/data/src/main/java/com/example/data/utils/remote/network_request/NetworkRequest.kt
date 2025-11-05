@@ -1,5 +1,6 @@
 package com.example.data.utils.remote.network_request
 
+import com.example.data.R
 import retrofit2.Response
 import java.net.SocketException
 import java.net.SocketTimeoutException
@@ -59,16 +60,16 @@ private fun getErrorByCode(statusCode: Int): NetworkError {
 
 private fun getMessageByError(error: NetworkError): String {
     return when (error) {
-        NetworkErrors.REQUEST_TIMEOUT -> "Timeout please retry"
-        NetworkErrors.CONFLICT -> "Something conflict"
-        NetworkErrors.PAYLOAD_TOO_LARGE -> "The server load is too large"
-        NetworkErrors.TOO_MANY_REQUESTS -> "Too many requests, give soundcloud a little rest :)"
-        NetworkErrors.SERVER_ERROR -> "Server error"
-        NetworkErrors.INTERNET -> "Please connect to network"
-        NetworkErrors.SERIALIZATION -> "Serialization problem"
-        NetworkErrors.NO_EMAIL_OR_PASSWORD -> "No email or password"
-        NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> "Incorrect email or password"
-        else -> "Unknown error"
+        NetworkErrors.REQUEST_TIMEOUT -> R.string.request_timeout_message.toString()
+        NetworkErrors.CONFLICT -> R.string.conflict_message.toString()
+        NetworkErrors.PAYLOAD_TOO_LARGE -> R.string.payload_too_large_message.toString()
+        NetworkErrors.TOO_MANY_REQUESTS -> R.string.too_many_requests_message.toString()
+        NetworkErrors.SERVER_ERROR -> R.string.server_error_message.toString()
+        NetworkErrors.INTERNET -> R.string.internet_message.toString()
+        NetworkErrors.SERIALIZATION -> R.string.serialization_message.toString()
+        NetworkErrors.NO_EMAIL_OR_PASSWORD -> R.string.no_email_or_password_message.toString()
+        NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> R.string.incorrect_email_or_password_message.toString()
+        else -> R.string.unknown_message.toString()
     }
 }
 
