@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.android.library)
     // Kotlin
     alias(libs.plugins.kotlin.android)
+    // Ksp
+    alias(libs.plugins.ksp)
+    // Hilt
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -25,4 +29,7 @@ dependencies {
 
     // Retrofit for `Response<T>`
     implementation(libs.retrofit)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 }

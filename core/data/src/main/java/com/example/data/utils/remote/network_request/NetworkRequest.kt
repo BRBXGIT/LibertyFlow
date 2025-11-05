@@ -6,7 +6,18 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 object NetworkRequest {
-    suspend fun <T> exec(
+
+    suspend fun <T, R> safeApiCall(
+        call: suspend () -> Response<T>,
+        map: (T) -> R
+    ): NetworkResult<R> {
+        return when (val result = exec(call)) {
+            is NetworkResult.Success -> NetworkResult.Success(map(result.data))
+            is NetworkResult.Error -> result
+        }
+    }
+
+    private suspend fun <T> exec(
         call: suspend () -> Response<T>
     ): NetworkResult<T> {
         return try {
@@ -15,22 +26,21 @@ object NetworkRequest {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    NetworkResult.Success(data = body)
+                    NetworkResult.Success(body)
                 } else {
-                    val error = NetworkErrors.SERIALIZATION
-                    val message = getMessageByError(error)
-                    NetworkResult.Error(error,message)
+                    errorResult(NetworkErrors.SERIALIZATION)
                 }
             } else {
-                val error = getErrorByCode(response.code())
-                val message = getMessageByError(error)
-                NetworkResult.Error(error, message)
+                errorResult(getErrorByCode(response.code()))
             }
         } catch (e: Exception) {
-            val error = getErrorByException(e)
-            val message = getMessageByError(error)
-            NetworkResult.Error(error, message)
+            errorResult(getErrorByException(e))
         }
+    }
+
+    private fun errorResult(error: NetworkError): NetworkResult.Error {
+        val message = getMessageByError(error)
+        return NetworkResult.Error(error, message)
     }
 }
 
