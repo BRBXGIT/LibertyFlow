@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class FullRequestParameters(
     @SerializedName("age_ratings") override val ageRatings: List<String>,
-    @SerializedName("genres") override val genres: String,
     @SerializedName("search") override val search: String,
     @SerializedName("types") override val types: List<String>,
 
+    @SerializedName("genres") val genres: List<Int>,
     @SerializedName("seasons") val seasons: List<String>,
     @SerializedName("years") val years: Years,
     @SerializedName("sorting") val sorting: String,
     @SerializedName("publish_statuses") val publishStatuses: List<String>,
     @SerializedName("production_statuses") val productionStatuses: List<String>
-): RequestParametersBase(genres, types, search, ageRatings)
+): RequestParametersBase(types, search, ageRatings)

@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class ShortRequestParameters(
     @SerializedName("age_ratings") override val ageRatings: List<String>,
-    @SerializedName("genres") override val genres: String,
     @SerializedName("search") override val search: String,
     @SerializedName("types") override val types: List<String>,
 
+    @SerializedName("genres") val genres: String,
     @SerializedName("years") val years: String
-): RequestParametersBase(genres, types, search, ageRatings)
+): RequestParametersBase(types, search, ageRatings)

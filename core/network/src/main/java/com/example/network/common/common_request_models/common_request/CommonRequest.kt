@@ -9,5 +9,5 @@ data class CommonRequest(
     @SerializedName("f") val requestParameters: RequestParametersBase,
     @SerializedName("include") val include: String = CommonUtils.COMMON_INCLUDE,
     @SerializedName("limit") val limit: Int = CommonUtils.COMMON_LIMIT,
-    @SerializedName("page") val page: Int
+    @SerializedName("page") val page: Int = CommonUtils.COMMON_START_PAGE
 )
