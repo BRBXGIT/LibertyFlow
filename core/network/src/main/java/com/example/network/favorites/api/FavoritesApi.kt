@@ -12,19 +12,19 @@ import retrofit2.http.POST
 interface FavoritesApi {
 
     @POST("accounts/users/me/favorites/releases")
-    fun getFavorites(
+    suspend fun getFavorites(
         @Header("Authorization") sessionToken: String,
         @Body request: CommonRequest
     ): Response<AnimeItemsPagination>
 
     @POST("accounts/users/me/favorites")
-    fun addFavorite(
+    suspend fun addFavorite(
         @Header("Authorization") sessionToken: String,
         @Body request: FavoriteRequest
     ): Response<Unit>
 
     @HTTP(method = "DELETE", path = "accounts/users/me/favorites", hasBody = true)
-    fun deleteFavorite(
+    suspend fun deleteFavorite(
         @Header("Authorization") sessionToken: String,
         @Body request: FavoriteRequest
     ): Response<Unit>
