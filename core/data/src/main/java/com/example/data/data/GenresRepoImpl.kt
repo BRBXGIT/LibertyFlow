@@ -8,7 +8,7 @@ import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.network.genres.api.GenresApi
 import javax.inject.Inject
 
-class GenresRepoImpl @Inject constructor(
+internal class GenresRepoImpl @Inject constructor(
     private val genresApi: GenresApi
 ): GenresRepo {
 

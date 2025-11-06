@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class CatalogRepoImpl @Inject constructor(
+internal class CatalogRepoImpl @Inject constructor(
     private val catalogApi: CatalogApi
 ): CatalogRepo {
 

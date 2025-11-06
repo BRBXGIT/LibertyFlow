@@ -17,10 +17,11 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+    fun provideAuthApi(retrofit: Retrofit): AuthApi =
+        retrofit.create(AuthApi::class.java)
 
     @Provides
     @Singleton
-    fun provideAuthRepo(authApi: AuthApi, authPrefsManager: AuthPrefsManager):
-            AuthRepo = AuthRepoImpl(authApi, authPrefsManager)
+    fun provideAuthRepo(authApi: AuthApi, authPrefsManager: AuthPrefsManager): AuthRepo =
+        AuthRepoImpl(authApi, authPrefsManager)
 }

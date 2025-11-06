@@ -3,6 +3,8 @@ package com.example.data.di
 import android.content.Context
 import com.example.local.auth.AuthPrefsManager
 import com.example.local.auth.AuthPrefsManagerImpl
+import com.example.local.theme.ThemePrefsManager
+import com.example.local.theme.ThemePrefsManagerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +18,11 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideAuthPrefsManager(@ApplicationContext context: Context):
-            AuthPrefsManager = AuthPrefsManagerImpl(context)
+    fun provideAuthPrefsManager(@ApplicationContext context: Context): AuthPrefsManager =
+        AuthPrefsManagerImpl(context)
+
+    @Provides
+    @Singleton
+    fun provideThemePrefsManager(@ApplicationContext context: Context): ThemePrefsManager =
+        ThemePrefsManagerImpl(context)
 }

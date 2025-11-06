@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ThemeRepoImpl @Inject constructor(
+internal class ThemeRepoImpl @Inject constructor(
     private val themePrefsManager: ThemePrefsManager
-) : ThemeRepo {
+): ThemeRepo {
 
     override val theme: Flow<ThemeValue> =
         themePrefsManager.theme.map { it.toEnumOrDefault(ThemeValue.SYSTEM) }

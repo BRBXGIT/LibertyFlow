@@ -16,9 +16,11 @@ object GenresModule {
 
     @Provides
     @Singleton
-    fun provideGenresApi(retrofit: Retrofit): GenresApi = retrofit.create(GenresApi::class.java)
+    fun provideGenresApi(retrofit: Retrofit): GenresApi =
+        retrofit.create(GenresApi::class.java)
 
     @Provides
     @Singleton
-    fun provideGenresRepo(genresApi: GenresApi): GenresRepo = GenresRepoImpl(genresApi)
+    fun provideGenresRepo(genresApi: GenresApi): GenresRepo =
+        GenresRepoImpl(genresApi)
 }

@@ -13,7 +13,7 @@ import com.example.network.auth.api.AuthApi
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class AuthRepoImpl @Inject constructor(
+internal class AuthRepoImpl @Inject constructor(
     private val authApi: AuthApi,
     private val authPrefsManager: AuthPrefsManager
 ): AuthRepo {

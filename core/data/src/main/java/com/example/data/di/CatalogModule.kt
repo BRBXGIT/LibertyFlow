@@ -16,9 +16,11 @@ object CatalogModule {
 
     @Provides
     @Singleton
-    fun provideCatalogApi(retrofit: Retrofit): CatalogApi = retrofit.create(CatalogApi::class.java)
+    fun provideCatalogApi(retrofit: Retrofit): CatalogApi =
+        retrofit.create(CatalogApi::class.java)
 
     @Provides
     @Singleton
-    fun provideCatalogRepo(catalogApi: CatalogApi): CatalogRepo = CatalogRepoImpl(catalogApi)
+    fun provideCatalogRepo(catalogApi: CatalogApi): CatalogRepo =
+        CatalogRepoImpl(catalogApi)
 }

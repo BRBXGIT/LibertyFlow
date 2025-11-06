@@ -1,8 +1,6 @@
 package com.example.data.models.common.common
 
-enum class PosterType {
-    THUMBNAIL, PREVIEW, SRC
-}
+enum class PosterType { THUMBNAIL, PREVIEW, SRC }
 
 data class UiPoster(
     val thumbnail: String,

@@ -16,9 +16,11 @@ object ReleasesModule {
 
     @Provides
     @Singleton
-    fun provideReleasesApi(retrofit: Retrofit): ReleasesApi = retrofit.create(ReleasesApi::class.java)
+    fun provideReleasesApi(retrofit: Retrofit): ReleasesApi =
+        retrofit.create(ReleasesApi::class.java)
 
     @Provides
     @Singleton
-    fun provideReleasesRepo(releasesApi: ReleasesApi): ReleasesRepo = ReleasesRepoImpl(releasesApi)
+    fun provideReleasesRepo(releasesApi: ReleasesApi): ReleasesRepo =
+        ReleasesRepoImpl(releasesApi)
 }

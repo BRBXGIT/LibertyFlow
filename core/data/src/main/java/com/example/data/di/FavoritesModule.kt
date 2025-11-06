@@ -17,10 +17,11 @@ object FavoritesModule {
 
     @Provides
     @Singleton
-    fun provideFavoritesApi(retrofit: Retrofit): FavoritesApi = retrofit.create(FavoritesApi::class.java)
+    fun provideFavoritesApi(retrofit: Retrofit): FavoritesApi =
+        retrofit.create(FavoritesApi::class.java)
 
     @Provides
     @Singleton
-    fun provideFavoritesRepo(favoritesApi: FavoritesApi, authPrefsManager: AuthPrefsManager):
-            FavoritesRepo = FavoritesRepoImpl(favoritesApi, authPrefsManager)
+    fun provideFavoritesRepo(favoritesApi: FavoritesApi, authPrefsManager: AuthPrefsManager): FavoritesRepo =
+        FavoritesRepoImpl(favoritesApi, authPrefsManager)
 }

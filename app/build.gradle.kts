@@ -50,4 +50,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
+    // Material 3
+    implementation(libs.androidx.material3.android)
 }

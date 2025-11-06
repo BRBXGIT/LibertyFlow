@@ -12,7 +12,7 @@ import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.network.releases.api.ReleasesApi
 import javax.inject.Inject
 
-class ReleasesRepoImpl @Inject constructor(
+internal class ReleasesRepoImpl @Inject constructor(
     private val releasesApi: ReleasesApi
 ): ReleasesRepo {
 
