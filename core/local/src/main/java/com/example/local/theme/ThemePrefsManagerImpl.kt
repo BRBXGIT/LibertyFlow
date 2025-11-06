@@ -11,13 +11,19 @@ class ThemePrefsManagerImpl(
     private val context: Context
 ): ThemePrefsManager {
 
-    private val Context.dataStore by preferencesDataStore("liberty_flow_theme_prefs")
-
     private companion object {
-        private val THEME_KEY = stringPreferencesKey("theme")
-        private val COLOR_SYSTEM_KEY = stringPreferencesKey("color_system")
-        private val USE_EXPRESSIVE_KEY = booleanPreferencesKey("use_expressive")
+        private const val DATASTORE_NAME = "liberty_flow_theme_prefs"
+
+        private const val THEME_KEY_NAME = "theme"
+        private const val COLOR_SYSTEM_KEY_NAME = "color_system"
+        private const val USE_EXPRESSIVE_KEY_NAME = "use_expressive"
+
+        private val THEME_KEY = stringPreferencesKey(THEME_KEY_NAME)
+        private val COLOR_SYSTEM_KEY = stringPreferencesKey(COLOR_SYSTEM_KEY_NAME)
+        private val USE_EXPRESSIVE_KEY = booleanPreferencesKey(USE_EXPRESSIVE_KEY_NAME)
     }
+
+    private val Context.dataStore by preferencesDataStore(DATASTORE_NAME)
 
     override val theme = context.dataStore.data
         .map { preferences -> preferences[THEME_KEY] }

@@ -1,3 +1,3 @@
 package com.example.data.models.theme
 
-enum class ThemeValue { LIGHT, DARK, DEFAULT, DYNAMIC }
+enum class ThemeValue { LIGHT, DARK, SYSTEM, DYNAMIC }

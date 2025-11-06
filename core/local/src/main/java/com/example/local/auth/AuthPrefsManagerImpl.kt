@@ -10,11 +10,15 @@ class AuthPrefsManagerImpl(
     private val context: Context
 ): AuthPrefsManager {
 
-    private val Context.dataStore by preferencesDataStore("liberty_fow_auth_prefs")
-
     private companion object {
-        private val USER_SESSION_TOKEN_KEY = stringPreferencesKey("user_session_token")
+        private const val DATASTORE_NAME = "liberty_fow_auth_prefs"
+
+        private const val USER_SESSION_TOKEN_KEY_NAME = "user_session_token"
+
+        private val USER_SESSION_TOKEN_KEY = stringPreferencesKey(USER_SESSION_TOKEN_KEY_NAME)
     }
+
+    private val Context.dataStore by preferencesDataStore(DATASTORE_NAME)
 
     override val token = context.dataStore.data
         .map { preferences -> preferences[USER_SESSION_TOKEN_KEY] }
