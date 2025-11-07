@@ -1,6 +1,5 @@
 package com.example.network.releases.models.anime_details_item_response
 
-
 import com.example.network.common.anime_item_base.AnimeItemBase
 import com.example.network.common.common_response_models.Genre
 import com.example.network.common.common_response_models.Name
