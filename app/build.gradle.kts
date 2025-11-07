@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     // Compose
     alias(libs.plugins.kotlin.compose)
+    // Ksp
+    alias(libs.plugins.ksp)
+    // Hilt
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -30,18 +34,29 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions { jvmTarget = "11" }
+
     buildFeatures { compose = true }
+
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-parameters")
+        }
+    }
 }
 
 dependencies {
 
     // Core modules
     implementation(project(":core:design-system"))
+    implementation(project(":core:data"))
+    implementation(project(":core:common"))
 
     // Core
     implementation(libs.androidx.core.ktx)
@@ -51,4 +66,8 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Material 3
     implementation(libs.androidx.material3.android)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

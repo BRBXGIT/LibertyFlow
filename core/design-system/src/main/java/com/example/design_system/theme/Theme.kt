@@ -2,37 +2,52 @@
 
 package com.example.design_system.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import com.example.data.models.theme.ColorSchemeValue
+import com.example.data.models.theme.ThemeValue
 
 @Composable
 fun LibertyFlowTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    colorScheme: ColorSchemeValue,
+    useExpressive: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkLavenderScheme
-        else -> LightLavenderScheme
-    }
+    val colorScheme = getColorScheme(colorScheme)
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
+        motionScheme = if (useExpressive) MotionScheme.expressive() else MotionScheme.standard()
     )
 }
+
+private fun getColorScheme(colorSchemeValue: ColorSchemeValue): ColorScheme {
+    return when (colorSchemeValue) {
+        ColorSchemeValue.DARK_CHERRY_SCHEME -> DarkCherryColorScheme
+        ColorSchemeValue.LIGHT_CHERRY_SCHEME -> LightCherryColorScheme
+
+        ColorSchemeValue.LIGHT_TACOS_SCHEME -> LightTacosScheme
+        ColorSchemeValue.DARK_TACOS_SCHEME -> DarkTacosScheme
+
+        ColorSchemeValue.LIGHT_LAVENDER_SCHEME -> LightLavenderScheme
+        ColorSchemeValue.DARK_LAVENDER_SCHEME -> DarkLavenderScheme
+
+        ColorSchemeValue.LIGHT_GREEN_APPLE_SCHEME -> LightGreenAppleScheme
+        ColorSchemeValue.DARK_GREEN_APPLE_SCHEME -> DarkGreenAppleScheme
+
+        ColorSchemeValue.LIGHT_SAKURA_SCHEME -> LightSakuraScheme
+        ColorSchemeValue.DARK_SAKURA_SCHEME -> DarkSakuraScheme
+
+        ColorSchemeValue.LIGHT_SEA_SCHEME -> LightSeaScheme
+        ColorSchemeValue.DARK_SEA_SCHEME -> DarkSeaScheme
+    }
+}
+
 
 val mColors @Composable get() = MaterialTheme.colorScheme
 val mTypography @Composable get() = MaterialTheme.typography

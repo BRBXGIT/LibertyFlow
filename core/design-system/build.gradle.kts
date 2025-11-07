@@ -23,6 +23,9 @@ android {
 
 dependencies {
 
+    // Core modules
+    implementation(project(":core:data"))
+
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui.tooling.preview)
