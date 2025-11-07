@@ -4,12 +4,14 @@ import com.example.data.models.common.common.UiGenre
 import com.example.data.models.common.common.UiName
 import com.example.data.models.common.common.UiPoster
 import com.example.data.models.common.request.common_request.UiCommonRequest
+import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
 import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
 import com.example.data.models.common.request.request_parameters.UiRequestParametersBase
 import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
 import com.example.data.models.common.request.request_parameters.UiYear
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.network.common.common_request_models.common_request.CommonRequest
+import com.example.network.common.common_request_models.common_request.CommonRequestWithCollectionType
 import com.example.network.common.common_request_models.request_parameters.FullRequestParameters
 import com.example.network.common.common_request_models.request_parameters.RequestParametersBase
 import com.example.network.common.common_request_models.request_parameters.ShortRequestParameters
@@ -53,6 +55,13 @@ internal fun Name.toUiName(): UiName {
 
 internal fun UiCommonRequest.toCommonRequest(): CommonRequest {
     return CommonRequest(requestParameters = requestParameters.toRequestParametersBase())
+}
+
+internal fun UiCommonRequestWithCollectionType.toCommonRequestWithCollectionType(): CommonRequestWithCollectionType {
+    return CommonRequestWithCollectionType(
+        requestParameters = requestParameters.toRequestParametersBase(),
+        collectionType = collectionType.name
+    )
 }
 
 internal fun UiRequestParametersBase.toRequestParametersBase(): RequestParametersBase {

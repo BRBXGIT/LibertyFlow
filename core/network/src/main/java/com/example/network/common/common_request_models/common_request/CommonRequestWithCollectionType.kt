@@ -4,10 +4,12 @@ import com.example.network.common.common_request_models.request_parameters.Reque
 import com.example.network.common.common_utils.CommonNetworkUtils
 import com.google.gson.annotations.SerializedName
 
-data class CommonRequest(
+data class CommonRequestWithCollectionType(
     @SerializedName("exclude") override val exclude: String = CommonNetworkUtils.COMMON_EXCLUDE,
     @SerializedName("f") override val requestParameters: RequestParametersBase,
     @SerializedName("include") override val include: String = CommonNetworkUtils.COMMON_INCLUDE,
     @SerializedName("limit") override val limit: Int = CommonNetworkUtils.COMMON_LIMIT,
-    @SerializedName("page") override val page: Int = CommonNetworkUtils.COMMON_START_PAGE
+    @SerializedName("page") override val page: Int = CommonNetworkUtils.COMMON_START_PAGE,
+
+    @SerializedName("type_of_collection") val collectionType: String
 ): CommonRequestBase(exclude, requestParameters, include, limit, page)
