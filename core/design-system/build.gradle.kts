@@ -17,7 +17,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions { jvmTarget = "11" }
+
     buildFeatures { compose = true }
 }
 
@@ -25,6 +27,7 @@ dependencies {
 
     // Core modules
     implementation(project(":core:data"))
+    implementation(project(":core:common"))
 
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
@@ -32,4 +35,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     // Material 3
     implementation(libs.androidx.material3.android)
+    // Compose animation graphics
+    implementation(libs.androidx.animation.graphics)
 }

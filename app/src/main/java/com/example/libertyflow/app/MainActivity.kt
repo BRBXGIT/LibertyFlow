@@ -1,4 +1,4 @@
-package com.example.libertyflow
+package com.example.libertyflow.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,9 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.design_system.theme.LibertyFlowTheme
+import com.example.libertyflow.navigation.NavGraph
 import com.example.libertyflow.theme.ThemeIntent
 import com.example.libertyflow.theme.ThemeVM
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +30,7 @@ class MainActivity: ComponentActivity() {
                 useExpressive = themeState.useExpressive,
                 colorScheme = themeState.colorScheme
             ) {
-
+                NavGraph()
             }
         }
     }

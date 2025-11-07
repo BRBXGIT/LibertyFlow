@@ -11,7 +11,7 @@ import com.example.data.models.theme.ColorSchemeValue
 
 @Composable
 fun LibertyFlowTheme(
-    colorScheme: ColorSchemeValue,
+    colorScheme: ColorSchemeValue = ColorSchemeValue.DARK_LAVENDER_SCHEME,
     useExpressive: Boolean = false,
     content: @Composable () -> Unit
 ) {
