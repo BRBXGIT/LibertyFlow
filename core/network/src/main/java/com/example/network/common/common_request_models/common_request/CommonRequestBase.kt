@@ -8,4 +8,6 @@ abstract class CommonRequestBase(
     open val include: String,
     open val limit: Int,
     open val page: Int
-)
+) {
+    abstract fun withPageAndLimit(): CommonRequestBase
+}

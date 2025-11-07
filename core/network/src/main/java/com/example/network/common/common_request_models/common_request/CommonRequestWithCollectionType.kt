@@ -12,4 +12,6 @@ data class CommonRequestWithCollectionType(
     @SerializedName("page") override val page: Int = CommonNetworkUtils.COMMON_START_PAGE,
 
     @SerializedName("type_of_collection") val collectionType: String
-): CommonRequestBase(exclude, requestParameters, include, limit, page)
+): CommonRequestBase(exclude, requestParameters, include, limit, page) {
+    override fun withPageAndLimit() = copy(page = page, limit = limit)
+}

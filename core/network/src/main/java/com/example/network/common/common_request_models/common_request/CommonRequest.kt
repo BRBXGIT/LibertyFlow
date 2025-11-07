@@ -10,4 +10,6 @@ data class CommonRequest(
     @SerializedName("include") override val include: String = CommonNetworkUtils.COMMON_INCLUDE,
     @SerializedName("limit") override val limit: Int = CommonNetworkUtils.COMMON_LIMIT,
     @SerializedName("page") override val page: Int = CommonNetworkUtils.COMMON_START_PAGE
-): CommonRequestBase(exclude, requestParameters, include, limit, page)
+): CommonRequestBase(exclude, requestParameters, include, limit, page) {
+    override fun withPageAndLimit() = copy(page = page, limit = limit)
+}

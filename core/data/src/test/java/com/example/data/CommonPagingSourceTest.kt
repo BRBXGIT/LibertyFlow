@@ -32,7 +32,6 @@ class CommonPagingSourceTest {
 
     private val api: FavoritesApi = mockk(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
-    private val baseRequest = mockk<CommonRequest>()
     private lateinit var pagingSource: CommonPagingSource
 
     @Before
