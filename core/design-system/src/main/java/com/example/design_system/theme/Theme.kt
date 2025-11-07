@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
 import com.example.data.models.theme.ColorSchemeValue
-import com.example.data.models.theme.ThemeValue
 
 @Composable
 fun LibertyFlowTheme(
