@@ -18,23 +18,26 @@ import com.example.local.auth.AuthPrefsManager
 import com.example.network.collections.api.CollectionsApi
 import com.example.network.common.common_utils.CommonNetworkUtils
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class CollectionsRepoImpl @Inject constructor(
+internal class CollectionsRepoImpl @Inject constructor(
     private val collectionsApi: CollectionsApi,
     private val authPrefsManager: AuthPrefsManager
 ): CollectionsRepo {
 
     override suspend fun getAnimeInCollection(request: UiCommonRequestWithCollectionType): Flow<PagingData<UiAnimeItem>> {
+        val token = authPrefsManager.token.firstOrNull()!!
+
         return Pager(
             config = PagingConfig(pageSize = CommonNetworkUtils.COMMON_LIMIT, enablePlaceholders = false),
             pagingSourceFactory = {
                 CommonPagingSource(
                     apiCall = {
                         collectionsApi.getAnimeInCollection(
-                            sessionToken = authPrefsManager.token.firstOrNull()!!,
+                            sessionToken = token,
                             request = request.toCommonRequestWithCollectionType()
                         )
                     },
@@ -45,10 +48,12 @@ class CollectionsRepoImpl @Inject constructor(
     }
 
     override suspend fun addToCollection(request: UiCollectionRequest): NetworkResult<Unit> {
+        val token = authPrefsManager.token.first()!!
+
         return NetworkRequest.safeApiCall(
             call = {
                 collectionsApi.addToCollection(
-                    sessionToken = authPrefsManager.token.firstOrNull()!!,
+                    sessionToken = token,
                     request = request.toCollectionRequest()
                 )
             },
@@ -57,10 +62,12 @@ class CollectionsRepoImpl @Inject constructor(
     }
 
     override suspend fun deleteFromCollection(request: UiCollectionRequest): NetworkResult<Unit> {
+        val token = authPrefsManager.token.first()!!
+
         return NetworkRequest.safeApiCall(
             call = {
                 collectionsApi.deleteFromCollection(
-                    sessionToken = authPrefsManager.token.firstOrNull()!!,
+                    sessionToken = token,
                     request = request.toCollectionRequest()
                 )
             },

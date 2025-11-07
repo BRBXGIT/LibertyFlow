@@ -1,6 +1,6 @@
 package com.example.data.models.theme
 
-enum class ColorSystemValue {
+enum class ColorSchemeValue {
     DARK_CHERRY_SCHEME,
     LIGHT_CHERRY_SCHEME,
     LIGHT_TACOS_SCHEME,
