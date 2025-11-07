@@ -11,7 +11,9 @@ import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Test
 import retrofit2.Response
 import java.net.SocketException
@@ -36,7 +38,7 @@ class NetworkRequestTest {
 
     @Test
     fun `saveApiCall returns error when call returns http error`() = runTest {
-        val body = ResponseBody.create(MediaType.get("application/json"), "")
+        val body = ResponseBody.create("application/json".toMediaType(), "")
         coEvery { api.getRandomAnime() } returns Response.error(600, body)
 
         NetworkRequest.safeApiCall(
@@ -61,7 +63,7 @@ class NetworkRequestTest {
 
     // === Next tests check how NetworkRequest helpers work ===
     private suspend fun assertErrorMessage(code: Int, expected: String) {
-        val body = ResponseBody.create(MediaType.get("application/json"), "")
+        val body = "".toResponseBody("application/json".toMediaType())
         coEvery { api.getRandomAnime() } returns Response.error(code, body)
 
         NetworkRequest.safeApiCall(

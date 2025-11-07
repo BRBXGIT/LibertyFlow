@@ -20,8 +20,9 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -93,7 +94,7 @@ class CommonPagingSourceTest {
     fun `load returns Error on failure`() = runTest {
         val fakeRequest = CommonRequest(requestParameters = mockk())
 
-        val body = ResponseBody.create(MediaType.get("application/json"), "")
+        val body = "".toResponseBody("application/json".toMediaType())
         coEvery { api.getFavorites("", fakeRequest) } returns Response.error(600, body)
 
         pagingSource = CommonPagingSource(

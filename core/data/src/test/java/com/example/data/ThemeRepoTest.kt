@@ -15,12 +15,11 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class ThemeRepoImplTest {
+class ThemeRepoTest {
 
     private lateinit var themePrefsManager: ThemePrefsManager
     private lateinit var repo: ThemeRepoImpl

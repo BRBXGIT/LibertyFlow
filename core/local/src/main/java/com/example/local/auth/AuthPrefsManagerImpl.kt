@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.map
 
+// TODO rewrite to encrypted
 class AuthPrefsManagerImpl(
     private val context: Context
 ): AuthPrefsManager {
