@@ -40,6 +40,9 @@ android {
 
 dependencies {
 
+    // Core modules
+    implementation(project(":core:design-system"))
+
     // Core
     implementation(libs.androidx.core.ktx)
     // Activity
