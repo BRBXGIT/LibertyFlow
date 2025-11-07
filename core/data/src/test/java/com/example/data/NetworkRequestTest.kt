@@ -14,6 +14,8 @@ import okhttp3.MediaType
 import okhttp3.ResponseBody
 import org.junit.Test
 import retrofit2.Response
+import java.net.SocketException
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class NetworkRequestTest {
@@ -55,5 +57,84 @@ class NetworkRequestTest {
         ).onError { message ->
             assertEquals(R.string.internet_message.toString(), message)
         }
+    }
+
+    // === Next tests check how NetworkRequest helpers work ===
+    private suspend fun assertErrorMessage(code: Int, expected: String) {
+        val body = ResponseBody.create(MediaType.get("application/json"), "")
+        coEvery { api.getRandomAnime() } returns Response.error(code, body)
+
+        NetworkRequest.safeApiCall(
+            call = { api.getRandomAnime() },
+            map = { it.toUiAnimeId() }
+        ).onError { message ->
+            assertEquals(expected, message)
+        }
+    }
+
+    @Test
+    fun `code 401 returns correct message`() = runTest {
+        assertErrorMessage(401, R.string.incorrect_email_or_password_message.toString())
+    }
+
+    @Test
+    fun `code 422 returns correct message`() = runTest {
+        assertErrorMessage(422, R.string.no_email_or_password_message.toString())
+    }
+
+    @Test
+    fun `code 408 returns correct message`() = runTest {
+        assertErrorMessage(408, R.string.request_timeout_message.toString())
+    }
+
+    @Test
+    fun `code 409 returns correct message`() = runTest {
+        assertErrorMessage(409, R.string.conflict_message.toString())
+    }
+
+    @Test
+    fun `code 413 returns correct message`() = runTest {
+        assertErrorMessage(413, R.string.payload_too_large_message.toString())
+    }
+
+    @Test
+    fun `code 429 returns correct message`() = runTest {
+        assertErrorMessage(429, R.string.too_many_requests_message.toString())
+    }
+
+    @Test
+    fun `code 500 returns correct message`() = runTest {
+        assertErrorMessage(500, R.string.server_error_message.toString())
+    }
+
+    private suspend fun assertErrorException(e: Exception, expected: String) {
+        coEvery { api.getRandomAnime() } throws e
+
+        NetworkRequest.safeApiCall(
+            call = { api.getRandomAnime() },
+            map = { it.toUiAnimeId() }
+        ).onError { message ->
+            assertEquals(expected, message)
+        }
+    }
+
+    @Test
+    fun `UnknownHostException returns correct message`() = runTest {
+        assertErrorException(UnknownHostException(), R.string.internet_message.toString())
+    }
+
+    @Test
+    fun `SocketException returns correct message`() = runTest {
+        assertErrorException(SocketException(), R.string.internet_message.toString())
+    }
+
+    @Test
+    fun `SocketTimeoutException returns correct message`() = runTest {
+        assertErrorException(SocketTimeoutException(), R.string.request_timeout_message.toString())
+    }
+
+    @Test
+    fun `ArrayIndexOutOfBoundsException returns correct message`() = runTest {
+        assertErrorException(ArrayIndexOutOfBoundsException(), R.string.unknown_message.toString())
     }
 }
