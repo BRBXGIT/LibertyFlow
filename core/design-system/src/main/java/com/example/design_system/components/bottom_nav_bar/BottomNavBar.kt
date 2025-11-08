@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.common.navigation.HomeRoute
+import com.example.common.navigation.NavBarBase
 import com.example.common.navigation.NavigationBase
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
@@ -38,7 +40,7 @@ import com.example.design_system.theme.mMotionScheme
 
 private data class NavItem(
     val labelRes: Int,
-    val iconRes: Int, // Animated vector (filled ↔ outlined)
+    val iconRes: Int, // Animated vector (outlined ↔ filled)
     val destination: NavigationBase
 )
 
@@ -52,10 +54,10 @@ private val navItems = listOf(
 
 @Composable
 fun BoxScope.BottomNavBar(
-    visible: Boolean,
-    onNavItemClick: (Int, NavigationBase) -> Unit,
-    selectedIndex: Int
+    onNavItemClick: (NavigationBase) -> Unit,
+    selectedRoute: NavigationBase
 ) {
+    val visible = selectedRoute is NavBarBase
     val targetOffset = if (visible) 0.dp else BottomNavBarUtils.BOTTOM_BAR_HEIGHT.dp
     val animatedOffset by animateDpAsState(
         targetValue = targetOffset,
@@ -65,14 +67,15 @@ fun BoxScope.BottomNavBar(
 
     NavigationBar(
         modifier = Modifier
+            .align(Alignment.BottomCenter)
             .height(BottomNavBarUtils.BOTTOM_BAR_HEIGHT.dp)
             .offset(y = animatedOffset)
     ) {
-        navItems.forEachIndexed { index, navItem ->
+        navItems.forEach { navItem ->
             BottomNavItem(
                 navItem = navItem,
-                isSelected = index == selectedIndex,
-                onClick = { onNavItemClick(index, navItem.destination) }
+                isSelected = navItem.destination == selectedRoute,
+                onClick = { onNavItemClick(navItem.destination) }
             )
         }
     }
@@ -122,9 +125,8 @@ private fun BottomNavBarPreview() {
     LibertyFlowTheme {
         Box {
             BottomNavBar(
-                visible = true,
-                onNavItemClick = { _, _ -> },
-                selectedIndex = 1
+                onNavItemClick = {},
+                selectedRoute = HomeRoute
             )
         }
     }

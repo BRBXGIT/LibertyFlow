@@ -59,6 +59,7 @@ dependencies {
     implementation(project(":core:common"))
     // Feature modules
     implementation(project(":feature:home"))
+    implementation(project(":feature:common"))
 
     // Core
     implementation(libs.androidx.core.ktx)

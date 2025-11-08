@@ -21,12 +21,25 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions { jvmTarget = "11" }
+
     buildFeatures { compose = true }
+
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-parameters")
+        }
+    }
 }
 
 dependencies {
 
+    // Core modules
+    implementation(project(":core:common"))
+
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
+    // Lifecycle ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 }
