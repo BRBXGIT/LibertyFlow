@@ -1,0 +1,157 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
+package com.example.design_system.components.searching_top_bar
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.design_system.R
+import com.example.design_system.theme.LibertyFlowIcons
+import com.example.design_system.theme.LibertyFlowTheme
+import com.example.design_system.theme.mTypography
+
+internal object SearchingTopBarUtils {
+    const val HORIZONTAL_PADDING = 16
+}
+
+@Composable
+fun SearchingTopBar(
+    isLoading: Boolean,
+    label: String,
+    scrollBehavior: TopAppBarScrollBehavior,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    isSearching: Boolean,
+    onSearchChange: () -> Unit
+) {
+    Column {
+        TopAppBar(
+            scrollBehavior = scrollBehavior,
+            title = {
+                if (isSearching) {
+                    SearchingTextField(
+                        value = query,
+                        onValueChange = onQueryChange,
+                    )
+                } else {
+                    Text(
+                        text = label,
+                        style = mTypography.headlineSmall
+                    )
+                }
+            },
+            actions = {
+                when {
+                    isSearching && query.isNotBlank() -> {
+                        TopBarIconButton(
+                            onClick = { onQueryChange("") },
+                            icon = LibertyFlowIcons.CrossCircle
+                        )
+                    }
+                    !isSearching -> {
+                        TopBarIconButton(
+                            onClick = onSearchChange,
+                            icon = LibertyFlowIcons.Magnifier
+                        )
+                    }
+                }
+            },
+            navigationIcon = {
+                if (isSearching) {
+                    TopBarIconButton(
+                        onClick = onSearchChange,
+                        icon = LibertyFlowIcons.ArrowLeftFilled
+                    )
+                }
+            }
+        )
+
+        AnimatedVisibility(
+            visible = isLoading,
+            enter = fadeIn(tween(300)) + slideInVertically(tween(300)),
+            exit = fadeOut(tween(300)) + slideOutVertically(tween(300))
+        ) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = SearchingTopBarUtils.HORIZONTAL_PADDING.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SearchingTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String = stringResource(R.string.placeholder_label)
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        singleLine = true,
+        placeholder = { Text(placeholder) },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
+}
+
+@Composable
+private fun TopBarIconButton(
+    onClick: () -> Unit,
+    icon: Int
+) {
+    IconButton(
+        onClick = onClick
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SearchingTopBarPreview() {
+    val scrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
+
+    LibertyFlowTheme {
+        SearchingTopBar(
+            label = "Последние обновления",
+            onQueryChange = {},
+            query = "",
+            scrollBehavior = scrollBehaviour,
+            isSearching = false,
+            onSearchChange = {},
+            isLoading = true
+        )
+    }
+}

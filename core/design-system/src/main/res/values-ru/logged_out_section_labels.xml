@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logged_out_label">Для просмотра избранных и списков необходима авторизация :)</string>
+    <string name="auth_label">Авторизация</string>
+</resources>

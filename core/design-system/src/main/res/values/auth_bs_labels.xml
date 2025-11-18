@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_title">Authorization</string>
+    <string name="email_tf_label">Login or email</string>
+    <string name="email_tf_error_label">Incorrect user</string>
+    <string name="password_tf_label">Password</string>
+    <string name="password_tf_error_label">Incorrect password</string>
+    <string name="authorize_label">Authorize</string>
+    <string name="new_user_label">New user? </string>
+    <string name="registration_label">Registration</string>
+    <string name="anilibria_auth_link">https://anilibria.top/app/auth/registration/newRegistration</string>
+</resources>

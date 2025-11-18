@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="empty_query_label">Кажется запрос пустой, начните вводить название и аниме появятся 🙃</string>
+</resources>
