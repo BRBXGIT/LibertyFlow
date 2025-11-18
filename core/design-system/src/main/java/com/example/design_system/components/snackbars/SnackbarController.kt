@@ -1,6 +1,5 @@
 package com.example.design_system.components.snackbars
 
-import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
@@ -14,7 +13,6 @@ data class SnackbarAction(
     val action: () -> Unit
 )
 
-@VisibleForTesting
 object SnackbarController {
 
     private val _events = Channel<SnackbarEvent>()

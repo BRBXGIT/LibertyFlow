@@ -9,7 +9,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -24,32 +23,23 @@ import com.example.design_system.containers.AnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 @Composable
 fun Home(
     homeState: HomeState,
-    homeEffect: MutableSharedFlow<HomeEffect>,
     animeByQuery: LazyPagingItems<UiAnimeItem>,
     onIntent: (HomeIntent) -> Unit
 ) {
-    // TODO test this approach
-    LaunchedEffect(Unit) {
-        homeEffect.collect { effect ->
-            when (effect) {
-                is HomeEffect.ShowRetrySnackbar -> sendRetrySnackbar(effect.message, effect.action)
-            }
-        }
-    }
-
     val snackbars = getSnackbarState()
 
     PagingStatesContainer(
         items = animeByQuery,
         onLoadingChange = { onIntent(HomeIntent.UpdateIsLoading(it)) },
         onRetryRequest = { message, retry ->
-            snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
+            if (homeState.query.isNotBlank()) {
+                snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
+            }
         }
     )
 
