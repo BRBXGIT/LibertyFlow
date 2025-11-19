@@ -43,4 +43,6 @@ dependencies {
     implementation(libs.coil.compose)
     // Paging
     implementation(libs.androidx.paging.compose)
+    // Lottie
+    implementation(libs.lottie)
 }

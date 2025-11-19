@@ -5,6 +5,7 @@ import com.example.data.models.common.ui_anime_item.UiAnimeItem
 
 @Immutable
 data class HomeState(
+    val isError: Boolean = false,
     val isLoading: Boolean = false,
 
     val latestReleases: List<UiAnimeItem> = emptyList(),

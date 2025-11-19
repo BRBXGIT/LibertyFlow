@@ -17,6 +17,7 @@ import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.sections.EmptyQuerySection
+import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.snackbars.getSnackbarState
 import com.example.design_system.components.snackbars.sendRetrySnackbar
 import com.example.design_system.containers.AnimeItemsLazyVerticalGrid
@@ -36,6 +37,7 @@ fun Home(
     PagingStatesContainer(
         items = animeByQuery,
         onLoadingChange = { onIntent(HomeIntent.UpdateIsLoading(it)) },
+        onErrorChange = { onIntent(HomeIntent.UpdateIsError(it)) },
         onRetryRequest = { message, retry ->
             if (homeState.query.isNotBlank()) {
                 snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
@@ -66,12 +68,22 @@ fun Home(
             onRefresh = { animeByQuery.refresh() }
         ) {
             when(homeState.isSearching) {
-                false -> AnimeItemsLazyVerticalGrid(homeState.latestReleases)
+                false -> {
+                    if (homeState.isError) {
+                        ErrorSection()
+                    } else {
+                        AnimeItemsLazyVerticalGrid(homeState.latestReleases)
+                    }
+                }
                 true -> {
                     if (homeState.query.isBlank()) {
                         EmptyQuerySection()
                     } else {
-                        PagingAnimeItemsLazyVerticalGrid(animeByQuery)
+                        if (homeState.isError) {
+                            ErrorSection()
+                        } else {
+                            PagingAnimeItemsLazyVerticalGrid(animeByQuery)
+                        }
                     }
                 }
             }

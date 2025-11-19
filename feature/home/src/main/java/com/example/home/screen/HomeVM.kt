@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
-import com.example.common.vm_helpers.toLazily
+import com.example.common.vm_helpers.toEagerly
 import com.example.common.vm_helpers.update
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.ReleasesRepo
@@ -21,7 +21,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -39,7 +38,7 @@ class HomeVM @Inject constructor(
     }
 
     private val _homeState = MutableStateFlow(HomeState())
-    val homeState = _homeState.toLazily(HomeState())
+    val homeState = _homeState.toEagerly(HomeState())
 
     private val requestParameters = _homeState
         .map { UiFullRequestParameters(search = it.query) }
@@ -52,17 +51,27 @@ class HomeVM @Inject constructor(
 
     private fun fetchLatestReleases() {
         viewModelScope.launch(dispatcherIo) {
+            _homeState.update { copy(isError = false) }
+
             releasesRepo.getLatestAnimeReleases()
                 .onSuccess { uiAnimeItems -> _homeState.update { copy(latestReleases = uiAnimeItems) }}
-                .onError { _, message -> sendRetrySnackbar(message) { fetchLatestReleases() } }
+                .onError { _, message ->
+                    _homeState.update { copy(isError = true) }
+                    sendRetrySnackbar(message) { fetchLatestReleases() }
+                }
         }
     }
 
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {
+            _homeState.update { copy(isError = false) }
+
             releasesRepo.getRandomAnime()
                 .onSuccess { randomAnime -> _homeState.update { copy(randomAnimeId = randomAnime.id) } }
-                .onError { _, message -> sendRetrySnackbar(message) { getRandomAnime() } }
+                .onError { _, message ->
+                    _homeState.update { copy(isError = true) }
+                    sendRetrySnackbar(message) { getRandomAnime() }
+                }
         }
     }
 
@@ -74,6 +83,7 @@ class HomeVM @Inject constructor(
             is HomeIntent.UpdateQuery -> _homeState.update { copy(query = intent.query) }
 
             is HomeIntent.UpdateIsLoading -> _homeState.update { copy(isLoading = intent.isLoading) }
+            is HomeIntent.UpdateIsError -> _homeState.update { copy(isError = intent.isError) }
         }
     }
 }

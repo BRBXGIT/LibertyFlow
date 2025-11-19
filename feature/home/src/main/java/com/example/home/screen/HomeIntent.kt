@@ -7,4 +7,5 @@ sealed interface HomeIntent {
     data object UpdateIsSearching: HomeIntent
 
     data class UpdateIsLoading(val isLoading: Boolean): HomeIntent
+    data class UpdateIsError(val isError: Boolean): HomeIntent
 }
