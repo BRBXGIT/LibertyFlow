@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.design_system.components.bottom_nav_bar.calculateNavBarSize
+import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
 

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="top_bar_label">Последние обновления</string>
+    <string name="random_button_label">Случайное аниме</string>
 </resources>

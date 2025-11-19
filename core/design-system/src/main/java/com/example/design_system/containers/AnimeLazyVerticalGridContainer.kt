@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -16,16 +17,19 @@ import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.cards.AnimeCard
 import com.example.design_system.components.cards.AnimeCardUtils
 
-private object AnimeLVGContainerUtils {
+private object AnimeLVGContainerConstants {
     const val ARRANGEMENT_ALIGNMENT_PADDING = 16
 }
 
 @Composable
 fun AnimeItemsLazyVerticalGrid(
-    anime: List<UiAnimeItem>
+    anime: List<UiAnimeItem>,
+    extraContent: LazyGridScope.() -> Unit = {}
 ) {
     // Static list grid
     AnimeLazyVerticalGridContainer {
+        extraContent(this)
+
         items(
             items = anime,
             key = { it.id }
@@ -42,10 +46,13 @@ fun AnimeItemsLazyVerticalGrid(
 
 @Composable
 fun PagingAnimeItemsLazyVerticalGrid(
-    anime: LazyPagingItems<UiAnimeItem>
+    anime: LazyPagingItems<UiAnimeItem>,
+    extraContent: LazyGridScope.() -> Unit = {}
 ) {
     // Paging grid — items loaded on-demand
     AnimeLazyVerticalGridContainer {
+        extraContent(this)
+
         items(
             count = anime.itemCount,
             key = { it }
@@ -73,9 +80,9 @@ private fun AnimeLazyVerticalGridContainer(
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Adaptive(AnimeCardUtils.CARD_WIDTH.dp),
-        verticalArrangement = Arrangement.spacedBy(AnimeLVGContainerUtils.ARRANGEMENT_ALIGNMENT_PADDING.dp),
-        horizontalArrangement = Arrangement.spacedBy(AnimeLVGContainerUtils.ARRANGEMENT_ALIGNMENT_PADDING.dp),
-        contentPadding = PaddingValues(AnimeLVGContainerUtils.ARRANGEMENT_ALIGNMENT_PADDING.dp),
+        verticalArrangement = Arrangement.spacedBy(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
+        horizontalArrangement = Arrangement.spacedBy(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
+        contentPadding = PaddingValues(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
         content = content
     )
 }

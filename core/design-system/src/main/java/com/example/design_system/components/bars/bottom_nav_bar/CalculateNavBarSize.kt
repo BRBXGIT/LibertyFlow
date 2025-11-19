@@ -1,4 +1,4 @@
-package com.example.design_system.components.bottom_nav_bar
+package com.example.design_system.components.bars.bottom_nav_bar
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -11,5 +11,5 @@ import androidx.compose.ui.unit.dp
 fun calculateNavBarSize(): Dp {
     val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    return BottomNavBarUtils.BOTTOM_BAR_HEIGHT.dp + bottomPadding
+    return BottomNavBarConstants.BOTTOM_BAR_HEIGHT.dp + bottomPadding
 }

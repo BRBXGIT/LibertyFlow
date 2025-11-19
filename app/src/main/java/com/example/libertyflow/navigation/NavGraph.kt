@@ -14,7 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.common.UiIntent
 import com.example.common.UiVM
 import com.example.common.navigation.HomeRoute
-import com.example.design_system.components.bottom_nav_bar.BottomNavBar
+import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBar
 import com.example.favorites.navigation.favorites
 import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home

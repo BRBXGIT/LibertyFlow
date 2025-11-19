@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.design_system.components.searching_top_bar
+package com.example.design_system.components.bars.searching_top_bar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

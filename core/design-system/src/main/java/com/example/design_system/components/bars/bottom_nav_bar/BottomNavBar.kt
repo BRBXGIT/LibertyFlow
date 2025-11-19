@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
-package com.example.design_system.components.bottom_nav_bar
+package com.example.design_system.components.bars.bottom_nav_bar
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.graphics.res.animatedVectorResource
@@ -46,12 +46,12 @@ private data class NavItem(
 
 private val navItems = listOf(
     NavItem(
-        labelRes = BottomNavBarUtils.HomeLabel,
+        labelRes = BottomNavBarConstants.HomeLabel,
         iconRes = LibertyFlowIcons.HomeAnimated,
         destination = HomeRoute
     ),
     NavItem(
-        labelRes = BottomNavBarUtils.FavoritesLabel,
+        labelRes = BottomNavBarConstants.FavoritesLabel,
         iconRes = LibertyFlowIcons.HeartAnimated,
         destination = FavoritesRoute
     )
@@ -63,7 +63,7 @@ fun BoxScope.BottomNavBar(
     selectedRoute: NavigationBase
 ) {
     val visible = selectedRoute is NavBarBase
-    val targetOffset = if (visible) 0.dp else BottomNavBarUtils.BOTTOM_BAR_HEIGHT.dp
+    val targetOffset = if (visible) 0.dp else BottomNavBarConstants.BOTTOM_BAR_HEIGHT.dp
     val animatedOffset by animateDpAsState(
         targetValue = targetOffset,
         animationSpec = mMotionScheme.fastSpatialSpec(),

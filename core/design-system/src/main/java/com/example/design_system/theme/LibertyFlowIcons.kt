@@ -17,6 +17,7 @@ object LibertyFlowIcons {
     val CrossCircle = R.drawable.ic_cross_circle
     val User = R.drawable.ic_user
     val Password = R.drawable.ic_password
+    val FunnyCube = R.drawable.ic_funny_cube
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled

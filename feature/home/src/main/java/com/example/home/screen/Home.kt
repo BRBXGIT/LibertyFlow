@@ -4,6 +4,7 @@ package com.example.home.screen
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -14,8 +15,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
-import com.example.design_system.components.bottom_nav_bar.calculateNavBarSize
-import com.example.design_system.components.searching_top_bar.SearchingTopBar
+import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
+import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.sections.EmptyQuerySection
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.snackbars.getSnackbarState
@@ -25,6 +26,8 @@ import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import com.example.home.R
+import com.example.home.components.RandomAnimeButton
+import com.example.home.components.RandomAnimeButtonConstants
 import kotlinx.coroutines.launch
 
 private object HomeConstants {
@@ -87,7 +90,14 @@ fun Home(
                     if (homeState.isError) {
                         ErrorSection()
                     } else {
-                        AnimeItemsLazyVerticalGrid(homeState.latestReleases)
+                        AnimeItemsLazyVerticalGrid(homeState.latestReleases) {
+                            item(
+                                key = RandomAnimeButtonConstants.RANDOM_BUTTON_KEY,
+                                span = { GridItemSpan(maxLineSpan) }
+                            ) {
+                                RandomAnimeButton(onClick = {})
+                            }
+                        }
                     }
                 }
 
