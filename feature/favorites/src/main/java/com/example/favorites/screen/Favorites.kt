@@ -2,6 +2,7 @@
 
 package com.example.favorites.screen
 
+import com.example.favorites.R
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +30,10 @@ import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import kotlinx.coroutines.launch
 
+private object FavoritesConstants {
+    val TopBarLabel = R.string.top_bar_label
+}
+
 @Composable
 fun Favorites(
     favoritesState: FavoritesState,
@@ -46,7 +51,7 @@ fun Favorites(
         topBar = {
             SearchingTopBar(
                 isLoading = favoritesState.isLoading,
-                label = stringResource(FavoritesUtils.TopBarLabel),
+                label = stringResource(FavoritesConstants.TopBarLabel),
                 scrollBehavior = topBarScrollBehaviour,
                 query = favoritesState.query,
                 onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
@@ -80,6 +85,7 @@ fun Favorites(
     }
 }
 
+// Main content
 @Composable
 private fun LoggedInContent(
     favoritesState: FavoritesState,

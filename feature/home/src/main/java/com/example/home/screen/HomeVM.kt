@@ -31,7 +31,7 @@ class HomeVM @Inject constructor(
     private val releasesRepo: ReleasesRepo,
     private val catalogRepo: CatalogRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
-) : ViewModel() {
+): ViewModel() {
 
     // UI state exposed as StateFlow
     private val _homeState = MutableStateFlow(HomeState())
@@ -92,22 +92,18 @@ class HomeVM @Inject constructor(
     fun sendIntent(intent: HomeIntent) {
         when (intent) {
 
-            // Load random anime
+            // UI simple state updates
             HomeIntent.GetRandomAnime -> getRandomAnime()
 
-            // Toggle search mode
             HomeIntent.UpdateIsSearching ->
                 _homeState.update { copy(isSearching = !isSearching) }
 
-            // Update search query text
             is HomeIntent.UpdateQuery ->
                 _homeState.update { copy(query = intent.query) }
 
-            // Update loading state
             is HomeIntent.UpdateIsLoading ->
                 _homeState.update { copy(isLoading = intent.isLoading) }
 
-            // Update error state
             is HomeIntent.UpdateIsError ->
                 _homeState.update { copy(isError = intent.isError) }
         }

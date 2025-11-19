@@ -24,7 +24,12 @@ import com.example.design_system.containers.AnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
+import com.example.home.R
 import kotlinx.coroutines.launch
+
+private object HomeConstants {
+    val topBarLabel = R.string.top_bar_label
+}
 
 @Composable
 fun Home(
@@ -61,7 +66,7 @@ fun Home(
             // Top search bar with query input & actions
             SearchingTopBar(
                 query = homeState.query,
-                label = stringResource(HomeUtils.topBarLabel),
+                label = stringResource(HomeConstants.topBarLabel),
                 isSearching = homeState.isSearching,
                 isLoading = homeState.isLoading,
                 scrollBehavior = topBarScrollBehaviour,

@@ -23,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -35,21 +36,30 @@ class FavoritesVM @Inject constructor(
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
 ): ViewModel() {
 
+    // UI state
     private val _favoritesState = MutableStateFlow(FavoritesState())
     val favoritesState = _favoritesState.toLazily(FavoritesState())
 
+    // Paging: Favorites without search
     val favorites = favoritesRepo
         .getFavorites(UiCommonRequest(UiShortRequestParameters()))
         .cachedIn(viewModelScope)
 
-    val favoritesByQuery = _favoritesState
-        .map { UiCommonRequest(UiShortRequestParameters(search = it.query)) }
-        .flatMapLatest { request ->
-            favoritesRepo.getFavorites(request)
-        }.cachedIn(viewModelScope)
+    // Paging: Favorites with search
+    private val requestParameters = _favoritesState
+        .map { UiShortRequestParameters(search = it.query) }
+        .distinctUntilChanged()
 
-    @VisibleForTesting
-    internal fun observeLoggingState() {
+    val favoritesByQuery = requestParameters
+        .flatMapLatest { request ->
+            favoritesRepo.getFavorites(UiCommonRequest(request))
+        }
+        .cachedIn(viewModelScope)
+
+    /**
+     * Observes authentication state and updates UI.
+     */
+    private fun observeAuthState() {
         viewModelScope.launch(dispatcherIo) {
             authRepo.authState.collect { authState ->
                 _favoritesState.update { copy(isLoggedIn = authState) }
@@ -57,9 +67,19 @@ class FavoritesVM @Inject constructor(
         }
     }
 
+    /**
+     * Requests auth token using email/password.
+     * Shows snackbar with retry on unknown errors.
+     */
     private fun getAuthToken() {
         viewModelScope.launch(dispatcherIo) {
-            _favoritesState.update { copy(isPasswordOrEmailIncorrect = false, isLoading = true) }
+            _favoritesState.update {
+                copy(
+                    isLoading = true,
+                    isPasswordOrEmailIncorrect = false
+                )
+            }
+
             val request = UiTokenRequest(
                 login = _favoritesState.value.email,
                 password = _favoritesState.value.password
@@ -71,7 +91,12 @@ class FavoritesVM @Inject constructor(
                 }
                 .onError { error, message ->
                     if (error == NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD) {
-                        _favoritesState.update { copy(isLoading = false, isPasswordOrEmailIncorrect = true) }
+                        _favoritesState.update {
+                            copy(
+                                isLoading = false,
+                                isPasswordOrEmailIncorrect = true
+                            )
+                        }
                     } else {
                         sendRetrySnackbar(message) { getAuthToken() }
                     }
@@ -79,23 +104,41 @@ class FavoritesVM @Inject constructor(
         }
     }
 
+    /**
+     * Handles UI intents.
+     */
     fun sendIntent(intent: FavoritesIntent) {
-        when(intent) {
-            is FavoritesIntent.UpdateIsLoading -> _favoritesState.update { copy(isLoading = intent.isLoading) }
-            is FavoritesIntent.UpdateIsError -> _favoritesState.update { copy(isError = intent.isError) }
+        when (intent) {
 
-            is FavoritesIntent.UpdateQuery -> _favoritesState.update { copy(query = intent.query) }
-            FavoritesIntent.UpdateIsSearching -> _favoritesState.update { copy(isSearching = !isSearching) }
+            // UI simple state updates
+            is FavoritesIntent.UpdateIsLoading ->
+                _favoritesState.update { copy(isLoading = intent.isLoading) }
 
-            is FavoritesIntent.UpdateEmail -> _favoritesState.update { copy(email = intent.email) }
-            FavoritesIntent.UpdateIsAuthBSVisible -> _favoritesState.update { copy(isAuthBSVisible = !isAuthBSVisible) }
-            is FavoritesIntent.UpdatePassword -> _favoritesState.update { copy(password = intent.password) }
+            is FavoritesIntent.UpdateIsError ->
+                _favoritesState.update { copy(isError = intent.isError) }
 
-            FavoritesIntent.GetTokens -> getAuthToken()
+            is FavoritesIntent.UpdateQuery ->
+                _favoritesState.update { copy(query = intent.query) }
+
+            FavoritesIntent.UpdateIsSearching ->
+                _favoritesState.update { copy(isSearching = !isSearching) }
+
+            is FavoritesIntent.UpdateEmail ->
+                _favoritesState.update { copy(email = intent.email) }
+
+            is FavoritesIntent.UpdatePassword ->
+                _favoritesState.update { copy(password = intent.password) }
+
+            FavoritesIntent.UpdateIsAuthBSVisible ->
+                _favoritesState.update { copy(isAuthBSVisible = !isAuthBSVisible) }
+
+            // Actions
+            FavoritesIntent.GetTokens ->
+                getAuthToken()
         }
     }
 
     init {
-        observeLoggingState()
+        observeAuthState()
     }
 }
