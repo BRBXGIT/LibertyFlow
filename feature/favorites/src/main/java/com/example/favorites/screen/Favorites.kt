@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.auth.AuthState
@@ -18,6 +19,7 @@ import com.example.design_system.components.auth_bottom_sheet.AuthBS
 import com.example.design_system.components.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.sections.EmptyQuerySection
+import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.sections.LoggedOutSection
 import com.example.design_system.components.snackbars.SnackbarState
 import com.example.design_system.components.snackbars.getSnackbarState
@@ -36,16 +38,16 @@ fun Favorites(
 ) {
     val snackbars = getSnackbarState()
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbars.snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
         topBar = {
             SearchingTopBar(
                 isLoading = favoritesState.isLoading,
                 label = stringResource(FavoritesUtils.TopBarLabel),
-                scrollBehavior = scrollBehavior,
+                scrollBehavior = topBarScrollBehaviour,
                 query = favoritesState.query,
                 onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
                 isSearching = favoritesState.isSearching,
@@ -89,6 +91,7 @@ private fun LoggedInContent(
     PagingStatesContainer(
         items = favorites,
         onLoadingChange = { onIntent(FavoritesIntent.UpdateIsLoading(it)) },
+        onErrorChange = { onIntent(FavoritesIntent.UpdateIsError(it)) },
         onRetryRequest = { message, retry ->
             snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
         }
@@ -97,18 +100,32 @@ private fun LoggedInContent(
     PagingStatesContainer(
         items = favoritesByQuery,
         onLoadingChange = { onIntent(FavoritesIntent.UpdateIsLoading(it)) },
+        onErrorChange = { onIntent(FavoritesIntent.UpdateIsError(it)) },
         onRetryRequest = { message, retry ->
-            snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
+            if (favoritesState.query.isNotBlank()) {
+                snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
+            }
         }
     )
 
-    if (favoritesState.isSearching) {
-        if (favoritesState.query.isBlank()) {
-            EmptyQuerySection()
-        } else {
-            PagingAnimeItemsLazyVerticalGrid(favoritesByQuery)
+    when(favoritesState.isSearching) {
+        false -> {
+            if (favoritesState.isError) {
+                ErrorSection()
+            } else {
+                PagingAnimeItemsLazyVerticalGrid(favorites)
+            }
         }
-    } else {
-        PagingAnimeItemsLazyVerticalGrid(favorites)
+        true -> {
+            if (favoritesState.query.isBlank()) {
+                EmptyQuerySection()
+            } else {
+                if (favoritesState.isError) {
+                    ErrorSection()
+                } else {
+                    PagingAnimeItemsLazyVerticalGrid(favoritesByQuery)
+                }
+            }
+        }
     }
 }

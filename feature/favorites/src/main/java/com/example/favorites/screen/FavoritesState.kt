@@ -8,6 +8,7 @@ data class FavoritesState(
     val isLoggedIn: AuthState = AuthState.LoggedOut,
 
     val isLoading: Boolean = false,
+    val isError: Boolean = false,
 
     val isAuthBSVisible: Boolean = false,
     val email: String = "",

@@ -16,7 +16,7 @@ import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.cards.AnimeCard
 import com.example.design_system.components.cards.AnimeCardUtils
 
-internal object AnimeLVGContainerUtils {
+private object AnimeLVGContainerUtils {
     const val ARRANGEMENT_ALIGNMENT_PADDING = 16
 }
 

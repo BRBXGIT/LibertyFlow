@@ -82,6 +82,7 @@ class FavoritesVM @Inject constructor(
     fun sendIntent(intent: FavoritesIntent) {
         when(intent) {
             is FavoritesIntent.UpdateIsLoading -> _favoritesState.update { copy(isLoading = intent.isLoading) }
+            is FavoritesIntent.UpdateIsError -> _favoritesState.update { copy(isError = intent.isError) }
 
             is FavoritesIntent.UpdateQuery -> _favoritesState.update { copy(query = intent.query) }
             FavoritesIntent.UpdateIsSearching -> _favoritesState.update { copy(isSearching = !isSearching) }

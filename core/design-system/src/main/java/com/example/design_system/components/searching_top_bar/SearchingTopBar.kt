@@ -33,7 +33,7 @@ import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mTypography
 
-internal object SearchingTopBarUtils {
+private object SearchingTopBarUtils {
     const val HORIZONTAL_PADDING = 16
 }
 
