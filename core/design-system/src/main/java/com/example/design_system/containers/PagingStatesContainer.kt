@@ -14,16 +14,21 @@ inline fun <T : Any> PagingStatesContainer(
 ) {
     val refreshState = items.loadState.refresh
 
+    // Single effect handles loading, error, and retry logic
     LaunchedEffect(refreshState) {
-        val err = (refreshState as? LoadState.Error)?.error ?: return@LaunchedEffect
-        onRetryRequest(err.message!!) { items.retry() }
-    }
 
-    LaunchedEffect(refreshState) {
+        // Report loading state
         onLoadingChange(refreshState is LoadState.Loading)
-    }
 
-    LaunchedEffect(refreshState) {
-        onErrorChange(refreshState is LoadState.Error)
+        // Report error state
+        val isError = refreshState is LoadState.Error
+        onErrorChange(isError)
+
+        // Handle error retry snackbar
+        if (isError) {
+            val error = refreshState.error
+            val message = error.message ?: return@LaunchedEffect
+            onRetryRequest(message) { items.retry() }
+        }
     }
 }

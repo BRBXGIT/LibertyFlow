@@ -24,12 +24,16 @@ private object AnimeLVGContainerUtils {
 fun AnimeItemsLazyVerticalGrid(
     anime: List<UiAnimeItem>
 ) {
+    // Static list grid
     AnimeLazyVerticalGridContainer {
-        items(anime, key = { it.id }) { anime ->
+        items(
+            items = anime,
+            key = { it.id }
+        ) { item ->
             AnimeCard(
-                posterPath = anime.poster.fullPath(PosterType.PREVIEW),
-                genresString = anime.genresAsString(),
-                title = anime.name.russian,
+                posterPath = item.poster.fullPath(PosterType.PREVIEW),
+                genresString = item.genresAsString(),
+                title = item.name.russian,
                 onCardClick = {}
             )
         }
@@ -40,16 +44,21 @@ fun AnimeItemsLazyVerticalGrid(
 fun PagingAnimeItemsLazyVerticalGrid(
     anime: LazyPagingItems<UiAnimeItem>
 ) {
+    // Paging grid — items loaded on-demand
     AnimeLazyVerticalGridContainer {
-        items(anime.itemCount) { index ->
-            val current = anime[index]
+        items(
+            count = anime.itemCount,
+            key = { it }
+        ) { index ->
+            val item = anime[index]
 
-            current?.let {
+            // Show card only if item actually loaded
+            item?.let {
                 AnimeCard(
-                    posterPath = current.poster.fullPath(PosterType.PREVIEW),
-                    genresString = current.genresAsString(),
-                    title = current.name.russian,
-                    onCardClick = {}
+                    posterPath = it.poster.fullPath(PosterType.PREVIEW),
+                    genresString = it.genresAsString(),
+                    title = it.name.russian,
+                    onCardClick = {} // navigation can be added later
                 )
             }
         }
@@ -60,12 +69,13 @@ fun PagingAnimeItemsLazyVerticalGrid(
 private fun AnimeLazyVerticalGridContainer(
     content: LazyGridScope.() -> Unit
 ) {
+    // Shared grid container for both static and paging content
     LazyVerticalGrid(
+        modifier = Modifier.fillMaxSize(),
+        columns = GridCells.Adaptive(AnimeCardUtils.CARD_WIDTH.dp),
         verticalArrangement = Arrangement.spacedBy(AnimeLVGContainerUtils.ARRANGEMENT_ALIGNMENT_PADDING.dp),
         horizontalArrangement = Arrangement.spacedBy(AnimeLVGContainerUtils.ARRANGEMENT_ALIGNMENT_PADDING.dp),
-        columns = GridCells.Adaptive(AnimeCardUtils.CARD_WIDTH.dp),
         contentPadding = PaddingValues(AnimeLVGContainerUtils.ARRANGEMENT_ALIGNMENT_PADDING.dp),
-        content = content,
-        modifier = Modifier.fillMaxSize()
+        content = content
     )
 }

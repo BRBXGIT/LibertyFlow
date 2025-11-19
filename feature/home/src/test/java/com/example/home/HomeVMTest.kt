@@ -36,9 +36,10 @@ class HomeVMTest {
     private val dispatcher = StandardTestDispatcher()
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         Dispatchers.setMain(dispatcher)
         vm = HomeVM(releasesRepo, catalogRepo, dispatcher)
+        advanceUntilIdle()
     }
 
     @After
@@ -87,8 +88,6 @@ class HomeVMTest {
         coEvery { releasesRepo.getLatestAnimeReleases() } returns result
 
         vm = HomeVM(releasesRepo, catalogRepo, dispatcher)
-        advanceUntilIdle()
-
         SnackbarController.events.test {
             skipItems(1)
 
@@ -99,17 +98,13 @@ class HomeVMTest {
         }
     }
 
+    // TODO FIX TESTS
     @Test
     fun `getRandomAnime updates state on success`() = runTest {
         val result = NetworkResult.Success(UiAnimeId(id = 1))
         coEvery { releasesRepo.getRandomAnime() } returns result
 
-        vm = HomeVM(releasesRepo, catalogRepo, dispatcher)
-        advanceUntilIdle()
-
         vm.homeState.test {
-            skipItems(1)
-
             vm.sendIntent(HomeIntent.GetRandomAnime)
             advanceUntilIdle()
 
@@ -129,13 +124,15 @@ class HomeVMTest {
         advanceUntilIdle()
 
         SnackbarController.events.test {
-            skipItems(1)
+            cancelAndIgnoreRemainingEvents()
+        }
 
+        SnackbarController.events.test {
             vm.sendIntent(HomeIntent.GetRandomAnime)
             advanceUntilIdle()
 
-            val after = awaitItem()
-            assertEquals("INTERNET", after.message)
+            val event = awaitItem()
+            assertEquals("INTERNET", event.message)
 
             cancelAndIgnoreRemainingEvents()
         }

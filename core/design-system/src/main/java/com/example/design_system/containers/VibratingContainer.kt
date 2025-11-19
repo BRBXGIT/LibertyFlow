@@ -39,13 +39,14 @@ fun VibratingContainer(
     topPadding: Dp,
     content: @Composable () -> Unit
 ) {
+    // Pull-to-refresh internal state
     val state = rememberPullToRefreshState()
 
     PullToRefreshBox(
         state = state,
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
-        indicator = {},
+        indicator = {}, // Indicator is fully custom (Spacer + vibration)
         modifier = Modifier
             .fillMaxSize()
             .background(mColors.background)
@@ -54,18 +55,24 @@ fun VibratingContainer(
                 bottom = calculateNavBarSize()
             )
     ) {
+        // Current pull distance (0f..2f)
         val distance = state.distanceFraction
 
         Column {
+            // Animated top padding that increases as user pulls down
             val animatedPullToRefresh by animateDpAsState(
                 targetValue = (distance * 8).dp,
-                animationSpec = mMotionScheme.fastSpatialSpec()
+                animationSpec = mMotionScheme.fastSpatialSpec(),
+                label = "pullToRefreshOffset"
             )
 
+            // Spacer visually pushes content down (the "stretching" effect)
             Spacer(Modifier.height(animatedPullToRefresh))
 
+            // Trigger haptic feedback when user pulls far enough
             CreateVibration(distance)
 
+            // Actual screen content
             content()
         }
     }
@@ -73,14 +80,22 @@ fun VibratingContainer(
 
 @Composable
 private fun CreateVibration(distance: Float) {
+    // Access to system vibrator
     val context = LocalContext.current
     val vibrator = remember(context) { context.getVibrator() }
 
+    // Tracks whether vibration already happened for this pull
     var didVibrate by rememberSaveable { mutableStateOf(false) }
 
+    // Trigger vibration only once when distance exceeds threshold
     LaunchedEffect(distance) {
         when {
-            distance < 1f && didVibrate -> didVibrate = false
+            // Reset vibration if user moved back down
+            distance < 1f && didVibrate -> {
+                didVibrate = false
+            }
+
+            // Trigger once when passing vibration threshold
             distance >= 1.5f && !didVibrate -> {
                 didVibrate = true
                 vibrator?.vibrateOnce()
@@ -101,6 +116,9 @@ private fun Context.getVibrator(): Vibrator? {
 
 @Suppress("DEPRECATION")
 private fun Vibrator.vibrateOnce(duration: Long = 50L) {
-    val effect = VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE)
+    val effect = VibrationEffect.createOneShot(
+        duration,
+        VibrationEffect.DEFAULT_AMPLITUDE
+    )
     vibrate(effect)
 }

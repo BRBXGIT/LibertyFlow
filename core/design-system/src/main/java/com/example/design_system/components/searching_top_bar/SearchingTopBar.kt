@@ -33,8 +33,9 @@ import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mTypography
 
-private object SearchingTopBarUtils {
+private object SearchingTopBarConstants {
     const val HORIZONTAL_PADDING = 16
+    val PlaceholderText = R.string.placeholder_label
 }
 
 @Composable
@@ -51,10 +52,11 @@ fun SearchingTopBar(
         TopAppBar(
             scrollBehavior = scrollBehavior,
             title = {
+                // Switch between title text and search text field
                 if (isSearching) {
                     SearchingTextField(
                         value = query,
-                        onValueChange = onQueryChange,
+                        onValueChange = onQueryChange
                     )
                 } else {
                     Text(
@@ -63,14 +65,26 @@ fun SearchingTopBar(
                     )
                 }
             },
+            navigationIcon = {
+                // Show back arrow only in search mode
+                if (isSearching) {
+                    TopBarIconButton(
+                        onClick = onSearchChange,
+                        icon = LibertyFlowIcons.ArrowLeftFilled
+                    )
+                }
+            },
             actions = {
+                // Right side icons depending on search state
                 when {
+                    // When searching & query has text → show clear button
                     isSearching && query.isNotBlank() -> {
                         TopBarIconButton(
                             onClick = { onQueryChange("") },
                             icon = LibertyFlowIcons.CrossCircle
                         )
                     }
+                    // When NOT searching → show search button
                     !isSearching -> {
                         TopBarIconButton(
                             onClick = onSearchChange,
@@ -78,17 +92,10 @@ fun SearchingTopBar(
                         )
                     }
                 }
-            },
-            navigationIcon = {
-                if (isSearching) {
-                    TopBarIconButton(
-                        onClick = onSearchChange,
-                        icon = LibertyFlowIcons.ArrowLeftFilled
-                    )
-                }
             }
         )
 
+        // Loading indicator appears/disappears with animation
         AnimatedVisibility(
             visible = isLoading,
             enter = fadeIn(tween(300)) + slideInVertically(tween(300)),
@@ -97,7 +104,7 @@ fun SearchingTopBar(
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = SearchingTopBarUtils.HORIZONTAL_PADDING.dp)
+                    .padding(horizontal = SearchingTopBarConstants.HORIZONTAL_PADDING.dp)
             )
         }
     }
@@ -107,7 +114,7 @@ fun SearchingTopBar(
 private fun SearchingTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String = stringResource(R.string.placeholder_label)
+    placeholder: String = stringResource(SearchingTopBarConstants.PlaceholderText)
 ) {
     TextField(
         value = value,
@@ -128,9 +135,8 @@ private fun TopBarIconButton(
     onClick: () -> Unit,
     icon: Int
 ) {
-    IconButton(
-        onClick = onClick
-    ) {
+    // Reusable toolbar icon button
+    IconButton(onClick = onClick) {
         Icon(
             painter = painterResource(icon),
             contentDescription = null

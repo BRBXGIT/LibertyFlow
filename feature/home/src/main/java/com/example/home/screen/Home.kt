@@ -32,42 +32,52 @@ fun Home(
     animeByQuery: LazyPagingItems<UiAnimeItem>,
     onIntent: (HomeIntent) -> Unit
 ) {
+    // Snackbar controller
     val snackbars = getSnackbarState()
 
+    // Handle paging loading/error states
     PagingStatesContainer(
         items = animeByQuery,
         onLoadingChange = { onIntent(HomeIntent.UpdateIsLoading(it)) },
         onErrorChange = { onIntent(HomeIntent.UpdateIsError(it)) },
         onRetryRequest = { message, retry ->
+            // Show retry snackbar only if user actually entered a query
             if (homeState.query.isNotBlank()) {
-                snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
+                snackbars.snackbarScope.launch {
+                    sendRetrySnackbar(message, retry)
+                }
             }
         }
     )
 
     val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
+        snackbarHost = { SnackbarHost(snackbars.snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
-        snackbarHost = { SnackbarHost(hostState = snackbars.snackbarHostState) },
-        modifier = Modifier.fillMaxSize().nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
         topBar = {
+            // Top search bar with query input & actions
             SearchingTopBar(
                 query = homeState.query,
-                scrollBehavior = topBarScrollBehaviour,
                 label = stringResource(HomeUtils.topBarLabel),
                 isSearching = homeState.isSearching,
+                isLoading = homeState.isLoading,
+                scrollBehavior = topBarScrollBehaviour,
                 onSearchChange = { onIntent(HomeIntent.UpdateIsSearching) },
-                onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
-                isLoading = homeState.isLoading
+                onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) }
             )
         }
     ) { innerPadding ->
+        // Pull-to-refresh container with vibration feedback
         VibratingContainer(
             topPadding = innerPadding.calculateTopPadding(),
             isRefreshing = homeState.isLoading,
             onRefresh = { animeByQuery.refresh() }
         ) {
-            when(homeState.isSearching) {
+            // Main content logic depending on search mode + error state
+            when (homeState.isSearching) {
                 false -> {
                     if (homeState.isError) {
                         ErrorSection()
@@ -75,15 +85,12 @@ fun Home(
                         AnimeItemsLazyVerticalGrid(homeState.latestReleases)
                     }
                 }
+
                 true -> {
-                    if (homeState.query.isBlank()) {
-                        EmptyQuerySection()
-                    } else {
-                        if (homeState.isError) {
-                            ErrorSection()
-                        } else {
-                            PagingAnimeItemsLazyVerticalGrid(animeByQuery)
-                        }
+                    when {
+                        homeState.query.isBlank() -> EmptyQuerySection()
+                        homeState.isError -> ErrorSection()
+                        else -> PagingAnimeItemsLazyVerticalGrid(animeByQuery)
                     }
                 }
             }

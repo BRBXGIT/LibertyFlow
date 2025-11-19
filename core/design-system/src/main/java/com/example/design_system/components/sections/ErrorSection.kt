@@ -28,7 +28,11 @@ private object ErrorSectionConstants {
 
 @Composable
 fun ErrorSection() {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.error_animation))
+    // Load Lottie composition once and remember it across recompositions
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.error_animation)
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -39,18 +43,18 @@ fun ErrorSection() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Error animation (infinite loop)
             LottieAnimation(
                 composition = composition,
                 modifier = Modifier.size(170.dp),
                 iterations = LottieConstants.IterateForever
             )
 
+            // Error label text
             Text(
                 text = stringResource(ErrorSectionConstants.ErrorLabel),
-                style = mTypography.bodyLarge.copy(
-                    lineBreak = LineBreak.Paragraph
-                ),
-                textAlign = TextAlign.Center,
+                style = mTypography.bodyLarge.copy(lineBreak = LineBreak.Paragraph),
+                textAlign = TextAlign.Center
             )
         }
     }
