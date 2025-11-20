@@ -16,7 +16,7 @@ import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.data.utils.remote.paging.CommonPagingSource
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.collections.api.CollectionsApi
-import com.example.network.common.common_utils.CommonNetworkUtils
+import com.example.network.common.common_utils.CommonNetworkConstants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -32,7 +32,7 @@ internal class CollectionsRepoImpl @Inject constructor(
         val token = authPrefsManager.token.firstOrNull()!!
 
         return Pager(
-            config = PagingConfig(pageSize = CommonNetworkUtils.COMMON_LIMIT, enablePlaceholders = false),
+            config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
             pagingSourceFactory = {
                 CommonPagingSource(
                     apiCall = {

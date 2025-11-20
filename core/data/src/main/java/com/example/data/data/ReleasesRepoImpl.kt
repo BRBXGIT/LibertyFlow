@@ -33,7 +33,7 @@ internal class ReleasesRepoImpl @Inject constructor(
     override suspend fun getRandomAnime(): NetworkResult<UiAnimeId> {
         return NetworkRequest.safeApiCall(
             call = { releasesApi.getRandomAnime() },
-            map = { it.toUiAnimeId() }
+            map = { it[0].toUiAnimeId() } // First and the only item
         )
     }
 }
