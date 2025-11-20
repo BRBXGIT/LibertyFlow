@@ -74,7 +74,9 @@ fun Home(
                 isLoading = homeState.isLoading,
                 scrollBehavior = topBarScrollBehaviour,
                 onSearchChange = { onIntent(HomeIntent.UpdateIsSearching) },
-                onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) }
+                onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
+                withFilters = true,
+                onFiltersClick = {}
             )
         }
     ) { innerPadding ->
