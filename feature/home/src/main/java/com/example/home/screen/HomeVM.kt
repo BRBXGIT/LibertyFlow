@@ -12,7 +12,6 @@ import com.example.common.vm_helpers.update
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.models.common.request.common_request.UiCommonRequest
-import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import com.example.design_system.components.snackbars.sendRetrySnackbar
@@ -39,7 +38,7 @@ class HomeVM @Inject constructor(
 
     // Extract search query and create request parameters whenever query changes
     private val requestParameters = _homeState
-        .map { UiFullRequestParameters(search = it.query) }
+        .map { it.request }
         .distinctUntilChanged()
 
     // Paging flow: fired whenever requestParameters changes
@@ -96,14 +95,14 @@ class HomeVM @Inject constructor(
             HomeIntent.UpdateIsSearching ->
                 _homeState.update { copy(isSearching = !isSearching) }
 
-            is HomeIntent.UpdateQuery ->
-                _homeState.update { copy(query = intent.query) }
-
             is HomeIntent.UpdateIsLoading ->
                 _homeState.update { copy(isLoading = intent.isLoading) }
 
             is HomeIntent.UpdateIsError ->
                 _homeState.update { copy(isError = intent.isError) }
+
+            is HomeIntent.UpdateQuery ->
+                _homeState.update { copy(request = request.copy(search = intent.query)) }
 
             // Data
             HomeIntent.GetRandomAnime -> getRandomAnime()

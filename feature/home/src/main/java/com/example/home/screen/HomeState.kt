@@ -1,6 +1,7 @@
 package com.example.home.screen
 
 import androidx.compose.runtime.Immutable
+import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 
 @Immutable
@@ -20,6 +21,6 @@ data class HomeState(
     // when true — search UI is visible / active
     val isSearching: Boolean = false,
 
-    // current query text
-    val query: String = ""
+    // Current request parameters
+    val request: UiFullRequestParameters = UiFullRequestParameters()
 )

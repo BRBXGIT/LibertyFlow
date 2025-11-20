@@ -47,8 +47,6 @@ fun SearchingTopBar(
     onQueryChange: (String) -> Unit,
     isSearching: Boolean,
     onSearchChange: () -> Unit,
-    withFilters: Boolean = false,
-    onFiltersClick: () -> Unit = {}
 ) {
     Column {
         TopAppBar(
@@ -93,13 +91,6 @@ fun SearchingTopBar(
                             icon = LibertyFlowIcons.Magnifier
                         )
                     }
-                }
-
-                if (!isSearching && withFilters) {
-                    TopBarIconButton(
-                        onClick = onFiltersClick,
-                        icon = LibertyFlowIcons.Filters
-                    )
                 }
             }
         )

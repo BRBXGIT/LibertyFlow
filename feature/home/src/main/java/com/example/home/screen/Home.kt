@@ -50,7 +50,7 @@ fun Home(
         onErrorChange = { onIntent(HomeIntent.UpdateIsError(it)) },
         onRetryRequest = { message, retry ->
             // Show retry snackbar only if user actually entered a query
-            if (homeState.query.isNotBlank()) {
+            if (homeState.request.search.isNotBlank()) {
                 snackbars.snackbarScope.launch {
                     sendRetrySnackbar(message, retry)
                 }
@@ -68,15 +68,13 @@ fun Home(
         topBar = {
             // Top search bar with query input & actions
             SearchingTopBar(
-                query = homeState.query,
+                query = homeState.request.search,
                 label = stringResource(HomeConstants.topBarLabel),
                 isSearching = homeState.isSearching,
                 isLoading = homeState.isLoading,
                 scrollBehavior = topBarScrollBehaviour,
                 onSearchChange = { onIntent(HomeIntent.UpdateIsSearching) },
                 onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
-                withFilters = true,
-                onFiltersClick = {}
             )
         }
     ) { innerPadding ->
@@ -105,7 +103,7 @@ fun Home(
 
                 true -> {
                     when {
-                        homeState.query.isBlank() -> EmptyQuerySection()
+                        homeState.request.search.isBlank() -> EmptyQuerySection()
                         homeState.isError -> ErrorSection()
                         else -> PagingAnimeItemsLazyVerticalGrid(animeByQuery)
                     }
