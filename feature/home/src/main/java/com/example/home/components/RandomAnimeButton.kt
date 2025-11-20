@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.design_system.components.buttons.ShimmerColorButton
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mTypography
 import com.example.home.R
@@ -29,7 +29,7 @@ internal object RandomAnimeButtonConstants {
 fun LazyGridItemScope.RandomAnimeButton(
     onClick: () -> Unit
 ) {
-    ShimmerColorButton(
+    Button(
         onClick = onClick,
         modifier = Modifier
             .animateItem()

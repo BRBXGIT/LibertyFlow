@@ -43,7 +43,7 @@ fun LibertyFlowAsyncImage(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(animatedShimmerBrush(shimmerColors))
+                    .background(animatedBrush(shimmerColors))
             )
         }
     )

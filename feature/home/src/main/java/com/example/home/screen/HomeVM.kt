@@ -56,14 +56,14 @@ class HomeVM @Inject constructor(
     private fun fetchLatestReleases() {
         viewModelScope.launch(dispatcherIo) {
             // Reset error state before sending request
-            _homeState.update { copy(isError = false) }
+            _homeState.update { copy(isError = false, isLoading = true) }
 
             releasesRepo.getLatestAnimeReleases()
                 .onSuccess { uiAnimeItems ->
-                    _homeState.update { copy(latestReleases = uiAnimeItems) }
+                    _homeState.update { copy(latestReleases = uiAnimeItems, isLoading = false) }
                 }
                 .onError { _, message ->
-                    _homeState.update { copy(isError = true) }
+                    _homeState.update { copy(isError = true, isLoading = false) }
                     sendRetrySnackbar(message) { fetchLatestReleases() }
                 }
         }
@@ -76,14 +76,14 @@ class HomeVM @Inject constructor(
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {
             // Reset error state before sending request
-            _homeState.update { copy(isError = false) }
+            _homeState.update { copy(isLoading = true) }
 
             releasesRepo.getRandomAnime()
                 .onSuccess { randomAnime ->
-                    _homeState.update { copy(randomAnimeId = randomAnime.id) }
+                    _homeState.update { copy(randomAnimeId = randomAnime.id, isLoading = false) }
                 }
                 .onError { _, message ->
-                    _homeState.update { copy(isError = true) }
+                    _homeState.update { copy(isLoading = false) }
                     sendRetrySnackbar(message) { getRandomAnime() }
                 }
         }
@@ -93,8 +93,6 @@ class HomeVM @Inject constructor(
         when (intent) {
 
             // UI simple state updates
-            HomeIntent.GetRandomAnime -> getRandomAnime()
-
             HomeIntent.UpdateIsSearching ->
                 _homeState.update { copy(isSearching = !isSearching) }
 
@@ -106,6 +104,9 @@ class HomeVM @Inject constructor(
 
             is HomeIntent.UpdateIsError ->
                 _homeState.update { copy(isError = intent.isError) }
+
+            // Data
+            HomeIntent.GetRandomAnime -> getRandomAnime()
         }
     }
 

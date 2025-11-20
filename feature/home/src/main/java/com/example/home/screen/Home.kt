@@ -95,7 +95,7 @@ fun Home(
                                 key = RandomAnimeButtonConstants.RANDOM_BUTTON_KEY,
                                 span = { GridItemSpan(maxLineSpan) }
                             ) {
-                                RandomAnimeButton(onClick = {})
+                                RandomAnimeButton(onClick = { onIntent(HomeIntent.GetRandomAnime) })
                             }
                         }
                     }
