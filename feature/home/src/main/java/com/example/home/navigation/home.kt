@@ -13,11 +13,11 @@ fun NavGraphBuilder.home(
     homeVM: HomeVM
 ) = composable<HomeRoute> {
     val homeState by homeVM.homeState.collectAsStateWithLifecycle()
-    val animeByQuery = homeVM.animeByQuery.collectAsLazyPagingItems()
+    val anime = homeVM.anime.collectAsLazyPagingItems()
 
     Home(
         onIntent = homeVM::sendIntent,
-        animeByQuery = animeByQuery,
+        anime = anime,
         homeState = homeState,
     )
 }

@@ -7,8 +7,6 @@ import com.example.data.utils.remote.network_request.NetworkResult
 
 interface ReleasesRepo {
 
-    suspend fun getLatestAnimeReleases(): NetworkResult<ArrayList<UiAnimeItem>>
-
     suspend fun getRandomAnime(): NetworkResult<UiAnimeId>
 
     suspend fun getAnime(id: Int): NetworkResult<UiAnimeDetails>

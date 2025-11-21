@@ -4,7 +4,7 @@ import com.example.data.models.common.common.UiGenre
 
 data class UiFullRequestParameters(
     override val ageRatings: List<AgeRating> = emptyList(),
-    override val sorting: Sorting = Sorting.RATING_DESC,
+    override val sorting: Sorting = Sorting.FRESH_AT_DESC,
     override val search: String = "",
     override val types: List<Type> = emptyList(),
 

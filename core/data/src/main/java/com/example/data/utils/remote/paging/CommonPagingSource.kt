@@ -16,7 +16,8 @@ internal class CommonPagingSource(
 ): PagingSource<Int, AnimeResponseItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, AnimeResponseItem> {
-        val currentRequest = baseRequest.withPageAndLimit()
+        val key = params.key ?: 1
+        val currentRequest = baseRequest.withPageAndLimit(key)
 
         var loadResult: LoadResult<Int, AnimeResponseItem>? = null
 

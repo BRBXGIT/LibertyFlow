@@ -16,13 +16,6 @@ internal class ReleasesRepoImpl @Inject constructor(
     private val releasesApi: ReleasesApi
 ): ReleasesRepo {
 
-    override suspend fun getLatestAnimeReleases(): NetworkResult<ArrayList<UiAnimeItem>> {
-        return NetworkRequest.safeApiCall(
-            call = { releasesApi.getLatestAnimeReleases() },
-            map = { list -> ArrayList(list.map { it.toUiAnimeItem() }) }
-        )
-    }
-
     override suspend fun getAnime(id: Int): NetworkResult<UiAnimeDetails> {
         return NetworkRequest.safeApiCall(
             call = { releasesApi.getAnime(id) },

@@ -12,9 +12,6 @@ data class HomeState(
     // whether refresh / paging is currently loading
     val isLoading: Boolean = false,
 
-    // list of latest releases (non-paged)
-    val latestReleases: List<UiAnimeItem> = emptyList(),
-
     // optional id from "get random anime"
     val randomAnimeId: Int? = null,
 

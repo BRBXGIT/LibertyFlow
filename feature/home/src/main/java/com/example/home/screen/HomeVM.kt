@@ -42,31 +42,11 @@ class HomeVM @Inject constructor(
         .distinctUntilChanged()
 
     // Paging flow: fired whenever requestParameters changes
-    val animeByQuery = requestParameters
+    val anime = requestParameters
         .flatMapLatest { request ->
             catalogRepo.getAnimeByQuery(UiCommonRequest(request))
         }
         .cachedIn(viewModelScope)
-
-    /**
-     * Fetches latest anime releases from repository.
-     * If error happens, viewModel displays retry snackbar.
-     */
-    private fun fetchLatestReleases() {
-        viewModelScope.launch(dispatcherIo) {
-            // Reset error state before sending request
-            _homeState.update { copy(isError = false, isLoading = true) }
-
-            releasesRepo.getLatestAnimeReleases()
-                .onSuccess { uiAnimeItems ->
-                    _homeState.update { copy(latestReleases = uiAnimeItems, isLoading = false) }
-                }
-                .onError { _, message ->
-                    _homeState.update { copy(isError = true, isLoading = false) }
-                    sendRetrySnackbar(message) { fetchLatestReleases() }
-                }
-        }
-    }
 
     /**
      * Loads random anime ID.
@@ -107,10 +87,5 @@ class HomeVM @Inject constructor(
             // Data
             HomeIntent.GetRandomAnime -> getRandomAnime()
         }
-    }
-
-    init {
-        // Load latest releases immediately when VM is created
-        fetchLatestReleases()
     }
 }

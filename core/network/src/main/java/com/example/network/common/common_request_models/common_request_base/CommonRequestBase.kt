@@ -9,5 +9,5 @@ interface CommonRequestBase {
     val limit: Int
     val page: Int
 
-    fun withPageAndLimit(): CommonRequestBase
+    fun withPageAndLimit(currentPage: Int): CommonRequestBase
 }

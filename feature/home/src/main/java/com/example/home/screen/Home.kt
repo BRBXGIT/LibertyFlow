@@ -17,11 +17,9 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
-import com.example.design_system.components.sections.EmptyQuerySection
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.snackbars.getSnackbarState
 import com.example.design_system.components.snackbars.sendRetrySnackbar
-import com.example.design_system.containers.AnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
@@ -37,7 +35,7 @@ private object HomeConstants {
 @Composable
 fun Home(
     homeState: HomeState,
-    animeByQuery: LazyPagingItems<UiAnimeItem>,
+    anime: LazyPagingItems<UiAnimeItem>,
     onIntent: (HomeIntent) -> Unit
 ) {
     // Snackbar controller
@@ -45,24 +43,19 @@ fun Home(
 
     // Handle paging loading/error states
     PagingStatesContainer(
-        items = animeByQuery,
+        items = anime,
         onLoadingChange = { onIntent(HomeIntent.UpdateIsLoading(it)) },
         onErrorChange = { onIntent(HomeIntent.UpdateIsError(it)) },
         onRetryRequest = { message, retry ->
-            // Show retry snackbar only if user actually entered a query
-            if (homeState.request.search.isNotBlank()) {
-                snackbars.snackbarScope.launch {
-                    sendRetrySnackbar(message, retry)
-                }
+            snackbars.snackbarScope.launch {
+                sendRetrySnackbar(message, retry)
             }
         }
     )
 
     val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
+        modifier = Modifier.fillMaxSize().nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
         snackbarHost = { SnackbarHost(snackbars.snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
@@ -82,30 +75,17 @@ fun Home(
         VibratingContainer(
             topPadding = innerPadding.calculateTopPadding(),
             isRefreshing = homeState.isLoading,
-            onRefresh = { animeByQuery.refresh() }
+            onRefresh = { anime.refresh() }
         ) {
             // Main content logic depending on search mode + error state
-            when (homeState.isSearching) {
-                false -> {
-                    if (homeState.isError) {
-                        ErrorSection()
-                    } else {
-                        AnimeItemsLazyVerticalGrid(homeState.latestReleases) {
-                            item(
-                                key = RandomAnimeButtonConstants.RANDOM_BUTTON_KEY,
-                                span = { GridItemSpan(maxLineSpan) }
-                            ) {
-                                RandomAnimeButton(onClick = { onIntent(HomeIntent.GetRandomAnime) })
-                            }
-                        }
-                    }
-                }
-
-                true -> {
-                    when {
-                        homeState.request.search.isBlank() -> EmptyQuerySection()
-                        homeState.isError -> ErrorSection()
-                        else -> PagingAnimeItemsLazyVerticalGrid(animeByQuery)
+            when(homeState.isError) {
+                true -> ErrorSection()
+                false -> PagingAnimeItemsLazyVerticalGrid(anime) {
+                    item(
+                        key = RandomAnimeButtonConstants.RANDOM_BUTTON_KEY,
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        RandomAnimeButton(onClick = { onIntent(HomeIntent.GetRandomAnime) })
                     }
                 }
             }
