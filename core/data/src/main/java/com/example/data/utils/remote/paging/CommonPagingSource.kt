@@ -25,10 +25,11 @@ internal class CommonPagingSource(
             call = { apiCall(currentRequest) },
             map = { it }
         ).onSuccess {
+            val pagination = it.meta.pagination
             loadResult = LoadResult.Page(
                 data = it.data,
-                prevKey = it.meta.pagination.previousPage(),
-                nextKey = it.meta.pagination.nextPage()
+                prevKey = if (key > 1) key - 1 else null,
+                nextKey = if (key < pagination.totalPages) key + 1 else null
             )
         }.onError { _, message ->
             loadResult = LoadResult.Error(Exception(message))

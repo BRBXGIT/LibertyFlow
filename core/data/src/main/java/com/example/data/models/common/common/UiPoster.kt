@@ -2,7 +2,7 @@ package com.example.data.models.common.common
 
 import androidx.compose.runtime.Immutable
 
-private object Utils {
+private object Constants {
     const val BASE_POSTER_URL = "https://anilibria.top/"
 }
 
@@ -16,9 +16,9 @@ data class UiPoster(
 ) {
     fun fullPath(posterType: PosterType): String {
         return when(posterType) {
-            PosterType.THUMBNAIL -> Utils.BASE_POSTER_URL + thumbnail
-            PosterType.PREVIEW -> Utils.BASE_POSTER_URL + preview
-            PosterType.SRC -> Utils.BASE_POSTER_URL + src
+            PosterType.THUMBNAIL -> Constants.BASE_POSTER_URL + thumbnail
+            PosterType.PREVIEW -> Constants.BASE_POSTER_URL + preview
+            PosterType.SRC -> Constants.BASE_POSTER_URL + src
         }
     }
 }

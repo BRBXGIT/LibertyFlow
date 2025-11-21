@@ -9,8 +9,4 @@ data class Pagination(
     @SerializedName("per_page") val perPage: Int,
     @SerializedName("total") val total: Int,
     @SerializedName("total_pages") val totalPages: Int
-) {
-    fun nextPage() = if (currentPage < totalPages) currentPage + 1 else null
-
-    fun previousPage() = if (currentPage > 1) currentPage - 1 else null
-}
+)

@@ -14,5 +14,5 @@ data class CommonRequestWithCollectionType(
 
     @SerializedName("type_of_collection") val collectionType: String
 ): CommonRequestBase {
-    override fun withPageAndLimit(currentPage: Int) = copy(page = currentPage + 1, limit = limit)
+    override fun withPageAndLimit(page: Int) = copy(page = page, limit = limit)
 }

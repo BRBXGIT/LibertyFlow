@@ -5,7 +5,7 @@ import com.example.network.collections.models.CollectionRequest
 
 internal fun UiCollectionItem.toCollectionItem(): CollectionItem {
     return CollectionItem(
-        id = id,
+        releaseId = id,
         collectionType = collectionType.name
     )
 }
