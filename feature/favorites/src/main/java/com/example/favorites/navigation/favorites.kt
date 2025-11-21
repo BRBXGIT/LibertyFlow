@@ -14,12 +14,10 @@ fun NavGraphBuilder.favorites(
 ) = composable<FavoritesRoute> {
     val favoritesState by favoritesVM.favoritesState.collectAsStateWithLifecycle()
     val favorites = favoritesVM.favorites.collectAsLazyPagingItems()
-    val favoritesByQuery = favoritesVM.favoritesByQuery.collectAsLazyPagingItems()
 
     Favorites(
         favoritesState = favoritesState,
         onIntent = favoritesVM::sendIntent,
         favorites = favorites,
-        favoritesByQuery = favoritesByQuery,
     )
 }

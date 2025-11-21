@@ -2,7 +2,6 @@
 
 package com.example.favorites.screen
 
-import com.example.favorites.R
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,7 +18,6 @@ import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.auth_bottom_sheet.AuthBS
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
-import com.example.design_system.components.sections.EmptyQuerySection
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.sections.LoggedOutSection
 import com.example.design_system.components.snackbars.SnackbarState
@@ -28,6 +26,7 @@ import com.example.design_system.components.snackbars.sendRetrySnackbar
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
+import com.example.favorites.R
 import kotlinx.coroutines.launch
 
 private object FavoritesConstants {
@@ -38,7 +37,6 @@ private object FavoritesConstants {
 fun Favorites(
     favoritesState: FavoritesState,
     favorites: LazyPagingItems<UiAnimeItem>,
-    favoritesByQuery: LazyPagingItems<UiAnimeItem>,
     onIntent: (FavoritesIntent) -> Unit
 ) {
     val snackbars = getSnackbarState()
@@ -78,7 +76,7 @@ fun Favorites(
             onRefresh = { favorites.refresh() }
         ) {
             when(favoritesState.isLoggedIn) {
-                AuthState.LoggedIn -> LoggedInContent(favoritesState, favorites, favoritesByQuery, snackbars, onIntent)
+                AuthState.LoggedIn -> LoggedInContent(favoritesState, favorites, snackbars, onIntent)
                 AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(FavoritesIntent.UpdateIsAuthBSVisible) })
             }
         }
@@ -90,7 +88,6 @@ fun Favorites(
 private fun LoggedInContent(
     favoritesState: FavoritesState,
     favorites: LazyPagingItems<UiAnimeItem>,
-    favoritesByQuery: LazyPagingItems<UiAnimeItem>,
     snackbars: SnackbarState,
     onIntent: (FavoritesIntent) -> Unit
 ) {
@@ -103,35 +100,8 @@ private fun LoggedInContent(
         }
     )
 
-    PagingStatesContainer(
-        items = favoritesByQuery,
-        onLoadingChange = { onIntent(FavoritesIntent.UpdateIsLoading(it)) },
-        onErrorChange = { onIntent(FavoritesIntent.UpdateIsError(it)) },
-        onRetryRequest = { message, retry ->
-            if (favoritesState.query.isNotBlank()) {
-                snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
-            }
-        }
-    )
-
-    when(favoritesState.isSearching) {
-        false -> {
-            if (favoritesState.isError) {
-                ErrorSection()
-            } else {
-                PagingAnimeItemsLazyVerticalGrid(favorites)
-            }
-        }
-        true -> {
-            if (favoritesState.query.isBlank()) {
-                EmptyQuerySection()
-            } else {
-                if (favoritesState.isError) {
-                    ErrorSection()
-                } else {
-                    PagingAnimeItemsLazyVerticalGrid(favoritesByQuery)
-                }
-            }
-        }
+    when(favoritesState.isError) {
+        true -> ErrorSection()
+        false -> PagingAnimeItemsLazyVerticalGrid(favorites)
     }
 }

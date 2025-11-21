@@ -2,7 +2,6 @@
 
 package com.example.favorites.screen
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -40,17 +39,12 @@ class FavoritesVM @Inject constructor(
     private val _favoritesState = MutableStateFlow(FavoritesState())
     val favoritesState = _favoritesState.toLazily(FavoritesState())
 
-    // Paging: Favorites without search
-    val favorites = favoritesRepo
-        .getFavorites(UiCommonRequest(UiShortRequestParameters()))
-        .cachedIn(viewModelScope)
-
-    // Paging: Favorites with search
+    // Paging: Favorites
     private val requestParameters = _favoritesState
         .map { UiShortRequestParameters(search = it.query) }
         .distinctUntilChanged()
 
-    val favoritesByQuery = requestParameters
+    val favorites = requestParameters
         .flatMapLatest { request ->
             favoritesRepo.getFavorites(UiCommonRequest(request))
         }
