@@ -13,4 +13,14 @@ data class UiFullRequestParameters(
     val years: UiYear = UiYear(),
     val publishStatuses: List<PublishStatus> = emptyList(),
     val productionStatuses: List<ProductionsStatus> = emptyList()
-): UiRequestParametersBase
+): UiRequestParametersBase {
+    fun updateYear(
+        from: Int? = null,
+        to: Int? = null
+    ) = copy(
+        years = years.copy(
+            from = from ?: years.from,
+            to = to ?: years.to
+        )
+    )
+}

@@ -13,7 +13,6 @@ import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.models.common.request.common_request.UiCommonRequest
-import com.example.data.models.common.request.request_parameters.UiYear
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import com.example.design_system.components.snackbars.sendRetrySnackbar
@@ -33,36 +32,34 @@ class HomeVM @Inject constructor(
     private val catalogRepo: CatalogRepo,
     private val genresRepo: GenresRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
-): ViewModel() {
+) : ViewModel() {
 
-    // UI state exposed as StateFlow
     private val _homeState = MutableStateFlow(HomeState())
     val homeState = _homeState.toLazily(HomeState())
 
-    // Extract search query and create request parameters whenever query changes
+    /**
+     * Emits request parameters whenever filters/search change.
+     */
     private val requestParameters = _homeState
         .map { it.request }
         .distinctUntilChanged()
 
-    // Paging flow: fired whenever requestParameters changes
+    /**
+     * Paged anime list, updates automatically on request changes.
+     */
     val anime = requestParameters
         .flatMapLatest { request ->
             catalogRepo.getAnimeByQuery(UiCommonRequest(request))
         }
         .cachedIn(viewModelScope)
 
-    /**
-     * Loads random anime ID.
-     * Used for "Show random" button.
-     */
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {
-            // Reset error state before sending request
             _homeState.update { copy(isLoading = true) }
 
             releasesRepo.getRandomAnime()
-                .onSuccess { randomAnime ->
-                    _homeState.update { copy(randomAnimeId = randomAnime.id, isLoading = false) }
+                .onSuccess { anime ->
+                    _homeState.update { copy(randomAnimeId = anime.id, isLoading = false) }
                 }
                 .onError { _, message ->
                     _homeState.update { copy(isLoading = false) }
@@ -71,17 +68,13 @@ class HomeVM @Inject constructor(
         }
     }
 
-    /**
-     * Loads genres.
-     * Used for filters.
-     */
     private fun getGenres() {
         viewModelScope.launch(dispatcherIo) {
             _homeState.update { copy(isGenresLoading = true) }
 
             genresRepo.getGenres()
                 .onSuccess { genres ->
-                    _homeState.update { copy(isGenresLoading = false, genres = genres) }
+                    _homeState.update { copy(genres = genres, isGenresLoading = false) }
                 }
                 .onError { _, message ->
                     _homeState.update { copy(isGenresLoading = false) }
@@ -92,22 +85,29 @@ class HomeVM @Inject constructor(
 
     fun sendIntent(intent: HomeIntent) {
         when (intent) {
-            // UI simple state updates
-            HomeIntent.UpdateIsSearching ->
+
+            /* --- UI toggles --- */
+            HomeIntent.ToggleSearching ->
                 _homeState.update { copy(isSearching = !isSearching) }
 
-            HomeIntent.UpdateIsFiltersBSVisible ->
+            HomeIntent.ToggleFiltersBottomSheet ->
                 _homeState.update { copy(isFiltersBSVisible = !isFiltersBSVisible) }
 
-            is HomeIntent.UpdateIsLoading ->
-                _homeState.update { copy(isLoading = intent.isLoading) }
 
-            is HomeIntent.UpdateIsError ->
-                _homeState.update { copy(isError = intent.isError) }
+            /* --- UI flags --- */
+            is HomeIntent.SetLoading ->
+                _homeState.update { copy(isLoading = intent.value) }
 
+            is HomeIntent.SetError ->
+                _homeState.update { copy(isError = intent.value) }
+
+
+            /* --- Query change --- */
             is HomeIntent.UpdateQuery ->
-                _homeState.update { copy(request = request.copy(search = intent.query)) }
+                _homeState.update { copy(request = request.copy(search = intent.value)) }
 
+
+            /* --- Filters --- */
             is HomeIntent.AddGenre ->
                 _homeState.update { copy(request = request.copy(genres = request.genres + intent.genre)) }
 
@@ -121,12 +121,13 @@ class HomeVM @Inject constructor(
                 _homeState.update { copy(request = request.copy(seasons = request.seasons - intent.season)) }
 
             is HomeIntent.UpdateFromYear ->
-                _homeState.update { copy(request = request.copy(years = request.copy().years.copy(from = intent.year))) }
+                _homeState.update { copy(request = request.updateYear(from = intent.value)) }
 
             is HomeIntent.UpdateToYear ->
-                _homeState.update { copy(request = request.copy(years = request.copy().years.copy(to = intent.year))) }
+                _homeState.update { copy(request = request.updateYear(to = intent.value)) }
 
-            // Data
+
+            /* --- Data operations --- */
             HomeIntent.GetRandomAnime -> getRandomAnime()
             HomeIntent.GetGenres -> getGenres()
         }

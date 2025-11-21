@@ -48,13 +48,13 @@ import com.example.home.R
 import com.example.home.screen.HomeIntent
 import com.example.home.screen.HomeState
 
+// Constants used across the Filters Bottom Sheet
 private object FiltersBSConstants {
     const val GENRES_LOADING_INDICATOR_KEY = "GenresLoadingIndicatorKey"
 
     const val MIN_GRID_CELLS_SIZE = 90
     const val SPACED_BY = 8
     const val CONTENT_PADDING = 16
-
     const val FILTER_DIVIDER_SPACED_BY = 16
 
     const val FROM_YEAR_KEY = "FromYearKey"
@@ -72,6 +72,7 @@ fun FiltersBS(
     homeState: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
+    // Load genres if not loaded
     LaunchedEffect(homeState.genres) {
         if (homeState.genres.isEmpty()) {
             onIntent(HomeIntent.GetGenres)
@@ -80,7 +81,7 @@ fun FiltersBS(
 
     ModalBottomSheet(
         shape = mShapes.small,
-        onDismissRequest = { onIntent(HomeIntent.UpdateIsFiltersBSVisible) }
+        onDismissRequest = { onIntent(HomeIntent.ToggleFiltersBottomSheet) }
     ) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(FiltersBSConstants.MIN_GRID_CELLS_SIZE.dp),
@@ -89,102 +90,98 @@ fun FiltersBS(
             contentPadding = PaddingValues(FiltersBSConstants.CONTENT_PADDING.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
+            // --- YEARS ---
             filterDivider(FiltersBSConstants.YearLabel)
 
-            yearTextField(FiltersBSConstants.FromYearLabel, onIntent, homeState.request.years.from, true)
+            yearField(
+                key = FiltersBSConstants.FROM_YEAR_KEY,
+                labelRes = FiltersBSConstants.FromYearLabel,
+                currentValue = homeState.request.years.from,
+                onValueChanged = { onIntent(HomeIntent.UpdateFromYear(it)) }
+            )
 
-            yearTextField(FiltersBSConstants.ToYearLabel, onIntent, homeState.request.years.to, false)
+            yearField(
+                key = FiltersBSConstants.TO_YEAR_KEY,
+                labelRes = FiltersBSConstants.ToYearLabel,
+                currentValue = homeState.request.years.to,
+                onValueChanged = { onIntent(HomeIntent.UpdateToYear(it)) }
+            )
 
+            // --- SEASONS ---
             filterDivider(FiltersBSConstants.SeasonsLabel)
 
-            seasons(homeState, onIntent)
-
-            filterDivider(FiltersBSConstants.GenresLabel)
-
-            genres(homeState, onIntent)
-        }
-    }
-}
-
-private fun LazyGridScope.genres(
-    homeState: HomeState,
-    onIntent: (HomeIntent) -> Unit
-) {
-    if (homeState.isGenresLoading) {
-        item(
-            key = FiltersBSConstants.GENRES_LOADING_INDICATOR_KEY,
-            span = { GridItemSpan(maxLineSpan) }
-        ) {
-            CenteredCircularIndicator()
-        }
-    } else {
-        items(
-            items = homeState.genres,
-            key = { uiGenre -> uiGenre.id }
-        ) { uiGenre ->
-            val selected = uiGenre in homeState.request.genres
-
-            FilterItem(
-                text = uiGenre.name,
-                selected = selected,
-                onClick = {
-                    if (selected) onIntent(HomeIntent.RemoveGenre(uiGenre)) else onIntent(HomeIntent.AddGenre(uiGenre))
+            selectableFilterItems(
+                items = Season.entries,
+                isSelected = { it in homeState.request.seasons },
+                itemLabel = { stringResource(it.toName()) },
+                onItemClick = { season, selected ->
+                    onIntent(
+                        if (selected) HomeIntent.RemoveSeason(season)
+                        else HomeIntent.AddSeason(season)
+                    )
                 }
             )
+
+            // --- GENRES ---
+            filterDivider(FiltersBSConstants.GenresLabel)
+
+            if (homeState.isGenresLoading) {
+                item(
+                    key = FiltersBSConstants.GENRES_LOADING_INDICATOR_KEY,
+                    span = { GridItemSpan(maxLineSpan) }
+                ) {
+                    CenteredCircularIndicator()
+                }
+            } else {
+                selectableFilterItems(
+                    items = homeState.genres,
+                    isSelected = { it in homeState.request.genres },
+                    itemLabel = { it.name },
+                    onItemClick = { genre, selected ->
+                        onIntent(
+                            if (selected) HomeIntent.RemoveGenre(genre)
+                            else HomeIntent.AddGenre(genre)
+                        )
+                    },
+                    itemKey = { it.id }
+                )
+            }
         }
     }
 }
 
-private fun LazyGridScope.seasons(
-    homeState: HomeState,
-    onIntent: (HomeIntent) -> Unit
+/* -------------------------- UNIVERSAL HELPERS -------------------------- */
+
+/**
+ * Universal grid item for selectable filter lists (Genres, Seasons, etc.)
+ */
+private fun <T> LazyGridScope.selectableFilterItems(
+    items: List<T>,
+    isSelected: (T) -> Boolean,
+    itemLabel: @Composable (T) -> String,
+    onItemClick: (item: T, currentlySelected: Boolean) -> Unit,
+    itemKey: ((T) -> Any)? = null
 ) {
-    items(Season.entries) { season ->
-        val selected = season in homeState.request.seasons
+    items(
+        items = items,
+        key = itemKey
+    ) { item ->
+        val selected = isSelected(item)
 
         FilterItem(
-            text = stringResource(season.toName()),
+            text = itemLabel(item),
             selected = selected,
-            onClick = {
-                if (selected) onIntent(HomeIntent.RemoveSeason(season)) else onIntent(HomeIntent.AddSeason(season))
-            }
+            onClick = { onItemClick(item, selected) }
         )
     }
 }
 
-private fun LazyGridScope.yearTextField(
-    labelText: Int,
-    onIntent: (HomeIntent) -> Unit,
-    currentYear: Int,
-    fromYear: Boolean = true
-) {
+/**
+ * Divider with centered label (e.g. "Genres", "Seasons").
+ */
+private fun LazyGridScope.filterDivider(textRes: Int) {
     item(
-        key = if (fromYear) FiltersBSConstants.FROM_YEAR_KEY else FiltersBSConstants.TO_YEAR_KEY,
-        span = { GridItemSpan(maxLineSpan) }
-    ) {
-        OutlinedTextField(
-            value = currentYear.toString(),
-            onValueChange = {
-                onIntent(
-                    if (fromYear) {
-                        HomeIntent.UpdateFromYear(it.toInt())
-                    } else {
-                        HomeIntent.UpdateToYear(it.toInt())
-                    }
-                )
-            },
-            modifier = Modifier.fillMaxWidth(),
-            maxLines = 1,
-            label = {
-                Text(text = stringResource(labelText))
-            }
-        )
-    }
-}
-
-private fun LazyGridScope.filterDivider(text: Int) {
-    item(
-        key = text,
+        key = textRes,
         span = { GridItemSpan(maxLineSpan) }
     ) {
         Row(
@@ -195,7 +192,7 @@ private fun LazyGridScope.filterDivider(text: Int) {
             HorizontalDivider(modifier = Modifier.weight(1f))
 
             Text(
-                text = stringResource(text),
+                text = stringResource(textRes),
                 style = mTypography.bodyLarge.copy(fontWeight = FontWeight.W600),
             )
 
@@ -204,17 +201,48 @@ private fun LazyGridScope.filterDivider(text: Int) {
     }
 }
 
+/**
+ * Generic text field for year input.
+ */
+private fun LazyGridScope.yearField(
+    key: String,
+    labelRes: Int,
+    currentValue: Int,
+    onValueChanged: (Int) -> Unit
+) {
+    item(
+        key = key,
+        span = { GridItemSpan(maxLineSpan) }
+    ) {
+        OutlinedTextField(
+            value = currentValue.toString(),
+            onValueChange = { new ->
+                new.toIntOrNull()?.let { onValueChanged(it) }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 1,
+            label = { Text(stringResource(labelRes)) }
+        )
+    }
+}
+
+/**
+ * Generic clickable selectable filter item UI.
+ */
 @Composable
 private fun LazyGridItemScope.FilterItem(
     text: String,
     selected: Boolean,
     onClick: () -> Unit
 ) {
+    // Animate background color depending on selected state
     val containerColor by animateColorAsState(
         targetValue = if (selected) mColors.primaryContainer else mColors.surfaceContainerHighest,
         label = "animated container color",
         animationSpec = mMotionScheme.slowEffectsSpec()
     )
+
+    // Animate rounded shape
     val containerShape by animateDpAsState(
         targetValue = if (selected) 100.dp else 8.dp,
         label = "animated container shape",

@@ -47,8 +47,8 @@ fun Home(
     // Handle paging loading/error states
     PagingStatesContainer(
         items = anime,
-        onLoadingChange = { onIntent(HomeIntent.UpdateIsLoading(it)) },
-        onErrorChange = { onIntent(HomeIntent.UpdateIsError(it)) },
+        onLoadingChange = { onIntent(HomeIntent.SetLoading(it)) },
+        onErrorChange = { onIntent(HomeIntent.SetError(it)) },
         onRetryRequest = { message, retry ->
             snackbars.snackbarScope.launch {
                 sendRetrySnackbar(message, retry)
@@ -69,14 +69,14 @@ fun Home(
                 isSearching = homeState.isSearching,
                 isLoading = homeState.isLoading,
                 scrollBehavior = topBarScrollBehaviour,
-                onSearchChange = { onIntent(HomeIntent.UpdateIsSearching) },
+                onSearchChange = { onIntent(HomeIntent.ToggleSearching) },
                 onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
             )
         },
         floatingActionButton = {
             BasicFAB(
                 icon = LibertyFlowIcons.Filters,
-                onClick = { onIntent(HomeIntent.UpdateIsFiltersBSVisible) }
+                onClick = { onIntent(HomeIntent.ToggleFiltersBottomSheet) }
             )
         }
     ) { innerPadding ->
