@@ -1,10 +1,12 @@
 package com.example.data.models.common.mappers
 
+import com.example.data.R
 import com.example.data.models.common.common.UiGenre
 import com.example.data.models.common.common.UiName
 import com.example.data.models.common.common.UiPoster
 import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
+import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
 import com.example.data.models.common.request.request_parameters.UiRequestParametersBase
 import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
@@ -20,6 +22,15 @@ import com.example.network.common.common_response_models.AnimeResponseItem
 import com.example.network.common.common_response_models.Genre
 import com.example.network.common.common_response_models.Name
 import com.example.network.common.common_response_models.Poster
+
+fun Season.toName(): Int {
+    return when(this) {
+        Season.WINTER -> R.string.winter
+        Season.AUTUMN -> R.string.autumn
+        Season.SPRING -> R.string.spring
+        Season.SUMMER -> R.string.summer
+    }
+}
 
 internal fun AnimeResponseItem.toUiAnimeItem(): UiAnimeItem {
     return UiAnimeItem(

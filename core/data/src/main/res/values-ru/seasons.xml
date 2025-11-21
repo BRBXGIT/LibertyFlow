@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="winter">Зима</string>
+    <string name="autumn">Осень</string>
+    <string name="spring">Весна</string>
+    <string name="summer">Лето</string>
+</resources>

@@ -13,6 +13,7 @@ import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.models.common.request.common_request.UiCommonRequest
+import com.example.data.models.common.request.request_parameters.UiYear
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import com.example.design_system.components.snackbars.sendRetrySnackbar
@@ -112,6 +113,18 @@ class HomeVM @Inject constructor(
 
             is HomeIntent.RemoveGenre ->
                 _homeState.update { copy(request = request.copy(genres = request.genres - intent.genre)) }
+
+            is HomeIntent.AddSeason ->
+                _homeState.update { copy(request = request.copy(seasons = request.seasons + intent.season)) }
+
+            is HomeIntent.RemoveSeason ->
+                _homeState.update { copy(request = request.copy(seasons = request.seasons - intent.season)) }
+
+            is HomeIntent.UpdateFromYear ->
+                _homeState.update { copy(request = request.copy(years = request.copy().years.copy(from = intent.year))) }
+
+            is HomeIntent.UpdateToYear ->
+                _homeState.update { copy(request = request.copy(years = request.copy().years.copy(to = intent.year))) }
 
             // Data
             HomeIntent.GetRandomAnime -> getRandomAnime()
