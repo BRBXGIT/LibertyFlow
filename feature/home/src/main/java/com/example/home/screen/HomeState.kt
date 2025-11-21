@@ -1,23 +1,22 @@
 package com.example.home.screen
 
 import androidx.compose.runtime.Immutable
+import com.example.data.models.common.common.UiGenre
 import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
 
 @Immutable
 data class HomeState(
-    // whether an error occurred while loading the current content
     val isError: Boolean = false,
 
-    // whether refresh / paging is currently loading
     val isLoading: Boolean = false,
 
-    // optional id from "get random anime"
     val randomAnimeId: Int? = null,
 
-    // when true — search UI is visible / active
     val isSearching: Boolean = false,
 
-    // Current request parameters
-    val request: UiFullRequestParameters = UiFullRequestParameters()
+    val request: UiFullRequestParameters = UiFullRequestParameters(),
+
+    val isFiltersBSVisible: Boolean = false,
+    val genres: List<UiGenre> = emptyList(),
+    val isGenresLoading: Boolean = false
 )

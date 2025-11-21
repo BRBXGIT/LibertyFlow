@@ -9,12 +9,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -22,13 +19,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.design_system.R
+import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mTypography
@@ -101,11 +97,7 @@ fun SearchingTopBar(
             enter = fadeIn(tween(300)) + slideInVertically(tween(300)),
             exit = fadeOut(tween(300)) + slideOutVertically(tween(300))
         ) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = SearchingTopBarConstants.HORIZONTAL_PADDING.dp)
-            )
+            LibertyFlowLinearIndicator()
         }
     }
 }

@@ -10,6 +10,7 @@ import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
 import com.example.common.vm_helpers.update
 import com.example.data.domain.CatalogRepo
+import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.utils.remote.network_request.onError
@@ -29,6 +30,7 @@ import javax.inject.Inject
 class HomeVM @Inject constructor(
     private val releasesRepo: ReleasesRepo,
     private val catalogRepo: CatalogRepo,
+    private val genresRepo: GenresRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
 ): ViewModel() {
 
@@ -68,12 +70,33 @@ class HomeVM @Inject constructor(
         }
     }
 
+    /**
+     * Loads genres.
+     * Used for filters.
+     */
+    private fun getGenres() {
+        viewModelScope.launch(dispatcherIo) {
+            _homeState.update { copy(isGenresLoading = true) }
+
+            genresRepo.getGenres()
+                .onSuccess { genres ->
+                    _homeState.update { copy(isGenresLoading = false, genres = genres) }
+                }
+                .onError { _, message ->
+                    _homeState.update { copy(isGenresLoading = false) }
+                    sendRetrySnackbar(message) { getGenres() }
+                }
+        }
+    }
+
     fun sendIntent(intent: HomeIntent) {
         when (intent) {
-
             // UI simple state updates
             HomeIntent.UpdateIsSearching ->
                 _homeState.update { copy(isSearching = !isSearching) }
+
+            HomeIntent.UpdateIsFiltersBSVisible ->
+                _homeState.update { copy(isFiltersBSVisible = !isFiltersBSVisible) }
 
             is HomeIntent.UpdateIsLoading ->
                 _homeState.update { copy(isLoading = intent.isLoading) }
@@ -84,8 +107,15 @@ class HomeVM @Inject constructor(
             is HomeIntent.UpdateQuery ->
                 _homeState.update { copy(request = request.copy(search = intent.query)) }
 
+            is HomeIntent.AddGenre ->
+                _homeState.update { copy(request = request.copy(genres = request.genres + intent.genre)) }
+
+            is HomeIntent.RemoveGenre ->
+                _homeState.update { copy(request = request.copy(genres = request.genres - intent.genre)) }
+
             // Data
             HomeIntent.GetRandomAnime -> getRandomAnime()
+            HomeIntent.GetGenres -> getGenres()
         }
     }
 }

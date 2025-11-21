@@ -26,6 +26,7 @@ import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.home.R
+import com.example.home.components.FiltersBS
 import com.example.home.components.RandomAnimeButton
 import com.example.home.components.RandomAnimeButtonConstants
 import kotlinx.coroutines.launch
@@ -75,10 +76,14 @@ fun Home(
         floatingActionButton = {
             BasicFAB(
                 icon = LibertyFlowIcons.Filters,
-                onClick = {}
+                onClick = { onIntent(HomeIntent.UpdateIsFiltersBSVisible) }
             )
         }
     ) { innerPadding ->
+        if (homeState.isFiltersBSVisible) {
+            FiltersBS(homeState, onIntent)
+        }
+
         // Pull-to-refresh container with vibration feedback
         VibratingContainer(
             topPadding = innerPadding.calculateTopPadding(),
@@ -93,7 +98,7 @@ fun Home(
                         key = RandomAnimeButtonConstants.RANDOM_BUTTON_KEY,
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
-                        RandomAnimeButton(onClick = { onIntent(HomeIntent.GetRandomAnime) })
+                        RandomAnimeButton(onIntent)
                     }
                 }
             }

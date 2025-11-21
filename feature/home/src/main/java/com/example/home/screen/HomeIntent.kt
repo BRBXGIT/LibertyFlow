@@ -1,18 +1,20 @@
 package com.example.home.screen
 
+import com.example.data.models.common.common.UiGenre
+
 // Intent / Actions coming from the UI to the ViewModel
 sealed interface HomeIntent {
-    // Request a random anime (one-shot)
-    object GetRandomAnime: HomeIntent
+    data object GetRandomAnime: HomeIntent
+    data object GetGenres: HomeIntent
 
-    // Toggle search UI mode (enter/exit)
-    object UpdateIsSearching: HomeIntent
+    data object UpdateIsSearching: HomeIntent
 
-    // Report paging loading state (used by PagingStatesContainer)
     data class UpdateIsLoading(val isLoading: Boolean): HomeIntent
 
-    // Report paging error state (used by PagingStatesContainer)
     data class UpdateIsError(val isError: Boolean): HomeIntent
 
+    data object UpdateIsFiltersBSVisible: HomeIntent
     data class UpdateQuery(val query: String): HomeIntent
+    data class AddGenre(val genre: UiGenre): HomeIntent
+    data class RemoveGenre(val genre: UiGenre): HomeIntent
 }
