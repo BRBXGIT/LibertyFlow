@@ -1,4 +1,4 @@
-package com.example.design_system.components.auth_bottom_sheet
+package com.example.design_system.components.bottom_sheets.auth
 
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter

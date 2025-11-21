@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
-import com.example.design_system.components.auth_bottom_sheet.AuthBS
+import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.sections.ErrorSection

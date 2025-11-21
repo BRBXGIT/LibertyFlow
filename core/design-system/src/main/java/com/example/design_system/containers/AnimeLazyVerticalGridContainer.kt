@@ -4,10 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -19,29 +17,6 @@ import com.example.design_system.components.cards.AnimeCardUtils
 
 private object AnimeLVGContainerConstants {
     const val ARRANGEMENT_ALIGNMENT_PADDING = 16
-}
-
-@Composable
-fun AnimeItemsLazyVerticalGrid(
-    anime: List<UiAnimeItem>,
-    extraContent: LazyGridScope.() -> Unit = {}
-) {
-    // Static list grid
-    AnimeLazyVerticalGridContainer {
-        extraContent(this)
-
-        items(
-            items = anime,
-            key = { it.id }
-        ) { item ->
-            AnimeCard(
-                posterPath = item.poster.fullPath(PosterType.PREVIEW),
-                genresString = item.genresAsString(),
-                title = item.name.russian,
-                onCardClick = {}
-            )
-        }
-    }
 }
 
 @Composable

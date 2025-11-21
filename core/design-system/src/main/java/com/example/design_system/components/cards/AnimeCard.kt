@@ -17,15 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.data.models.common.common.UiGenre
-import com.example.data.models.common.common.UiName
-import com.example.data.models.common.common.UiPoster
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.liberty_flow_async_image.LibertyFlowAsyncImage
-import com.example.design_system.containers.AnimeItemsLazyVerticalGrid
-import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
@@ -62,13 +55,13 @@ fun LazyGridItemScope.AnimeCard(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
-                .background(mColors.primaryContainer)
+                .background(mColors.tertiaryContainer)
                 .padding(AnimeCardUtils.INFO_PADDING.dp)
         ) {
             InfoText(
                 text = title,
                 style = mTypography.bodyLarge.copy(
-                    color = mColors.onPrimaryContainer,
+                    color = mColors.onTertiaryContainer,
                     fontWeight = FontWeight.W600
                 )
             )
@@ -76,7 +69,7 @@ fun LazyGridItemScope.AnimeCard(
             InfoText(
                 text = genresString,
                 style = mTypography.labelLarge.copy(
-                    color = mColors.tertiary,
+                    color = mColors.secondary,
                     fontWeight = FontWeight.W500
                 )
             )
@@ -95,21 +88,4 @@ private fun InfoText(
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
-}
-
-@Preview
-@Composable
-private fun AnimeCardPreview() {
-    val items = listOf(
-        UiAnimeItem(
-            id = 1,
-            genres = listOf(UiGenre(0, "Аниме"), UiGenre(0, "Что-то")),
-            poster = UiPoster("", "", ""),
-            name = UiName("Наруто", "", "")
-        )
-    )
-
-    LibertyFlowTheme {
-        AnimeItemsLazyVerticalGrid(items)
-    }
 }

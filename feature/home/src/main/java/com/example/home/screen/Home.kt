@@ -17,12 +17,14 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
+import com.example.design_system.components.buttons.BasicFAB
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.snackbars.getSnackbarState
 import com.example.design_system.components.snackbars.sendRetrySnackbar
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
+import com.example.design_system.theme.LibertyFlowIcons
 import com.example.home.R
 import com.example.home.components.RandomAnimeButton
 import com.example.home.components.RandomAnimeButtonConstants
@@ -68,6 +70,12 @@ fun Home(
                 scrollBehavior = topBarScrollBehaviour,
                 onSearchChange = { onIntent(HomeIntent.UpdateIsSearching) },
                 onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
+            )
+        },
+        floatingActionButton = {
+            BasicFAB(
+                icon = LibertyFlowIcons.Filters,
+                onClick = {}
             )
         }
     ) { innerPadding ->

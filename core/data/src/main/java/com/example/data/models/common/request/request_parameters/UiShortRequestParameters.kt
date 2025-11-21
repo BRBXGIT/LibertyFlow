@@ -6,7 +6,7 @@ data class UiShortRequestParameters(
     override val ageRatings: List<AgeRating> = emptyList(),
     override val search: String = "",
     override val types: List<Type> = emptyList(),
-    override val sorting: Sorting = Sorting.RATING_DESC,
+    override val sorting: Sorting = Sorting.FRESH_AT_DESC,
 
     val genres: List<UiGenre> = emptyList(),
     val years: List<Int> = emptyList()
