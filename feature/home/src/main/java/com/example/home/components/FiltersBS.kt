@@ -204,7 +204,7 @@ private fun LazyGridScope.filterDivider(textRes: Int) {
         span = { GridItemSpan(maxLineSpan) }
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().animateItem(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.FILTER_DIVIDER_SPACED_BY.dp)
         ) {
@@ -238,7 +238,7 @@ private fun LazyGridScope.yearField(
             onValueChange = { new ->
                 new.toIntOrNull()?.let { onValueChanged(it) }
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().animateItem(),
             maxLines = 1,
             label = { Text(stringResource(labelRes)) }
         )
@@ -297,6 +297,7 @@ private fun LazyGridScope.sortingBy(
         span = { GridItemSpan(maxLineSpan) }
     ) { sort ->
         Row(
+            modifier = Modifier.animateItem(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.SORTING_SPACED_BY.dp)
         ) {
@@ -324,6 +325,7 @@ private fun LazyGridScope.releaseFinished(
         span = { GridItemSpan(maxLineSpan) }
     ) {
         Row(
+            modifier = Modifier.animateItem(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.SORTING_SPACED_BY.dp)
         ) {
