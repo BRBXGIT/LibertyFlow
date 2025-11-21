@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="year_label">Years</string>
+    <string name="from_year_label">From</string>
+    <string name="to_year_label">To</string>
+    <string name="seasons_label">Seasons</string>
+    <string name="genres_label">Genres</string>
+</resources>

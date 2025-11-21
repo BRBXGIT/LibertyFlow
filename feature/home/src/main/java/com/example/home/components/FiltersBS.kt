@@ -44,6 +44,7 @@ import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
+import com.example.home.R
 import com.example.home.screen.HomeIntent
 import com.example.home.screen.HomeState
 
@@ -58,6 +59,12 @@ private object FiltersBSConstants {
 
     const val FROM_YEAR_KEY = "FromYearKey"
     const val TO_YEAR_KEY = "ToYearKey"
+
+    val YearLabel = R.string.year_label
+    val FromYearLabel = R.string.from_year_label
+    val ToYearLabel = R.string.to_year_label
+    val SeasonsLabel = R.string.seasons_label
+    val GenresLabel = R.string.genres_label
 }
 
 @Composable
@@ -82,17 +89,17 @@ fun FiltersBS(
             contentPadding = PaddingValues(FiltersBSConstants.CONTENT_PADDING.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
-            filterDivider("Years")
+            filterDivider(FiltersBSConstants.YearLabel)
 
-            yearTextField("From", onIntent, homeState.request.years.from, true)
+            yearTextField(FiltersBSConstants.FromYearLabel, onIntent, homeState.request.years.from, true)
 
-            yearTextField("From", onIntent, homeState.request.years.to, false)
+            yearTextField(FiltersBSConstants.ToYearLabel, onIntent, homeState.request.years.to, false)
 
-            filterDivider("Seasons")
+            filterDivider(FiltersBSConstants.SeasonsLabel)
 
             seasons(homeState, onIntent)
 
-            filterDivider("Genres")
+            filterDivider(FiltersBSConstants.GenresLabel)
 
             genres(homeState, onIntent)
         }
@@ -146,7 +153,7 @@ private fun LazyGridScope.seasons(
 }
 
 private fun LazyGridScope.yearTextField(
-    labelText: String,
+    labelText: Int,
     onIntent: (HomeIntent) -> Unit,
     currentYear: Int,
     fromYear: Boolean = true
@@ -169,13 +176,13 @@ private fun LazyGridScope.yearTextField(
             modifier = Modifier.fillMaxWidth(),
             maxLines = 1,
             label = {
-                Text(text = labelText)
+                Text(text = stringResource(labelText))
             }
         )
     }
 }
 
-private fun LazyGridScope.filterDivider(text: String) {
+private fun LazyGridScope.filterDivider(text: Int) {
     item(
         key = text,
         span = { GridItemSpan(maxLineSpan) }
@@ -188,7 +195,7 @@ private fun LazyGridScope.filterDivider(text: String) {
             HorizontalDivider(modifier = Modifier.weight(1f))
 
             Text(
-                text = text,
+                text = stringResource(text),
                 style = mTypography.bodyLarge.copy(fontWeight = FontWeight.W600),
             )
 
