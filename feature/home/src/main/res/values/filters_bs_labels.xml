@@ -5,4 +5,7 @@
     <string name="to_year_label">To</string>
     <string name="seasons_label">Seasons</string>
     <string name="genres_label">Genres</string>
+    <string name="sorting_label">Sorting</string>
+    <string name="is_ongoing_label">Release ended</string>
+    <string name="ongoing_label">Ongoing</string>
 </resources>

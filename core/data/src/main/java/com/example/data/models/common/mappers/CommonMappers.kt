@@ -7,6 +7,7 @@ import com.example.data.models.common.common.UiPoster
 import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
 import com.example.data.models.common.request.request_parameters.Season
+import com.example.data.models.common.request.request_parameters.Sorting
 import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
 import com.example.data.models.common.request.request_parameters.UiRequestParametersBase
 import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
@@ -29,6 +30,13 @@ fun Season.toName(): Int {
         Season.AUTUMN -> R.string.autumn
         Season.SPRING -> R.string.spring
         Season.SUMMER -> R.string.summer
+    }
+}
+
+fun Sorting.toName(): Int {
+    return when(this) {
+        Sorting.RATING_DESC -> R.string.by_popularity_label
+        else -> R.string.by_novelty_label
     }
 }
 

@@ -1,7 +1,9 @@
 package com.example.home.screen
 
 import com.example.data.models.common.common.UiGenre
+import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
+import com.example.data.models.common.request.request_parameters.Sorting
 
 // Intent / Actions coming from the UI to the ViewModel
 sealed interface HomeIntent {
@@ -24,6 +26,8 @@ sealed interface HomeIntent {
     data class RemoveSeason(val season: Season) : HomeIntent
     data class UpdateFromYear(val value: Int) : HomeIntent
     data class UpdateToYear(val value: Int) : HomeIntent
+    data class UpdateSorting(val sorting: Sorting): HomeIntent
+    data object ToggleIsOngoing: HomeIntent
 
     // Data ops
     data object GetRandomAnime : HomeIntent

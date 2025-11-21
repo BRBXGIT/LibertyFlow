@@ -17,11 +17,13 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +39,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.data.models.common.common.UiGenre
 import com.example.data.models.common.mappers.toName
+import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
+import com.example.data.models.common.request.request_parameters.Sorting
 import com.example.design_system.components.indicators.CenteredCircularIndicator
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
@@ -56,15 +60,20 @@ private object FiltersBSConstants {
     const val SPACED_BY = 8
     const val CONTENT_PADDING = 16
     const val FILTER_DIVIDER_SPACED_BY = 16
+    const val SORTING_SPACED_BY = 8
 
     const val FROM_YEAR_KEY = "FromYearKey"
     const val TO_YEAR_KEY = "ToYearKey"
+    const val RELEASE_FINISHED_KEY = "ReleaseFinishedLabel"
 
     val YearLabel = R.string.year_label
     val FromYearLabel = R.string.from_year_label
     val ToYearLabel = R.string.to_year_label
     val SeasonsLabel = R.string.seasons_label
     val GenresLabel = R.string.genres_label
+    val SortingLabel = R.string.sorting_label
+    val IsOngoingLabel = R.string.is_ongoing_label
+    val OngoingLabel = R.string.ongoing_label
 }
 
 @Composable
@@ -90,6 +99,16 @@ fun FiltersBS(
             contentPadding = PaddingValues(FiltersBSConstants.CONTENT_PADDING.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
+            // --- Ongoing ---
+            filterDivider(FiltersBSConstants.OngoingLabel)
+
+            releaseFinished(homeState.request.publishStatuses, onIntent)
+
+            // --- Sorting ---
+            filterDivider(FiltersBSConstants.SortingLabel)
+
+            sortingBy(homeState, onIntent)
+
             // --- YEARS ---
             filterDivider(FiltersBSConstants.YearLabel)
 
@@ -263,6 +282,63 @@ private fun LazyGridItemScope.FilterItem(
             modifier = Modifier.padding(10.dp),
             textAlign = TextAlign.Center
         )
+    }
+}
+
+private fun LazyGridScope.sortingBy(
+    homeState: HomeState,
+    onIntent: (HomeIntent) -> Unit
+) {
+    val sortings = listOf(Sorting.RATING_DESC, Sorting.FRESH_AT_DESC)
+
+    items(
+        items = sortings,
+        key = { it },
+        span = { GridItemSpan(maxLineSpan) }
+    ) { sort ->
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.SORTING_SPACED_BY.dp)
+        ) {
+            val chosen = sort == homeState.request.sorting
+
+            RadioButton(
+                selected = chosen,
+                onClick = { onIntent(HomeIntent.UpdateSorting(sort)) },
+            )
+
+            Text(
+                text = stringResource(sort.toName()),
+                style = mTypography.bodyLarge
+            )
+        }
+    }
+}
+
+private fun LazyGridScope.releaseFinished(
+    publishStatus: List<PublishStatus>,
+    onIntent: (HomeIntent) -> Unit
+) {
+    item(
+        key = FiltersBSConstants.RELEASE_FINISHED_KEY,
+        span = { GridItemSpan(maxLineSpan) }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.SORTING_SPACED_BY.dp)
+        ) {
+            val isOngoing = publishStatus.isNotEmpty()
+
+            Checkbox(
+                checked = isOngoing,
+                onCheckedChange = { onIntent(HomeIntent.ToggleIsOngoing) },
+            )
+
+            Text(
+                text = stringResource(FiltersBSConstants.IsOngoingLabel),
+                style = mTypography.bodyLarge
+            )
+        }
     }
 }
 

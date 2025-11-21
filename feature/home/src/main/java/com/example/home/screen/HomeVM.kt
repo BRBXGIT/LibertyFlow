@@ -13,6 +13,7 @@ import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.models.common.request.common_request.UiCommonRequest
+import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import com.example.design_system.components.snackbars.sendRetrySnackbar
@@ -126,6 +127,16 @@ class HomeVM @Inject constructor(
             is HomeIntent.UpdateToYear ->
                 _homeState.update { copy(request = request.updateYear(to = intent.value)) }
 
+            is HomeIntent.UpdateSorting ->
+                _homeState.update { copy(request = request.copy(sorting = intent.sorting)) }
+
+            is HomeIntent.ToggleIsOngoing -> {
+                if(_homeState.value.request.publishStatuses.isEmpty()) {
+                    _homeState.update { copy(request = request.copy(publishStatuses = listOf(PublishStatus.IS_ONGOING))) }
+                } else {
+                    _homeState.update { copy(request = request.copy(publishStatuses = emptyList())) }
+                }
+            }
 
             /* --- Data operations --- */
             HomeIntent.GetRandomAnime -> getRandomAnime()

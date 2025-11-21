@@ -34,7 +34,6 @@ fun AuthBS(
     onEmailChange: (String) -> Unit
 ) {
     ModalBottomSheet(
-        dragHandle = { DragHandle() },
         onDismissRequest = onDismissRequest,
         shape = mShapes.small,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)

@@ -5,4 +5,7 @@
     <string name="to_year_label">До</string>
     <string name="seasons_label">Сезоны</string>
     <string name="genres_label">Жанры</string>
+    <string name="sorting_label">Сортировка</string>
+    <string name="is_ongoing_label">Релиз завершен</string>
+    <string name="ongoing_label">Онгоинг</string>
 </resources>

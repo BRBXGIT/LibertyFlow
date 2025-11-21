@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="by_popularity_label">По популярности</string>
+    <string name="by_novelty_label">По новизне</string>
+</resources>
