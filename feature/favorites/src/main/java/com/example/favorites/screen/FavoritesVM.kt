@@ -114,7 +114,7 @@ class FavoritesVM @Inject constructor(
             is FavoritesIntent.UpdateQuery ->
                 _favoritesState.update { copy(query = intent.query) }
 
-            FavoritesIntent.UpdateIsSearching ->
+            FavoritesIntent.ToggleIsSearching ->
                 _favoritesState.update { copy(isSearching = !isSearching) }
 
             is FavoritesIntent.UpdateEmail ->
@@ -123,7 +123,7 @@ class FavoritesVM @Inject constructor(
             is FavoritesIntent.UpdatePassword ->
                 _favoritesState.update { copy(password = intent.password) }
 
-            FavoritesIntent.UpdateIsAuthBSVisible ->
+            FavoritesIntent.ToggleIsAuthBSVisible ->
                 _favoritesState.update { copy(isAuthBSVisible = !isAuthBSVisible) }
 
             // Actions

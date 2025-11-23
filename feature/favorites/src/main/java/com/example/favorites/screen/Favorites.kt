@@ -27,6 +27,7 @@ import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import com.example.favorites.R
+import com.example.favorites.screen.FavoritesConstants.TopBarLabel
 import kotlinx.coroutines.launch
 
 private object FavoritesConstants {
@@ -49,12 +50,12 @@ fun Favorites(
         topBar = {
             SearchingTopBar(
                 isLoading = favoritesState.isLoading,
-                label = stringResource(FavoritesConstants.TopBarLabel),
+                label = stringResource(TopBarLabel),
                 scrollBehavior = topBarScrollBehaviour,
                 query = favoritesState.query,
                 onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
                 isSearching = favoritesState.isSearching,
-                onSearchChange = { onIntent(FavoritesIntent.UpdateIsSearching) },
+                onSearchChange = { onIntent(FavoritesIntent.ToggleIsSearching) },
             )
         }
     ) { innerPadding ->
@@ -63,7 +64,7 @@ fun Favorites(
                 email = favoritesState.email,
                 password = favoritesState.password,
                 incorrectEmailOrPassword = favoritesState.isPasswordOrEmailIncorrect,
-                onDismissRequest = { onIntent(FavoritesIntent.UpdateIsAuthBSVisible) },
+                onDismissRequest = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) },
                 onAuthClick = { onIntent(FavoritesIntent.GetTokens) },
                 onPasswordChange = { onIntent(FavoritesIntent.UpdatePassword(it)) },
                 onEmailChange = { onIntent(FavoritesIntent.UpdateEmail(it)) }
@@ -77,7 +78,7 @@ fun Favorites(
         ) {
             when(favoritesState.isLoggedIn) {
                 AuthState.LoggedIn -> LoggedInContent(favoritesState, favorites, snackbars, onIntent)
-                AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(FavoritesIntent.UpdateIsAuthBSVisible) })
+                AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) })
             }
         }
     }

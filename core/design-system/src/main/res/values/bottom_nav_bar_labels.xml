@@ -2,4 +2,5 @@
 <resources>
     <string name="home_label">Anime</string>
     <string name="favorites_label">Favorites</string>
+    <string name="collections_label">Collections</string>
 </resources>

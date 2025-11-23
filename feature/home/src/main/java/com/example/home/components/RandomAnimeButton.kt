@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.design_system.components.buttons.ButtonWithIcon
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.home.R
+import com.example.home.components.RandomAnimeButtonConstants.ButtonLabel
 import com.example.home.screen.HomeIntent
 
 internal object RandomAnimeButtonConstants {
@@ -21,7 +22,7 @@ fun LazyGridItemScope.RandomAnimeButton(
     onIntent: (HomeIntent) -> Unit
 ) {
     ButtonWithIcon(
-        text = stringResource(RandomAnimeButtonConstants.ButtonLabel),
+        text = stringResource(ButtonLabel),
         icon = LibertyFlowIcons.FunnyCube,
         onClick = { onIntent(HomeIntent.GetRandomAnime) },
         modifier = Modifier

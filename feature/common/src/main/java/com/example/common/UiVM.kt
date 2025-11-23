@@ -12,7 +12,7 @@ class UiVM: ViewModel() {
 
     fun sendIntent(intent: UiIntent) {
         when(intent) {
-            is UiIntent.ChangeSelectedRoute -> _uiState.update { copy(selectedRoute = intent.route) }
+            is UiIntent.UpdateSelectedRoute -> _uiState.update { copy(selectedRoute = intent.route) }
         }
     }
 }

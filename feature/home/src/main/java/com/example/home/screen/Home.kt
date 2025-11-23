@@ -29,10 +29,12 @@ import com.example.home.R
 import com.example.home.components.FiltersBS
 import com.example.home.components.RandomAnimeButton
 import com.example.home.components.RandomAnimeButtonConstants
+import com.example.home.components.RandomAnimeButtonConstants.RANDOM_BUTTON_KEY
+import com.example.home.screen.HomeConstants.TopBarLabel
 import kotlinx.coroutines.launch
 
 private object HomeConstants {
-    val topBarLabel = R.string.top_bar_label
+    val TopBarLabel = R.string.top_bar_label
 }
 
 @Composable
@@ -65,7 +67,7 @@ fun Home(
             // Top search bar with query input & actions
             SearchingTopBar(
                 query = homeState.request.search,
-                label = stringResource(HomeConstants.topBarLabel),
+                label = stringResource(TopBarLabel),
                 isSearching = homeState.isSearching,
                 isLoading = homeState.isLoading,
                 scrollBehavior = topBarScrollBehaviour,
@@ -95,7 +97,7 @@ fun Home(
                 true -> ErrorSection()
                 false -> PagingAnimeItemsLazyVerticalGrid(anime) {
                     item(
-                        key = RandomAnimeButtonConstants.RANDOM_BUTTON_KEY,
+                        key = RANDOM_BUTTON_KEY,
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
                         RandomAnimeButton(onIntent)

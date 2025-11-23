@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:common"))
     implementation(project(":feature:favorites"))
+    implementation(project(":feature:collections"))
 
     // Core
     implementation(libs.androidx.core.ktx)

@@ -65,7 +65,10 @@ fun SearchingTopBar(
                 // Show back arrow only in search mode
                 if (isSearching) {
                     TopBarIconButton(
-                        onClick = onSearchChange,
+                        onClick = {
+                            onQueryChange("")
+                            onSearchChange()
+                        },
                         icon = LibertyFlowIcons.ArrowLeftFilled
                     )
                 }

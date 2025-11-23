@@ -29,10 +29,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.common.navigation.CollectionsRoute
 import com.example.common.navigation.FavoritesRoute
 import com.example.common.navigation.HomeRoute
-import com.example.common.navigation.NavBarBase
+import com.example.common.navigation.NavBarItem
 import com.example.common.navigation.NavigationBase
+import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.CollectionsLabel
+import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.FavoritesLabel
+import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.HomeLabel
+import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.LABEL_MAX_LINES
+import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.VISIBLE_OFFSET
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
@@ -46,14 +52,19 @@ private data class NavItem(
 
 private val navItems = listOf(
     NavItem(
-        labelRes = BottomNavBarConstants.HomeLabel,
+        labelRes = HomeLabel,
         iconRes = LibertyFlowIcons.HomeAnimated,
         destination = HomeRoute
     ),
     NavItem(
-        labelRes = BottomNavBarConstants.FavoritesLabel,
+        labelRes = FavoritesLabel,
         iconRes = LibertyFlowIcons.HeartAnimated,
         destination = FavoritesRoute
+    ),
+    NavItem(
+        labelRes = CollectionsLabel,
+        iconRes = LibertyFlowIcons.BookAnimated,
+        destination = CollectionsRoute
     )
 )
 
@@ -62,8 +73,8 @@ fun BoxScope.BottomNavBar(
     onNavItemClick: (NavigationBase) -> Unit,
     selectedRoute: NavigationBase
 ) {
-    val visible = selectedRoute is NavBarBase
-    val targetOffset = if (visible) 0.dp else BottomNavBarConstants.BOTTOM_BAR_HEIGHT.dp
+    val visible = selectedRoute is NavBarItem
+    val targetOffset = if (visible) VISIBLE_OFFSET.dp else BottomNavBarConstants.BOTTOM_BAR_HEIGHT.dp
     val animatedOffset by animateDpAsState(
         targetValue = targetOffset,
         animationSpec = mMotionScheme.fastSpatialSpec(),
@@ -115,7 +126,7 @@ private fun RowScope.BottomNavItem(
         label = {
             Text(
                 text = stringResource(navItem.labelRes),
-                maxLines = 1,
+                maxLines = LABEL_MAX_LINES,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold
             )

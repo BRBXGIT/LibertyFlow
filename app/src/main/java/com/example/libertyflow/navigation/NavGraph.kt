@@ -11,6 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.example.collections.navigation.collections
 import com.example.common.UiIntent
 import com.example.common.UiVM
 import com.example.common.navigation.HomeRoute
@@ -39,13 +40,15 @@ fun NavGraph() {
             home(homeVM)
 
             favorites(favoritesVM)
+
+            collections()
         }
 
         val uiState by uiVM.uiState.collectAsStateWithLifecycle()
         BottomNavBar(
             selectedRoute = uiState.selectedRoute,
             onNavItemClick = {
-                uiVM.sendIntent(UiIntent.ChangeSelectedRoute(it))
+                uiVM.sendIntent(UiIntent.UpdateSelectedRoute(it))
                 navController.navigate(it)
             }
         )

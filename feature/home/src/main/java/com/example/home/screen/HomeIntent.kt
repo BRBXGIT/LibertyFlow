@@ -1,7 +1,6 @@
 package com.example.home.screen
 
 import com.example.data.models.common.common.UiGenre
-import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
 

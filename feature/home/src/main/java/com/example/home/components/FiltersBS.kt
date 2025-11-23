@@ -49,6 +49,29 @@ import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
 import com.example.home.R
+import com.example.home.components.FiltersBSConstants.CONTENT_PADDING
+import com.example.home.components.FiltersBSConstants.FILTER_DIVIDER_SPACED_BY
+import com.example.home.components.FiltersBSConstants.FILTER_DIVIDER_WEIGHT
+import com.example.home.components.FiltersBSConstants.FILTER_ITEM_SELECTED_CONTAINER_SHAPE
+import com.example.home.components.FiltersBSConstants.FILTER_ITEM_TEXT_MAX_LINES
+import com.example.home.components.FiltersBSConstants.FILTER_ITEM_TEXT_PADDING
+import com.example.home.components.FiltersBSConstants.FILTER_ITEM_UNSELECTED_CONTAINER_SHAPE
+import com.example.home.components.FiltersBSConstants.FROM_YEAR_KEY
+import com.example.home.components.FiltersBSConstants.FromYearLabel
+import com.example.home.components.FiltersBSConstants.GENRES_LOADING_INDICATOR_KEY
+import com.example.home.components.FiltersBSConstants.GenresLabel
+import com.example.home.components.FiltersBSConstants.IsOngoingLabel
+import com.example.home.components.FiltersBSConstants.MIN_GRID_CELLS_SIZE
+import com.example.home.components.FiltersBSConstants.OngoingLabel
+import com.example.home.components.FiltersBSConstants.RELEASE_FINISHED_KEY
+import com.example.home.components.FiltersBSConstants.SORTING_SPACED_BY
+import com.example.home.components.FiltersBSConstants.SPACED_BY
+import com.example.home.components.FiltersBSConstants.SeasonsLabel
+import com.example.home.components.FiltersBSConstants.SortingLabel
+import com.example.home.components.FiltersBSConstants.TO_YEAR_KEY
+import com.example.home.components.FiltersBSConstants.ToYearLabel
+import com.example.home.components.FiltersBSConstants.YEAR_TF_MAX_LINES
+import com.example.home.components.FiltersBSConstants.YearLabel
 import com.example.home.screen.HomeIntent
 import com.example.home.screen.HomeState
 
@@ -61,6 +84,13 @@ private object FiltersBSConstants {
     const val CONTENT_PADDING = 16
     const val FILTER_DIVIDER_SPACED_BY = 16
     const val SORTING_SPACED_BY = 8
+    const val YEAR_TF_MAX_LINES = 1
+    const val FILTER_ITEM_TEXT_MAX_LINES = 1
+    const val FILTER_ITEM_SELECTED_CONTAINER_SHAPE = 100
+    const val FILTER_ITEM_UNSELECTED_CONTAINER_SHAPE = 8
+    const val FILTER_ITEM_TEXT_PADDING = 10
+
+    const val FILTER_DIVIDER_WEIGHT = 1f
 
     const val FROM_YEAR_KEY = "FromYearKey"
     const val TO_YEAR_KEY = "ToYearKey"
@@ -93,41 +123,41 @@ fun FiltersBS(
         onDismissRequest = { onIntent(HomeIntent.ToggleFiltersBottomSheet) }
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(FiltersBSConstants.MIN_GRID_CELLS_SIZE.dp),
-            verticalArrangement = Arrangement.spacedBy(FiltersBSConstants.SPACED_BY.dp),
-            horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.SPACED_BY.dp),
-            contentPadding = PaddingValues(FiltersBSConstants.CONTENT_PADDING.dp),
+            columns = GridCells.Adaptive(MIN_GRID_CELLS_SIZE.dp),
+            verticalArrangement = Arrangement.spacedBy(SPACED_BY.dp),
+            horizontalArrangement = Arrangement.spacedBy(SPACED_BY.dp),
+            contentPadding = PaddingValues(CONTENT_PADDING.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
             // --- Ongoing ---
-            filterDivider(FiltersBSConstants.OngoingLabel)
+            filterDivider(OngoingLabel)
 
             releaseFinished(homeState.request.publishStatuses, onIntent)
 
             // --- Sorting ---
-            filterDivider(FiltersBSConstants.SortingLabel)
+            filterDivider(SortingLabel)
 
             sortingBy(homeState, onIntent)
 
             // --- YEARS ---
-            filterDivider(FiltersBSConstants.YearLabel)
+            filterDivider(YearLabel)
 
             yearField(
-                key = FiltersBSConstants.FROM_YEAR_KEY,
-                labelRes = FiltersBSConstants.FromYearLabel,
+                key = FROM_YEAR_KEY,
+                labelRes = FromYearLabel,
                 currentValue = homeState.request.years.from,
                 onValueChanged = { onIntent(HomeIntent.UpdateFromYear(it)) }
             )
 
             yearField(
-                key = FiltersBSConstants.TO_YEAR_KEY,
-                labelRes = FiltersBSConstants.ToYearLabel,
+                key = TO_YEAR_KEY,
+                labelRes = ToYearLabel,
                 currentValue = homeState.request.years.to,
                 onValueChanged = { onIntent(HomeIntent.UpdateToYear(it)) }
             )
 
             // --- SEASONS ---
-            filterDivider(FiltersBSConstants.SeasonsLabel)
+            filterDivider(SeasonsLabel)
 
             selectableFilterItems(
                 items = Season.entries,
@@ -142,11 +172,11 @@ fun FiltersBS(
             )
 
             // --- GENRES ---
-            filterDivider(FiltersBSConstants.GenresLabel)
+            filterDivider(GenresLabel)
 
             if (homeState.isGenresLoading) {
                 item(
-                    key = FiltersBSConstants.GENRES_LOADING_INDICATOR_KEY,
+                    key = GENRES_LOADING_INDICATOR_KEY,
                     span = { GridItemSpan(maxLineSpan) }
                 ) {
                     CenteredCircularIndicator()
@@ -206,16 +236,16 @@ private fun LazyGridScope.filterDivider(textRes: Int) {
         Row(
             modifier = Modifier.fillMaxWidth().animateItem(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.FILTER_DIVIDER_SPACED_BY.dp)
+            horizontalArrangement = Arrangement.spacedBy(FILTER_DIVIDER_SPACED_BY.dp)
         ) {
-            HorizontalDivider(modifier = Modifier.weight(1f))
+            HorizontalDivider(modifier = Modifier.weight(FILTER_DIVIDER_WEIGHT))
 
             Text(
                 text = stringResource(textRes),
                 style = mTypography.bodyLarge.copy(fontWeight = FontWeight.W600),
             )
 
-            HorizontalDivider(modifier = Modifier.weight(1f))
+            HorizontalDivider(modifier = Modifier.weight(FILTER_DIVIDER_WEIGHT))
         }
     }
 }
@@ -239,7 +269,7 @@ private fun LazyGridScope.yearField(
                 new.toIntOrNull()?.let { onValueChanged(it) }
             },
             modifier = Modifier.fillMaxWidth().animateItem(),
-            maxLines = 1,
+            maxLines = YEAR_TF_MAX_LINES,
             label = { Text(stringResource(labelRes)) }
         )
     }
@@ -263,7 +293,7 @@ private fun LazyGridItemScope.FilterItem(
 
     // Animate rounded shape
     val containerShape by animateDpAsState(
-        targetValue = if (selected) 100.dp else 8.dp,
+        targetValue = if (selected) FILTER_ITEM_SELECTED_CONTAINER_SHAPE.dp else FILTER_ITEM_UNSELECTED_CONTAINER_SHAPE.dp,
         label = "animated container shape",
         animationSpec = mMotionScheme.slowSpatialSpec()
     )
@@ -276,10 +306,10 @@ private fun LazyGridItemScope.FilterItem(
     ) {
         Text(
             text = text,
-            maxLines = 1,
+            maxLines = FILTER_ITEM_TEXT_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
             style = mTypography.bodyMedium,
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(FILTER_ITEM_TEXT_PADDING.dp),
             textAlign = TextAlign.Center
         )
     }
@@ -299,7 +329,7 @@ private fun LazyGridScope.sortingBy(
         Row(
             modifier = Modifier.animateItem(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.SORTING_SPACED_BY.dp)
+            horizontalArrangement = Arrangement.spacedBy(SORTING_SPACED_BY.dp)
         ) {
             val chosen = sort == homeState.request.sorting
 
@@ -321,13 +351,13 @@ private fun LazyGridScope.releaseFinished(
     onIntent: (HomeIntent) -> Unit
 ) {
     item(
-        key = FiltersBSConstants.RELEASE_FINISHED_KEY,
+        key = RELEASE_FINISHED_KEY,
         span = { GridItemSpan(maxLineSpan) }
     ) {
         Row(
             modifier = Modifier.animateItem(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(FiltersBSConstants.SORTING_SPACED_BY.dp)
+            horizontalArrangement = Arrangement.spacedBy(SORTING_SPACED_BY.dp)
         ) {
             val isOngoing = publishStatus.isNotEmpty()
 
@@ -337,7 +367,7 @@ private fun LazyGridScope.releaseFinished(
             )
 
             Text(
-                text = stringResource(FiltersBSConstants.IsOngoingLabel),
+                text = stringResource(IsOngoingLabel),
                 style = mTypography.bodyLarge
             )
         }
