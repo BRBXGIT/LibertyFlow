@@ -6,6 +6,7 @@ import com.example.data.models.common.common.UiName
 import com.example.data.models.common.common.UiPoster
 import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
+import com.example.data.models.common.request.request_parameters.CollectionType
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
 import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
@@ -30,6 +31,16 @@ fun Season.toName(): Int {
         Season.AUTUMN -> R.string.autumn
         Season.SPRING -> R.string.spring
         Season.SUMMER -> R.string.summer
+    }
+}
+
+fun CollectionType.toName(): Int {
+    return when(this) {
+        CollectionType.PLANNED -> R.string.planned_collection
+        CollectionType.WATCHED -> R.string.watched_collection
+        CollectionType.WATCHING -> R.string.watching_collection
+        CollectionType.POSTPONED -> R.string.postponed_collection
+        CollectionType.ABANDONED -> R.string.abandoned_collection
     }
 }
 

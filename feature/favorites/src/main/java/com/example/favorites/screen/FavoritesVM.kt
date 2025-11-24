@@ -104,27 +104,29 @@ class FavoritesVM @Inject constructor(
     fun sendIntent(intent: FavoritesIntent) {
         when (intent) {
 
-            // UI simple state updates
-            is FavoritesIntent.UpdateIsLoading ->
-                _favoritesState.update { copy(isLoading = intent.isLoading) }
-
-            is FavoritesIntent.UpdateIsError ->
-                _favoritesState.update { copy(isError = intent.isError) }
-
-            is FavoritesIntent.UpdateQuery ->
-                _favoritesState.update { copy(query = intent.query) }
+            // Ui toggles
+            FavoritesIntent.ToggleIsAuthBSVisible ->
+                _favoritesState.update { copy(isAuthBSVisible = !isAuthBSVisible) }
 
             FavoritesIntent.ToggleIsSearching ->
                 _favoritesState.update { copy(isSearching = !isSearching) }
+
+            // Ui sets
+            is FavoritesIntent.SetIsLoading ->
+                _favoritesState.update { copy(isLoading = intent.isLoading) }
+
+            is FavoritesIntent.SetIsError ->
+                _favoritesState.update { copy(isError = intent.isError) }
+
+            // Ui updates
+            is FavoritesIntent.UpdateQuery ->
+                _favoritesState.update { copy(query = intent.query) }
 
             is FavoritesIntent.UpdateEmail ->
                 _favoritesState.update { copy(email = intent.email) }
 
             is FavoritesIntent.UpdatePassword ->
                 _favoritesState.update { copy(password = intent.password) }
-
-            FavoritesIntent.ToggleIsAuthBSVisible ->
-                _favoritesState.update { copy(isAuthBSVisible = !isAuthBSVisible) }
 
             // Actions
             FavoritesIntent.GetTokens ->

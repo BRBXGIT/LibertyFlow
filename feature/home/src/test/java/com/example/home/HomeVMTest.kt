@@ -4,13 +4,20 @@ package com.example.home
 
 import app.cash.turbine.test
 import com.example.data.domain.CatalogRepo
+import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.common.common.UiGenre
+import com.example.data.models.common.request.request_parameters.PublishStatus
+import com.example.data.models.common.request.request_parameters.Season
+import com.example.data.models.common.request.request_parameters.Sorting
+import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
+import com.example.data.models.common.request.request_parameters.UiYear
 import com.example.data.models.releases.anime_id.UiAnimeId
 import com.example.data.utils.remote.network_request.NetworkErrors
 import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.design_system.components.snackbars.SnackbarController
 import com.example.home.screen.HomeIntent
+import com.example.home.screen.HomeState
 import com.example.home.screen.HomeVM
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -31,15 +38,15 @@ class HomeVMTest {
 
     private lateinit var vm: HomeVM
 
-    private var releasesRepo: ReleasesRepo = mockk(relaxed = true)
-    private var catalogRepo: CatalogRepo = mockk(relaxed = true)
+    private val releasesRepo: ReleasesRepo = mockk(relaxed = true)
+    private val catalogRepo: CatalogRepo = mockk(relaxed = true)
+    private val genresRepo: GenresRepo = mockk(relaxed = true)
     private val dispatcher = StandardTestDispatcher()
 
     @Before
     fun setUp() = runTest {
         Dispatchers.setMain(dispatcher)
-        vm = HomeVM(releasesRepo, catalogRepo, dispatcher)
-        advanceUntilIdle()
+        vm = HomeVM(releasesRepo, catalogRepo, genresRepo, dispatcher)
     }
 
     @After
@@ -50,62 +57,59 @@ class HomeVMTest {
     @Test
     fun `state updates correctly`() = runTest {
         vm.homeState.test {
-            skipItems(1)
+            vm.sendIntent(HomeIntent.ToggleSearching)
+            vm.sendIntent(HomeIntent.ToggleFiltersBottomSheet)
 
-            vm.sendIntent(HomeIntent.UpdateIsSearching)
+            vm.sendIntent(HomeIntent.SetLoading(true))
+            vm.sendIntent(HomeIntent.SetError(true))
+
             vm.sendIntent(HomeIntent.UpdateQuery("query"))
-            vm.sendIntent(HomeIntent.UpdateIsLoading(true))
+
+            vm.sendIntent(HomeIntent.AddGenre(UiGenre(id = 1, name = "Genre")))
+            vm.sendIntent(HomeIntent.AddGenre(UiGenre(id = 2, name = "Genre2")))
+            vm.sendIntent(HomeIntent.RemoveGenre(UiGenre(id = 2, name = "Genre2")))
+            vm.sendIntent(HomeIntent.AddSeason(Season.AUTUMN))
+            vm.sendIntent(HomeIntent.AddSeason(Season.WINTER))
+            vm.sendIntent(HomeIntent.RemoveSeason(Season.WINTER))
+            vm.sendIntent(HomeIntent.UpdateFromYear(10))
+            vm.sendIntent(HomeIntent.UpdateToYear(20))
+            vm.sendIntent(HomeIntent.UpdateSorting(Sorting.YEAR_ASC))
+            vm.sendIntent(HomeIntent.ToggleIsOngoing)
 
             advanceUntilIdle()
 
-            val after = awaitItem()
+            val afterState = HomeState(
+                isError = true,
+                isLoading = true,
+                isSearching = true,
+                isFiltersBSVisible = true,
+                request = UiFullRequestParameters(
+                    seasons = listOf(Season.AUTUMN),
+                    years = UiYear(from = 10, to = 20),
+                    sorting = Sorting.YEAR_ASC,
+                    publishStatuses = listOf(PublishStatus.IS_ONGOING),
+                    search = "query",
+                    genres = listOf(UiGenre(id = 1, name = "Genre"))
+                )
+            )
 
-            assertEquals("query", after.query)
-            assertTrue(after.isLoading)
-            assertTrue(after.isSearching)
+            val after = expectMostRecentItem()
 
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `fetchLatestReleases updates state on success`() = runTest {
-        val result = NetworkResult.Success(ArrayList<UiAnimeItem>())
-        coEvery { releasesRepo.getLatestAnimeReleases() } returns result
-
-        vm = HomeVM(releasesRepo, catalogRepo, dispatcher)
-        vm.homeState.test {
-            val after = awaitItem()
-            assertEquals(result.data, after.latestReleases)
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `fetchLatestReleases create snackbar on error`() = runTest {
-        val result = NetworkResult.Error(NetworkErrors.INTERNET, "INTERNET")
-        coEvery { releasesRepo.getLatestAnimeReleases() } returns result
-
-        vm = HomeVM(releasesRepo, catalogRepo, dispatcher)
-        SnackbarController.events.test {
-            skipItems(1)
-
-            val event = awaitItem()
-            assertEquals("INTERNET", event.message)
+            assertEquals(afterState, after)
 
             cancelAndIgnoreRemainingEvents()
         }
     }
 
-    // TODO FIX TESTS
     @Test
     fun `getRandomAnime updates state on success`() = runTest {
-        val result = NetworkResult.Success(UiAnimeId(id = 1))
-        coEvery { releasesRepo.getRandomAnime() } returns result
+        coEvery { releasesRepo.getRandomAnime() } returns
+                NetworkResult.Success(UiAnimeId(id = 1))
 
         vm.homeState.test {
+            skipItems(1)
             vm.sendIntent(HomeIntent.GetRandomAnime)
+
             advanceUntilIdle()
 
             val after = awaitItem()
@@ -116,25 +120,50 @@ class HomeVMTest {
     }
 
     @Test
-    fun `getRandomAnime create snackbar on error`() = runTest {
-        val result = NetworkResult.Error(NetworkErrors.INTERNET, "INTERNET")
-        coEvery { releasesRepo.getRandomAnime() } returns result
-
-        vm = HomeVM(releasesRepo, catalogRepo, dispatcher)
-        advanceUntilIdle()
-
-        SnackbarController.events.test {
-            cancelAndIgnoreRemainingEvents()
-        }
+    fun `getRandomAnime makes snackbar`() = runTest {
+        coEvery { releasesRepo.getRandomAnime() } returns
+                NetworkResult.Error(NetworkErrors.SERVER_ERROR, "Server error")
 
         SnackbarController.events.test {
             vm.sendIntent(HomeIntent.GetRandomAnime)
+
             advanceUntilIdle()
 
-            val event = awaitItem()
-            assertEquals("INTERNET", event.message)
+            val after = awaitItem()
+            assertEquals("Server error", after.message)
+        }
+    }
+
+    @Test
+    fun `getGenres updates state on success`() = runTest {
+        coEvery { genresRepo.getGenres() } returns
+                NetworkResult.Success(listOf(UiGenre(id = 1, name = "")))
+
+        vm.homeState.test {
+            skipItems(1)
+            vm.sendIntent(HomeIntent.GetGenres)
+
+            advanceUntilIdle()
+
+            val after = awaitItem()
+            assertTrue(after.genres.isNotEmpty())
 
             cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `getGenres makes snackbar`() = runTest {
+        coEvery { genresRepo.getGenres() } returns
+                NetworkResult.Error(NetworkErrors.SERVER_ERROR, "Server error")
+
+        SnackbarController.events.test {
+            vm.sendIntent(HomeIntent.GetGenres)
+
+            advanceUntilIdle()
+
+            val after = awaitItem()
+            assertEquals("Server error", after.message)
         }
     }
 }

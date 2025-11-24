@@ -94,8 +94,8 @@ private fun LoggedInContent(
 ) {
     PagingStatesContainer(
         items = favorites,
-        onLoadingChange = { onIntent(FavoritesIntent.UpdateIsLoading(it)) },
-        onErrorChange = { onIntent(FavoritesIntent.UpdateIsError(it)) },
+        onLoadingChange = { onIntent(FavoritesIntent.SetIsLoading(it)) },
+        onErrorChange = { onIntent(FavoritesIntent.SetIsError(it)) },
         onRetryRequest = { message, retry ->
             snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
         }
