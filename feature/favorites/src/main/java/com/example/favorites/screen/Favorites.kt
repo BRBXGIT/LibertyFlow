@@ -30,6 +30,7 @@ import com.example.favorites.R
 import com.example.favorites.screen.FavoritesConstants.TopBarLabel
 import kotlinx.coroutines.launch
 
+// TODO FIX BUG WITH LABEL
 private object FavoritesConstants {
     val TopBarLabel = R.string.top_bar_label
 }

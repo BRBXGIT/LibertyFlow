@@ -24,14 +24,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.design_system.R
+import com.example.design_system.components.bars.searching_top_bar.SearchingTopBarConstants.ANIMATION_DURATION
 import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mTypography
 
 private object SearchingTopBarConstants {
-    const val HORIZONTAL_PADDING = 16
     val PlaceholderText = R.string.placeholder_label
+    const val ANIMATION_DURATION = 300
 }
 
 @Composable
@@ -97,8 +98,10 @@ fun SearchingTopBar(
         // Loading indicator appears/disappears with animation
         AnimatedVisibility(
             visible = isLoading,
-            enter = fadeIn(tween(300)) + slideInVertically(tween(300)),
-            exit = fadeOut(tween(300)) + slideOutVertically(tween(300))
+            enter = fadeIn(tween(ANIMATION_DURATION))
+                    + slideInVertically(tween(ANIMATION_DURATION)),
+            exit = fadeOut(tween(ANIMATION_DURATION))
+                    + slideOutVertically(tween(ANIMATION_DURATION))
         ) {
             LibertyFlowLinearIndicator()
         }

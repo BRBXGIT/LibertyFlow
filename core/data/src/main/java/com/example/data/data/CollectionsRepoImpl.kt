@@ -28,16 +28,14 @@ internal class CollectionsRepoImpl @Inject constructor(
     private val authPrefsManager: AuthPrefsManager
 ): CollectionsRepo {
 
-    override suspend fun getAnimeInCollection(request: UiCommonRequestWithCollectionType): Flow<PagingData<UiAnimeItem>> {
-        val token = authPrefsManager.token.firstOrNull()!!
-
+    override fun getAnimeInCollection(request: UiCommonRequestWithCollectionType): Flow<PagingData<UiAnimeItem>> {
         return Pager(
             config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
             pagingSourceFactory = {
                 CommonPagingSource(
                     apiCall = {
                         collectionsApi.getAnimeInCollection(
-                            sessionToken = token,
+                            sessionToken = authPrefsManager.token.firstOrNull()!!,
                             request = request.toCommonRequestWithCollectionType()
                         )
                     },
@@ -57,7 +55,7 @@ internal class CollectionsRepoImpl @Inject constructor(
                     request = request.toCollectionRequest()
                 )
             },
-            map = { it }
+            map = {}
         )
     }
 
@@ -71,7 +69,7 @@ internal class CollectionsRepoImpl @Inject constructor(
                     request = request.toCollectionRequest()
                 )
             },
-            map = { it }
+            map = {}
         )
     }
 }
