@@ -5,7 +5,7 @@ import com.example.data.models.auth.AuthState
 
 @Immutable
 data class FavoritesState(
-    val isLoggedIn: AuthState = AuthState.LoggedOut,
+    val authState: AuthState = AuthState.LoggedOut,
 
     val isLoading: Boolean = false,
     val isError: Boolean = false,

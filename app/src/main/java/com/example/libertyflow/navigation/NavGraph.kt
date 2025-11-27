@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.collections.navigation.collections
+import com.example.collections.screen.CollectionsVM
 import com.example.common.UiIntent
 import com.example.common.UiVM
 import com.example.common.navigation.HomeRoute
@@ -30,6 +31,7 @@ fun NavGraph() {
 
     val homeVM = hiltViewModel<HomeVM>()
     val favoritesVM = hiltViewModel<FavoritesVM>()
+    val collectionsVM = hiltViewModel<CollectionsVM>()
 
     Box(Modifier.fillMaxSize()) {
         NavHost(
@@ -41,7 +43,7 @@ fun NavGraph() {
 
             favorites(favoritesVM)
 
-            collections()
+            collections(collectionsVM)
         }
 
         val uiState by uiVM.uiState.collectAsStateWithLifecycle()

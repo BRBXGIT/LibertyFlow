@@ -77,7 +77,7 @@ fun Favorites(
             isRefreshing = favoritesState.isLoading,
             onRefresh = { favorites.refresh() }
         ) {
-            when(favoritesState.isLoggedIn) {
+            when(favoritesState.authState) {
                 AuthState.LoggedIn -> LoggedInContent(favoritesState, favorites, snackbars, onIntent)
                 AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) })
             }

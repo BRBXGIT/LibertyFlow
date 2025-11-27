@@ -56,7 +56,7 @@ class FavoritesVM @Inject constructor(
     private fun observeAuthState() {
         viewModelScope.launch(dispatcherIo) {
             authRepo.authState.collect { authState ->
-                _favoritesState.update { copy(isLoggedIn = authState) }
+                _favoritesState.update { copy(authState = authState) }
             }
         }
     }

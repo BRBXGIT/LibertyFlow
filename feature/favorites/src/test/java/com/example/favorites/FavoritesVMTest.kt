@@ -73,7 +73,7 @@ class FavoritesVMTest {
             advanceUntilIdle()
 
             val expected = FavoritesState(
-                isLoggedIn = AuthState.LoggedIn,
+                authState = AuthState.LoggedIn,
                 isLoading = true,
                 isError = true,
                 isAuthBSVisible = true,
