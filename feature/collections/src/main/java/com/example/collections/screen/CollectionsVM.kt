@@ -114,6 +114,9 @@ class CollectionsVM @Inject constructor(
 
             is CollectionsIntent.SetIsError ->
                 _collectionsState.update { copy(isError = intent.isError) }
+            
+            is CollectionsIntent.SetCollection ->
+                _collectionsState.update { copy(selectedCollection = intent.collection) }
 
             // Ui updates
             is CollectionsIntent.UpdateQuery ->
