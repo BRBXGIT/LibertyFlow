@@ -15,7 +15,7 @@ data class SnackbarAction(
 
 object SnackbarController {
 
-    private val _events = Channel<SnackbarEvent>()
+    private val _events = Channel<SnackbarEvent>(capacity = Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
     suspend fun sendEvent(event: SnackbarEvent) {
