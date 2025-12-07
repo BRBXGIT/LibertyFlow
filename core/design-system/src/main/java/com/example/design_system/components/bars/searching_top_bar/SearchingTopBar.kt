@@ -37,7 +37,8 @@ private object SearchingTopBarConstants {
 
 @Composable
 fun SearchingTopBar(
-    isLoading: Boolean,
+    showIndicator: Boolean = true,
+    isLoading: Boolean = false,
     label: String,
     scrollBehavior: TopAppBarScrollBehavior,
     query: String,
@@ -97,7 +98,7 @@ fun SearchingTopBar(
 
         // Loading indicator appears/disappears with animation
         AnimatedVisibility(
-            visible = isLoading,
+            visible = showIndicator && isLoading,
             enter = fadeIn(tween(ANIMATION_DURATION))
                     + slideInVertically(tween(ANIMATION_DURATION)),
             exit = fadeOut(tween(ANIMATION_DURATION))

@@ -2,8 +2,10 @@
 
 package com.example.home.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -25,10 +27,10 @@ import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import com.example.design_system.theme.LibertyFlowIcons
+import com.example.design_system.theme.mColors
 import com.example.home.R
 import com.example.home.components.FiltersBS
 import com.example.home.components.RandomAnimeButton
-import com.example.home.components.RandomAnimeButtonConstants
 import com.example.home.components.RandomAnimeButtonConstants.RANDOM_BUTTON_KEY
 import com.example.home.screen.HomeConstants.TopBarLabel
 import kotlinx.coroutines.launch
@@ -88,9 +90,15 @@ fun Home(
 
         // Pull-to-refresh container with vibration feedback
         VibratingContainer(
-            topPadding = innerPadding.calculateTopPadding(),
             isRefreshing = homeState.isLoading,
-            onRefresh = { anime.refresh() }
+            onRefresh = { anime.refresh() },
+            modifier = Modifier
+                .fillMaxSize()
+                .background(mColors.background)
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    bottom = calculateNavBarSize()
+                )
         ) {
             // Main content logic depending on search mode + error state
             when(homeState.isError) {

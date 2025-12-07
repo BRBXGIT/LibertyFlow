@@ -2,8 +2,10 @@
 
 package com.example.favorites.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -26,6 +28,7 @@ import com.example.design_system.components.snackbars.sendRetrySnackbar
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
+import com.example.design_system.theme.mColors
 import com.example.favorites.R
 import com.example.favorites.screen.FavoritesConstants.TopBarLabel
 import kotlinx.coroutines.launch
@@ -73,9 +76,15 @@ fun Favorites(
         }
 
         VibratingContainer(
-            topPadding = innerPadding.calculateTopPadding(),
             isRefreshing = favoritesState.isLoading,
-            onRefresh = { favorites.refresh() }
+            onRefresh = { favorites.refresh() },
+            modifier = Modifier
+                .fillMaxSize()
+                .background(mColors.background)
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    bottom = calculateNavBarSize()
+                )
         ) {
             when(favoritesState.authState) {
                 AuthState.LoggedIn -> LoggedInContent(favoritesState, favorites, snackbars, onIntent)

@@ -2,13 +2,17 @@
 
 package com.example.collections.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -29,7 +33,7 @@ import com.example.design_system.components.snackbars.getSnackbarState
 import com.example.design_system.components.snackbars.sendRetrySnackbar
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
-import com.example.design_system.containers.VibratingContainer
+import com.example.design_system.theme.mColors
 import kotlinx.coroutines.launch
 
 // TODO FIX BUG WITH LABEL
@@ -52,7 +56,7 @@ fun Collections(
         modifier = Modifier.fillMaxSize().nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
         topBar = {
             SearchingTopBar(
-                isLoading = collectionsState.isLoading,
+                showIndicator = false,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = topBarScrollBehaviour,
                 query = collectionsState.query,
@@ -74,10 +78,14 @@ fun Collections(
             )
         }
 
-        VibratingContainer(
-            topPadding = innerPadding.calculateTopPadding(),
-            isRefreshing = collectionsState.isLoading,
-            onRefresh = { collectionAnime.refresh() }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(mColors.background)
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    bottom = calculateNavBarSize()
+                )
         ) {
             when(collectionsState.authState) {
                 AuthState.LoggedIn -> LoggedInContent(collectionsState, collectionAnime, snackbars, onIntent)
@@ -110,7 +118,13 @@ private fun LoggedInContent(
             Column {
                 CollectionsTabRow(collectionsState.selectedCollection, onIntent)
 
-                PagingAnimeItemsLazyVerticalGrid(collectionAnime)
+                // TODO change indicator to m3 expressive
+                PullToRefreshBox(
+                    isRefreshing = collectionsState.isLoading,
+                    onRefresh = { collectionAnime.refresh() }
+                ) {
+                    PagingAnimeItemsLazyVerticalGrid(collectionAnime)
+                }
             }
         }
     }
