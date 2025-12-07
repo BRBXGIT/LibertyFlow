@@ -19,6 +19,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.collections.R
+import com.example.collections.components.CollectionsPager
 import com.example.collections.components.CollectionsTabRow
 import com.example.collections.screen.CollectionsConstants.TopBarLabel
 import com.example.data.models.auth.AuthState
@@ -123,7 +124,12 @@ private fun LoggedInContent(
                     isRefreshing = collectionsState.isLoading,
                     onRefresh = { collectionAnime.refresh() }
                 ) {
-                    PagingAnimeItemsLazyVerticalGrid(collectionAnime)
+                    CollectionsPager(
+                        currentCollection = collectionsState.selectedCollection,
+                        onIntent = onIntent
+                    ) {
+                        PagingAnimeItemsLazyVerticalGrid(collectionAnime)
+                    }
                 }
             }
         }

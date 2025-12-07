@@ -54,6 +54,26 @@ fun Collection.toIndex(): Int {
     }
 }
 
+fun Collection.toPage(): Int {
+    return when(this) {
+        Collection.PLANNED -> 1
+        Collection.WATCHED -> 2
+        Collection.WATCHING -> 3
+        Collection.POSTPONED -> 4
+        Collection.ABANDONED -> 5
+    }
+}
+
+fun Int.toCollection(): Collection {
+    return when(this) {
+        0 -> Collection.PLANNED
+        1 -> Collection.WATCHED
+        2 -> Collection.WATCHING
+        3 -> Collection.POSTPONED
+        else -> Collection.ABANDONED
+    }
+}
+
 fun Sorting.toName(): Int {
     return when(this) {
         Sorting.RATING_DESC -> R.string.by_popularity_label
