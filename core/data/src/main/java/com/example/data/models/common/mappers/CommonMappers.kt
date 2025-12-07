@@ -6,7 +6,7 @@ import com.example.data.models.common.common.UiName
 import com.example.data.models.common.common.UiPoster
 import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
-import com.example.data.models.common.request.request_parameters.CollectionType
+import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
 import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
@@ -34,23 +34,23 @@ fun Season.toName(): Int {
     }
 }
 
-fun CollectionType.toName(): Int {
+fun Collection.toName(): Int {
     return when(this) {
-        CollectionType.PLANNED -> R.string.planned_collection
-        CollectionType.WATCHED -> R.string.watched_collection
-        CollectionType.WATCHING -> R.string.watching_collection
-        CollectionType.POSTPONED -> R.string.postponed_collection
-        CollectionType.ABANDONED -> R.string.abandoned_collection
+        Collection.PLANNED -> R.string.planned_collection
+        Collection.WATCHED -> R.string.watched_collection
+        Collection.WATCHING -> R.string.watching_collection
+        Collection.POSTPONED -> R.string.postponed_collection
+        Collection.ABANDONED -> R.string.abandoned_collection
     }
 }
 
-fun CollectionType.toIndex(): Int {
+fun Collection.toIndex(): Int {
     return when(this) {
-        CollectionType.PLANNED -> 0
-        CollectionType.WATCHED -> 1
-        CollectionType.WATCHING -> 2
-        CollectionType.POSTPONED -> 3
-        CollectionType.ABANDONED -> 4
+        Collection.PLANNED -> 0
+        Collection.WATCHED -> 1
+        Collection.WATCHING -> 2
+        Collection.POSTPONED -> 3
+        Collection.ABANDONED -> 4
     }
 }
 
@@ -100,7 +100,7 @@ internal fun UiCommonRequest.toCommonRequest(): CommonRequest {
 internal fun UiCommonRequestWithCollectionType.toCommonRequestWithCollectionType(): CommonRequestWithCollectionType {
     return CommonRequestWithCollectionType(
         requestParameters = requestParameters.toRequestParametersBase(),
-        collectionType = collectionType.name
+        collectionType = collection.name
     )
 }
 

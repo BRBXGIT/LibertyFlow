@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,7 +46,7 @@ class CollectionsVM @Inject constructor(
     val collectionAnime = collectionParameters.flatMapLatest { parameters ->
         val request = UiCommonRequestWithCollectionType(
             requestParameters = UiShortRequestParameters(search = parameters.query),
-            collectionType = parameters.selectedCollection
+            collection = parameters.selectedCollection
         )
         collectionsRepo.getAnimeInCollection(request)
     }.cachedIn(viewModelScope)
@@ -103,30 +104,30 @@ class CollectionsVM @Inject constructor(
 
             // Ui toggles
             CollectionsIntent.ToggleIsAuthBSVisible ->
-                _collectionsState.updatee { copy(isAuthBSVisible = !isAuthBSVisible) }
+                _collectionsState.update { it.toggleAuthBS() }
 
             CollectionsIntent.ToggleIsSearching ->
-                _collectionsState.updatee { copy(isSearching = !isSearching) }
+                _collectionsState.update { it.toggleIsSearching() }
 
             // Ui sets
             is CollectionsIntent.SetIsLoading ->
-                _collectionsState.updatee { copy(isLoading = intent.isLoading) }
+                _collectionsState.update { it.setLoading(intent.value) }
 
             is CollectionsIntent.SetIsError ->
-                _collectionsState.updatee { copy(isError = intent.isError) }
+                _collectionsState.update { it.setError(intent.value) }
             
             is CollectionsIntent.SetCollection ->
-                _collectionsState.updatee { copy(selectedCollection = intent.collection) }
+                _collectionsState.update { it.setCollection(intent.collection) }
 
             // Ui updates
             is CollectionsIntent.UpdateQuery ->
-                _collectionsState.updatee { copy(query = intent.query) }
+                _collectionsState.update { it.updateQuery(intent.query) }
 
             is CollectionsIntent.UpdateEmail ->
-                _collectionsState.updatee { copy(email = intent.email) }
+                _collectionsState.update { it.updateEmail(intent.email) }
 
             is CollectionsIntent.UpdatePassword ->
-                _collectionsState.updatee { copy(password = intent.password) }
+                _collectionsState.update { it.updatePassword(intent.password) }
 
             // Actions
             CollectionsIntent.GetTokens ->

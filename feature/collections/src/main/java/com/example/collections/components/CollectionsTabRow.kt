@@ -15,13 +15,13 @@ import androidx.compose.ui.unit.dp
 import com.example.collections.screen.CollectionsIntent
 import com.example.data.models.common.mappers.toIndex
 import com.example.data.models.common.mappers.toName
-import com.example.data.models.common.request.request_parameters.CollectionType
+import com.example.data.models.common.request.request_parameters.Collection
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.Typography
 
 @Composable
 internal fun CollectionsTabRow(
-    selectedCollection: CollectionType,
+    selectedCollection: Collection,
     onIntent: (CollectionsIntent) -> Unit
 ) {
     SecondaryScrollableTabRow(
@@ -29,7 +29,7 @@ internal fun CollectionsTabRow(
         modifier = Modifier.fillMaxWidth(),
         selectedTabIndex = selectedCollection.toIndex()
     ) {
-        CollectionType.entries.forEach { collection ->
+        Collection.entries.forEach { collection ->
             Tab(
 
                 onClick = { onIntent(CollectionsIntent.SetCollection(collection)) },
@@ -50,6 +50,6 @@ internal fun CollectionsTabRow(
 @Composable
 private fun CollectionsTabRowPreview() {
     LibertyFlowTheme {
-        CollectionsTabRow(selectedCollection = CollectionType.PLANNED) { }
+        CollectionsTabRow(selectedCollection = Collection.PLANNED) { }
     }
 }

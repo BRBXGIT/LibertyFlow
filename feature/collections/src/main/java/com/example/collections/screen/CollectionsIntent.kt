@@ -1,6 +1,6 @@
 package com.example.collections.screen
 
-import com.example.data.models.common.request.request_parameters.CollectionType
+import com.example.data.models.common.request.request_parameters.Collection
 
 sealed interface CollectionsIntent {
     object GetTokens: CollectionsIntent
@@ -12,7 +12,7 @@ sealed interface CollectionsIntent {
     data class UpdateEmail(val email: String): CollectionsIntent
     data class UpdatePassword(val password: String): CollectionsIntent
 
-    data class SetIsLoading(val isLoading: Boolean): CollectionsIntent
-    data class SetIsError(val isError: Boolean): CollectionsIntent
-    data class SetCollection(val collection: CollectionType): CollectionsIntent
+    data class SetIsLoading(val value: Boolean): CollectionsIntent
+    data class SetIsError(val value: Boolean): CollectionsIntent
+    data class SetCollection(val collection: Collection): CollectionsIntent
 }

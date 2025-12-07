@@ -2,7 +2,7 @@ package com.example.collections.screen
 
 import androidx.compose.runtime.Immutable
 import com.example.data.models.auth.AuthState
-import com.example.data.models.common.request.request_parameters.CollectionType
+import com.example.data.models.common.request.request_parameters.Collection
 
 @Immutable
 data class CollectionsState(
@@ -19,5 +19,21 @@ data class CollectionsState(
     val query: String = "",
     val isSearching: Boolean = false,
 
-    val selectedCollection: CollectionType = CollectionType.WATCHING
-)
+    val selectedCollection: Collection = Collection.WATCHING
+) {
+    fun toggleAuthBS() = copy(isAuthBSVisible = !isAuthBSVisible)
+
+    fun toggleIsSearching() = copy(isSearching = !isSearching)
+
+    fun setLoading(value: Boolean) = copy(isLoading = value)
+
+    fun setError(value: Boolean) = copy(isError = value)
+
+    fun setCollection(collection: Collection) = copy(selectedCollection = collection)
+
+    fun updateQuery(query: String) = copy(query = query)
+
+    fun updateEmail(email: String) = copy(email = email)
+
+    fun updatePassword(password: String) = copy(password = password)
+}
