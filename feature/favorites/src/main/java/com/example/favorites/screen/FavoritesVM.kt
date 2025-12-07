@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -106,27 +107,27 @@ class FavoritesVM @Inject constructor(
 
             // Ui toggles
             FavoritesIntent.ToggleIsAuthBSVisible ->
-                _favoritesState.updatee { copy(isAuthBSVisible = !isAuthBSVisible) }
+                _favoritesState.update { it.toggleAuthBS() }
 
             FavoritesIntent.ToggleIsSearching ->
-                _favoritesState.updatee { copy(isSearching = !isSearching) }
+                _favoritesState.update { it.toggleIsSearching() }
 
             // Ui sets
             is FavoritesIntent.SetIsLoading ->
-                _favoritesState.updatee { copy(isLoading = intent.isLoading) }
+                _favoritesState.update { it.setLoading(intent.value) }
 
             is FavoritesIntent.SetIsError ->
-                _favoritesState.updatee { copy(isError = intent.isError) }
+                _favoritesState.update { it.setError(intent.value) }
 
             // Ui updates
             is FavoritesIntent.UpdateQuery ->
-                _favoritesState.updatee { copy(query = intent.query) }
+                _favoritesState.update { it.updateQuery(intent.query) }
 
             is FavoritesIntent.UpdateEmail ->
-                _favoritesState.updatee { copy(email = intent.email) }
+                _favoritesState.update { it.updateEmail(intent.email) }
 
             is FavoritesIntent.UpdatePassword ->
-                _favoritesState.updatee { copy(password = intent.password) }
+                _favoritesState.update { it.updatePassword(intent.password) }
 
             // Actions
             FavoritesIntent.GetTokens ->

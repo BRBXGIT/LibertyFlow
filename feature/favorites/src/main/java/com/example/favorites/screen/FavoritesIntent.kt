@@ -12,6 +12,6 @@ sealed interface FavoritesIntent {
     data class UpdateEmail(val email: String): FavoritesIntent
     data class UpdatePassword(val password: String): FavoritesIntent
 
-    data class SetIsLoading(val isLoading: Boolean): FavoritesIntent
-    data class SetIsError(val isError: Boolean): FavoritesIntent
+    data class SetIsLoading(val value: Boolean): FavoritesIntent
+    data class SetIsError(val value: Boolean): FavoritesIntent
 }
