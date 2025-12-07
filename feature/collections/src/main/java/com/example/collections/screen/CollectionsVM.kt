@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
-import com.example.common.vm_helpers.update
+import com.example.common.vm_helpers.updatee
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
 import com.example.data.models.auth.UiTokenRequest
@@ -56,7 +56,7 @@ class CollectionsVM @Inject constructor(
     private fun observeAuthState() {
         viewModelScope.launch(dispatcherIo) {
             authRepo.authState.collect { authState ->
-                _collectionsState.update { copy(authState = authState) }
+                _collectionsState.updatee { copy(authState = authState) }
             }
         }
     }
@@ -67,7 +67,7 @@ class CollectionsVM @Inject constructor(
      */
     private fun getAuthToken() {
         viewModelScope.launch(dispatcherIo) {
-            _collectionsState.update {
+            _collectionsState.updatee {
                 copy(
                     isLoading = true,
                     isPasswordOrEmailIncorrect = false
@@ -81,11 +81,11 @@ class CollectionsVM @Inject constructor(
             authRepo.getToken(request)
                 .onSuccess { uiToken ->
                     authRepo.saveToken(uiToken.token!!)
-                    _collectionsState.update { copy(isLoading = false) }
+                    _collectionsState.updatee { copy(isLoading = false) }
                 }
                 .onError { error, message ->
                     if (error == NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD) {
-                        _collectionsState.update {
+                        _collectionsState.updatee {
                             copy(
                                 isLoading = false,
                                 isPasswordOrEmailIncorrect = true
@@ -103,30 +103,30 @@ class CollectionsVM @Inject constructor(
 
             // Ui toggles
             CollectionsIntent.ToggleIsAuthBSVisible ->
-                _collectionsState.update { copy(isAuthBSVisible = !isAuthBSVisible) }
+                _collectionsState.updatee { copy(isAuthBSVisible = !isAuthBSVisible) }
 
             CollectionsIntent.ToggleIsSearching ->
-                _collectionsState.update { copy(isSearching = !isSearching) }
+                _collectionsState.updatee { copy(isSearching = !isSearching) }
 
             // Ui sets
             is CollectionsIntent.SetIsLoading ->
-                _collectionsState.update { copy(isLoading = intent.isLoading) }
+                _collectionsState.updatee { copy(isLoading = intent.isLoading) }
 
             is CollectionsIntent.SetIsError ->
-                _collectionsState.update { copy(isError = intent.isError) }
+                _collectionsState.updatee { copy(isError = intent.isError) }
             
             is CollectionsIntent.SetCollection ->
-                _collectionsState.update { copy(selectedCollection = intent.collection) }
+                _collectionsState.updatee { copy(selectedCollection = intent.collection) }
 
             // Ui updates
             is CollectionsIntent.UpdateQuery ->
-                _collectionsState.update { copy(query = intent.query) }
+                _collectionsState.updatee { copy(query = intent.query) }
 
             is CollectionsIntent.UpdateEmail ->
-                _collectionsState.update { copy(email = intent.email) }
+                _collectionsState.updatee { copy(email = intent.email) }
 
             is CollectionsIntent.UpdatePassword ->
-                _collectionsState.update { copy(password = intent.password) }
+                _collectionsState.updatee { copy(password = intent.password) }
 
             // Actions
             CollectionsIntent.GetTokens ->

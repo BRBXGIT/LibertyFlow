@@ -23,4 +23,18 @@ data class UiFullRequestParameters(
             to = to ?: years.to
         )
     )
+
+    fun updateSearch(search: String) = copy(search = search)
+
+    fun addGenre(genre: UiGenre) = copy(genres = genres + genre)
+
+    fun removeGenre(genre: UiGenre) = copy(genres = genres - genre)
+
+    fun addSeason(season: Season) = copy(seasons = seasons + season)
+
+    fun removeSeason(season: Season) = copy(seasons = seasons - season)
+
+    fun updateSorting(sorting: Sorting) = copy(sorting = sorting)
+
+    fun toggleIsOngoing(publishStatuses: List<PublishStatus>) = copy(publishStatuses = publishStatuses)
 }

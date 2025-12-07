@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
-import com.example.common.vm_helpers.update
+import com.example.common.vm_helpers.updatee
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.FavoritesRepo
 import com.example.data.models.auth.UiTokenRequest
@@ -56,7 +56,7 @@ class FavoritesVM @Inject constructor(
     private fun observeAuthState() {
         viewModelScope.launch(dispatcherIo) {
             authRepo.authState.collect { authState ->
-                _favoritesState.update { copy(authState = authState) }
+                _favoritesState.updatee { copy(authState = authState) }
             }
         }
     }
@@ -67,7 +67,7 @@ class FavoritesVM @Inject constructor(
      */
     private fun getAuthToken() {
         viewModelScope.launch(dispatcherIo) {
-            _favoritesState.update {
+            _favoritesState.updatee {
                 copy(
                     isLoading = true,
                     isPasswordOrEmailIncorrect = false
@@ -81,11 +81,11 @@ class FavoritesVM @Inject constructor(
             authRepo.getToken(request)
                 .onSuccess { uiToken ->
                     authRepo.saveToken(uiToken.token!!)
-                    _favoritesState.update { copy(isLoading = false) }
+                    _favoritesState.updatee { copy(isLoading = false) }
                 }
                 .onError { error, message ->
                     if (error == NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD) {
-                        _favoritesState.update {
+                        _favoritesState.updatee {
                             copy(
                                 isLoading = false,
                                 isPasswordOrEmailIncorrect = true
@@ -106,27 +106,27 @@ class FavoritesVM @Inject constructor(
 
             // Ui toggles
             FavoritesIntent.ToggleIsAuthBSVisible ->
-                _favoritesState.update { copy(isAuthBSVisible = !isAuthBSVisible) }
+                _favoritesState.updatee { copy(isAuthBSVisible = !isAuthBSVisible) }
 
             FavoritesIntent.ToggleIsSearching ->
-                _favoritesState.update { copy(isSearching = !isSearching) }
+                _favoritesState.updatee { copy(isSearching = !isSearching) }
 
             // Ui sets
             is FavoritesIntent.SetIsLoading ->
-                _favoritesState.update { copy(isLoading = intent.isLoading) }
+                _favoritesState.updatee { copy(isLoading = intent.isLoading) }
 
             is FavoritesIntent.SetIsError ->
-                _favoritesState.update { copy(isError = intent.isError) }
+                _favoritesState.updatee { copy(isError = intent.isError) }
 
             // Ui updates
             is FavoritesIntent.UpdateQuery ->
-                _favoritesState.update { copy(query = intent.query) }
+                _favoritesState.updatee { copy(query = intent.query) }
 
             is FavoritesIntent.UpdateEmail ->
-                _favoritesState.update { copy(email = intent.email) }
+                _favoritesState.updatee { copy(email = intent.email) }
 
             is FavoritesIntent.UpdatePassword ->
-                _favoritesState.update { copy(password = intent.password) }
+                _favoritesState.updatee { copy(password = intent.password) }
 
             // Actions
             FavoritesIntent.GetTokens ->

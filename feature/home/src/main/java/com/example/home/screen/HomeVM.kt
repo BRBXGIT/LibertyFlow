@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
-import com.example.common.vm_helpers.update
+import com.example.common.vm_helpers.updatee
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,14 +57,14 @@ class HomeVM @Inject constructor(
 
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {
-            _homeState.update { copy(isLoading = true) }
+            _homeState.updatee { copy(isLoading = true) }
 
             releasesRepo.getRandomAnime()
                 .onSuccess { anime ->
-                    _homeState.update { copy(randomAnimeId = anime.id, isLoading = false) }
+                    _homeState.updatee { copy(randomAnimeId = anime.id, isLoading = false) }
                 }
                 .onError { _, message ->
-                    _homeState.update { copy(isLoading = false) }
+                    _homeState.updatee { copy(isLoading = false) }
                     sendRetrySnackbar(message) { getRandomAnime() }
                 }
         }
@@ -71,14 +72,14 @@ class HomeVM @Inject constructor(
 
     private fun getGenres() {
         viewModelScope.launch(dispatcherIo) {
-            _homeState.update { copy(isGenresLoading = true) }
+            _homeState.updatee { copy(isGenresLoading = true) }
 
             genresRepo.getGenres()
                 .onSuccess { genres ->
-                    _homeState.update { copy(genres = genres, isGenresLoading = false) }
+                    _homeState.updatee { copy(genres = genres, isGenresLoading = false) }
                 }
                 .onError { _, message ->
-                    _homeState.update { copy(isGenresLoading = false) }
+                    _homeState.updatee { copy(isGenresLoading = false) }
                     sendRetrySnackbar(message) { getGenres() }
                 }
         }
@@ -89,52 +90,50 @@ class HomeVM @Inject constructor(
 
             /* --- UI toggles --- */
             HomeIntent.ToggleSearching ->
-                _homeState.update { copy(isSearching = !isSearching) }
+                _homeState.update { it.toggleIsSearching() }
 
             HomeIntent.ToggleFiltersBottomSheet ->
-                _homeState.update { copy(isFiltersBSVisible = !isFiltersBSVisible) }
+                _homeState.update { it.toggleFiltersBottomSheet() }
 
 
             /* --- UI flags --- */
             is HomeIntent.SetLoading ->
-                _homeState.update { copy(isLoading = intent.value) }
+                _homeState.update { it.setLoading(intent.value) }
 
             is HomeIntent.SetError ->
-                _homeState.update { copy(isError = intent.value) }
-
+                _homeState.update { it.setError(intent.value) }
 
             /* --- Query change --- */
             is HomeIntent.UpdateQuery ->
-                _homeState.update { copy(request = request.copy(search = intent.value)) }
-
+                _homeState.update { it.updateQuery(intent.query) }
 
             /* --- Filters --- */
             is HomeIntent.AddGenre ->
-                _homeState.update { copy(request = request.copy(genres = request.genres + intent.genre)) }
+                _homeState.update { it.addGenre(intent.genre) }
 
             is HomeIntent.RemoveGenre ->
-                _homeState.update { copy(request = request.copy(genres = request.genres - intent.genre)) }
+                _homeState.update { it.removeGenre(intent.genre) }
 
             is HomeIntent.AddSeason ->
-                _homeState.update { copy(request = request.copy(seasons = request.seasons + intent.season)) }
+                _homeState.update { it.addSeason(intent.season) }
 
             is HomeIntent.RemoveSeason ->
-                _homeState.update { copy(request = request.copy(seasons = request.seasons - intent.season)) }
+                _homeState.update { it.removeSeason(intent.season) }
 
             is HomeIntent.UpdateFromYear ->
-                _homeState.update { copy(request = request.updateYear(from = intent.value)) }
+                _homeState.update { it.updateFromYear(intent.year) }
 
             is HomeIntent.UpdateToYear ->
-                _homeState.update { copy(request = request.updateYear(to = intent.value)) }
+                _homeState.update { it.updateToYear(intent.year) }
 
             is HomeIntent.UpdateSorting ->
-                _homeState.update { copy(request = request.copy(sorting = intent.sorting)) }
+                _homeState.update { it.updateSorting(intent.sorting) }
 
             is HomeIntent.ToggleIsOngoing -> {
                 if(_homeState.value.request.publishStatuses.isEmpty()) {
-                    _homeState.update { copy(request = request.copy(publishStatuses = listOf(PublishStatus.IS_ONGOING))) }
+                    _homeState.update { it.toggleIsOngoing(listOf(PublishStatus.IS_ONGOING)) }
                 } else {
-                    _homeState.update { copy(request = request.copy(publishStatuses = emptyList())) }
+                    _homeState.update { it.toggleIsOngoing(emptyList()) }
                 }
             }
 
