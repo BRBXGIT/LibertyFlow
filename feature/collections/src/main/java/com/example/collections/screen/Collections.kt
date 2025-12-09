@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -23,6 +24,7 @@ import com.example.collections.components.CollectionsPager
 import com.example.collections.components.CollectionsTabRow
 import com.example.collections.screen.CollectionsConstants.TopBarLabel
 import com.example.data.models.auth.AuthState
+import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
@@ -45,7 +47,7 @@ private object CollectionsConstants {
 @Composable
 fun Collections(
     collectionsState: CollectionsState,
-    collectionAnime: LazyPagingItems<UiAnimeItem>,
+    collections: List<LazyPagingItems<UiAnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit
 ) {
     val snackbars = getSnackbarState()
@@ -54,7 +56,9 @@ fun Collections(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbars.snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
-        modifier = Modifier.fillMaxSize().nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
         topBar = {
             SearchingTopBar(
                 showIndicator = false,
@@ -89,7 +93,7 @@ fun Collections(
                 )
         ) {
             when(collectionsState.authState) {
-                AuthState.LoggedIn -> LoggedInContent(collectionsState, collectionAnime, snackbars, onIntent)
+                AuthState.LoggedIn -> LoggedInContent(collectionsState, collections, snackbars, onIntent)
                 AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) })
             }
         }
@@ -100,18 +104,20 @@ fun Collections(
 @Composable
 private fun LoggedInContent(
     collectionsState: CollectionsState,
-    collectionAnime: LazyPagingItems<UiAnimeItem>,
+    collections: List<LazyPagingItems<UiAnimeItem>>,
     snackbars: SnackbarState,
     onIntent: (CollectionsIntent) -> Unit
 ) {
-    PagingStatesContainer(
-        items = collectionAnime,
-        onLoadingChange = { onIntent(CollectionsIntent.SetIsLoading(it)) },
-        onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
-        onRetryRequest = { message, retry ->
-            snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
-        }
-    )
+    collections.forEach { collection ->
+        PagingStatesContainer(
+            items = collection,
+            onLoadingChange = { onIntent(CollectionsIntent.SetIsLoading(it)) },
+            onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
+            onRetryRequest = { message, retry ->
+                snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
+            }
+        )
+    }
 
     when(collectionsState.isError) {
         true -> ErrorSection()
@@ -119,16 +125,23 @@ private fun LoggedInContent(
             Column {
                 CollectionsTabRow(collectionsState.selectedCollection, onIntent)
 
-                // TODO change indicator to m3 expressive
+                val pagerState = rememberPagerState { Collection.entries.size }
                 PullToRefreshBox(
                     isRefreshing = collectionsState.isLoading,
-                    onRefresh = { collectionAnime.refresh() }
+                    onRefresh = { collections[pagerState.currentPage].refresh() }
                 ) {
                     CollectionsPager(
+                        state = pagerState,
                         currentCollection = collectionsState.selectedCollection,
                         onIntent = onIntent
-                    ) {
-                        PagingAnimeItemsLazyVerticalGrid(collectionAnime)
+                    ) { page ->
+                        when(page) {
+                            0 -> PagingAnimeItemsLazyVerticalGrid(collections[0])
+                            1 -> PagingAnimeItemsLazyVerticalGrid(collections[1])
+                            2 -> PagingAnimeItemsLazyVerticalGrid(collections[2])
+                            3 -> PagingAnimeItemsLazyVerticalGrid(collections[3])
+                            4 -> PagingAnimeItemsLazyVerticalGrid(collections[4])
+                        }
                     }
                 }
             }

@@ -13,6 +13,7 @@ import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
 import com.example.data.models.auth.UiTokenRequest
 import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
+import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
 import com.example.data.utils.remote.network_request.NetworkErrors
 import com.example.data.utils.remote.network_request.onError
@@ -39,14 +40,46 @@ class CollectionsVM @Inject constructor(
     private val _collectionsState = MutableStateFlow(CollectionsState())
     val collectionsState = _collectionsState.toLazily(CollectionsState())
 
-    private val collectionParameters = _collectionsState
-        .map { state -> CollectionParameters(query = state.query, selectedCollection = state.selectedCollection) }
+    private val query = _collectionsState
+        .map { state -> state.query }
         .distinctUntilChanged()
 
-    val collectionAnime = collectionParameters.flatMapLatest { parameters ->
+    val plannedAnime = query.flatMapLatest { query ->
         val request = UiCommonRequestWithCollectionType(
-            requestParameters = UiShortRequestParameters(search = parameters.query),
-            collection = parameters.selectedCollection
+            requestParameters = UiShortRequestParameters(search = query),
+            collection = Collection.PLANNED
+        )
+        collectionsRepo.getAnimeInCollection(request)
+    }.cachedIn(viewModelScope)
+
+    val watchedAnime = query.flatMapLatest { query ->
+        val request = UiCommonRequestWithCollectionType(
+            requestParameters = UiShortRequestParameters(search = query),
+            collection = Collection.WATCHED
+        )
+        collectionsRepo.getAnimeInCollection(request)
+    }.cachedIn(viewModelScope)
+
+    val watchingAnime = query.flatMapLatest { query ->
+        val request = UiCommonRequestWithCollectionType(
+            requestParameters = UiShortRequestParameters(search = query),
+            collection = Collection.WATCHING
+        )
+        collectionsRepo.getAnimeInCollection(request)
+    }.cachedIn(viewModelScope)
+
+    val postponedAnime = query.flatMapLatest { query ->
+        val request = UiCommonRequestWithCollectionType(
+            requestParameters = UiShortRequestParameters(search = query),
+            collection = Collection.POSTPONED
+        )
+        collectionsRepo.getAnimeInCollection(request)
+    }.cachedIn(viewModelScope)
+
+    val abandonedAnime = query.flatMapLatest { query ->
+        val request = UiCommonRequestWithCollectionType(
+            requestParameters = UiShortRequestParameters(search = query),
+            collection = Collection.ABANDONED
         )
         collectionsRepo.getAnimeInCollection(request)
     }.cachedIn(viewModelScope)

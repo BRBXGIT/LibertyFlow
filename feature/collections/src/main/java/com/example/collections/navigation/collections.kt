@@ -13,11 +13,16 @@ fun NavGraphBuilder.collections(
     collectionsVM: CollectionsVM
 ) = composable<CollectionsRoute> {
     val collectionsState by collectionsVM.collectionsState.collectAsStateWithLifecycle()
-    val collectionAnime = collectionsVM.collectionAnime.collectAsLazyPagingItems()
+
+    val plannedAnime = collectionsVM.plannedAnime.collectAsLazyPagingItems()
+    val watchedAnime = collectionsVM.watchedAnime.collectAsLazyPagingItems()
+    val watchingAnime = collectionsVM.watchingAnime.collectAsLazyPagingItems()
+    val postponedAnime = collectionsVM.postponedAnime.collectAsLazyPagingItems()
+    val abandonedAnime = collectionsVM.abandonedAnime.collectAsLazyPagingItems()
 
     Collections(
         collectionsState = collectionsState,
-        collectionAnime = collectionAnime,
+        collections = listOf(plannedAnime, watchedAnime, watchingAnime, postponedAnime, abandonedAnime),
         onIntent = collectionsVM::sendIntent,
     )
 }
