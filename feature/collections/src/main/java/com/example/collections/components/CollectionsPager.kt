@@ -4,10 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import com.example.collections.screen.CollectionsIntent
 import com.example.data.models.common.mappers.toCollection
@@ -22,7 +20,7 @@ fun CollectionsPager(
     pageContent: @Composable PagerScope.(page: Int) -> Unit
 ) {
     LaunchedEffect(currentCollection) {
-        state.scrollToPage(currentCollection.toIndex())
+        state.animateScrollToPage(currentCollection.toIndex())
     }
 
     LaunchedEffect(state.currentPage) {
@@ -32,10 +30,8 @@ fun CollectionsPager(
     HorizontalPager(
         state = state,
         modifier = Modifier.fillMaxSize(),
-        key = { it },
+        key = { page -> page },
     ) { page ->
-        key(page) {
-            pageContent(page)
-        }
+        pageContent(page)
     }
 }

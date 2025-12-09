@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="top_bar_label">Коллекции</string>
+    <string name="empty_collection_label">Коллекция пустая, добавьте что-нибудь (◔◡◔)</string>
 </resources>

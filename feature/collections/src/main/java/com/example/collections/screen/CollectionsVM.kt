@@ -44,6 +44,9 @@ class CollectionsVM @Inject constructor(
         .map { state -> state.query }
         .distinctUntilChanged()
 
+    /**
+     * All collections as paging data flows
+     */
     val plannedAnime = query.flatMapLatest { query ->
         val request = UiCommonRequestWithCollectionType(
             requestParameters = UiShortRequestParameters(search = query),
