@@ -30,7 +30,7 @@ fun CollectionsPager(
     HorizontalPager(
         state = state,
         modifier = Modifier.fillMaxSize(),
-        key = { page -> page },
+        key = { it }
     ) { page ->
         pageContent(page)
     }

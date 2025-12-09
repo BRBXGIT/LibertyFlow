@@ -12,18 +12,15 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.LineBreak
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.collections.R
+import com.example.collections.components.CollectionPage
 import com.example.collections.components.CollectionsPager
 import com.example.collections.components.CollectionsTabRow
 import com.example.collections.screen.CollectionsConstants.TopBarLabel
@@ -38,10 +35,8 @@ import com.example.design_system.components.sections.LoggedOutSection
 import com.example.design_system.components.snackbars.SnackbarState
 import com.example.design_system.components.snackbars.getSnackbarState
 import com.example.design_system.components.snackbars.sendRetrySnackbar
-import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mTypography
 import kotlinx.coroutines.launch
 
 // TODO FIX BUG WITH LABEL
@@ -151,32 +146,5 @@ private fun LoggedInContent(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun EmptyCollectionSection() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.empty_collection_label),
-            style = mTypography.bodyLarge.copy(lineBreak = LineBreak.Paragraph),
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun CollectionPage(
-    isError: Boolean,
-    collection: LazyPagingItems<UiAnimeItem>
-) {
-    when {
-        isError -> ErrorSection()
-        collection.itemCount == 0 -> EmptyCollectionSection()
-        else -> PagingAnimeItemsLazyVerticalGrid(collection)
     }
 }

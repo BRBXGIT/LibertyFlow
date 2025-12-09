@@ -44,6 +44,7 @@ class CollectionsVM @Inject constructor(
         .map { state -> state.query }
         .distinctUntilChanged()
 
+    // TODO rewrite to something like sliding window
     /**
      * All collections as paging data flows
      */
@@ -151,7 +152,7 @@ class CollectionsVM @Inject constructor(
 
             is CollectionsIntent.SetIsError ->
                 _collectionsState.update { it.setError(intent.value) }
-            
+
             is CollectionsIntent.SetCollection ->
                 _collectionsState.update { it.setCollection(intent.collection) }
 
