@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toEagerly
-import com.example.common.vm_helpers.updatee
 import com.example.data.domain.ThemeRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,8 +31,8 @@ internal class ThemeVM @Inject constructor(
             ) { theme, colorScheme, useExpressive ->
                 Triple(theme, colorScheme, useExpressive)
             }.collect { (theme, colorScheme, useExpressive) ->
-                _themeState.updatee {
-                    copy(
+                _themeState.update {
+                    it.copy(
                         useExpressive = useExpressive,
                         theme = theme,
                         colorScheme = colorScheme

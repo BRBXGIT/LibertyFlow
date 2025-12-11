@@ -8,7 +8,6 @@ import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
-import com.example.common.vm_helpers.updatee
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.FavoritesRepo
 import com.example.data.models.auth.UiTokenRequest
@@ -57,7 +56,7 @@ class FavoritesVM @Inject constructor(
     private fun observeAuthState() {
         viewModelScope.launch(dispatcherIo) {
             authRepo.authState.collect { authState ->
-                _favoritesState.updatee { copy(authState = authState) }
+                _favoritesState.update { it.setAuthState(authState) }
             }
         }
     }
@@ -68,12 +67,7 @@ class FavoritesVM @Inject constructor(
      */
     private fun getAuthToken() {
         viewModelScope.launch(dispatcherIo) {
-            _favoritesState.updatee {
-                copy(
-                    isLoading = true,
-                    isPasswordOrEmailIncorrect = false
-                )
-            }
+            _favoritesState.update { it.copy(isLoading = true, isPasswordOrEmailIncorrect = false) }
 
             val request = UiTokenRequest(
                 login = _favoritesState.value.email,
@@ -82,16 +76,11 @@ class FavoritesVM @Inject constructor(
             authRepo.getToken(request)
                 .onSuccess { uiToken ->
                     authRepo.saveToken(uiToken.token!!)
-                    _favoritesState.updatee { copy(isLoading = false) }
+                    _favoritesState.update { it.setLoading(false) }
                 }
                 .onError { error, message ->
                     if (error == NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD) {
-                        _favoritesState.updatee {
-                            copy(
-                                isLoading = false,
-                                isPasswordOrEmailIncorrect = true
-                            )
-                        }
+                        _favoritesState.update { it.copy(isLoading = false, isPasswordOrEmailIncorrect = true) }
                     } else {
                         sendRetrySnackbar(message) { getAuthToken() }
                     }

@@ -34,7 +34,3 @@ fun <T> Flow<T>.toWhileSubscribed(initialState: T): StateFlow<T> {
         initialState
     )
 }
-
-inline fun <T> MutableStateFlow<T>.updatee(crossinline block: T.() -> T) {
-    this.value = this.value.block()
-}

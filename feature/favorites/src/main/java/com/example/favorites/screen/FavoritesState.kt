@@ -26,6 +26,8 @@ data class FavoritesState(
 
     fun setError(value: Boolean) = copy(isError = value)
 
+    fun setAuthState(value: AuthState) = copy(authState = value)
+
     fun updateQuery(query: String) = copy(query = query)
 
     fun updateEmail(email: String) = copy(email = email)

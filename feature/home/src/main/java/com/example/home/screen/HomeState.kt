@@ -28,6 +28,8 @@ data class HomeState(
 
     fun setError(value: Boolean) = copy(isError = value)
 
+    fun setGenresLoading(value: Boolean) = copy(isGenresLoading = value)
+
     fun updateQuery(query: String) = copy(request = request.updateSearch(query))
 
     fun addGenre(genre: UiGenre) = copy(request = request.addGenre(genre))

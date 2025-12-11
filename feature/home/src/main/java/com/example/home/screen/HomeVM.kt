@@ -8,7 +8,6 @@ import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
-import com.example.common.vm_helpers.updatee
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
@@ -57,14 +56,14 @@ class HomeVM @Inject constructor(
 
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {
-            _homeState.updatee { copy(isLoading = true) }
+            _homeState.update { it.setLoading(true) }
 
             releasesRepo.getRandomAnime()
                 .onSuccess { anime ->
-                    _homeState.updatee { copy(randomAnimeId = anime.id, isLoading = false) }
+                    _homeState.update { it.copy(randomAnimeId = anime.id, isLoading = false) }
                 }
                 .onError { _, message ->
-                    _homeState.updatee { copy(isLoading = false) }
+                    _homeState.update { it.setLoading(false) }
                     sendRetrySnackbar(message) { getRandomAnime() }
                 }
         }
@@ -72,14 +71,14 @@ class HomeVM @Inject constructor(
 
     private fun getGenres() {
         viewModelScope.launch(dispatcherIo) {
-            _homeState.updatee { copy(isGenresLoading = true) }
+            _homeState.update { it.setGenresLoading(true) }
 
             genresRepo.getGenres()
                 .onSuccess { genres ->
-                    _homeState.updatee { copy(genres = genres, isGenresLoading = false) }
+                    _homeState.update { it.copy(genres = genres, isGenresLoading = false) }
                 }
                 .onError { _, message ->
-                    _homeState.updatee { copy(isGenresLoading = false) }
+                    _homeState.update { it.setGenresLoading(false) }
                     sendRetrySnackbar(message) { getGenres() }
                 }
         }

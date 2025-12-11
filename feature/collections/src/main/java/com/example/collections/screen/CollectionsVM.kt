@@ -8,7 +8,6 @@ import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
-import com.example.common.vm_helpers.updatee
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
 import com.example.data.models.auth.UiTokenRequest
@@ -94,7 +93,7 @@ class CollectionsVM @Inject constructor(
     private fun observeAuthState() {
         viewModelScope.launch(dispatcherIo) {
             authRepo.authState.collect { authState ->
-                _collectionsState.updatee { copy(authState = authState) }
+                _collectionsState.update { it.setAuthState(authState) }
             }
         }
     }
@@ -105,12 +104,7 @@ class CollectionsVM @Inject constructor(
      */
     private fun getAuthToken() {
         viewModelScope.launch(dispatcherIo) {
-            _collectionsState.updatee {
-                copy(
-                    isLoading = true,
-                    isPasswordOrEmailIncorrect = false
-                )
-            }
+            _collectionsState.update { it.copy(isLoading = true, isPasswordOrEmailIncorrect = false) }
 
             val request = UiTokenRequest(
                 login = _collectionsState.value.email,
@@ -119,16 +113,11 @@ class CollectionsVM @Inject constructor(
             authRepo.getToken(request)
                 .onSuccess { uiToken ->
                     authRepo.saveToken(uiToken.token!!)
-                    _collectionsState.updatee { copy(isLoading = false) }
+                    _collectionsState.update { it.setLoading(false) }
                 }
                 .onError { error, message ->
                     if (error == NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD) {
-                        _collectionsState.updatee {
-                            copy(
-                                isLoading = false,
-                                isPasswordOrEmailIncorrect = true
-                            )
-                        }
+                        _collectionsState.update { it.copy(isLoading = false, isPasswordOrEmailIncorrect = true) }
                     } else {
                         sendRetrySnackbar(message) { getAuthToken() }
                     }

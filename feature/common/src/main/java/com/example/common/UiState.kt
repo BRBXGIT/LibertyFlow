@@ -5,4 +5,6 @@ import com.example.common.navigation.NavigationBase
 
 data class UiState(
     val selectedRoute: NavigationBase = HomeRoute
-)
+) {
+    fun setRoute(route: NavigationBase) = copy(selectedRoute = route)
+}

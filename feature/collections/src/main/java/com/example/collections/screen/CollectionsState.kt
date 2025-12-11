@@ -29,6 +29,8 @@ data class CollectionsState(
 
     fun setError(value: Boolean) = copy(isError = value)
 
+    fun setAuthState(value: AuthState) = copy(authState = value)
+
     fun setCollection(collection: Collection) = copy(selectedCollection = collection)
 
     fun updateQuery(query: String) = copy(query = query)

@@ -1,7 +1,9 @@
 package com.example.data.models.common.request.request_parameters
 
+import androidx.compose.runtime.Immutable
 import com.example.data.models.common.common.UiGenre
 
+@Immutable
 data class UiFullRequestParameters(
     override val ageRatings: List<AgeRating> = emptyList(),
     override val sorting: Sorting = Sorting.FRESH_AT_DESC,

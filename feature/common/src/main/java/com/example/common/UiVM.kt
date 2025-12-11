@@ -2,8 +2,8 @@ package com.example.common
 
 import androidx.lifecycle.ViewModel
 import com.example.common.vm_helpers.toEagerly
-import com.example.common.vm_helpers.updatee
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 class UiVM: ViewModel() {
 
@@ -12,7 +12,7 @@ class UiVM: ViewModel() {
 
     fun sendIntent(intent: UiIntent) {
         when(intent) {
-            is UiIntent.UpdateSelectedRoute -> _uiState.updatee { copy(selectedRoute = intent.route) }
+            is UiIntent.UpdateSelectedRoute -> _uiState.update { it.setRoute(intent.route) }
         }
     }
 }

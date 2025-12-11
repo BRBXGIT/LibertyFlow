@@ -1,5 +1,6 @@
 package com.example.data.utils.remote.network_request
 
+import android.util.Log
 import com.example.data.R
 import retrofit2.Response
 import java.net.SocketException
