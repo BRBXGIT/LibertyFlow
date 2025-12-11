@@ -15,6 +15,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -25,6 +26,7 @@ import com.example.collections.components.CollectionsPager
 import com.example.collections.components.CollectionsTabRow
 import com.example.collections.screen.CollectionsConstants.TopBarLabel
 import com.example.data.models.auth.AuthState
+import com.example.data.models.common.mappers.toIndex
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
@@ -122,17 +124,24 @@ private fun LoggedInContent(
     when(collectionsState.isError) {
         true -> ErrorSection()
         false -> {
-            Column {
-                CollectionsTabRow(collectionsState.selectedCollection, onIntent)
+            val pagerState = rememberPagerState { Collection.entries.size }
+            val pagerScope = rememberCoroutineScope()
 
-                val pagerState = rememberPagerState { Collection.entries.size }
+            Column {
+                CollectionsTabRow(
+                    selectedCollection = collectionsState.selectedCollection,
+                    onTabClick = { collection ->
+                        onIntent(CollectionsIntent.SetCollection(collection))
+                        pagerScope.launch { pagerState.animateScrollToPage(collection.toIndex()) }
+                    }
+                )
+
                 PullToRefreshBox(
                     isRefreshing = collectionsState.isLoading,
                     onRefresh = { collections[pagerState.currentPage].refresh() }
                 ) {
                     CollectionsPager(
                         state = pagerState,
-                        currentCollection = collectionsState.selectedCollection,
                         onIntent = onIntent
                     ) { page ->
                         when(page) {

@@ -29,7 +29,7 @@ private object CollectionsTabRowConstants {
 @Composable
 internal fun CollectionsTabRow(
     selectedCollection: Collection,
-    onIntent: (CollectionsIntent) -> Unit
+    onTabClick: (Collection) -> Unit
 ) {
     val collections = Collection.entries
 
@@ -49,7 +49,7 @@ internal fun CollectionsTabRow(
             val isSelected = selectedCollection == collection
 
             Tab(
-                onClick = { onIntent(CollectionsIntent.SetCollection(collection)) },
+                onClick = { onTabClick(collection) },
                 selected = isSelected,
                 modifier = Modifier.clip(tabShape)
             ) {
