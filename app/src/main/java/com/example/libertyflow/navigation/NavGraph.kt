@@ -11,6 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.example.anime_details.navigation.animeDetails
 import com.example.collections.navigation.collections
 import com.example.collections.screen.CollectionsVM
 import com.example.common.UiIntent
@@ -39,11 +40,13 @@ fun NavGraph() {
             startDestination = HomeRoute,
             modifier = Modifier.align(Alignment.Center)
         ) {
-            home(homeVM)
+            home(homeVM, navController)
 
-            favorites(favoritesVM)
+            favorites(favoritesVM, navController)
 
-            collections(collectionsVM)
+            collections(collectionsVM, navController)
+
+            animeDetails()
         }
 
         val uiState by uiVM.uiState.collectAsStateWithLifecycle()

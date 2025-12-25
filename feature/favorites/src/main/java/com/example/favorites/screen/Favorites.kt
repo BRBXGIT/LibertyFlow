@@ -113,6 +113,9 @@ private fun LoggedInContent(
 
     when(favoritesState.isError) {
         true -> ErrorSection()
-        false -> PagingAnimeItemsLazyVerticalGrid(favorites)
+        false -> PagingAnimeItemsLazyVerticalGrid(
+            anime = favorites,
+            onItemClick = { onIntent(FavoritesIntent.NavigateToAnimeDetails(it)) }
+        )
     }
 }

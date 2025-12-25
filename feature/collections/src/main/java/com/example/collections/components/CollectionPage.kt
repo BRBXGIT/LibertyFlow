@@ -14,11 +14,15 @@ private object CollectionPageConstants {
 @Composable
 internal fun CollectionPage(
     isError: Boolean,
-    collection: LazyPagingItems<UiAnimeItem>
+    collection: LazyPagingItems<UiAnimeItem>,
+    onItemClick: (Int) -> Unit,
 ) {
     when {
         isError -> ErrorSection()
         collection.itemCount == ZERO_ELEMENTS -> EmptyCollectionSection()
-        else -> PagingAnimeItemsLazyVerticalGrid(collection)
+        else -> PagingAnimeItemsLazyVerticalGrid(
+            anime = collection,
+            onItemClick = { onItemClick(it) }
+        )
     }
 }

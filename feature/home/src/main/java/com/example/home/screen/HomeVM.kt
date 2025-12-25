@@ -139,6 +139,8 @@ class HomeVM @Inject constructor(
             /* --- Data operations --- */
             HomeIntent.GetRandomAnime -> getRandomAnime()
             HomeIntent.GetGenres -> getGenres()
+
+            else -> {}
         }
     }
 }

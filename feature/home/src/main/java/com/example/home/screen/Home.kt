@@ -103,7 +103,10 @@ fun Home(
             // Main content logic depending on search mode + error state
             when(homeState.isError) {
                 true -> ErrorSection()
-                false -> PagingAnimeItemsLazyVerticalGrid(anime) {
+                false -> PagingAnimeItemsLazyVerticalGrid(
+                    anime = anime,
+                    onItemClick = { onIntent(HomeIntent.NavigateToAnimeDetails(it)) }
+                ) {
                     item(
                         key = RANDOM_BUTTON_KEY,
                         span = { GridItemSpan(maxLineSpan) }

@@ -145,11 +145,21 @@ private fun LoggedInContent(
                         onIntent = onIntent
                     ) { page ->
                         when(page) {
-                            0 -> CollectionPage(collectionsState.isError, collections[0])
-                            1 -> CollectionPage(collectionsState.isError, collections[1])
-                            2 -> CollectionPage(collectionsState.isError, collections[2])
-                            3 -> CollectionPage(collectionsState.isError, collections[3])
-                            4 -> CollectionPage(collectionsState.isError, collections[4])
+                            0 -> CollectionPage(collectionsState.isError, collections[0]) {
+                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
+                            }
+                            1 -> CollectionPage(collectionsState.isError, collections[1]) {
+                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
+                            }
+                            2 -> CollectionPage(collectionsState.isError, collections[2]) {
+                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
+                            }
+                            3 -> CollectionPage(collectionsState.isError, collections[3]) {
+                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
+                            }
+                            4 -> CollectionPage(collectionsState.isError, collections[4]) {
+                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
+                            }
                         }
                     }
                 }

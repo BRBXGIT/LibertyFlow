@@ -21,6 +21,7 @@ private object AnimeLVGContainerConstants {
 
 @Composable
 fun PagingAnimeItemsLazyVerticalGrid(
+    onItemClick: (Int) -> Unit,
     anime: LazyPagingItems<UiAnimeItem>,
     extraContent: LazyGridScope.() -> Unit = {}
 ) {
@@ -40,7 +41,7 @@ fun PagingAnimeItemsLazyVerticalGrid(
                     posterPath = it.poster.fullPath(PosterType.PREVIEW),
                     genresString = it.genresAsString(),
                     title = it.name.russian,
-                    onCardClick = {} // navigation can be added later
+                    onCardClick = { onItemClick(it.id) }
                 )
             }
         }

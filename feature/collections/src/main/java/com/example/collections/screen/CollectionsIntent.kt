@@ -15,4 +15,6 @@ sealed interface CollectionsIntent {
     data class SetIsLoading(val value: Boolean): CollectionsIntent
     data class SetIsError(val value: Boolean): CollectionsIntent
     data class SetCollection(val collection: Collection): CollectionsIntent
+
+    data class NavigateToAnimeDetails(val id: Int): CollectionsIntent
 }

@@ -2,11 +2,11 @@
 
 package com.example.collections.screen
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
+import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
@@ -14,9 +14,6 @@ import com.example.data.models.auth.UiTokenRequest
 import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
-import com.example.data.utils.remote.network_request.NetworkErrors
-import com.example.data.utils.remote.network_request.onError
-import com.example.data.utils.remote.network_request.onSuccess
 import com.example.design_system.components.snackbars.sendRetrySnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,15 +23,14 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CollectionsVM @Inject constructor(
+    authRepo: AuthRepo,
     private val collectionsRepo: CollectionsRepo,
-    private val authRepo: AuthRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-): ViewModel() {
+): BaseAuthVM(authRepo, dispatcherIo) {
 
     private val _collectionsState = MutableStateFlow(CollectionsState())
     val collectionsState = _collectionsState.toLazily(CollectionsState())
@@ -87,44 +83,6 @@ class CollectionsVM @Inject constructor(
         collectionsRepo.getAnimeInCollection(request)
     }.cachedIn(viewModelScope)
 
-    /**
-     * Observes authentication state and updates UI.
-     */
-    private fun observeAuthState() {
-        viewModelScope.launch(dispatcherIo) {
-            authRepo.authState.collect { authState ->
-                _collectionsState.update { it.setAuthState(authState) }
-            }
-        }
-    }
-
-    /**
-     * Requests auth token using email/password.
-     * Shows snackbar with retry on unknown errors.
-     */
-    private fun getAuthToken() {
-        viewModelScope.launch(dispatcherIo) {
-            _collectionsState.update { it.copy(isLoading = true, isPasswordOrEmailIncorrect = false) }
-
-            val request = UiTokenRequest(
-                login = _collectionsState.value.email,
-                password = _collectionsState.value.password
-            )
-            authRepo.getToken(request)
-                .onSuccess { uiToken ->
-                    authRepo.saveToken(uiToken.token!!)
-                    _collectionsState.update { it.setLoading(false) }
-                }
-                .onError { error, message ->
-                    if (error == NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD) {
-                        _collectionsState.update { it.copy(isLoading = false, isPasswordOrEmailIncorrect = true) }
-                    } else {
-                        sendRetrySnackbar(message) { getAuthToken() }
-                    }
-                }
-        }
-    }
-
     fun sendIntent(intent: CollectionsIntent) {
         when (intent) {
 
@@ -156,12 +114,23 @@ class CollectionsVM @Inject constructor(
                 _collectionsState.update { it.updatePassword(intent.password) }
 
             // Actions
-            CollectionsIntent.GetTokens ->
-                getAuthToken()
+            CollectionsIntent.GetTokens -> {
+                getAuthToken(
+                    request = UiTokenRequest(_collectionsState.value.email, _collectionsState.value.password),
+                    onStart = { _collectionsState.update { it.copy(isLoading = true, isPasswordOrEmailIncorrect = false) } },
+                    onSuccess = { _collectionsState.update { it.setLoading(false) } },
+                    onIncorrectData = { _collectionsState.update { it.copy(isPasswordOrEmailIncorrect = true) } },
+                    onAnyError = { message, retry -> sendRetrySnackbar(message) { retry() } },
+                )
+            }
+
+            else -> {}
         }
     }
 
     init {
-        observeAuthState()
+        observeAuthState { authState ->
+            _collectionsState.update { it.setAuthState(authState) }
+        }
     }
 }
