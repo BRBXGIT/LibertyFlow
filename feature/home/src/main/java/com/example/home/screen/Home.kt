@@ -30,14 +30,11 @@ import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
 import com.example.home.R
 import com.example.home.components.FiltersBS
+import com.example.home.components.RANDOM_BUTTON_KEY
 import com.example.home.components.RandomAnimeButton
-import com.example.home.components.RandomAnimeButtonConstants.RANDOM_BUTTON_KEY
-import com.example.home.screen.HomeConstants.TopBarLabel
 import kotlinx.coroutines.launch
 
-private object HomeConstants {
-    val TopBarLabel = R.string.top_bar_label
-}
+private val TopBarLabel = R.string.top_bar_label
 
 @Composable
 fun Home(
@@ -111,7 +108,7 @@ fun Home(
                         key = RANDOM_BUTTON_KEY,
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
-                        RandomAnimeButton(onIntent)
+                        RandomAnimeButton(onIntent, homeState.isRandomAnimeLoading)
                     }
                 }
             }

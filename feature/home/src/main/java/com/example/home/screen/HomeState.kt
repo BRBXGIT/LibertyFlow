@@ -11,6 +11,9 @@ import com.example.data.models.common.request.request_parameters.UiFullRequestPa
 data class HomeState(
     val isError: Boolean = false,
     val isLoading: Boolean = false,
+
+    val isRandomAnimeLoading: Boolean = false,
+
     val randomAnimeId: Int? = null,
     val isSearching: Boolean = false,
     val isFiltersBSVisible: Boolean = false,
@@ -27,6 +30,8 @@ data class HomeState(
     fun setLoading(value: Boolean) = copy(isLoading = value)
 
     fun setError(value: Boolean) = copy(isError = value)
+
+    fun setRandomAnimeLoading(value: Boolean) = copy(isRandomAnimeLoading = value)
 
     fun setGenresLoading(value: Boolean) = copy(isGenresLoading = value)
 

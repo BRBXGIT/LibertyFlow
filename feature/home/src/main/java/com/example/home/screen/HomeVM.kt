@@ -19,6 +19,7 @@ import com.example.design_system.components.snackbars.sendRetrySnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -56,14 +57,16 @@ class HomeVM @Inject constructor(
 
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {
-            _homeState.update { it.setLoading(true) }
+            _homeState.update { it.setRandomAnimeLoading(true) }
+
+            delay(2000) // Just cause i want to show animation :)
 
             releasesRepo.getRandomAnime()
                 .onSuccess { anime ->
-                    _homeState.update { it.copy(randomAnimeId = anime.id, isLoading = false) }
+                    _homeState.update { it.copy(randomAnimeId = anime.id, isRandomAnimeLoading = false) }
                 }
                 .onError { _, message ->
-                    _homeState.update { it.setLoading(false) }
+                    _homeState.update { it.setRandomAnimeLoading(false) }
                     sendRetrySnackbar(message) { getRandomAnime() }
                 }
         }
