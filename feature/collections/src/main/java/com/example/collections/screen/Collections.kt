@@ -24,7 +24,6 @@ import com.example.collections.R
 import com.example.collections.components.CollectionPage
 import com.example.collections.components.CollectionsPager
 import com.example.collections.components.CollectionsTabRow
-import com.example.collections.screen.CollectionsConstants.TopBarLabel
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.mappers.toIndex
 import com.example.data.models.common.request.request_parameters.Collection
@@ -41,10 +40,7 @@ import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.theme.mColors
 import kotlinx.coroutines.launch
 
-// TODO FIX BUG WITH LABEL
-private object CollectionsConstants {
-    val TopBarLabel = R.string.top_bar_label
-}
+private val TopBarLabel = R.string.collections_top_bar_label
 
 @Composable
 fun Collections(
@@ -52,27 +48,32 @@ fun Collections(
     collections: List<LazyPagingItems<UiAnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit
 ) {
+    // Snackbar holder shared across the screen
     val snackbars = getSnackbarState()
 
-    val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
+    // Pinned TopAppBar behavior
+    val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbars.snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbars.snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
         topBar = {
+            // Searchable top bar
             SearchingTopBar(
                 showIndicator = false,
                 label = stringResource(TopBarLabel),
-                scrollBehavior = topBarScrollBehaviour,
+                scrollBehavior = topBarScrollBehavior,
                 query = collectionsState.query,
                 onQueryChange = { onIntent(CollectionsIntent.UpdateQuery(it)) },
                 isSearching = collectionsState.isSearching,
                 onSearchChange = { onIntent(CollectionsIntent.ToggleIsSearching) },
             )
-        }
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(topBarScrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
+        // Authentication BottomSheet
         if (collectionsState.isAuthBSVisible) {
             AuthBS(
                 email = collectionsState.email,
@@ -94,15 +95,25 @@ fun Collections(
                     bottom = calculateNavBarSize()
                 )
         ) {
-            when(collectionsState.authState) {
-                AuthState.LoggedIn -> LoggedInContent(collectionsState, collections, snackbars, onIntent)
-                AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) })
+            // Switch content based on auth state
+            when (collectionsState.authState) {
+                AuthState.LoggedIn -> LoggedInContent(
+                    collectionsState = collectionsState,
+                    collections = collections,
+                    snackbars = snackbars,
+                    onIntent = onIntent
+                )
+
+                AuthState.LoggedOut -> LoggedOutSection(
+                    onAuthClick = {
+                        onIntent(CollectionsIntent.ToggleIsAuthBSVisible)
+                    }
+                )
             }
         }
     }
 }
 
-// Main content
 @Composable
 private fun LoggedInContent(
     collectionsState: CollectionsState,
@@ -110,59 +121,69 @@ private fun LoggedInContent(
     snackbars: SnackbarState,
     onIntent: (CollectionsIntent) -> Unit
 ) {
+    // Observe paging states for every collection
     collections.forEach { collection ->
         PagingStatesContainer(
             items = collection,
             onLoadingChange = { onIntent(CollectionsIntent.SetIsLoading(it)) },
             onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
             onRetryRequest = { message, retry ->
-                snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
+                snackbars.snackbarScope.launch {
+                    sendRetrySnackbar(message, retry)
+                }
             }
         )
     }
 
-    when(collectionsState.isError) {
-        true -> ErrorSection()
-        false -> {
-            val pagerState = rememberPagerState { Collection.entries.size }
-            val pagerScope = rememberCoroutineScope()
+    // Global error state
+    if (collectionsState.isError) {
+        ErrorSection()
+        return
+    }
 
-            Column {
-                CollectionsTabRow(
-                    selectedCollection = collectionsState.selectedCollection,
-                    onTabClick = { collection ->
-                        onIntent(CollectionsIntent.SetCollection(collection))
-                        pagerScope.launch { pagerState.animateScrollToPage(collection.toIndex()) }
-                    }
-                )
+    CollectionsContent(
+        collectionsState = collectionsState,
+        collections = collections,
+        onIntent = onIntent
+    )
+}
 
-                PullToRefreshBox(
-                    isRefreshing = collectionsState.isLoading,
-                    onRefresh = { collections[pagerState.currentPage].refresh() }
-                ) {
-                    CollectionsPager(
-                        state = pagerState,
-                        onIntent = onIntent
-                    ) { page ->
-                        when(page) {
-                            0 -> CollectionPage(collectionsState.isError, collections[0]) {
-                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
-                            }
-                            1 -> CollectionPage(collectionsState.isError, collections[1]) {
-                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
-                            }
-                            2 -> CollectionPage(collectionsState.isError, collections[2]) {
-                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
-                            }
-                            3 -> CollectionPage(collectionsState.isError, collections[3]) {
-                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
-                            }
-                            4 -> CollectionPage(collectionsState.isError, collections[4]) {
-                                onIntent(CollectionsIntent.NavigateToAnimeDetails(it))
-                            }
-                        }
-                    }
+@Composable
+private fun CollectionsContent(
+    collectionsState: CollectionsState,
+    collections: List<LazyPagingItems<UiAnimeItem>>,
+    onIntent: (CollectionsIntent) -> Unit
+) {
+    val pagerState = rememberPagerState { Collection.entries.size }
+    val pagerScope = rememberCoroutineScope()
+
+    Column {
+        // Tabs for collections
+        CollectionsTabRow(
+            selectedCollection = collectionsState.selectedCollection,
+            onTabClick = { collection ->
+                onIntent(CollectionsIntent.SetCollection(collection))
+                pagerScope.launch {
+                    pagerState.animateScrollToPage(collection.toIndex())
                 }
+            }
+        )
+
+        // Pull-to-refresh wrapper
+        PullToRefreshBox(
+            isRefreshing = collectionsState.isLoading,
+            onRefresh = { collections[pagerState.currentPage].refresh() }
+        ) {
+            // Horizontal pager with collections
+            CollectionsPager(
+                state = pagerState,
+                onIntent = onIntent
+            ) { pageIndex ->
+                CollectionPage(
+                    isError = collectionsState.isError,
+                    collection = collections[pageIndex],
+                    onItemClick = { onIntent(CollectionsIntent.NavigateToAnimeDetails(it)) }
+                )
             }
         }
     }

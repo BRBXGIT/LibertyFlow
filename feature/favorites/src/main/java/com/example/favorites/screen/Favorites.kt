@@ -30,13 +30,9 @@ import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import com.example.design_system.theme.mColors
 import com.example.favorites.R
-import com.example.favorites.screen.FavoritesConstants.TopBarLabel
 import kotlinx.coroutines.launch
 
-// TODO FIX BUG WITH LABEL
-private object FavoritesConstants {
-    val TopBarLabel = R.string.top_bar_label
-}
+private val TopBarLabel = R.string.favorites_top_bar_label
 
 @Composable
 fun Favorites(
@@ -50,7 +46,6 @@ fun Favorites(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbars.snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
-        modifier = Modifier.fillMaxSize().nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
         topBar = {
             SearchingTopBar(
                 isLoading = favoritesState.isLoading,
@@ -61,7 +56,10 @@ fun Favorites(
                 isSearching = favoritesState.isSearching,
                 onSearchChange = { onIntent(FavoritesIntent.ToggleIsSearching) },
             )
-        }
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
     ) { innerPadding ->
         if (favoritesState.isAuthBSVisible) {
             AuthBS(
@@ -86,18 +84,34 @@ fun Favorites(
                     bottom = calculateNavBarSize()
                 )
         ) {
-            when(favoritesState.authState) {
-                AuthState.LoggedIn -> LoggedInContent(favoritesState, favorites, snackbars, onIntent)
-                AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) })
-            }
+            MainContent(
+                isError = favoritesState.isError,
+                favorites = favorites,
+                snackbars = snackbars,
+                onIntent = onIntent,
+                authState = favoritesState.authState
+            )
         }
     }
 }
 
-// Main content
+@Composable
+private fun MainContent(
+    isError: Boolean,
+    favorites: LazyPagingItems<UiAnimeItem>,
+    snackbars: SnackbarState,
+    onIntent: (FavoritesIntent) -> Unit,
+    authState: AuthState
+) {
+    when(authState) {
+        AuthState.LoggedIn -> LoggedInContent(isError, favorites, snackbars, onIntent)
+        AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) })
+    }
+}
+
 @Composable
 private fun LoggedInContent(
-    favoritesState: FavoritesState,
+    isError: Boolean,
     favorites: LazyPagingItems<UiAnimeItem>,
     snackbars: SnackbarState,
     onIntent: (FavoritesIntent) -> Unit
@@ -111,7 +125,7 @@ private fun LoggedInContent(
         }
     )
 
-    when(favoritesState.isError) {
+    when(isError) {
         true -> ErrorSection()
         false -> PagingAnimeItemsLazyVerticalGrid(
             anime = favorites,

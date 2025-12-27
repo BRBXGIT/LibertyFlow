@@ -34,7 +34,7 @@ import com.example.home.components.RANDOM_BUTTON_KEY
 import com.example.home.components.RandomAnimeButton
 import kotlinx.coroutines.launch
 
-private val TopBarLabel = R.string.top_bar_label
+private val TopBarLabel = R.string.home_top_bar_label
 
 @Composable
 fun Home(
@@ -59,7 +59,6 @@ fun Home(
 
     val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
-        modifier = Modifier.fillMaxSize().nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
         snackbarHost = { SnackbarHost(snackbars.snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
@@ -79,7 +78,10 @@ fun Home(
                 icon = LibertyFlowIcons.Filters,
                 onClick = { onIntent(HomeIntent.ToggleFiltersBottomSheet) }
             )
-        }
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
     ) { innerPadding ->
         if (homeState.isFiltersBSVisible) {
             FiltersBS(homeState, onIntent)
@@ -98,19 +100,34 @@ fun Home(
                 )
         ) {
             // Main content logic depending on search mode + error state
-            when(homeState.isError) {
-                true -> ErrorSection()
-                false -> PagingAnimeItemsLazyVerticalGrid(
-                    anime = anime,
-                    onItemClick = { onIntent(HomeIntent.NavigateToAnimeDetails(it)) }
-                ) {
-                    item(
-                        key = RANDOM_BUTTON_KEY,
-                        span = { GridItemSpan(maxLineSpan) }
-                    ) {
-                        RandomAnimeButton(onIntent, homeState.isRandomAnimeLoading)
-                    }
-                }
+            MainContent(
+                isError = homeState.isError,
+                isRandomAnimeLoading = homeState.isRandomAnimeLoading,
+                onIntent = onIntent,
+                anime = anime
+            )
+        }
+    }
+}
+
+@Composable
+private fun MainContent(
+    isError: Boolean,
+    isRandomAnimeLoading: Boolean,
+    onIntent: (HomeIntent) -> Unit,
+    anime: LazyPagingItems<UiAnimeItem>
+) {
+    when(isError) {
+        true -> ErrorSection()
+        false -> PagingAnimeItemsLazyVerticalGrid(
+            anime = anime,
+            onItemClick = { onIntent(HomeIntent.NavigateToAnimeDetails(it)) }
+        ) {
+            item(
+                key = RANDOM_BUTTON_KEY,
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
+                RandomAnimeButton(onIntent, isRandomAnimeLoading)
             }
         }
     }

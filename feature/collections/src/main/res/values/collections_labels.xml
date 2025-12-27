@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="top_bar_label">Collections</string>
+    <string name="collections_top_bar_label">Collections</string>
     <string name="empty_collection_label">Collection is empty, add something (◔◡◔)</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,21 +20,23 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.design_system.R
-import com.example.design_system.components.bars.searching_top_bar.SearchingTopBarConstants.ANIMATION_DURATION
 import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mTypography
 
-private object SearchingTopBarConstants {
-    val PlaceholderText = R.string.placeholder_label
-    const val ANIMATION_DURATION = 300
-}
+private const val EMPTY_STRING = ""
+private val PlaceholderText = R.string.placeholder_label
+private const val ANIMATION_DURATION = 300
+
+private const val TOP_BAR_ICON_SIZE = 22
 
 @Composable
 fun SearchingTopBar(
@@ -59,7 +62,7 @@ fun SearchingTopBar(
                 } else {
                     Text(
                         text = label,
-                        style = mTypography.headlineSmall
+                        style = mTypography.titleLarge
                     )
                 }
             },
@@ -68,7 +71,7 @@ fun SearchingTopBar(
                 if (isSearching) {
                     TopBarIconButton(
                         onClick = {
-                            onQueryChange("")
+                            onQueryChange(EMPTY_STRING)
                             onSearchChange()
                         },
                         icon = LibertyFlowIcons.ArrowLeftFilled
@@ -81,7 +84,7 @@ fun SearchingTopBar(
                     // When searching & query has text → show clear button
                     isSearching && query.isNotBlank() -> {
                         TopBarIconButton(
-                            onClick = { onQueryChange("") },
+                            onClick = { onQueryChange(EMPTY_STRING) },
                             icon = LibertyFlowIcons.CrossCircle
                         )
                     }
@@ -113,7 +116,7 @@ fun SearchingTopBar(
 private fun SearchingTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String = stringResource(SearchingTopBarConstants.PlaceholderText)
+    placeholder: String = stringResource(PlaceholderText)
 ) {
     TextField(
         value = value,
@@ -138,7 +141,8 @@ private fun TopBarIconButton(
     IconButton(onClick = onClick) {
         Icon(
             painter = painterResource(icon),
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.size(TOP_BAR_ICON_SIZE.dp)
         )
     }
 }

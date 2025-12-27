@@ -6,6 +6,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -23,11 +24,14 @@ import com.example.design_system.containers.AnimatedBorderContainer
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
+import com.example.design_system.theme.mTypography
 import com.example.home.R
 import com.example.home.screen.HomeIntent
 
 private val ButtonLabel = R.string.random_button_label
 internal const val RANDOM_BUTTON_KEY = "RANDOM_BUTTON_KEY"
+private const val RANDOM_BUTTON_ICON_SIZE = 22
+private const val CONTENT_ROW_PADDING_ARRANGEMENT = 8
 
 @Composable
 fun LazyGridItemScope.RandomAnimeButton(
@@ -51,18 +55,20 @@ fun LazyGridItemScope.RandomAnimeButton(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(CONTENT_ROW_PADDING_ARRANGEMENT.dp),
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(8.dp)
+                .padding(CONTENT_ROW_PADDING_ARRANGEMENT.dp)
         ) {
             Icon(
                 painter = painterResource(LibertyFlowIcons.FunnyCube),
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier.size(RANDOM_BUTTON_ICON_SIZE.dp)
             )
 
             Text(
-                text = stringResource(ButtonLabel)
+                text = stringResource(ButtonLabel),
+                style = mTypography.bodyMedium
             )
         }
     }
@@ -75,7 +81,8 @@ private fun getAnimatedColor(
 ): Color {
     val animated by animateColorAsState(
         targetValue = if (visible) color else color.copy(alpha = 0f),
-        animationSpec = mMotionScheme.slowEffectsSpec()
+        animationSpec = mMotionScheme.slowEffectsSpec(),
+        label = "Animated button color"
     )
 
     return animated
