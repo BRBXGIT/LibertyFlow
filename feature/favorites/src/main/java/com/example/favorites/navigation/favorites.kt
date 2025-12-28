@@ -1,15 +1,16 @@
 package com.example.favorites.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.navigation.FavoritesRoute
+import com.example.common.ui_helpers.HandleCommonEffects
 import com.example.favorites.screen.Favorites
-import com.example.favorites.screen.FavoritesIntent
 import com.example.favorites.screen.FavoritesVM
 
 fun NavGraphBuilder.favorites(
@@ -18,15 +19,21 @@ fun NavGraphBuilder.favorites(
 ) = composable<FavoritesRoute> {
     val favoritesState by favoritesVM.favoritesState.collectAsStateWithLifecycle()
     val favorites = favoritesVM.favorites.collectAsLazyPagingItems()
+    val effects = favoritesVM.effects
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    HandleCommonEffects(
+        effects = effects,
+        navController = navController,
+        snackbarHostState = snackbarHostState
+    )
 
     Favorites(
         favoritesState = favoritesState,
         favorites = favorites,
-        onIntent = { intent ->
-            when(intent) {
-                is FavoritesIntent.NavigateToAnimeDetails -> { navController.navigate(AnimeDetailsRoute(intent.id)) }
-                else -> favoritesVM.sendIntent(intent)
-            }
-        },
+        snackbarHostState = snackbarHostState,
+        onIntent = favoritesVM::sendIntent,
+        onEffect = favoritesVM::sendEffect
     )
 }

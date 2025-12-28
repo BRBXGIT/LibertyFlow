@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
+import com.example.common.ui_helpers.UiEffect
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
@@ -15,15 +16,16 @@ import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
-import com.example.design_system.components.snackbars.sendRetrySnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,6 +40,9 @@ class HomeVM @Inject constructor(
 
     private val _homeState = MutableStateFlow(HomeState())
     val homeState = _homeState.toLazily(HomeState())
+
+    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     /**
      * Emits request parameters whenever filters/search change.
@@ -65,9 +70,16 @@ class HomeVM @Inject constructor(
                 .onSuccess { anime ->
                     _homeState.update { it.copy(randomAnimeId = anime.id, isRandomAnimeLoading = false) }
                 }
-                .onError { _, message ->
+                .onError { _, messageRes ->
                     _homeState.update { it.setRandomAnimeLoading(false) }
-                    sendRetrySnackbar(message) { getRandomAnime() }
+
+                    sendEffect(
+                        effect = UiEffect.ShowSnackbar(
+                            messageRes = messageRes,
+                            actionLabel = "Retry",
+                            action = ::getRandomAnime
+                        )
+                    )
                 }
         }
     }
@@ -80,10 +92,23 @@ class HomeVM @Inject constructor(
                 .onSuccess { genres ->
                     _homeState.update { it.copy(genres = genres, isGenresLoading = false) }
                 }
-                .onError { _, message ->
+                .onError { _, messageRes ->
                     _homeState.update { it.setGenresLoading(false) }
-                    sendRetrySnackbar(message) { getGenres() }
+
+                    sendEffect(
+                        effect = UiEffect.ShowSnackbar(
+                            messageRes = messageRes,
+                            actionLabel = "Retry",
+                            action = ::getGenres
+                        )
+                    )
                 }
+        }
+    }
+
+    fun sendEffect(effect: UiEffect) {
+        viewModelScope.launch(dispatcherIo) {
+            _effects.send(effect)
         }
     }
 
@@ -104,6 +129,9 @@ class HomeVM @Inject constructor(
 
             is HomeIntent.SetError ->
                 _homeState.update { it.setError(intent.value) }
+
+            is HomeIntent.SetRandomAnimeLoading ->
+                _homeState.update { it.setRandomAnimeLoading(intent.value) }
 
             /* --- Query change --- */
             is HomeIntent.UpdateQuery ->
@@ -142,8 +170,6 @@ class HomeVM @Inject constructor(
             /* --- Data operations --- */
             HomeIntent.GetRandomAnime -> getRandomAnime()
             HomeIntent.GetGenres -> getGenres()
-
-            else -> {}
         }
     }
 }

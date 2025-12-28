@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
+import com.example.common.ui_helpers.UiEffect
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.AuthRepo
@@ -14,15 +15,17 @@ import com.example.data.models.auth.UiTokenRequest
 import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
-import com.example.design_system.components.snackbars.sendRetrySnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +37,9 @@ class CollectionsVM @Inject constructor(
 
     private val _collectionsState = MutableStateFlow(CollectionsState())
     val collectionsState = _collectionsState.toLazily(CollectionsState())
+
+    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     private val query = _collectionsState
         .map { state -> state.query }
@@ -120,11 +126,23 @@ class CollectionsVM @Inject constructor(
                     onStart = { _collectionsState.update { it.copy(isLoading = true, isPasswordOrEmailIncorrect = false) } },
                     onSuccess = { _collectionsState.update { it.setLoading(false) } },
                     onIncorrectData = { _collectionsState.update { it.copy(isPasswordOrEmailIncorrect = true) } },
-                    onAnyError = { message, retry -> sendRetrySnackbar(message) { retry() } },
+                    onAnyError = { messageRes, retry ->
+                        sendEffect(
+                            effect = UiEffect.ShowSnackbar(
+                                messageRes = messageRes,
+                                actionLabel = "Retry",
+                                action = retry
+                            )
+                        )
+                    },
                 )
             }
+        }
+    }
 
-            else -> {}
+    fun sendEffect(effect: UiEffect) {
+        viewModelScope.launch(dispatcherIo) {
+            _effects.send(effect)
         }
     }
 

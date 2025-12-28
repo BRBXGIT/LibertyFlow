@@ -32,8 +32,5 @@ sealed interface HomeIntent {
     // Data ops
     data object GetRandomAnime: HomeIntent
     data object GetGenres: HomeIntent
-
-    // Nav
-    data class NavigateToAnimeDetails(val id: Int): HomeIntent
 }
 

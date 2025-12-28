@@ -9,28 +9,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
+import com.example.common.navigation.AnimeDetailsRoute
+import com.example.common.ui_helpers.UiEffect
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
-import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
+import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.sections.LoggedOutSection
-import com.example.design_system.components.snackbars.SnackbarState
-import com.example.design_system.components.snackbars.getSnackbarState
-import com.example.design_system.components.snackbars.sendRetrySnackbar
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import com.example.design_system.theme.mColors
 import com.example.favorites.R
-import kotlinx.coroutines.launch
 
 private val TopBarLabel = R.string.favorites_top_bar_label
 
@@ -38,13 +37,14 @@ private val TopBarLabel = R.string.favorites_top_bar_label
 fun Favorites(
     favoritesState: FavoritesState,
     favorites: LazyPagingItems<UiAnimeItem>,
-    onIntent: (FavoritesIntent) -> Unit
+    snackbarHostState: SnackbarHostState,
+    onIntent: (FavoritesIntent) -> Unit,
+    onEffect: (UiEffect) -> Unit
 ) {
-    val snackbars = getSnackbarState()
-
     val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
+
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbars.snackbarHostState) },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
             SearchingTopBar(
@@ -87,9 +87,9 @@ fun Favorites(
             MainContent(
                 isError = favoritesState.isError,
                 favorites = favorites,
-                snackbars = snackbars,
+                authState = favoritesState.authState,
                 onIntent = onIntent,
-                authState = favoritesState.authState
+                onEffect = onEffect
             )
         }
     }
@@ -99,12 +99,12 @@ fun Favorites(
 private fun MainContent(
     isError: Boolean,
     favorites: LazyPagingItems<UiAnimeItem>,
-    snackbars: SnackbarState,
+    onEffect: (UiEffect) -> Unit,
     onIntent: (FavoritesIntent) -> Unit,
     authState: AuthState
 ) {
     when(authState) {
-        AuthState.LoggedIn -> LoggedInContent(isError, favorites, snackbars, onIntent)
+        AuthState.LoggedIn -> LoggedInContent(isError, favorites, onEffect, onIntent)
         AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) })
     }
 }
@@ -113,15 +113,21 @@ private fun MainContent(
 private fun LoggedInContent(
     isError: Boolean,
     favorites: LazyPagingItems<UiAnimeItem>,
-    snackbars: SnackbarState,
+    onEffect: (UiEffect) -> Unit,
     onIntent: (FavoritesIntent) -> Unit
 ) {
     PagingStatesContainer(
         items = favorites,
         onLoadingChange = { onIntent(FavoritesIntent.SetIsLoading(it)) },
         onErrorChange = { onIntent(FavoritesIntent.SetIsError(it)) },
-        onRetryRequest = { message, retry ->
-            snackbars.snackbarScope.launch { sendRetrySnackbar(message, retry) }
+        onRetryRequest = { messageRes, retry ->
+            onEffect(
+                UiEffect.ShowSnackbar(
+                    messageRes = messageRes.toInt(),
+                    actionLabel = "Retry",
+                    action = retry
+                )
+            )
         }
     )
 
@@ -129,7 +135,7 @@ private fun LoggedInContent(
         true -> ErrorSection()
         false -> PagingAnimeItemsLazyVerticalGrid(
             anime = favorites,
-            onItemClick = { onIntent(FavoritesIntent.NavigateToAnimeDetails(it)) }
+            onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
         )
     }
 }

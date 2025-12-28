@@ -10,19 +10,20 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
+import com.example.common.navigation.AnimeDetailsRoute
+import com.example.common.ui_helpers.UiEffect
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.buttons.BasicFAB
 import com.example.design_system.components.sections.ErrorSection
-import com.example.design_system.components.snackbars.getSnackbarState
-import com.example.design_system.components.snackbars.sendRetrySnackbar
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
@@ -32,7 +33,6 @@ import com.example.home.R
 import com.example.home.components.FiltersBS
 import com.example.home.components.RANDOM_BUTTON_KEY
 import com.example.home.components.RandomAnimeButton
-import kotlinx.coroutines.launch
 
 private val TopBarLabel = R.string.home_top_bar_label
 
@@ -40,26 +40,29 @@ private val TopBarLabel = R.string.home_top_bar_label
 fun Home(
     homeState: HomeState,
     anime: LazyPagingItems<UiAnimeItem>,
-    onIntent: (HomeIntent) -> Unit
+    snackbarHostState: SnackbarHostState,
+    onIntent: (HomeIntent) -> Unit,
+    onEffect: (UiEffect) -> Unit
 ) {
-    // Snackbar controller
-    val snackbars = getSnackbarState()
-
     // Handle paging loading/error states
     PagingStatesContainer(
         items = anime,
         onLoadingChange = { onIntent(HomeIntent.SetLoading(it)) },
         onErrorChange = { onIntent(HomeIntent.SetError(it)) },
-        onRetryRequest = { message, retry ->
-            snackbars.snackbarScope.launch {
-                sendRetrySnackbar(message, retry)
-            }
+        onRetryRequest = { messageRes, retry ->
+            onEffect(
+                UiEffect.ShowSnackbar(
+                    messageRes = messageRes.toInt(),
+                    actionLabel = "Retry",
+                    action = retry
+                )
+            )
         }
     )
 
     val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbars.snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
             // Top search bar with query input & actions
@@ -104,6 +107,7 @@ fun Home(
                 isError = homeState.isError,
                 isRandomAnimeLoading = homeState.isRandomAnimeLoading,
                 onIntent = onIntent,
+                onEffect = onEffect,
                 anime = anime
             )
         }
@@ -115,13 +119,14 @@ private fun MainContent(
     isError: Boolean,
     isRandomAnimeLoading: Boolean,
     onIntent: (HomeIntent) -> Unit,
+    onEffect: (UiEffect) -> Unit,
     anime: LazyPagingItems<UiAnimeItem>
 ) {
     when(isError) {
         true -> ErrorSection()
         false -> PagingAnimeItemsLazyVerticalGrid(
             anime = anime,
-            onItemClick = { onIntent(HomeIntent.NavigateToAnimeDetails(it)) }
+            onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
         ) {
             item(
                 key = RANDOM_BUTTON_KEY,

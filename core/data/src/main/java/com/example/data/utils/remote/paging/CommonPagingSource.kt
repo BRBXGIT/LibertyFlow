@@ -32,7 +32,7 @@ internal class CommonPagingSource(
                 nextKey = if (key < pagination.totalPages) key + 1 else null
             )
         }.onError { _, message ->
-            loadResult = LoadResult.Error(Exception(message))
+            loadResult = LoadResult.Error(Exception(message.toString()))
         }
 
         return loadResult!!

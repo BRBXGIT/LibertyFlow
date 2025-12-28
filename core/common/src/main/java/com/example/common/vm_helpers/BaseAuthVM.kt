@@ -35,7 +35,7 @@ abstract class BaseAuthVM(
         onStart: () -> Unit,
         onSuccess: () -> Unit,
         onIncorrectData: () -> Unit,
-        onAnyError: suspend (String, onRetry: () -> Unit) -> Unit,
+        onAnyError: suspend (Int, onRetry: () -> Unit) -> Unit,
         request: UiTokenRequest
     ) {
         viewModelScope.launch(dispatcherIo) {
@@ -46,10 +46,10 @@ abstract class BaseAuthVM(
                     authRepo.saveToken(uiToken.token!!)
                     onSuccess()
                 }
-                .onError { error, message ->
+                .onError { error, messageRes ->
                     when(error) {
                         NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> onIncorrectData()
-                        else -> onAnyError(message) { getAuthToken(onStart, onSuccess, onIncorrectData, onAnyError, request) }
+                        else -> onAnyError(messageRes) { getAuthToken(onStart, onSuccess, onIncorrectData, onAnyError, request) }
                     }
                 }
         }

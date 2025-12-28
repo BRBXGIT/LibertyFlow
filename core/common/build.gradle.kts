@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.hilt.android)
     // Serialization
     alias(libs.plugins.kotlin.serialization)
+    // Compose compiler
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -36,6 +38,14 @@ dependencies {
     // Core modules
     implementation(project(":core:data"))
 
+    // Nav
+    implementation(libs.navigation.compose)
+    // Material 3
+    implementation(libs.androidx.material3.android)
+    // Compose bom
+    implementation(platform(libs.androidx.compose.bom))
+    // Compose runtime
+    implementation(libs.androidx.compose.runtime)
     // Lifecycle ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     // Hilt

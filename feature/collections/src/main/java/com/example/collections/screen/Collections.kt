@@ -12,6 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -24,6 +25,8 @@ import com.example.collections.R
 import com.example.collections.components.CollectionPage
 import com.example.collections.components.CollectionsPager
 import com.example.collections.components.CollectionsTabRow
+import com.example.common.navigation.AnimeDetailsRoute
+import com.example.common.ui_helpers.UiEffect
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.mappers.toIndex
 import com.example.data.models.common.request.request_parameters.Collection
@@ -33,9 +36,6 @@ import com.example.design_system.components.bars.searching_top_bar.SearchingTopB
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.sections.LoggedOutSection
-import com.example.design_system.components.snackbars.SnackbarState
-import com.example.design_system.components.snackbars.getSnackbarState
-import com.example.design_system.components.snackbars.sendRetrySnackbar
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.theme.mColors
 import kotlinx.coroutines.launch
@@ -46,16 +46,15 @@ private val TopBarLabel = R.string.collections_top_bar_label
 fun Collections(
     collectionsState: CollectionsState,
     collections: List<LazyPagingItems<UiAnimeItem>>,
-    onIntent: (CollectionsIntent) -> Unit
+    snackbarHostState: SnackbarHostState,
+    onIntent: (CollectionsIntent) -> Unit,
+    onEffect: (UiEffect) -> Unit
 ) {
-    // Snackbar holder shared across the screen
-    val snackbars = getSnackbarState()
-
     // Pinned TopAppBar behavior
     val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbars.snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
             // Searchable top bar
@@ -100,8 +99,8 @@ fun Collections(
                 AuthState.LoggedIn -> LoggedInContent(
                     collectionsState = collectionsState,
                     collections = collections,
-                    snackbars = snackbars,
-                    onIntent = onIntent
+                    onIntent = onIntent,
+                    onEffect = onEffect
                 )
 
                 AuthState.LoggedOut -> LoggedOutSection(
@@ -118,8 +117,8 @@ fun Collections(
 private fun LoggedInContent(
     collectionsState: CollectionsState,
     collections: List<LazyPagingItems<UiAnimeItem>>,
-    snackbars: SnackbarState,
-    onIntent: (CollectionsIntent) -> Unit
+    onIntent: (CollectionsIntent) -> Unit,
+    onEffect: (UiEffect) -> Unit
 ) {
     // Observe paging states for every collection
     collections.forEach { collection ->
@@ -127,10 +126,14 @@ private fun LoggedInContent(
             items = collection,
             onLoadingChange = { onIntent(CollectionsIntent.SetIsLoading(it)) },
             onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
-            onRetryRequest = { message, retry ->
-                snackbars.snackbarScope.launch {
-                    sendRetrySnackbar(message, retry)
-                }
+            onRetryRequest = { messageRes, retry ->
+                onEffect(
+                    UiEffect.ShowSnackbar(
+                        messageRes = messageRes.toInt(),
+                        actionLabel = "Retry",
+                        action = retry
+                    )
+                )
             }
         )
     }
@@ -144,7 +147,8 @@ private fun LoggedInContent(
     CollectionsContent(
         collectionsState = collectionsState,
         collections = collections,
-        onIntent = onIntent
+        onIntent = onIntent,
+        onEffect = onEffect
     )
 }
 
@@ -152,7 +156,8 @@ private fun LoggedInContent(
 private fun CollectionsContent(
     collectionsState: CollectionsState,
     collections: List<LazyPagingItems<UiAnimeItem>>,
-    onIntent: (CollectionsIntent) -> Unit
+    onIntent: (CollectionsIntent) -> Unit,
+    onEffect: (UiEffect) -> Unit
 ) {
     val pagerState = rememberPagerState { Collection.entries.size }
     val pagerScope = rememberCoroutineScope()
@@ -182,7 +187,7 @@ private fun CollectionsContent(
                 CollectionPage(
                     isError = collectionsState.isError,
                     collection = collections[pageIndex],
-                    onItemClick = { onIntent(CollectionsIntent.NavigateToAnimeDetails(it)) }
+                    onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
                 )
             }
         }

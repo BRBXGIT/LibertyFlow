@@ -14,6 +14,4 @@ sealed interface FavoritesIntent {
 
     data class SetIsLoading(val value: Boolean): FavoritesIntent
     data class SetIsError(val value: Boolean): FavoritesIntent
-
-    data class NavigateToAnimeDetails(val id: Int): FavoritesIntent
 }

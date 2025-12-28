@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
+import com.example.common.ui_helpers.UiEffect
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.AuthRepo
@@ -13,15 +14,17 @@ import com.example.data.domain.FavoritesRepo
 import com.example.data.models.auth.UiTokenRequest
 import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
-import com.example.design_system.components.snackbars.sendRetrySnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +37,9 @@ class FavoritesVM @Inject constructor(
     // UI state
     private val _favoritesState = MutableStateFlow(FavoritesState())
     val favoritesState = _favoritesState.toLazily(FavoritesState())
+
+    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     // Paging: Favorites
     private val requestParameters = _favoritesState
@@ -83,11 +89,23 @@ class FavoritesVM @Inject constructor(
                     onStart = { _favoritesState.update { it.copy(isLoading = true, isPasswordOrEmailIncorrect = false) } },
                     onSuccess = { _favoritesState.update { it.setLoading(false) } },
                     onIncorrectData = { _favoritesState.update { it.copy(isPasswordOrEmailIncorrect = true) } },
-                    onAnyError = { message, retry -> sendRetrySnackbar(message) { retry() } },
+                    onAnyError = { messageRes, retry ->
+                        sendEffect(
+                            effect = UiEffect.ShowSnackbar(
+                                messageRes = messageRes,
+                                actionLabel = "Retry",
+                                action = retry
+                            )
+                        )
+                    }
                 )
             }
+        }
+    }
 
-            else -> {}
+    fun sendEffect(effect: UiEffect) {
+        viewModelScope.launch(dispatcherIo) {
+            _effects.send(effect)
         }
     }
 
