@@ -1,0 +1,182 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+
+package com.example.anime_details.components
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.common.ui_helpers.UiEffect
+import com.example.design_system.theme.LibertyFlowIcons
+import com.example.design_system.theme.LibertyFlowTheme
+import com.example.design_system.theme.mColors
+import com.example.design_system.theme.mMotionScheme
+import com.example.design_system.theme.mTypography
+import kotlinx.coroutines.delay
+
+private const val ERROR_TEXT = "Error"
+
+private const val TOP_BAR_ALPHA = 0f
+
+private const val TEXT_MAX_LINES = 1
+
+@Composable
+fun AnimeDetailsTopBar(
+    isError: Boolean,
+    animeTitle: String?,
+    isLoading: Boolean,
+    scrollBehavior: TopAppBarScrollBehavior,
+    onEffect: (UiEffect) -> Unit
+) {
+    val showTitle = !isLoading && animeTitle != null && !isError
+
+    TopAppBar(
+        title = {
+            AnimatedTopBarContent(visible = isLoading) {
+                AnimatedLoadingText()
+            }
+
+            AnimatedTopBarContent(visible = showTitle) {
+                Text(
+                    text = animeTitle!!,
+                    maxLines = TEXT_MAX_LINES,
+                    overflow = TextOverflow.Ellipsis,
+                    style = mTypography.titleLarge
+                )
+            }
+
+            AnimatedTopBarContent(visible = isError) {
+                Text(text = ERROR_TEXT, style = mTypography.titleLarge)
+            }
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = { onEffect(UiEffect.NavigateBack) },
+            ) {
+                Icon(
+                    painter = painterResource(LibertyFlowIcons.ArrowLeftFilled),
+                    contentDescription = null
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = mColors.surfaceContainer.copy(alpha = TOP_BAR_ALPHA),
+        ),
+        scrollBehavior = scrollBehavior
+    )
+}
+
+private const val ANIMATION_DURATION = 300
+private const val OFFSET_DIVIDER = 2
+
+@Composable
+private fun AnimatedTopBarContent(
+    visible: Boolean,
+    content: @Composable () -> Unit
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically(
+            animationSpec = tween(ANIMATION_DURATION),
+            initialOffsetY = { it / OFFSET_DIVIDER }
+        ) + fadeIn(tween(ANIMATION_DURATION)),
+        exit = slideOutVertically(
+            animationSpec = tween(ANIMATION_DURATION),
+            targetOffsetY = { -it / OFFSET_DIVIDER }
+        ) + fadeOut(tween(ANIMATION_DURATION))
+    ) {
+        content()
+    }
+}
+
+private const val DELAY = 200L
+
+private const val PLUS_DOT_COUNT = 1
+private const val START_DOT_COUNT = 0
+private const val DIVIDER = 4
+private const val LIST_SIZE = 3
+
+private const val VISIBLE_ALPHA = 1f
+private const val INVISIBLE_ALPHA = 0f
+
+private const val LOADING_TEXT = "Loading"
+private const val DOT = "."
+
+private const val ANIMATION_LABEL = "Dot alpha animation"
+@Composable
+private fun AnimatedLoadingText() {
+    var dotCount by rememberSaveable { mutableIntStateOf(START_DOT_COUNT) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(DELAY)
+            dotCount = (dotCount + PLUS_DOT_COUNT) % DIVIDER
+        }
+    }
+
+    val animatedDots = List(LIST_SIZE) { index ->
+        animateFloatAsState(
+            targetValue = if (index < dotCount) VISIBLE_ALPHA else INVISIBLE_ALPHA,
+            animationSpec = mMotionScheme.fastEffectsSpec(),
+            label = ANIMATION_LABEL
+        )
+    }
+
+    Row {
+        Text(text = LOADING_TEXT, style = mTypography.titleLarge)
+        animatedDots.forEach { alpha ->
+            Text(
+                text = DOT,
+                modifier = Modifier.alpha(alpha.value),
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun AnimatedLoadingTextPreview() {
+    LibertyFlowTheme {
+        AnimatedLoadingText()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun AnimeScreenTopBaPreview() {
+    LibertyFlowTheme {
+        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
+        AnimeDetailsTopBar(
+            animeTitle = "Death Note",
+            isLoading = true,
+            scrollBehavior = scrollBehavior,
+            isError = false,
+            onEffect = {},
+        )
+    }
+}

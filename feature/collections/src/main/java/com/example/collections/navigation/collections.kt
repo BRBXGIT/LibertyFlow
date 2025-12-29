@@ -15,14 +15,15 @@ import com.example.collections.screen.Collections
 import com.example.collections.screen.CollectionsVM
 import com.example.common.navigation.CollectionsRoute
 import com.example.common.ui_helpers.HandleCommonEffects
-import com.example.design_system.constants.ScreenTransitionConstants.ANIMATION_DURATION
+import com.example.design_system.utils.standardScreenEnterTransition
+import com.example.design_system.utils.standardScreenExitTransition
 
 fun NavGraphBuilder.collections(
     collectionsVM: CollectionsVM,
     navController: NavController
 ) = composable<CollectionsRoute>(
-    enterTransition = { fadeIn(tween(ANIMATION_DURATION)) },
-    exitTransition = { fadeOut(tween(ANIMATION_DURATION)) }
+    enterTransition = { standardScreenEnterTransition() },
+    exitTransition = { standardScreenExitTransition() }
 ) {
     val collectionsState by collectionsVM.collectionsState.collectAsStateWithLifecycle()
     val collectionEffects = collectionsVM.collectionEffects

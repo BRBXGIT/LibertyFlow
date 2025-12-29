@@ -1,11 +1,7 @@
 package com.example.anime_details.navigation
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -15,26 +11,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.anime_details.screen.AnimeDetails
+import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.anime_details.screen.AnimeDetailsVM
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.HandleCommonEffects
-import com.example.design_system.constants.ScreenTransitionConstants.ANIMATION_DURATION
+import com.example.design_system.utils.standardScreenEnterTransition
+import com.example.design_system.utils.standardScreenExitTransition
 
 fun NavGraphBuilder.animeDetails(
     navController: NavController
 ) = composable<AnimeDetailsRoute>(
-    enterTransition = {
-        slideInHorizontally(
-            initialOffsetX = { it / 2 },
-            animationSpec = tween(ANIMATION_DURATION)
-        ) + fadeIn(tween(ANIMATION_DURATION - 100))
-    },
-    exitTransition = {
-        slideOutHorizontally(
-            targetOffsetX = { it / 2 },
-            animationSpec = tween(ANIMATION_DURATION)
-        ) + fadeOut(tween(ANIMATION_DURATION - 100))
-    }
+    enterTransition = { standardScreenEnterTransition() },
+    exitTransition = { standardScreenExitTransition() }
 ) {
     val route = it.toRoute<AnimeDetailsRoute>()
 
@@ -45,6 +33,10 @@ fun NavGraphBuilder.animeDetails(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(route.animeId) {
+        animeDetailsVM.sendIntent(AnimeDetailsIntent.FetchAnime(route.animeId))
+    }
+
     HandleCommonEffects(
         effects = animeDetailsEffects,
         navController = navController,
@@ -52,7 +44,6 @@ fun NavGraphBuilder.animeDetails(
     )
 
     AnimeDetails(
-        animeId = route.animeId,
         animeDetailsState = animeDetailsState,
         snackbarHostState = snackbarHostState,
         onEffect = animeDetailsVM::sendEffect,

@@ -169,6 +169,7 @@ private fun CollectionsContent(
 
         val isLoading = collections[pagerState.currentPage].loadState.refresh is LoadState.Loading
 
+        // TODO change to m3 expressive indicator
         // Pull-to-refresh wrapper
         PullToRefreshBox(
             isRefreshing = isLoading,

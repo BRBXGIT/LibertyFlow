@@ -13,7 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.common.navigation.FavoritesRoute
 import com.example.common.ui_helpers.HandleCommonEffects
-import com.example.design_system.constants.ScreenTransitionConstants.ANIMATION_DURATION
+import com.example.design_system.utils.standardScreenEnterTransition
+import com.example.design_system.utils.standardScreenExitTransition
 import com.example.favorites.screen.Favorites
 import com.example.favorites.screen.FavoritesVM
 
@@ -21,8 +22,8 @@ fun NavGraphBuilder.favorites(
     favoritesVM: FavoritesVM,
     navController: NavController
 ) = composable<FavoritesRoute>(
-    enterTransition = { fadeIn(tween(ANIMATION_DURATION)) },
-    exitTransition = { fadeOut(tween(ANIMATION_DURATION)) }
+    enterTransition = { standardScreenEnterTransition() },
+    exitTransition = { standardScreenExitTransition() }
 ) {
     val favoritesState by favoritesVM.favoritesState.collectAsStateWithLifecycle()
     val favoritesEffects = favoritesVM.favoritesEffects

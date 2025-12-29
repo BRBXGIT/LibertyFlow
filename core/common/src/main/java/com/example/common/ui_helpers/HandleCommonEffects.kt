@@ -33,6 +33,8 @@ fun HandleCommonEffects(
                 is UiEffect.Navigate -> {
                     navController.navigate(effect.route)
                 }
+
+                is UiEffect.NavigateBack -> navController.navigateUp()
             }
         }
     }

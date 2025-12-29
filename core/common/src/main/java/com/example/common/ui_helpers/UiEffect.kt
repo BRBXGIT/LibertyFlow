@@ -10,4 +10,6 @@ sealed interface UiEffect {
     ): UiEffect
 
     data class Navigate(val route: NavigationBase): UiEffect
+
+    data object NavigateBack: UiEffect
 }

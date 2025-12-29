@@ -13,7 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.common.navigation.HomeRoute
 import com.example.common.ui_helpers.HandleCommonEffects
-import com.example.design_system.constants.ScreenTransitionConstants.ANIMATION_DURATION
+import com.example.design_system.utils.standardScreenEnterTransition
+import com.example.design_system.utils.standardScreenExitTransition
 import com.example.home.screen.Home
 import com.example.home.screen.HomeVM
 
@@ -21,8 +22,8 @@ fun NavGraphBuilder.home(
     homeVM: HomeVM,
     navController: NavController
 ) = composable<HomeRoute>(
-    enterTransition = { fadeIn(tween(ANIMATION_DURATION)) },
-    exitTransition = { fadeOut(tween(ANIMATION_DURATION)) }
+    enterTransition = { standardScreenEnterTransition() },
+    exitTransition = { standardScreenExitTransition() }
 ) {
     val homeState by homeVM.homeState.collectAsStateWithLifecycle()
     val homeEffects = homeVM.homeEffects
