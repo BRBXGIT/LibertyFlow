@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="planned_collection">Planned</string>
+    <string name="watched_collection">Watched</string>
+    <string name="watching_collection">Watching</string>
+    <string name="postponed_collection">Postponed</string>
+    <string name="abandoned_collection">Abandoned</string>
+</resources>

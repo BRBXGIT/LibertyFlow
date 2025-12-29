@@ -60,7 +60,7 @@ fun LazyGridItemScope.AnimeCard(
         ) {
             InfoText(
                 text = title,
-                style = mTypography.bodyLarge.copy(
+                style = mTypography.bodyMedium.copy(
                     color = mColors.onTertiaryContainer,
                     fontWeight = FontWeight.W600
                 )
@@ -68,7 +68,7 @@ fun LazyGridItemScope.AnimeCard(
 
             InfoText(
                 text = genresString,
-                style = mTypography.labelLarge.copy(
+                style = mTypography.labelMedium.copy(
                     color = mColors.secondary,
                     fontWeight = FontWeight.W500
                 )

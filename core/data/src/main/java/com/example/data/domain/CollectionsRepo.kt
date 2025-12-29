@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CollectionsRepo {
 
-    suspend fun getAnimeInCollection(
+    fun getAnimeInCollection(
         request: UiCommonRequestWithCollectionType
     ): Flow<PagingData<UiAnimeItem>>
 

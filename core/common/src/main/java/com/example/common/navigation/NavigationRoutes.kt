@@ -10,3 +10,6 @@ data object FavoritesRoute: NavigationBase, NavBarItem
 
 @Serializable
 data object CollectionsRoute: NavigationBase, NavBarItem
+
+@Serializable
+data class AnimeDetailsRoute(val animeId: Int): NavigationBase

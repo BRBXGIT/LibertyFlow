@@ -3,7 +3,7 @@ package com.example.data.models.common.common
 import androidx.compose.runtime.Immutable
 
 private object Constants {
-    const val BASE_POSTER_URL = "https://anilibria.top/"
+    const val BASE_POSTER_URL = "https://aniliberty.top/"
 }
 
 enum class PosterType { THUMBNAIL, PREVIEW, SRC }

@@ -12,17 +12,14 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
-    @Provides
-    @Singleton
-    fun provideGsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create()
+    @Provides @Singleton fun provideGsonConverterFactory(): GsonConverterFactory =
+        GsonConverterFactory.create()
 
     @Provides
     @Singleton
-    fun provideRetrofit(
-        gsonConverterFactory: GsonConverterFactory
-    ): Retrofit {
+    fun provideRetrofit(gsonConverterFactory: GsonConverterFactory): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://anilibria.top/api/v1/")
+            .baseUrl("https://aniliberty.top/api/v1/")
             .addConverterFactory(gsonConverterFactory)
             .build()
     }

@@ -49,65 +49,40 @@ import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
 import com.example.home.R
-import com.example.home.components.FiltersBSConstants.CONTENT_PADDING
-import com.example.home.components.FiltersBSConstants.FILTER_DIVIDER_SPACED_BY
-import com.example.home.components.FiltersBSConstants.FILTER_DIVIDER_WEIGHT
-import com.example.home.components.FiltersBSConstants.FILTER_ITEM_SELECTED_CONTAINER_SHAPE
-import com.example.home.components.FiltersBSConstants.FILTER_ITEM_TEXT_MAX_LINES
-import com.example.home.components.FiltersBSConstants.FILTER_ITEM_TEXT_PADDING
-import com.example.home.components.FiltersBSConstants.FILTER_ITEM_UNSELECTED_CONTAINER_SHAPE
-import com.example.home.components.FiltersBSConstants.FROM_YEAR_KEY
-import com.example.home.components.FiltersBSConstants.FromYearLabel
-import com.example.home.components.FiltersBSConstants.GENRES_LOADING_INDICATOR_KEY
-import com.example.home.components.FiltersBSConstants.GenresLabel
-import com.example.home.components.FiltersBSConstants.IsOngoingLabel
-import com.example.home.components.FiltersBSConstants.MIN_GRID_CELLS_SIZE
-import com.example.home.components.FiltersBSConstants.OngoingLabel
-import com.example.home.components.FiltersBSConstants.RELEASE_FINISHED_KEY
-import com.example.home.components.FiltersBSConstants.SORTING_SPACED_BY
-import com.example.home.components.FiltersBSConstants.SPACED_BY
-import com.example.home.components.FiltersBSConstants.SeasonsLabel
-import com.example.home.components.FiltersBSConstants.SortingLabel
-import com.example.home.components.FiltersBSConstants.TO_YEAR_KEY
-import com.example.home.components.FiltersBSConstants.ToYearLabel
-import com.example.home.components.FiltersBSConstants.YEAR_TF_MAX_LINES
-import com.example.home.components.FiltersBSConstants.YearLabel
 import com.example.home.screen.HomeIntent
 import com.example.home.screen.HomeState
 
 // Constants used across the Filters Bottom Sheet
-private object FiltersBSConstants {
-    const val GENRES_LOADING_INDICATOR_KEY = "GenresLoadingIndicatorKey"
+private const val GENRES_LOADING_INDICATOR_KEY = "GenresLoadingIndicatorKey"
 
-    const val MIN_GRID_CELLS_SIZE = 90
-    const val SPACED_BY = 8
-    const val CONTENT_PADDING = 16
-    const val FILTER_DIVIDER_SPACED_BY = 16
-    const val SORTING_SPACED_BY = 8
-    const val YEAR_TF_MAX_LINES = 1
-    const val FILTER_ITEM_TEXT_MAX_LINES = 1
-    const val FILTER_ITEM_SELECTED_CONTAINER_SHAPE = 100
-    const val FILTER_ITEM_UNSELECTED_CONTAINER_SHAPE = 8
-    const val FILTER_ITEM_TEXT_PADDING = 10
+private const val MIN_GRID_CELLS_SIZE = 90
+private const val SPACED_BY = 8
+private const val CONTENT_PADDING = 16
+private const val FILTER_DIVIDER_SPACED_BY = 16
+private const val SORTING_SPACED_BY = 8
+private const val YEAR_TF_MAX_LINES = 1
+private const val FILTER_ITEM_TEXT_MAX_LINES = 1
+private const val FILTER_ITEM_SELECTED_CONTAINER_SHAPE = 100
+private const val FILTER_ITEM_UNSELECTED_CONTAINER_SHAPE = 8
+private const val FILTER_ITEM_TEXT_PADDING = 10
 
-    const val FILTER_DIVIDER_WEIGHT = 1f
+private const val FILTER_DIVIDER_WEIGHT = 1f
 
-    const val FROM_YEAR_KEY = "FromYearKey"
-    const val TO_YEAR_KEY = "ToYearKey"
-    const val RELEASE_FINISHED_KEY = "ReleaseFinishedLabel"
+private const val FROM_YEAR_KEY = "FromYearKey"
+private const val TO_YEAR_KEY = "ToYearKey"
+private const val RELEASE_FINISHED_KEY = "ReleaseFinishedLabel"
 
-    val YearLabel = R.string.year_label
-    val FromYearLabel = R.string.from_year_label
-    val ToYearLabel = R.string.to_year_label
-    val SeasonsLabel = R.string.seasons_label
-    val GenresLabel = R.string.genres_label
-    val SortingLabel = R.string.sorting_label
-    val IsOngoingLabel = R.string.is_ongoing_label
-    val OngoingLabel = R.string.ongoing_label
-}
+private val YearLabel = R.string.year_label
+private val FromYearLabel = R.string.from_year_label
+private val ToYearLabel = R.string.to_year_label
+private val SeasonsLabel = R.string.seasons_label
+private val GenresLabel = R.string.genres_label
+private val SortingLabel = R.string.sorting_label
+private val IsOngoingLabel = R.string.is_ongoing_label
+private val OngoingLabel = R.string.ongoing_label
 
 @Composable
-fun FiltersBS(
+internal fun FiltersBS(
     homeState: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {

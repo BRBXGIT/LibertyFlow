@@ -5,7 +5,7 @@ import com.example.data.models.auth.AuthState
 
 @Immutable
 data class FavoritesState(
-    val isLoggedIn: AuthState = AuthState.LoggedOut,
+    val authState: AuthState = AuthState.LoggedOut,
 
     val isLoading: Boolean = false,
     val isError: Boolean = false,
@@ -17,4 +17,20 @@ data class FavoritesState(
 
     val query: String = "",
     val isSearching: Boolean = false
-)
+) {
+    fun toggleAuthBS() = copy(isAuthBSVisible = !isAuthBSVisible)
+
+    fun toggleIsSearching() = copy(isSearching = !isSearching)
+
+    fun setLoading(value: Boolean) = copy(isLoading = value)
+
+    fun setError(value: Boolean) = copy(isError = value)
+
+    fun setAuthState(value: AuthState) = copy(authState = value)
+
+    fun updateQuery(query: String) = copy(query = query)
+
+    fun updateEmail(email: String) = copy(email = email)
+
+    fun updatePassword(password: String) = copy(password = password)
+}

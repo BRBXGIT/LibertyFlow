@@ -11,7 +11,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.example.anime_details.navigation.animeDetails
 import com.example.collections.navigation.collections
+import com.example.collections.screen.CollectionsVM
 import com.example.common.UiIntent
 import com.example.common.UiVM
 import com.example.common.navigation.HomeRoute
@@ -30,6 +32,7 @@ fun NavGraph() {
 
     val homeVM = hiltViewModel<HomeVM>()
     val favoritesVM = hiltViewModel<FavoritesVM>()
+    val collectionsVM = hiltViewModel<CollectionsVM>()
 
     Box(Modifier.fillMaxSize()) {
         NavHost(
@@ -37,11 +40,13 @@ fun NavGraph() {
             startDestination = HomeRoute,
             modifier = Modifier.align(Alignment.Center)
         ) {
-            home(homeVM)
+            home(homeVM, navController)
 
-            favorites(favoritesVM)
+            favorites(favoritesVM, navController)
 
-            collections()
+            collections(collectionsVM, navController)
+
+            animeDetails()
         }
 
         val uiState by uiVM.uiState.collectAsStateWithLifecycle()

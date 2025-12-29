@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,24 +20,28 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.design_system.R
 import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mTypography
 
-private object SearchingTopBarConstants {
-    const val HORIZONTAL_PADDING = 16
-    val PlaceholderText = R.string.placeholder_label
-}
+private const val EMPTY_STRING = ""
+private val PlaceholderText = R.string.placeholder_label
+private const val ANIMATION_DURATION = 300
+
+private const val TOP_BAR_ICON_SIZE = 22
 
 @Composable
 fun SearchingTopBar(
-    isLoading: Boolean,
+    showIndicator: Boolean = true,
+    isLoading: Boolean = false,
     label: String,
     scrollBehavior: TopAppBarScrollBehavior,
     query: String,
@@ -57,7 +62,7 @@ fun SearchingTopBar(
                 } else {
                     Text(
                         text = label,
-                        style = mTypography.headlineSmall
+                        style = mTypography.titleLarge
                     )
                 }
             },
@@ -66,7 +71,7 @@ fun SearchingTopBar(
                 if (isSearching) {
                     TopBarIconButton(
                         onClick = {
-                            onQueryChange("")
+                            onQueryChange(EMPTY_STRING)
                             onSearchChange()
                         },
                         icon = LibertyFlowIcons.ArrowLeftFilled
@@ -79,7 +84,7 @@ fun SearchingTopBar(
                     // When searching & query has text → show clear button
                     isSearching && query.isNotBlank() -> {
                         TopBarIconButton(
-                            onClick = { onQueryChange("") },
+                            onClick = { onQueryChange(EMPTY_STRING) },
                             icon = LibertyFlowIcons.CrossCircle
                         )
                     }
@@ -96,9 +101,11 @@ fun SearchingTopBar(
 
         // Loading indicator appears/disappears with animation
         AnimatedVisibility(
-            visible = isLoading,
-            enter = fadeIn(tween(300)) + slideInVertically(tween(300)),
-            exit = fadeOut(tween(300)) + slideOutVertically(tween(300))
+            visible = showIndicator && isLoading,
+            enter = fadeIn(tween(ANIMATION_DURATION))
+                    + slideInVertically(tween(ANIMATION_DURATION)),
+            exit = fadeOut(tween(ANIMATION_DURATION))
+                    + slideOutVertically(tween(ANIMATION_DURATION))
         ) {
             LibertyFlowLinearIndicator()
         }
@@ -109,7 +116,7 @@ fun SearchingTopBar(
 private fun SearchingTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String = stringResource(SearchingTopBarConstants.PlaceholderText)
+    placeholder: String = stringResource(PlaceholderText)
 ) {
     TextField(
         value = value,
@@ -134,7 +141,8 @@ private fun TopBarIconButton(
     IconButton(onClick = onClick) {
         Icon(
             painter = painterResource(icon),
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.size(TOP_BAR_ICON_SIZE.dp)
         )
     }
 }

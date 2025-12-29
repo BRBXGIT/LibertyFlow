@@ -1,5 +1,6 @@
 package com.example.data.utils.remote.network_request
 
+import android.util.Log
 import com.example.data.R
 import retrofit2.Response
 import java.net.SocketException
@@ -58,18 +59,18 @@ private fun getErrorByCode(statusCode: Int): NetworkError {
     }
 }
 
-private fun getMessageByError(error: NetworkError): String {
+private fun getMessageByError(error: NetworkError): Int {
     return when (error) {
-        NetworkErrors.REQUEST_TIMEOUT -> R.string.request_timeout_message.toString()
-        NetworkErrors.CONFLICT -> R.string.conflict_message.toString()
-        NetworkErrors.PAYLOAD_TOO_LARGE -> R.string.payload_too_large_message.toString()
-        NetworkErrors.TOO_MANY_REQUESTS -> R.string.too_many_requests_message.toString()
-        NetworkErrors.SERVER_ERROR -> R.string.server_error_message.toString()
-        NetworkErrors.INTERNET -> R.string.internet_message.toString()
-        NetworkErrors.SERIALIZATION -> R.string.serialization_message.toString()
-        NetworkErrors.NO_EMAIL_OR_PASSWORD -> R.string.no_email_or_password_message.toString()
-        NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> R.string.incorrect_email_or_password_message.toString()
-        else -> R.string.unknown_message.toString()
+        NetworkErrors.REQUEST_TIMEOUT -> R.string.request_timeout_message
+        NetworkErrors.CONFLICT -> R.string.conflict_message
+        NetworkErrors.PAYLOAD_TOO_LARGE -> R.string.payload_too_large_message
+        NetworkErrors.TOO_MANY_REQUESTS -> R.string.too_many_requests_message
+        NetworkErrors.SERVER_ERROR -> R.string.server_error_message
+        NetworkErrors.INTERNET -> R.string.internet_message
+        NetworkErrors.SERIALIZATION -> R.string.serialization_message
+        NetworkErrors.NO_EMAIL_OR_PASSWORD -> R.string.no_email_or_password_message
+        NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> R.string.incorrect_email_or_password_message
+        else -> R.string.unknown_message
     }
 }
 

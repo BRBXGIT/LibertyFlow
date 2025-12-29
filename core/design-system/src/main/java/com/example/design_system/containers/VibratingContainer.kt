@@ -34,9 +34,9 @@ import com.example.design_system.theme.mMotionScheme
 
 @Composable
 fun VibratingContainer(
+    modifier: Modifier = Modifier,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    topPadding: Dp,
     content: @Composable () -> Unit
 ) {
     // Pull-to-refresh internal state
@@ -47,13 +47,7 @@ fun VibratingContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         indicator = {}, // Indicator is fully custom (Spacer + vibration)
-        modifier = Modifier
-            .fillMaxSize()
-            .background(mColors.background)
-            .padding(
-                top = topPadding,
-                bottom = calculateNavBarSize()
-            )
+        modifier = modifier
     ) {
         // Current pull distance (0f..2f)
         val distance = state.distanceFraction
