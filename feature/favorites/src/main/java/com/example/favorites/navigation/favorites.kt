@@ -18,13 +18,14 @@ fun NavGraphBuilder.favorites(
     navController: NavController
 ) = composable<FavoritesRoute> {
     val favoritesState by favoritesVM.favoritesState.collectAsStateWithLifecycle()
+    val favoritesEffects = favoritesVM.favoritesEffects
+
     val favorites = favoritesVM.favorites.collectAsLazyPagingItems()
-    val effects = favoritesVM.effects
 
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleCommonEffects(
-        effects = effects,
+        effects = favoritesEffects,
         navController = navController,
         snackbarHostState = snackbarHostState
     )

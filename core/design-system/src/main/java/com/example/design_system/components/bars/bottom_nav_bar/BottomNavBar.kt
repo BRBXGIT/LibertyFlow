@@ -44,6 +44,8 @@ import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
 
+private const val OFFSET_LABEL = "bottom_nav_bar_offset"
+
 private data class NavItem(
     val labelRes: Int,
     val iconRes: Int, // Animated vector (outlined ↔ filled)
@@ -71,14 +73,14 @@ private val navItems = listOf(
 @Composable
 fun BoxScope.BottomNavBar(
     onNavItemClick: (NavigationBase) -> Unit,
-    selectedRoute: NavigationBase
+    selectedRoute: NavigationBase?
 ) {
     val visible = selectedRoute is NavBarItem
-    val targetOffset = if (visible) VISIBLE_OFFSET.dp else BottomNavBarConstants.BOTTOM_BAR_HEIGHT.dp
+    val targetOffset = if (visible) VISIBLE_OFFSET.dp else calculateNavBarSize()
     val animatedOffset by animateDpAsState(
         targetValue = targetOffset,
         animationSpec = mMotionScheme.fastSpatialSpec(),
-        label = "bottom_nav_bar_offset"
+        label = OFFSET_LABEL
     )
 
     NavigationBar(

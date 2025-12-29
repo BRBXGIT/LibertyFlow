@@ -38,8 +38,8 @@ class CollectionsVM @Inject constructor(
     private val _collectionsState = MutableStateFlow(CollectionsState())
     val collectionsState = _collectionsState.toLazily(CollectionsState())
 
-    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
-    val effects = _effects.receiveAsFlow()
+    private val _collectionEffects = Channel<UiEffect>(Channel.BUFFERED)
+    val collectionEffects = _collectionEffects.receiveAsFlow()
 
     private val query = _collectionsState
         .map { state -> state.query }
@@ -138,7 +138,7 @@ class CollectionsVM @Inject constructor(
 
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
-            _effects.send(effect)
+            _collectionEffects.send(effect)
         }
     }
 

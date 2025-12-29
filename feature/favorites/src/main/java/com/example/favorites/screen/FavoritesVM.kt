@@ -38,8 +38,8 @@ class FavoritesVM @Inject constructor(
     private val _favoritesState = MutableStateFlow(FavoritesState())
     val favoritesState = _favoritesState.toLazily(FavoritesState())
 
-    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
-    val effects = _effects.receiveAsFlow()
+    private val _favoritesEffects = Channel<UiEffect>(Channel.BUFFERED)
+    val favoritesEffects = _favoritesEffects.receiveAsFlow()
 
     // Paging: Favorites
     private val requestParameters = _favoritesState
@@ -105,7 +105,7 @@ class FavoritesVM @Inject constructor(
 
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
-            _effects.send(effect)
+            _favoritesEffects.send(effect)
         }
     }
 

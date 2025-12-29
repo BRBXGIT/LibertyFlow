@@ -18,7 +18,7 @@ fun NavGraphBuilder.collections(
     navController: NavController
 ) = composable<CollectionsRoute> {
     val collectionsState by collectionsVM.collectionsState.collectAsStateWithLifecycle()
-    val effects = collectionsVM.effects
+    val collectionEffects = collectionsVM.collectionEffects
 
     val plannedAnime = collectionsVM.plannedAnime.collectAsLazyPagingItems()
     val watchedAnime = collectionsVM.watchedAnime.collectAsLazyPagingItems()
@@ -29,7 +29,7 @@ fun NavGraphBuilder.collections(
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleCommonEffects(
-        effects = effects,
+        effects = collectionEffects,
         navController = navController,
         snackbarHostState = snackbarHostState
     )

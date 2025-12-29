@@ -4,19 +4,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.anime_details.navigation.animeDetails
 import com.example.collections.navigation.collections
 import com.example.collections.screen.CollectionsVM
-import com.example.common.UiIntent
-import com.example.common.UiVM
+import com.example.common.navigation.CollectionsRoute
+import com.example.common.navigation.FavoritesRoute
 import com.example.common.navigation.HomeRoute
+import com.example.common.navigation.NavigationBase
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBar
 import com.example.favorites.navigation.favorites
 import com.example.favorites.screen.FavoritesVM
@@ -27,35 +28,41 @@ import com.example.home.screen.HomeVM
 fun NavGraph() {
     val navController = rememberNavController()
 
-    // Initialize here to don't refetch values
-    val uiVM = viewModel<UiVM>()
-
     val homeVM = hiltViewModel<HomeVM>()
     val favoritesVM = hiltViewModel<FavoritesVM>()
     val collectionsVM = hiltViewModel<CollectionsVM>()
 
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val selectedRoute = backStackEntry?.currentNavBarRoute()
+
     Box(Modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = HomeRoute,
-            modifier = Modifier.align(Alignment.Center)
+            startDestination = HomeRoute
         ) {
             home(homeVM, navController)
-
             favorites(favoritesVM, navController)
-
             collections(collectionsVM, navController)
-
-            animeDetails()
+            animeDetails(navController)
         }
 
-        val uiState by uiVM.uiState.collectAsStateWithLifecycle()
         BottomNavBar(
-            selectedRoute = uiState.selectedRoute,
-            onNavItemClick = {
-                uiVM.sendIntent(UiIntent.UpdateSelectedRoute(it))
-                navController.navigate(it)
+            selectedRoute = selectedRoute,
+            onNavItemClick = { route ->
+                navController.navigate(route) {
+                    popUpTo(HomeRoute) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }
         )
     }
 }
+
+private fun NavBackStackEntry.currentNavBarRoute(): NavigationBase? =
+    when {
+        destination.hasRoute<HomeRoute>() -> HomeRoute
+        destination.hasRoute<FavoritesRoute>() -> FavoritesRoute
+        destination.hasRoute<CollectionsRoute>() -> CollectionsRoute
+        else -> null // Others
+    }

@@ -41,8 +41,8 @@ class HomeVM @Inject constructor(
     private val _homeState = MutableStateFlow(HomeState())
     val homeState = _homeState.toLazily(HomeState())
 
-    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
-    val effects = _effects.receiveAsFlow()
+    private val _homeEffects = Channel<UiEffect>(Channel.BUFFERED)
+    val homeEffects = _homeEffects.receiveAsFlow()
 
     /**
      * Emits request parameters whenever filters/search change.
@@ -108,7 +108,7 @@ class HomeVM @Inject constructor(
 
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
-            _effects.send(effect)
+            _homeEffects.send(effect)
         }
     }
 
