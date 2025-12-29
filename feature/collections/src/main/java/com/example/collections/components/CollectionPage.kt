@@ -18,6 +18,7 @@ private const val ZERO_ELEMENTS = 0
 internal fun CollectionPage(
     isError: Boolean,
     collection: LazyPagingItems<UiAnimeItem>,
+    isLoading: Boolean,
     onItemClick: (Int) -> Unit,
 ) {
     when {
@@ -25,7 +26,7 @@ internal fun CollectionPage(
         isError -> ErrorSection()
 
         // Empty collection
-        collection.itemCount == ZERO_ELEMENTS -> {
+        collection.itemCount == ZERO_ELEMENTS && !isLoading -> {
             EmptyCollectionSection()
         }
 

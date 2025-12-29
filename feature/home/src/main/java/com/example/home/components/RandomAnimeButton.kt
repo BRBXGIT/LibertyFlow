@@ -2,7 +2,7 @@
 
 package com.example.home.components
 
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -29,12 +29,18 @@ import com.example.home.R
 import com.example.home.screen.HomeIntent
 
 private val ButtonLabel = R.string.random_button_label
+
 internal const val RANDOM_BUTTON_KEY = "RANDOM_BUTTON_KEY"
+private const val ANIMATED_ALPHA_LABEL = "Animated border alpha"
+
+private const val UNSELECTED_COLOR_ALPHA = 0f
+private const val SELECTED_COLOR_ALPHA = 1f
+
 private const val RANDOM_BUTTON_ICON_SIZE = 22
 private const val CONTENT_ROW_PADDING_ARRANGEMENT = 8
 
 @Composable
-fun LazyGridItemScope.RandomAnimeButton(
+internal fun LazyGridItemScope.RandomAnimeButton(
     onIntent: (HomeIntent) -> Unit,
     showAnimation: Boolean
 ) {
@@ -42,16 +48,7 @@ fun LazyGridItemScope.RandomAnimeButton(
         onClick = { onIntent(HomeIntent.GetRandomAnime) },
         modifier = Modifier.animateItem(),
         shape = mShapes.extraLarge,
-        brush = Brush.sweepGradient(
-            colors = listOf(
-                getAnimatedColor(Color(0xFFE57373), showAnimation),
-                getAnimatedColor(Color(0xFFFFB74D), showAnimation),
-                getAnimatedColor(Color(0xFFFFF176), showAnimation),
-                getAnimatedColor(Color(0xFF81C784), showAnimation),
-                getAnimatedColor(Color(0xFF64B5F6), showAnimation),
-                getAnimatedColor(Color(0xFFBA68C8), showAnimation)
-            )
-        )
+        brush = animatedBrush(showAnimation),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -75,15 +72,30 @@ fun LazyGridItemScope.RandomAnimeButton(
 }
 
 @Composable
-private fun getAnimatedColor(
-    color: Color,
-    visible: Boolean
-): Color {
-    val animated by animateColorAsState(
-        targetValue = if (visible) color else color.copy(alpha = 0f),
+private fun animatedAlpha(visible: Boolean): Float {
+    val alpha by animateFloatAsState(
+        targetValue = if (visible) SELECTED_COLOR_ALPHA else UNSELECTED_COLOR_ALPHA,
         animationSpec = mMotionScheme.slowEffectsSpec(),
-        label = "Animated button color"
+        label = ANIMATED_ALPHA_LABEL
     )
+    return alpha
+}
 
-    return animated
+
+@Composable
+private fun animatedBrush(
+    showAnimation: Boolean
+): Brush {
+    val alpha = animatedAlpha(showAnimation)
+
+    return Brush.sweepGradient(
+        colors = listOf(
+            Color(0xFFE57373).copy(alpha = alpha),
+            Color(0xFFFFB74D).copy(alpha = alpha),
+            Color(0xFFFFF176).copy(alpha = alpha),
+            Color(0xFF81C784).copy(alpha = alpha),
+            Color(0xFF64B5F6).copy(alpha = alpha),
+            Color(0xFFBA68C8).copy(alpha = alpha)
+        )
+    )
 }

@@ -100,9 +100,6 @@ class CollectionsVM @Inject constructor(
                 _collectionsState.update { it.toggleIsSearching() }
 
             // Ui sets
-            is CollectionsIntent.SetIsLoading ->
-                _collectionsState.update { it.setLoading(intent.value) }
-
             is CollectionsIntent.SetIsError ->
                 _collectionsState.update { it.setError(intent.value) }
 
@@ -123,8 +120,7 @@ class CollectionsVM @Inject constructor(
             CollectionsIntent.GetTokens -> {
                 getAuthToken(
                     request = UiTokenRequest(_collectionsState.value.email, _collectionsState.value.password),
-                    onStart = { _collectionsState.update { it.copy(isLoading = true, isPasswordOrEmailIncorrect = false) } },
-                    onSuccess = { _collectionsState.update { it.setLoading(false) } },
+                    onStart = { _collectionsState.update { it.copy(isPasswordOrEmailIncorrect = false) } },
                     onIncorrectData = { _collectionsState.update { it.copy(isPasswordOrEmailIncorrect = true) } },
                     onAnyError = { messageRes, retry ->
                         sendEffect(

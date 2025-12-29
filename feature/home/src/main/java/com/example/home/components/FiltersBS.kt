@@ -82,7 +82,7 @@ private val IsOngoingLabel = R.string.is_ongoing_label
 private val OngoingLabel = R.string.ongoing_label
 
 @Composable
-fun FiltersBS(
+internal fun FiltersBS(
     homeState: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {

@@ -37,7 +37,7 @@ import com.example.home.components.RandomAnimeButton
 private val TopBarLabel = R.string.home_top_bar_label
 
 @Composable
-fun Home(
+internal fun Home(
     homeState: HomeState,
     anime: LazyPagingItems<UiAnimeItem>,
     snackbarHostState: SnackbarHostState,

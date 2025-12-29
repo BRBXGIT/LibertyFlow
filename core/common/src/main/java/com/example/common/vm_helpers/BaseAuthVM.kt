@@ -33,7 +33,7 @@ abstract class BaseAuthVM(
      */
     protected fun getAuthToken(
         onStart: () -> Unit,
-        onSuccess: () -> Unit,
+        onSuccess: () -> Unit = {},
         onIncorrectData: () -> Unit,
         onAnyError: suspend (Int, onRetry: () -> Unit) -> Unit,
         request: UiTokenRequest

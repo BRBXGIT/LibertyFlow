@@ -20,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.collections.R
 import com.example.collections.components.CollectionPage
@@ -34,7 +35,6 @@ import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
-import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.components.sections.LoggedOutSection
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.theme.mColors
@@ -124,7 +124,6 @@ private fun LoggedInContent(
     collections.forEach { collection ->
         PagingStatesContainer(
             items = collection,
-            onLoadingChange = { onIntent(CollectionsIntent.SetIsLoading(it)) },
             onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
             onRetryRequest = { messageRes, retry ->
                 onEffect(
@@ -136,12 +135,6 @@ private fun LoggedInContent(
                 )
             }
         )
-    }
-
-    // Global error state
-    if (collectionsState.isError) {
-        ErrorSection()
-        return
     }
 
     CollectionsContent(
@@ -174,9 +167,11 @@ private fun CollectionsContent(
             }
         )
 
+        val isLoading = collections[pagerState.currentPage].loadState.refresh is LoadState.Loading
+
         // Pull-to-refresh wrapper
         PullToRefreshBox(
-            isRefreshing = collectionsState.isLoading,
+            isRefreshing = isLoading,
             onRefresh = { collections[pagerState.currentPage].refresh() }
         ) {
             // Horizontal pager with collections
@@ -186,6 +181,7 @@ private fun CollectionsContent(
             ) { pageIndex ->
                 CollectionPage(
                     isError = collectionsState.isError,
+                    isLoading = isLoading,
                     collection = collections[pageIndex],
                     onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
                 )

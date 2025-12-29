@@ -9,7 +9,6 @@ data class CollectionsState(
     val authState: AuthState = AuthState.LoggedOut,
 
     val isError: Boolean = false,
-    val isLoading: Boolean = false,
 
     val isAuthBSVisible: Boolean = false,
     val email: String = "",
@@ -24,8 +23,6 @@ data class CollectionsState(
     fun toggleAuthBS() = copy(isAuthBSVisible = !isAuthBSVisible)
 
     fun toggleIsSearching() = copy(isSearching = !isSearching)
-
-    fun setLoading(value: Boolean) = copy(isLoading = value)
 
     fun setError(value: Boolean) = copy(isError = value)
 

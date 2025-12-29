@@ -18,8 +18,9 @@ fun NavGraphBuilder.home(
     navController: NavController
 ) = composable<HomeRoute> {
     val homeState by homeVM.homeState.collectAsStateWithLifecycle()
-    val anime = homeVM.anime.collectAsLazyPagingItems()
     val effects = homeVM.effects
+
+    val anime = homeVM.anime.collectAsLazyPagingItems()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
