@@ -1,5 +1,8 @@
 package com.example.favorites.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -10,13 +13,17 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.common.navigation.FavoritesRoute
 import com.example.common.ui_helpers.HandleCommonEffects
+import com.example.design_system.constants.ScreenTransitionConstants.ANIMATION_DURATION
 import com.example.favorites.screen.Favorites
 import com.example.favorites.screen.FavoritesVM
 
 fun NavGraphBuilder.favorites(
     favoritesVM: FavoritesVM,
     navController: NavController
-) = composable<FavoritesRoute> {
+) = composable<FavoritesRoute>(
+    enterTransition = { fadeIn(tween(ANIMATION_DURATION)) },
+    exitTransition = { fadeOut(tween(ANIMATION_DURATION)) }
+) {
     val favoritesState by favoritesVM.favoritesState.collectAsStateWithLifecycle()
     val favoritesEffects = favoritesVM.favoritesEffects
 

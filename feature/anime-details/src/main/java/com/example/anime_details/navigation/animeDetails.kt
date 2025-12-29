@@ -1,5 +1,10 @@
 package com.example.anime_details.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -13,8 +18,24 @@ import com.example.anime_details.screen.AnimeDetails
 import com.example.anime_details.screen.AnimeDetailsVM
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.HandleCommonEffects
+import com.example.design_system.constants.ScreenTransitionConstants.ANIMATION_DURATION
 
-fun NavGraphBuilder.animeDetails(navController: NavController) = composable<AnimeDetailsRoute> {
+fun NavGraphBuilder.animeDetails(
+    navController: NavController
+) = composable<AnimeDetailsRoute>(
+    enterTransition = {
+        slideInHorizontally(
+            initialOffsetX = { it / 2 },
+            animationSpec = tween(ANIMATION_DURATION)
+        ) + fadeIn(tween(ANIMATION_DURATION - 100))
+    },
+    exitTransition = {
+        slideOutHorizontally(
+            targetOffsetX = { it / 2 },
+            animationSpec = tween(ANIMATION_DURATION)
+        ) + fadeOut(tween(ANIMATION_DURATION - 100))
+    }
+) {
     val route = it.toRoute<AnimeDetailsRoute>()
 
     val animeDetailsVM = hiltViewModel<AnimeDetailsVM>()

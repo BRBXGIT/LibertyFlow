@@ -1,5 +1,8 @@
 package com.example.home.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -10,13 +13,17 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.common.navigation.HomeRoute
 import com.example.common.ui_helpers.HandleCommonEffects
+import com.example.design_system.constants.ScreenTransitionConstants.ANIMATION_DURATION
 import com.example.home.screen.Home
 import com.example.home.screen.HomeVM
 
 fun NavGraphBuilder.home(
     homeVM: HomeVM,
     navController: NavController
-) = composable<HomeRoute> {
+) = composable<HomeRoute>(
+    enterTransition = { fadeIn(tween(ANIMATION_DURATION)) },
+    exitTransition = { fadeOut(tween(ANIMATION_DURATION)) }
+) {
     val homeState by homeVM.homeState.collectAsStateWithLifecycle()
     val homeEffects = homeVM.homeEffects
 

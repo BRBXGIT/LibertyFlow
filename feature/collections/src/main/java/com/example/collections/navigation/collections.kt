@@ -1,5 +1,8 @@
 package com.example.collections.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -12,11 +15,15 @@ import com.example.collections.screen.Collections
 import com.example.collections.screen.CollectionsVM
 import com.example.common.navigation.CollectionsRoute
 import com.example.common.ui_helpers.HandleCommonEffects
+import com.example.design_system.constants.ScreenTransitionConstants.ANIMATION_DURATION
 
 fun NavGraphBuilder.collections(
     collectionsVM: CollectionsVM,
     navController: NavController
-) = composable<CollectionsRoute> {
+) = composable<CollectionsRoute>(
+    enterTransition = { fadeIn(tween(ANIMATION_DURATION)) },
+    exitTransition = { fadeOut(tween(ANIMATION_DURATION)) }
+) {
     val collectionsState by collectionsVM.collectionsState.collectAsStateWithLifecycle()
     val collectionEffects = collectionsVM.collectionEffects
 
