@@ -22,7 +22,8 @@ import com.example.design_system.theme.mShapes
 @Composable
 fun LibertyFlowAsyncImage(
     modifier: Modifier = Modifier,
-    imagePath: String
+    imagePath: String,
+    showShimmer: Boolean = true
 ) {
     val shimmerColors = listOf(
         Color.LightGray.copy(alpha = 0.6f),
@@ -37,15 +38,17 @@ fun LibertyFlowAsyncImage(
             .size(Size.ORIGINAL)
             .build(),
         contentDescription = null,
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         filterQuality = FilterQuality.Low,
         contentScale = ContentScale.Crop,
         loading = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(animatedBrush(shimmerColors))
-            )
+            if (showShimmer) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(animatedBrush(shimmerColors))
+                )
+            }
         }
     )
 }

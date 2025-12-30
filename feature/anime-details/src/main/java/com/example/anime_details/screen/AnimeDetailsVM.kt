@@ -62,7 +62,12 @@ class AnimeDetailsVM @Inject constructor(
 
     fun sendIntent(intent: AnimeDetailsIntent) {
         when(intent) {
+            // Data
             is AnimeDetailsIntent.FetchAnime -> fetchAnime(intent.id)
+
+            // Toggles
+            AnimeDetailsIntent.ToggleIsDescriptionExpanded ->
+                _animeDetailsState.update { it.toggleIsDescriptionExpanded() }
         }
     }
 

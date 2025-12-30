@@ -3,4 +3,8 @@
     <string name="add_to_favorites_button_label">Добавить в избранные</string>
     <string name="remove_from_favorites_button_label">Удалить из избранных</string>
     <string name="loading_favorites_button_label">Загрузка</string>
+
+    <string name="no_description_provided_label">Описания нет</string>
+
+    <string name="torrents_label">Торренты</string>
 </resources>

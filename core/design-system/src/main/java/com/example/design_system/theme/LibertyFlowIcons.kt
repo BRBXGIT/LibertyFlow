@@ -11,6 +11,7 @@ object LibertyFlowIcons {
     val DotsAnimated = R.drawable.ic_dots_animated
     val CompassAnimated = R.drawable.ic_compass_animated
     val EyeAnimated = R.drawable.ic_eye_animated
+    val ArrowUpAnimated = R.drawable.ic_arrow_up_animated
 
     // Outlined
     val Magnifier = R.drawable.ic_magnifier

@@ -4,4 +4,7 @@ sealed interface AnimeDetailsIntent {
 
     // Data
     data class FetchAnime(val id: Int): AnimeDetailsIntent
+
+    // Ui
+    data object ToggleIsDescriptionExpanded: AnimeDetailsIntent
 }

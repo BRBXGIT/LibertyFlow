@@ -46,6 +46,8 @@ dependencies {
     // Feature modules
     implementation(project(":feature:common"))
 
+    // Compose animation graphics
+    implementation(libs.androidx.animation.graphics)
     // Haze materials
     implementation(libs.haze.materials)
     // Hilt

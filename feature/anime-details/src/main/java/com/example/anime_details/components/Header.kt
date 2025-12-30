@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,7 +40,7 @@ data class HeaderData(
     val type: String? = null,
     val episodes: Int = DEFAULT_EPISODES,
     val posterPath: String = EMPTY_STRING,
-    val englishName: String = EMPTY_STRING,
+    val russianName: String = EMPTY_STRING,
     val season: String = EMPTY_STRING,
     val year: Int = DEFAULT_YEAR,
     val isOngoing: Boolean = false
@@ -103,7 +104,7 @@ fun LazyItemScope.Header(
     Box(Modifier.animateItem()) {
         LibertyFlowAsyncImage(
             modifier = Modifier
-                .fillParentMaxSize()
+                .fillMaxSize()
                 .hazeSource(hazeState),
             imagePath = headerData.posterPath
         )
@@ -145,7 +146,7 @@ fun LazyItemScope.Header(
                 modifier = Modifier.height(posterHeight)
             ) {
                 Text(
-                    text = headerData.englishName,
+                    text = headerData.russianName,
                     style = mTypography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis

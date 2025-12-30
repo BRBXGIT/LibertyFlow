@@ -50,12 +50,12 @@ private const val ICON_SIZE = 22
 @Composable
 fun AnimeDetailsTopBar(
     isError: Boolean,
-    animeTitle: String?,
+    englishTitle: String?,
     isLoading: Boolean,
     scrollBehavior: TopAppBarScrollBehavior,
     onEffect: (UiEffect) -> Unit
 ) {
-    val showTitle = !isLoading && animeTitle != null && !isError
+    val showTitle = !isLoading && englishTitle != null && !isError
 
     TopAppBar(
         title = {
@@ -65,7 +65,7 @@ fun AnimeDetailsTopBar(
 
             AnimatedTopBarContent(visible = showTitle) {
                 Text(
-                    text = animeTitle!!,
+                    text = englishTitle!!,
                     maxLines = TEXT_MAX_LINES,
                     overflow = TextOverflow.Ellipsis,
                     style = mTypography.titleLarge
@@ -177,7 +177,7 @@ private fun AnimeScreenTopBaPreview() {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
         AnimeDetailsTopBar(
-            animeTitle = "Death Note",
+            englishTitle = "Death Note",
             isLoading = true,
             scrollBehavior = scrollBehavior,
             isError = false,

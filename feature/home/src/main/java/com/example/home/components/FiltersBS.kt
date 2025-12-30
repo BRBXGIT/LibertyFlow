@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -32,7 +31,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +40,7 @@ import com.example.data.models.common.mappers.toName
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
+import com.example.design_system.components.dividers.DividerWithLabel
 import com.example.design_system.components.indicators.CenteredCircularIndicator
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
@@ -58,7 +57,6 @@ private const val GENRES_LOADING_INDICATOR_KEY = "GenresLoadingIndicatorKey"
 private const val MIN_GRID_CELLS_SIZE = 90
 private const val SPACED_BY = 8
 private const val CONTENT_PADDING = 16
-private const val FILTER_DIVIDER_SPACED_BY = 16
 private const val SORTING_SPACED_BY = 8
 private const val YEAR_TF_MAX_LINES = 1
 private const val FILTER_ITEM_TEXT_MAX_LINES = 1
@@ -66,7 +64,6 @@ private const val FILTER_ITEM_SELECTED_CONTAINER_SHAPE = 100
 private const val FILTER_ITEM_UNSELECTED_CONTAINER_SHAPE = 8
 private const val FILTER_ITEM_TEXT_PADDING = 10
 
-private const val FILTER_DIVIDER_WEIGHT = 1f
 
 private const val FROM_YEAR_KEY = "FromYearKey"
 private const val TO_YEAR_KEY = "ToYearKey"
@@ -208,20 +205,10 @@ private fun LazyGridScope.filterDivider(textRes: Int) {
         key = textRes,
         span = { GridItemSpan(maxLineSpan) }
     ) {
-        Row(
+        DividerWithLabel(
             modifier = Modifier.fillMaxWidth().animateItem(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(FILTER_DIVIDER_SPACED_BY.dp)
-        ) {
-            HorizontalDivider(modifier = Modifier.weight(FILTER_DIVIDER_WEIGHT))
-
-            Text(
-                text = stringResource(textRes),
-                style = mTypography.bodyLarge.copy(fontWeight = FontWeight.W600),
-            )
-
-            HorizontalDivider(modifier = Modifier.weight(FILTER_DIVIDER_WEIGHT))
-        }
+            labelRes = textRes
+        )
     }
 }
 
