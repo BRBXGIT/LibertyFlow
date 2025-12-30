@@ -3,6 +3,7 @@
 package com.example.anime_details.screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -15,7 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.anime_details.components.ADD_TO_FAVORITE_BUTTON_KEY
+import com.example.anime_details.components.AddToFavoritesButton
 import com.example.anime_details.components.AnimeDetailsTopBar
+import com.example.anime_details.components.HEADER_KEY
 import com.example.anime_details.components.Header
 import com.example.anime_details.components.HeaderData
 import com.example.common.ui_helpers.UiEffect
@@ -56,12 +60,15 @@ internal fun AnimeDetails(
                     animeDetails = anime,
                     topInnerPadding = innerPadding.calculateTopPadding()
                 )
+
+                addToFavoriteButton(
+                    onIntent = onIntent,
+                    showAnimation = false
+                )
             }
         }
     }
 }
-
-private const val HEADER_KEY = "HEADER_KEY"
 
 private fun LazyListScope.header(
     animeDetails: UiAnimeDetails,
@@ -83,6 +90,20 @@ private fun LazyListScope.header(
         Header(
             headerData = headerData,
             topInnerPadding = topInnerPadding
+        )
+    }
+}
+
+private fun LazyListScope.addToFavoriteButton(
+    onIntent: (AnimeDetailsIntent) -> Unit,
+    showAnimation: Boolean
+) {
+    item(
+        key = ADD_TO_FAVORITE_BUTTON_KEY
+    ) {
+        AddToFavoritesButton(
+            onIntent = onIntent,
+            showAnimation = showAnimation
         )
     }
 }

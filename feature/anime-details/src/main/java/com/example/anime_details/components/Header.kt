@@ -76,6 +76,9 @@ private const val GRADIENT_HEIGHT_FRACTION = 0.7f
 private const val BLUR_RADIUS_DP = 8
 private const val BLUR_ALPHA = 0.5f
 
+// Key
+internal const val HEADER_KEY = "HEADER_KEY"
+
 @Composable
 fun LazyItemScope.Header(
     headerData: HeaderData,
