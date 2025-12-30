@@ -3,7 +3,6 @@
 package com.example.anime_details.screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -19,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.example.anime_details.components.ADD_TO_FAVORITE_BUTTON_KEY
 import com.example.anime_details.components.AddToFavoritesButton
 import com.example.anime_details.components.AnimeDetailsTopBar
+import com.example.anime_details.components.GENRES_LR_KEY
+import com.example.anime_details.components.GenresLR
 import com.example.anime_details.components.HEADER_KEY
 import com.example.anime_details.components.Header
 import com.example.anime_details.components.HeaderData
@@ -65,6 +66,8 @@ internal fun AnimeDetails(
                     onIntent = onIntent,
                     showAnimation = false
                 )
+
+                genresLR(anime.genres.map { it.name })
             }
         }
     }
@@ -105,5 +108,13 @@ private fun LazyListScope.addToFavoriteButton(
             onIntent = onIntent,
             showAnimation = showAnimation
         )
+    }
+}
+
+private fun LazyListScope.genresLR(genres: List<String>) {
+    item(
+        key = GENRES_LR_KEY
+    ) {
+        GenresLR(genres)
     }
 }

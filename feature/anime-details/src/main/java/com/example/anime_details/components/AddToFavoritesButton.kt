@@ -56,7 +56,8 @@ internal fun LazyItemScope.AddToFavoritesButton(
             .animateItem()
             .fillParentMaxWidth()
             .padding(horizontal = HORIZONTAL_PADDING.dp)
-        ) {
+        )
+    {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(CONTENT_ROW_PADDING_ARRANGEMENT.dp),
