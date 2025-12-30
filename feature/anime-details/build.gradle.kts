@@ -46,6 +46,8 @@ dependencies {
     // Feature modules
     implementation(project(":feature:common"))
 
+    // Haze materials
+    implementation(libs.haze.materials)
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

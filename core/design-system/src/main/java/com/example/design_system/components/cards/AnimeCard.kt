@@ -47,7 +47,7 @@ fun LazyGridItemScope.AnimeCard(
     ) {
         // Bg image
         Box(Modifier.matchParentSize()) {
-            LibertyFlowAsyncImage(posterPath)
+            LibertyFlowAsyncImage(imagePath = posterPath)
         }
 
         Column(

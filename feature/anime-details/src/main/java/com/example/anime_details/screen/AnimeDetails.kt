@@ -2,21 +2,27 @@
 
 package com.example.anime_details.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.example.anime_details.components.AnimeDetailsTopBar
+import com.example.anime_details.components.Header
+import com.example.anime_details.components.HeaderData
 import com.example.common.ui_helpers.UiEffect
-import com.example.design_system.theme.mColors
+import com.example.data.models.common.common.PosterType
+import com.example.data.models.releases.anime_details.UiAnimeDetails
+
+private const val LC_ARRANGEMENT = 16
 
 @Composable
 internal fun AnimeDetails(
@@ -40,15 +46,43 @@ internal fun AnimeDetails(
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(mColors.background)
-                .padding(innerPadding)
-        ) {
-            Text(
-                text = "Anime screen"
-            )
+        val anime = animeDetailsState.anime
+
+        anime?.let {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(LC_ARRANGEMENT.dp),
+            ) {
+                header(
+                    animeDetails = anime,
+                    topInnerPadding = innerPadding.calculateTopPadding()
+                )
+            }
         }
+    }
+}
+
+private const val HEADER_KEY = "HEADER_KEY"
+
+private fun LazyListScope.header(
+    animeDetails: UiAnimeDetails,
+    topInnerPadding: Dp
+) {
+    val headerData = HeaderData(
+        type = animeDetails.type,
+        episodes = animeDetails.episodes.size,
+        posterPath = animeDetails.poster.fullPath(PosterType.PREVIEW),
+        englishName = animeDetails.name.english,
+        season = animeDetails.season,
+        year = animeDetails.year,
+        isOngoing = animeDetails.isOngoing
+    )
+
+    item(
+        key = HEADER_KEY
+    ) {
+        Header(
+            headerData = headerData,
+            topInnerPadding = topInnerPadding
+        )
     }
 }

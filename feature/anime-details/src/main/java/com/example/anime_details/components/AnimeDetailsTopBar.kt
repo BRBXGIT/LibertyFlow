@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.common.ui_helpers.UiEffect
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
@@ -42,6 +44,8 @@ private const val ERROR_TEXT = "Error"
 private const val TOP_BAR_ALPHA = 0f
 
 private const val TEXT_MAX_LINES = 1
+
+private const val ICON_SIZE = 22
 
 @Composable
 fun AnimeDetailsTopBar(
@@ -78,7 +82,8 @@ fun AnimeDetailsTopBar(
             ) {
                 Icon(
                     painter = painterResource(LibertyFlowIcons.ArrowLeftFilled),
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(ICON_SIZE.dp)
                 )
             }
         },

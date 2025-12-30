@@ -21,6 +21,7 @@ import com.example.design_system.theme.mShapes
 
 @Composable
 fun LibertyFlowAsyncImage(
+    modifier: Modifier = Modifier,
     imagePath: String
 ) {
     val shimmerColors = listOf(
@@ -51,14 +52,14 @@ fun LibertyFlowAsyncImage(
 
 @Preview
 @Composable
-private fun LibriaNowAsyncImagePreview() {
+private fun LibertyNowAsyncImagePreview() {
     LibertyFlowTheme {
         Box(
             modifier = Modifier
                 .size(100.dp, 170.dp)
                 .clip(mShapes.small)
         ) {
-            LibertyFlowAsyncImage("")
+            LibertyFlowAsyncImage(imagePath = "")
         }
     }
 }
