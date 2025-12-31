@@ -48,7 +48,7 @@ internal const val DESCRIPTION_KEY = "DESCRIPTION_KEY"
  * - Displays an animated expand/collapse arrow when text exists
  */
 @Composable
-fun LazyItemScope.Description(
+internal fun LazyItemScope.Description(
     description: String?,
     isExpanded: Boolean,
     onIntent: (AnimeDetailsIntent) -> Unit

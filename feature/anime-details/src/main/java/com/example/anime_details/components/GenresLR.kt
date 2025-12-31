@@ -21,7 +21,7 @@ private const val SPACED_BY = 8
 internal const val GENRES_LR_KEY = "GENRES_LR_KEY"
 
 @Composable
-fun LazyItemScope.GenresLR(
+internal fun LazyItemScope.GenresLR(
     genres: List<String>
 ) {
     LazyRow(

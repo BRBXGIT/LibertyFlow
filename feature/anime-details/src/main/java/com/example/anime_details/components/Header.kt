@@ -81,7 +81,7 @@ private const val BLUR_ALPHA = 0.5f
 internal const val HEADER_KEY = "HEADER_KEY"
 
 @Composable
-fun LazyItemScope.Header(
+internal fun LazyItemScope.Header(
     headerData: HeaderData,
     topInnerPadding: Dp,
 ) {
