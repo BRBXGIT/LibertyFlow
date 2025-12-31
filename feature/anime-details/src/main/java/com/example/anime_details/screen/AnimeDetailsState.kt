@@ -12,6 +12,7 @@ data class AnimeDetailsState(
     // Sets
     val isLoading: Boolean = false,
     val isError: Boolean = false,
+    val watchedEps: List<Int> = emptyList(),
 
     // Anime data
     val anime: UiAnimeDetails? = null,
@@ -19,7 +20,10 @@ data class AnimeDetailsState(
     // Toggles
     val isDescriptionExpanded: Boolean = false
 ) {
+    // Sets
     fun setAuthState(value: AuthState) = copy(authState = value)
+    fun setWatchedEps(value: List<Int>) = copy(watchedEps = value)
 
+    // Toggles
     fun toggleIsDescriptionExpanded() = copy(isDescriptionExpanded = !isDescriptionExpanded)
 }

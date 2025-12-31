@@ -110,7 +110,7 @@ internal fun AnimeDetails(
                 torrents(anime.torrents, onEffect)
 
                 // Episodes list
-                episodes(anime.episodes, onEffect)
+                episodes(anime.episodes, animeDetailsState.watchedEps, onIntent)
             }
         }
     }
@@ -190,9 +190,10 @@ private fun LazyListScope.torrents(
 
 private fun LazyListScope.episodes(
     episodes: List<UiEpisode>,
-    onEffect: (UiEffect) -> Unit
+    watchedEps: List<Int>,
+    onIntent: (AnimeDetailsIntent) -> Unit
 ) {
     item(key = EPISODES_KEY) {
-        Episodes(episodes, onEffect)
+        Episodes(episodes, watchedEps, onIntent)
     }
 }

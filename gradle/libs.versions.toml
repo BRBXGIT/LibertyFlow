@@ -32,7 +32,7 @@ composeNavigation = "2.9.6"
 serialization = "1.9.0"
 
 # Room
-roomKtx = "2.8.3"
+roomKtx = "2.7.2"
 
 # Coil
 coilCompose = "2.7.0"
