@@ -25,7 +25,7 @@ import com.example.anime_details.components.AnimeDetailsTopBar
 import com.example.anime_details.components.DESCRIPTION_KEY
 import com.example.anime_details.components.Description
 import com.example.anime_details.components.GENRES_LR_KEY
-import com.example.anime_details.components.GenresLR
+import com.example.anime_details.components.Genres
 import com.example.anime_details.components.HEADER_KEY
 import com.example.anime_details.components.Header
 import com.example.anime_details.components.HeaderData
@@ -40,10 +40,13 @@ import com.example.anime_details.components.Torrent
 import com.example.data.models.releases.anime_details.UiEpisode
 import com.example.data.models.releases.anime_details.UiTorrent
 
+// Vertical spacing between LazyColumn items
 private const val LC_ARRANGEMENT = 16
 
+// Label for torrents section
 private val TORRENTS_LABEL_RES = R.string.torrents_label
 
+// Extra top padding below the top app bar
 private const val PLUS_TOP_PADDING = 12
 
 @Composable
@@ -53,6 +56,7 @@ internal fun AnimeDetails(
     onEffect: (UiEffect) -> Unit,
     onIntent: (AnimeDetailsIntent) -> Unit
 ) {
+    // Pinned scroll behavior for the top bar
     val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -72,29 +76,41 @@ internal fun AnimeDetails(
     ) { innerPadding ->
         val anime = animeDetailsState.anime
 
+        // Render content only when anime data is available
         anime?.let {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(LC_ARRANGEMENT.dp),
             ) {
+                // Header section
                 header(
                     animeDetails = anime,
                     topInnerPadding = innerPadding.calculateTopPadding() + PLUS_TOP_PADDING.dp
                 )
 
+                // Add to favorites button
                 addToFavoriteButton(
                     onIntent = onIntent,
                     showAnimation = false
                 )
 
-                genresLR(anime.genres.map { it.name })
+                // Genres list
+                genres(anime.genres.map { it.name })
 
-                description(anime.description, animeDetailsState.isDescriptionExpanded, onIntent)
+                // Description section
+                description(
+                    anime.description,
+                    animeDetailsState.isDescriptionExpanded,
+                    onIntent
+                )
 
+                // Torrents divider
                 divider(TORRENTS_LABEL_RES)
 
-                torrents(anime.torrents)
+                // Torrents list
+                torrents(anime.torrents, onEffect)
 
-                episodes(anime.episodes, onIntent)
+                // Episodes list
+                episodes(anime.episodes, onEffect)
             }
         }
     }
@@ -104,6 +120,7 @@ private fun LazyListScope.header(
     animeDetails: UiAnimeDetails,
     topInnerPadding: Dp
 ) {
+    // Maps UI model to header UI data
     val headerData = HeaderData(
         type = animeDetails.type,
         episodes = animeDetails.episodes.size,
@@ -128,9 +145,9 @@ private fun LazyListScope.addToFavoriteButton(
     }
 }
 
-private fun LazyListScope.genresLR(genres: List<String>) {
+private fun LazyListScope.genres(genres: List<String>) {
     item(key = GENRES_LR_KEY) {
-        GenresLR(genres)
+        Genres(genres)
     }
 }
 
@@ -144,6 +161,7 @@ private fun LazyListScope.description(
     }
 }
 
+// Horizontal padding for labeled divider
 private const val HORIZONTAL_PADDING = 16
 
 private fun LazyListScope.divider(labelRes: Int) {
@@ -159,29 +177,22 @@ private fun LazyListScope.divider(labelRes: Int) {
 }
 
 private fun LazyListScope.torrents(
-    torrents: List<UiTorrent>
+    torrents: List<UiTorrent>,
+    onEffect: (UiEffect) -> Unit
 ) {
     items(
         items = torrents,
         key = { it.filename }
     ) { torrent ->
-        Torrent(
-            title = torrent.croppedFileName(),
-            seeders = torrent.seeders,
-            leechers = torrent.leechers,
-            weight = torrent.size
-        )
+        Torrent(torrent, onEffect)
     }
 }
 
 private fun LazyListScope.episodes(
     episodes: List<UiEpisode>,
-    onIntent: (AnimeDetailsIntent) -> Unit
+    onEffect: (UiEffect) -> Unit
 ) {
     item(key = EPISODES_KEY) {
-        Episodes(
-            episodes = episodes,
-            onIntent = onIntent,
-        )
+        Episodes(episodes, onEffect)
     }
 }

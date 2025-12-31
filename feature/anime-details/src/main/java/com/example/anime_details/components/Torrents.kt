@@ -1,5 +1,6 @@
 package com.example.anime_details.components
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import com.example.common.ui_helpers.UiEffect
+import com.example.data.models.releases.anime_details.UiTorrent
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mTypography
@@ -23,15 +27,15 @@ import com.example.design_system.theme.mTypography
 private const val HORIZONTAL_PADDING = 16
 private const val VERTICAL_SPACING = 8
 
+private const val BASE_TORRENTS_URL = "https://static.wwnd.space"
+
 /**
  * Displays a torrent row with title, quality, metadata and download action.
  */
 @Composable
 internal fun LazyItemScope.Torrent(
-    title: String,
-    seeders: Int,
-    leechers: Int,
-    weight: Int
+    torrent: UiTorrent,
+    onEffect: (UiEffect) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -47,19 +51,26 @@ internal fun LazyItemScope.Torrent(
             verticalArrangement = Arrangement.spacedBy(VERTICAL_SPACING.dp)
         ) {
             Text(
-                text = title,
+                text = torrent.croppedFileName(),
                 style = mTypography.bodyLarge
             )
 
             TorrentInfo(
-                weight = weight,
-                seeders = seeders,
-                leechers = leechers
+                weight = torrent.size,
+                seeders = torrent.seeders,
+                leechers = torrent.leechers
             )
         }
 
         // Right side: download action
-        IconButton(onClick = { /* TODO: handle download */ }) {
+        val intent =
+            Intent(
+                Intent.ACTION_VIEW,
+                (BASE_TORRENTS_URL + torrent.magnet).toUri()
+            )
+        IconButton(
+            onClick = { onEffect(UiEffect.IntentTo(intent)) }
+        ) {
             Icon(
                 painter = painterResource(LibertyFlowIcons.Download),
                 contentDescription = null

@@ -35,6 +35,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 
+// UI model for header content
 @Immutable
 data class HeaderData(
     val type: String? = null,
@@ -48,7 +49,10 @@ data class HeaderData(
 
 /* ---------- Text constants ---------- */
 
+// Episode suffix
 private const val EPISODE_STRING = "эп."
+
+// Fallbacks and status labels
 private const val NO_TYPE_STRING = "Тип не указан"
 private const val ONGOING_STRING = "Онгоинг"
 private const val FINISHED_STRING = "Завершено"
@@ -56,28 +60,34 @@ private const val EMPTY_STRING = ""
 
 /* ---------- Numeric defaults ---------- */
 
+// Default values for missing data
 private const val DEFAULT_EPISODES = 0
 private const val DEFAULT_YEAR = 0
 
 /* ---------- Layout & UI constants ---------- */
 
+// Poster size
 private const val POSTER_HEIGHT_DP = 140
 private const val POSTER_WIDTH_DP = 100
 
+// Padding values
 private const val HORIZONTAL_PADDING_DP = 16
 private const val VERTICAL_PADDING_DP = 16
 
+// Spacing between layout elements
 private const val ROW_SPACING_DP = 16
 private const val COLUMN_SPACING_DP = 4
 
+// Gradient overlay height
 private const val GRADIENT_HEIGHT_FRACTION = 0.7f
 
 /* ---------- Blur / haze ---------- */
 
+// Background blur configuration
 private const val BLUR_RADIUS_DP = 8
 private const val BLUR_ALPHA = 0.5f
 
-// Key
+// Lazy item animation key
 internal const val HEADER_KEY = "HEADER_KEY"
 
 @Composable
@@ -85,13 +95,17 @@ internal fun LazyItemScope.Header(
     headerData: HeaderData,
     topInnerPadding: Dp,
 ) {
+    // Shared haze state for background blur
     val hazeState = remember { HazeState() }
 
     val posterHeight = POSTER_HEIGHT_DP.dp
+
+    // Type and episode text with fallback
     val typeText = headerData.type
         ?.let { "$it ${headerData.episodes} $EPISODE_STRING" }
         ?: NO_TYPE_STRING
 
+    // Haze visual style
     val hazeStyle = HazeStyle(
         backgroundColor = mColors.background,
         blurRadius = BLUR_RADIUS_DP.dp,
@@ -102,6 +116,7 @@ internal fun LazyItemScope.Header(
     )
 
     Box(Modifier.animateItem()) {
+        // Poster background image
         LibertyFlowAsyncImage(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,6 +124,7 @@ internal fun LazyItemScope.Header(
             imagePath = headerData.posterPath
         )
 
+        // Blur + gradient overlay
         Box(
             modifier = Modifier
                 .matchParentSize()
@@ -127,6 +143,7 @@ internal fun LazyItemScope.Header(
             )
         }
 
+        // Foreground content
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(ROW_SPACING_DP.dp),
@@ -145,6 +162,7 @@ internal fun LazyItemScope.Header(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.height(posterHeight)
             ) {
+                // Title
                 Text(
                     text = headerData.russianName,
                     style = mTypography.titleMedium,
@@ -152,6 +170,7 @@ internal fun LazyItemScope.Header(
                     overflow = TextOverflow.Ellipsis
                 )
 
+                // Metadata
                 Column(verticalArrangement = Arrangement.spacedBy(COLUMN_SPACING_DP.dp)) {
                     Text("${headerData.season} ${headerData.year}", style = mTypography.bodyLarge)
                     Text(typeText, style = mTypography.bodyLarge)

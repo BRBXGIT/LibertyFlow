@@ -30,11 +30,11 @@ fun HandleCommonEffects(
                     }
                 }
 
-                is UiEffect.Navigate -> {
-                    navController.navigate(effect.route)
-                }
+                is UiEffect.Navigate -> navController.navigate(effect.route)
 
                 is UiEffect.NavigateBack -> navController.navigateUp()
+
+                is UiEffect.IntentTo -> context.startActivity(effect.intent)
             }
         }
     }

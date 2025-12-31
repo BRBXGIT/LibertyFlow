@@ -10,18 +10,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mTypography
 
+// Horizontal padding for the genres row
 private const val HORIZONTAL_PADDING = 16
+
+// Spacing between genre chips
 private const val SPACED_BY = 8
 
+// Lazy item animation key
 internal const val GENRES_LR_KEY = "GENRES_LR_KEY"
 
 @Composable
-internal fun LazyItemScope.GenresLR(
+internal fun LazyItemScope.Genres(
     genres: List<String>
 ) {
     LazyRow(
@@ -30,10 +32,10 @@ internal fun LazyItemScope.GenresLR(
         horizontalArrangement = Arrangement.spacedBy(SPACED_BY.dp),
         modifier = Modifier.animateItem()
     ) {
-        // TODO ADD LOGIC
+        // Genre chips
         items(genres) { genre ->
             SuggestionChip(
-                onClick = {},
+                onClick = { /* TODO: Handle click */ },
                 label = {
                     Text(
                         text = genre,

@@ -20,22 +20,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
-import com.example.anime_details.screen.AnimeDetailsIntent
+import com.example.common.ui_helpers.UiEffect
 import com.example.data.models.releases.anime_details.UiEpisode
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
 
+// Rounded corner size for the top of the episodes container
 private const val COLUMN_SHAPE = 16
 
+// Vertical spacing between episode items
 private const val COLUMN_ARRANGEMENT = 16
 
+// Lazy item animation key
 internal const val EPISODES_KEY = "EPISODES_KEY"
 
 @Composable
 internal fun LazyItemScope.Episodes(
     episodes: List<UiEpisode>,
-    onIntent: (AnimeDetailsIntent) -> Unit
+    onEffect: (UiEffect) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(COLUMN_ARRANGEMENT.dp),
@@ -47,33 +50,40 @@ internal fun LazyItemScope.Episodes(
                 shape = RoundedCornerShape(topStart = COLUMN_SHAPE.dp, topEnd = COLUMN_SHAPE.dp)
             )
     ) {
+        // Top spacing
         ColumnSpacer()
 
+        // Episode list
         episodes.forEachIndexed { index, episode ->
-            Episode(
-                index = index,
-                episode = episode,
-                onIntent = onIntent
-            )
+            Episode(index, episode, onEffect)
         }
 
+        // Bottom spacing
+        ColumnSpacer()
         ColumnSpacer()
     }
 }
 
+// Horizontal padding for each episode row
 private const val HORIZONTAL_PADDING = 16
+
+// Episode text configuration
 private const val EPISODE_TEXT_MAX_LINES = 1
 private const val EPISODE_TEXT_HORIZONTAL_PADDING = 12
 private const val EPISODE_TEXT_VERTICAL_PADDING = 20
+
+// Used to convert zero-based index to display index
 private const val ADD_TO_INDEX = 1
 
-private val NO_TITLE_PROVIDED_STRING = R.string.to_episode_title_provided_label
+// Fallback title when episode name is missing
+private val NO_TITLE_PROVIDED_STRING =
+    R.string.to_episode_title_provided_label
 
 @Composable
-fun Episode(
+private fun Episode(
     index: Int,
     episode: UiEpisode,
-    onIntent: (AnimeDetailsIntent) -> Unit
+    onEffect: (UiEffect) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.CenterStart,
@@ -84,6 +94,7 @@ fun Episode(
             .clickable { /* TODO: handle click */ }
             .background(mColors.surfaceContainerHigh)
     ) {
+        // Episode title or fallback text
         val name = episode.name ?: stringResource(NO_TITLE_PROVIDED_STRING)
 
         Text(
@@ -99,6 +110,7 @@ fun Episode(
     }
 }
 
+// Spacer height (kept for layout consistency)
 private const val SPACER_HEIGHT = 0
 
 @Composable

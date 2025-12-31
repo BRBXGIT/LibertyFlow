@@ -28,79 +28,98 @@ import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
 
-private val ButtonLabel = R.string.add_to_favorites_button_label
 
+// String resource used as the button label
+private val AddToFavoritesLabelRes = R.string.add_to_favorites_button_label
+
+
+// Key used for item animations inside Lazy layouts.
 internal const val ADD_TO_FAVORITE_BUTTON_KEY = "ADD_TO_FAVORITE_BUTTON_KEY"
+
+
+// Animation labels & constants.
 private const val ANIMATED_ALPHA_LABEL = "Animated border alpha"
+private const val ALPHA_VISIBLE = 1f
+private const val ALPHA_HIDDEN = 0f
 
-private const val UNSELECTED_COLOR_ALPHA = 0f
-private const val SELECTED_COLOR_ALPHA = 1f
 
-private const val RANDOM_BUTTON_ICON_SIZE = 22
-private const val CONTENT_ROW_PADDING_ARRANGEMENT = 8
-private const val HORIZONTAL_PADDING = 16
+// UI dimension constants (dp values).
+private const val ICON_SIZE_DP = 22
+private const val ROW_SPACING_DP = 8
+private const val HORIZONTAL_PADDING_DP = 16
 
+/**
+ * Composable button displayed inside a LazyItemScope.
+ * Shows an animated gradient border when [showAnimation] is true.
+ */
 @Composable
 internal fun LazyItemScope.AddToFavoritesButton(
     onIntent: (AnimeDetailsIntent) -> Unit,
     showAnimation: Boolean
 ) {
-    // TODO ADD LOGIC
     AnimatedBorderContainer(
-        onClick = { onIntent(AnimeDetailsIntent.FetchAnime(0)) },
+        onClick = {
+            // TODO: Add logic
+            onIntent(AnimeDetailsIntent.FetchAnime(0))
+        },
         shape = mShapes.extraLarge,
-        brush = animatedBrush(showAnimation),
+        brush = animatedBorderBrush(showAnimation),
         modifier = Modifier
             .animateItem()
             .fillParentMaxWidth()
-            .padding(horizontal = HORIZONTAL_PADDING.dp)
-        )
-    {
+            .padding(horizontal = HORIZONTAL_PADDING_DP.dp)
+    ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(CONTENT_ROW_PADDING_ARRANGEMENT.dp),
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(CONTENT_ROW_PADDING_ARRANGEMENT.dp)
+                .padding(ROW_SPACING_DP.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(ROW_SPACING_DP.dp)
         ) {
             Icon(
                 painter = painterResource(LibertyFlowIcons.FunnyCube),
-                contentDescription = null,
-                modifier = Modifier.size(RANDOM_BUTTON_ICON_SIZE.dp)
+                contentDescription = null, // Decorative icon
+                modifier = Modifier.size(ICON_SIZE_DP.dp)
             )
 
             Text(
-                text = stringResource(ButtonLabel),
+                text = stringResource(AddToFavoritesLabelRes),
                 style = mTypography.bodyMedium
             )
         }
     }
 }
 
+/**
+ * Animates the alpha value used by the border gradient.
+ */
 @Composable
-private fun animatedAlpha(visible: Boolean): Float {
+private fun animatedBorderAlpha(isVisible: Boolean): Float {
     val alpha by animateFloatAsState(
-        targetValue = if (visible) SELECTED_COLOR_ALPHA else UNSELECTED_COLOR_ALPHA,
+        targetValue = if (isVisible) ALPHA_VISIBLE else ALPHA_HIDDEN,
         animationSpec = mMotionScheme.slowEffectsSpec(),
         label = ANIMATED_ALPHA_LABEL
     )
     return alpha
 }
 
+/**
+ * Creates a sweep gradient brush whose visibility is controlled via alpha animation.
+ */
 @Composable
-private fun animatedBrush(
+private fun animatedBorderBrush(
     showAnimation: Boolean
 ): Brush {
-    val alpha = animatedAlpha(showAnimation)
+    val alpha = animatedBorderAlpha(showAnimation)
 
     return Brush.sweepGradient(
         colors = listOf(
-            Color(0xFFE57373).copy(alpha = alpha),
-            Color(0xFFFFB74D).copy(alpha = alpha),
-            Color(0xFFFFF176).copy(alpha = alpha),
-            Color(0xFF81C784).copy(alpha = alpha),
-            Color(0xFF64B5F6).copy(alpha = alpha),
-            Color(0xFFBA68C8).copy(alpha = alpha)
-        )
+            Color(0xFFE57373),
+            Color(0xFFFFB74D),
+            Color(0xFFFFF176),
+            Color(0xFF81C784),
+            Color(0xFF64B5F6),
+            Color(0xFFBA68C8)
+        ).map { it.copy(alpha = alpha) }
     )
 }

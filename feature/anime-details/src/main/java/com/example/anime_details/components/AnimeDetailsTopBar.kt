@@ -39,12 +39,16 @@ import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mTypography
 import kotlinx.coroutines.delay
 
+// Static error title text
 private const val ERROR_TEXT = "Error"
 
+// Fully transparent top bar background
 private const val TOP_BAR_ALPHA = 0f
 
+// Title text configuration
 private const val TEXT_MAX_LINES = 1
 
+// Navigation icon size
 private const val ICON_SIZE = 22
 
 @Composable
@@ -55,14 +59,17 @@ fun AnimeDetailsTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onEffect: (UiEffect) -> Unit
 ) {
+    // Determines when the title should be visible
     val showTitle = !isLoading && englishTitle != null && !isError
 
     TopAppBar(
         title = {
+            // Loading state
             AnimatedTopBarContent(visible = isLoading) {
                 AnimatedLoadingText()
             }
 
+            // Normal title state
             AnimatedTopBarContent(visible = showTitle) {
                 Text(
                     text = englishTitle!!,
@@ -72,14 +79,14 @@ fun AnimeDetailsTopBar(
                 )
             }
 
+            // Error state
             AnimatedTopBarContent(visible = isError) {
                 Text(text = ERROR_TEXT, style = mTypography.titleLarge)
             }
         },
         navigationIcon = {
-            IconButton(
-                onClick = { onEffect(UiEffect.NavigateBack) },
-            ) {
+            // Back navigation
+            IconButton(onClick = { onEffect(UiEffect.NavigateBack) }) {
                 Icon(
                     painter = painterResource(LibertyFlowIcons.ArrowLeftFilled),
                     contentDescription = null,
@@ -94,6 +101,7 @@ fun AnimeDetailsTopBar(
     )
 }
 
+// Animation timing constants
 private const val ANIMATION_DURATION = 300
 private const val OFFSET_DIVIDER = 2
 
@@ -102,6 +110,7 @@ private fun AnimatedTopBarContent(
     visible: Boolean,
     content: @Composable () -> Unit
 ) {
+    // Vertical slide + fade animation for top bar content
     AnimatedVisibility(
         visible = visible,
         enter = slideInVertically(
@@ -117,24 +126,31 @@ private fun AnimatedTopBarContent(
     }
 }
 
+// Loading animation timing
 private const val DELAY = 200L
 
+// Dot animation configuration
 private const val PLUS_DOT_COUNT = 1
 private const val START_DOT_COUNT = 0
 private const val DIVIDER = 4
 private const val LIST_SIZE = 3
 
+// Alpha values for dot visibility
 private const val VISIBLE_ALPHA = 1f
 private const val INVISIBLE_ALPHA = 0f
 
+// Loading text content
 private const val LOADING_TEXT = "Loading"
 private const val DOT = "."
 
 private const val ANIMATION_LABEL = "Dot alpha animation"
+
 @Composable
 private fun AnimatedLoadingText() {
+    // Controls how many dots are visible
     var dotCount by rememberSaveable { mutableIntStateOf(START_DOT_COUNT) }
 
+    // Cycles dot visibility
     LaunchedEffect(Unit) {
         while (true) {
             delay(DELAY)
@@ -142,6 +158,7 @@ private fun AnimatedLoadingText() {
         }
     }
 
+    // Animates alpha for each dot
     val animatedDots = List(LIST_SIZE) { index ->
         animateFloatAsState(
             targetValue = if (index < dotCount) VISIBLE_ALPHA else INVISIBLE_ALPHA,
