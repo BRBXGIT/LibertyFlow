@@ -60,6 +60,8 @@ private const val ALPHA_HIDDEN = 0f
 private const val ICON_SIZE_DP = 22
 private const val ROW_SPACING_DP = 8
 private const val HORIZONTAL_PADDING_DP = 16
+private const val ANIMATION_DURATION = 300
+private const val OFFSET_DIVIDER = 2
 
 
 /**
@@ -83,7 +85,14 @@ internal fun LazyItemScope.AddToFavoritesButton(
     )
 
     AnimatedBorderContainer(
-        onClick = { /* TODO: handle click */ },
+        onClick = {
+            when(state) {
+                FavoritesButtonState.Unauthorized -> onIntent(AnimeDetailsIntent.ToggleIsAuthBsVisible)
+                FavoritesButtonState.Remove -> onIntent(AnimeDetailsIntent.RemoveFromFavorite)
+                FavoritesButtonState.Add -> onIntent(AnimeDetailsIntent.AddToFavorite)
+                else -> {}
+            }
+        },
         shape = mShapes.extraLarge,
         brush = animatedBorderBrush(isFavoritesLoading || showAnimation),
         modifier = Modifier
@@ -95,12 +104,12 @@ internal fun LazyItemScope.AddToFavoritesButton(
             targetState = state,
             transitionSpec = {
                 slideInVertically(
-                    animationSpec = tween(300),
-                    initialOffsetY = { it / 2 }
+                    animationSpec = tween(ANIMATION_DURATION),
+                    initialOffsetY = { it / OFFSET_DIVIDER }
                 ) + fadeIn() togetherWith
                         slideOutVertically(
-                            animationSpec = tween(300),
-                            targetOffsetY = { -it / 2 }
+                            animationSpec = tween(ANIMATION_DURATION),
+                            targetOffsetY = { -it / OFFSET_DIVIDER }
                         ) + fadeOut()
             },
             modifier = Modifier.fillMaxWidth()
