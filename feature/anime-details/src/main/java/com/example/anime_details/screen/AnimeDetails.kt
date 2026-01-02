@@ -37,6 +37,7 @@ import com.example.anime_details.R
 import com.example.anime_details.components.EPISODES_KEY
 import com.example.anime_details.components.Episodes
 import com.example.anime_details.components.Torrent
+import com.example.data.models.auth.AuthState
 import com.example.data.models.releases.anime_details.UiEpisode
 import com.example.data.models.releases.anime_details.UiTorrent
 
@@ -89,8 +90,12 @@ internal fun AnimeDetails(
 
                 // Add to favorites button
                 addToFavoriteButton(
+                    isFavoritesLoading = animeDetailsState.isFavoritesLoading,
+                    isInFavorites = anime.id in animeDetailsState.favoritesIds,
+                    authState = animeDetailsState.authState,
                     onIntent = onIntent,
-                    showAnimation = false
+                    showAnimation = animeDetailsState.isLoading,
+                    isFavoritesError = animeDetailsState.isFavoritesError
                 )
 
                 // Genres list
@@ -138,10 +143,14 @@ private fun LazyListScope.header(
 
 private fun LazyListScope.addToFavoriteButton(
     onIntent: (AnimeDetailsIntent) -> Unit,
+    isFavoritesError: Boolean,
+    isFavoritesLoading: Boolean,
+    isInFavorites: Boolean,
+    authState: AuthState,
     showAnimation: Boolean
 ) {
     item(key = ADD_TO_FAVORITE_BUTTON_KEY) {
-        AddToFavoritesButton(onIntent, showAnimation)
+        AddToFavoritesButton(isFavoritesLoading, isInFavorites, isFavoritesError, authState, onIntent, showAnimation)
     }
 }
 

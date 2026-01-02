@@ -2,13 +2,7 @@
 
 package com.example.anime_details.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,10 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.anime_details.R
 import com.example.common.ui_helpers.UiEffect
+import com.example.design_system.containers.VerticalSlideAnimatedContainer
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
@@ -40,7 +37,7 @@ import com.example.design_system.theme.mTypography
 import kotlinx.coroutines.delay
 
 // Static error title text
-private const val ERROR_TEXT = "Error"
+private val ERROR_TEXT = R.string.error_label
 
 // Fully transparent top bar background
 private const val TOP_BAR_ALPHA = 0f
@@ -65,12 +62,12 @@ fun AnimeDetailsTopBar(
     TopAppBar(
         title = {
             // Loading state
-            AnimatedTopBarContent(visible = isLoading) {
+            VerticalSlideAnimatedContainer(visible = isLoading) {
                 AnimatedLoadingText()
             }
 
             // Normal title state
-            AnimatedTopBarContent(visible = showTitle) {
+            VerticalSlideAnimatedContainer(visible = showTitle) {
                 Text(
                     text = englishTitle!!,
                     maxLines = TEXT_MAX_LINES,
@@ -80,8 +77,8 @@ fun AnimeDetailsTopBar(
             }
 
             // Error state
-            AnimatedTopBarContent(visible = isError) {
-                Text(text = ERROR_TEXT, style = mTypography.titleLarge)
+            VerticalSlideAnimatedContainer(visible = isError) {
+                Text(text = stringResource(ERROR_TEXT), style = mTypography.titleLarge)
             }
         },
         navigationIcon = {
@@ -101,31 +98,6 @@ fun AnimeDetailsTopBar(
     )
 }
 
-// Animation timing constants
-private const val ANIMATION_DURATION = 300
-private const val OFFSET_DIVIDER = 2
-
-@Composable
-private fun AnimatedTopBarContent(
-    visible: Boolean,
-    content: @Composable () -> Unit
-) {
-    // Vertical slide + fade animation for top bar content
-    AnimatedVisibility(
-        visible = visible,
-        enter = slideInVertically(
-            animationSpec = tween(ANIMATION_DURATION),
-            initialOffsetY = { it / OFFSET_DIVIDER }
-        ) + fadeIn(tween(ANIMATION_DURATION)),
-        exit = slideOutVertically(
-            animationSpec = tween(ANIMATION_DURATION),
-            targetOffsetY = { -it / OFFSET_DIVIDER }
-        ) + fadeOut(tween(ANIMATION_DURATION))
-    ) {
-        content()
-    }
-}
-
 // Loading animation timing
 private const val DELAY = 200L
 
@@ -140,7 +112,7 @@ private const val VISIBLE_ALPHA = 1f
 private const val INVISIBLE_ALPHA = 0f
 
 // Loading text content
-private const val LOADING_TEXT = "Loading"
+private val LOADING_TEXT = R.string.loading_label
 private const val DOT = "."
 
 private const val ANIMATION_LABEL = "Dot alpha animation"
@@ -168,7 +140,7 @@ private fun AnimatedLoadingText() {
     }
 
     Row {
-        Text(text = LOADING_TEXT, style = mTypography.titleLarge)
+        Text(text = stringResource(LOADING_TEXT), style = mTypography.titleLarge)
         animatedDots.forEach { alpha ->
             Text(
                 text = DOT,

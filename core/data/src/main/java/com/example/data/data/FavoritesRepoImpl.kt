@@ -10,7 +10,9 @@ import com.example.data.models.common.mappers.toUiAnimeItem
 import com.example.data.models.common.request.common_request.UiCommonRequest
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.data.models.favorites.UiFavoriteRequest
+import com.example.data.models.favorites.UiFavoritesIds
 import com.example.data.models.favorites.toFavoriteRequest
+import com.example.data.models.favorites.toUiFavoritesIds
 import com.example.data.utils.remote.network_request.NetworkRequest
 import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.data.utils.remote.paging.CommonPagingSource
@@ -40,12 +42,21 @@ internal class FavoritesRepoImpl @Inject constructor(
         ).flow.map { pagingData -> pagingData.map { it.toUiAnimeItem() } }
     }
 
+    override suspend fun getFavoritesIds(): NetworkResult<UiFavoritesIds> {
+        val token = authPrefsManager.token.first()!!
+
+        return NetworkRequest.safeApiCall(
+            call = { favoritesApi.getFavoritesIds(token) },
+            map = { it.toUiFavoritesIds() }
+        )
+    }
+
     override suspend fun addFavorite(request: UiFavoriteRequest): NetworkResult<Unit> {
         val token = authPrefsManager.token.first()!!
 
         return NetworkRequest.safeApiCall(
             call = { favoritesApi.addFavorite(token, request.toFavoriteRequest()) },
-            map = { it }
+            map = {}
         )
     }
 
@@ -54,7 +65,7 @@ internal class FavoritesRepoImpl @Inject constructor(
 
         return NetworkRequest.safeApiCall(
             call = { favoritesApi.deleteFavorite(token, request.toFavoriteRequest()) },
-            map = { it }
+            map = {}
         )
     }
 }

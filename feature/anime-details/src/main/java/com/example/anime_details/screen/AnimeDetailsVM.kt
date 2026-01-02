@@ -1,6 +1,5 @@
 package com.example.anime_details.screen
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
@@ -8,8 +7,10 @@ import com.example.common.ui_helpers.UiEffect
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toWhileSubscribed
 import com.example.data.domain.AuthRepo
+import com.example.data.domain.FavoritesRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.domain.WatchedEpsRepo
+import com.example.data.models.auth.AuthState
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,7 @@ class AnimeDetailsVM @Inject constructor(
     authRepo: AuthRepo,
     private val releasesRepo: ReleasesRepo,
     private val watchedEpsRepo: WatchedEpsRepo,
+    private val favoritesRepo: FavoritesRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
 ): BaseAuthVM(authRepo, dispatcherIo) {
 
@@ -35,7 +37,7 @@ class AnimeDetailsVM @Inject constructor(
     private val _animeDetailsEffects = Channel<UiEffect>(Channel.BUFFERED)
     val animeDetailsEffects = _animeDetailsEffects.receiveAsFlow()
 
-    // On screen start
+    // Main data
     private fun fetchAnime(id: Int) {
         viewModelScope.launch(dispatcherIo) {
             _animeDetailsState.update { it.copy(isLoading = true, isError = false) }
@@ -58,6 +60,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
+    // Episodes
     private fun observeWatchedEpisodes(animeId: Int) {
         viewModelScope.launch(dispatcherIo) {
             watchedEpsRepo.insertTitle(animeId)
@@ -67,13 +70,35 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
-    // Private logic
     private fun addEpisodeToWatched(episodeIndex: Int) {
         viewModelScope.launch(dispatcherIo) {
             watchedEpsRepo.insertWatchedEpisode(
                 animeId = _animeDetailsState.value.anime!!.id,
                 episodeIndex = episodeIndex
             )
+        }
+    }
+
+    // Favorites
+    private fun fetchFavoritesIds() {
+        viewModelScope.launch(dispatcherIo) {
+            _animeDetailsState.update { it.copy(isFavoritesLoading = true, isFavoritesError = false) }
+
+            favoritesRepo.getFavoritesIds()
+                .onSuccess { ids ->
+                    _animeDetailsState.update { it.copy(favoritesIds = ids, isFavoritesLoading = false) }
+                }
+                .onError { _, messageRes ->
+                    _animeDetailsState.update { it.copy(isFavoritesLoading = false, isFavoritesError = true) }
+
+                    sendEffect(
+                        UiEffect.ShowSnackbar(
+                            messageRes = messageRes,
+                            actionLabel = "Retry",
+                            action = { fetchFavoritesIds() }
+                        )
+                    )
+                }
         }
     }
 
@@ -103,6 +128,7 @@ class AnimeDetailsVM @Inject constructor(
     init {
         observeAuthState { authState ->
             _animeDetailsState.update { it.setAuthState(authState) }
+            if (authState is AuthState.LoggedIn) fetchFavoritesIds()
         }
     }
 }
