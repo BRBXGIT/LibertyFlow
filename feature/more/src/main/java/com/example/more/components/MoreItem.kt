@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.common.ui_helpers.UiEffect
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
@@ -23,8 +24,8 @@ import com.example.design_system.theme.mTypography
 data class MoreItem(
     val icon: Int,
     val labelRes: Int,
-    val onClick: () -> Unit,
-    val originalColor: Boolean = true
+    val originalColor: Boolean = true,
+    val effect: UiEffect
 )
 
 private const val PADDING = 16
@@ -32,7 +33,10 @@ private const val ROW_ARRANGEMENT = 12
 private const val ICON_SIZE = 24
 
 @Composable
-internal fun LazyItemScope.MoreItem(item: MoreItem) {
+internal fun LazyItemScope.MoreItem(
+    item: MoreItem,
+    onEffect: (UiEffect) -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(ROW_ARRANGEMENT.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -41,7 +45,7 @@ internal fun LazyItemScope.MoreItem(item: MoreItem) {
             .fillParentMaxWidth()
             .padding(horizontal = PADDING.dp)
             .clip(mShapes.small)
-            .clickable(onClick = item.onClick)
+            .clickable { onEffect(item.effect) }
             .padding(PADDING.dp)
     ) {
         Icon(

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 fun HandleCommonEffects(
     effects: Flow<UiEffect>,
     navController: NavController,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState? = null
 ) {
     val context = LocalContext.current
 
@@ -20,7 +20,7 @@ fun HandleCommonEffects(
         effects.collect { effect ->
             when (effect) {
                 is UiEffect.ShowSnackbar -> {
-                    val result = snackbarHostState.showSnackbar(
+                    val result = snackbarHostState!!.showSnackbar(
                         message = context.getString(effect.messageRes),
                         actionLabel = effect.actionLabel
                     )

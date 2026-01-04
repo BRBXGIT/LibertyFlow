@@ -1,5 +1,6 @@
 package com.example.more.screen
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import com.example.common.ui_helpers.UiEffect
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.dividers.dividerWithLabel
 import com.example.design_system.theme.LibertyFlowIcons
@@ -28,7 +31,9 @@ private const val LC_VERTICAL_PADDING = 16
 private val LINKS_LABEL = R.string.links_label
 
 @Composable
-internal fun More() {
+internal fun More(
+    onEffect: (UiEffect) -> Unit
+) {
     Scaffold(
         topBar = { TopBar() },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
@@ -47,11 +52,11 @@ internal fun More() {
                 verticalArrangement = Arrangement.spacedBy(LC_SPACED_BY.dp),
                 contentPadding = PaddingValues(vertical = LC_VERTICAL_PADDING.dp)
             ) {
-                appItems()
+                appItems(onEffect)
 
                 dividerWithLabel(LINKS_LABEL)
 
-                linkItems()
+                linkItems(onEffect)
             }
         }
     }
@@ -65,22 +70,22 @@ private val appItems = listOf(
         icon = LibertyFlowIcons.Settings,
         labelRes = SettingsLabel,
         originalColor = false,
-        onClick = { /* TODO: handle click */ }
+        effect = UiEffect.NavigateBack // TODO: Add screen
     ),
     MoreItem(
         icon = LibertyFlowIcons.Info,
         labelRes = InfoLabel,
         originalColor = false,
-        onClick = { /* TODO: handle click */ }
+        effect = UiEffect.NavigateBack // TODO: Add screen
     )
 )
 
-private fun LazyListScope.appItems() {
+private fun LazyListScope.appItems(onEffect: (UiEffect) -> Unit) {
     items(
         items = appItems,
         key = { item -> item.labelRes }
     ) { item ->
-        MoreItem(item)
+        MoreItem(item, onEffect)
     }
 }
 
@@ -91,44 +96,81 @@ private val TelegramLabel = R.string.telegram_label
 private val DiscordLabel = R.string.discord_label
 private val AniLibertyLabel = R.string.aniliberty_label
 
+private const val VKLink = "https://vk.com/anilibria"
+private const val YouTubeLink = "https://www.youtube.com/@anilibriatv"
+private const val PatreonLink = "https://patreon.com/anilibria"
+private const val TelegramLink = "https://t.me/anilibria_tv"
+private const val DiscordLink = "https://discord.gg/M6yCGeGN9B"
+private const val AniLibertyLink = "https://aniliberty.top"
+
 private val linkItems = listOf(
     MoreItem(
         icon = LibertyFlowIcons.VK,
         labelRes = VKLabel,
-        onClick = { /* TODO: handle click */ }
+        effect = UiEffect.IntentTo(
+            Intent(
+                Intent.ACTION_VIEW,
+                VKLink.toUri()
+            )
+        )
     ),
     MoreItem(
         icon = LibertyFlowIcons.YouTube,
         labelRes = YouTubeLabel,
-        onClick = { /* TODO: handle click */ }
+        effect = UiEffect.IntentTo(
+            Intent(
+                Intent.ACTION_VIEW,
+                YouTubeLink.toUri()
+            )
+        )
     ),
     MoreItem(
         icon = LibertyFlowIcons.Patreon,
         labelRes = PatreonLabel,
-        onClick = { /* TODO: handle click */ }
+        effect = UiEffect.IntentTo(
+            Intent(
+                Intent.ACTION_VIEW,
+                PatreonLink.toUri()
+            )
+        )
     ),
     MoreItem(
         icon = LibertyFlowIcons.Telegram,
         labelRes = TelegramLabel,
-        onClick = { /* TODO: handle click */ }
+        effect = UiEffect.IntentTo(
+            Intent(
+                Intent.ACTION_VIEW,
+                TelegramLink.toUri()
+            )
+        )
     ),
     MoreItem(
         icon = LibertyFlowIcons.Discord,
         labelRes = DiscordLabel,
-        onClick = { /* TODO: handle click */ }
+        effect = UiEffect.IntentTo(
+            Intent(
+                Intent.ACTION_VIEW,
+                DiscordLink.toUri()
+            )
+        )
     ),
     MoreItem(
         icon = LibertyFlowIcons.AniLiberty,
         labelRes = AniLibertyLabel,
-        onClick = { /* TODO: handle click */ }
-    ),
+        effect = UiEffect.IntentTo(
+            Intent(
+                Intent.ACTION_VIEW,
+                AniLibertyLink.toUri()
+            )
+        )
+    )
 )
 
-private fun LazyListScope.linkItems() {
+private fun LazyListScope.linkItems(onEffect: (UiEffect) -> Unit) {
     items(
         items = linkItems,
         key = { item -> item.labelRes }
     ) { item ->
-        MoreItem(item)
+        MoreItem(item, onEffect)
     }
 }

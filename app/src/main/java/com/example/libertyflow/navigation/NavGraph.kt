@@ -47,7 +47,7 @@ fun NavGraph() {
             favorites(favoritesVM, navController)
             collections(collectionsVM, navController)
             animeDetails(navController)
-            more()
+            more(navController)
         }
 
         BottomNavBar(
