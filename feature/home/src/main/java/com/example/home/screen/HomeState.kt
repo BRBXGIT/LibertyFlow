@@ -11,46 +11,44 @@ import com.example.data.models.common.request.request_parameters.UiFullRequestPa
 data class HomeState(
     val isError: Boolean = false,
     val isLoading: Boolean = false,
-
     val isRandomAnimeLoading: Boolean = false,
 
     val isSearching: Boolean = false,
-    val isFiltersBSVisible: Boolean = false,
+    val isFiltersVisible: Boolean = false,
 
     val request: UiFullRequestParameters = UiFullRequestParameters(),
 
     val genres: List<UiGenre> = emptyList(),
     val isGenresLoading: Boolean = false
 ) {
-    fun toggleIsSearching() = copy(isSearching = !isSearching)
 
-    fun toggleFiltersBottomSheet() = copy(isFiltersBSVisible = !isFiltersBSVisible)
+    /* --- UI toggles --- */
 
-    fun setLoading(value: Boolean) = copy(isLoading = value)
+    fun toggleSearching() =
+        copy(isSearching = !isSearching)
 
-    fun setError(value: Boolean) = copy(isError = value)
+    fun toggleFilters() =
+        copy(isFiltersVisible = !isFiltersVisible)
 
-    fun setRandomAnimeLoading(value: Boolean) = copy(isRandomAnimeLoading = value)
+    /* --- Flags --- */
 
-    fun setGenresLoading(value: Boolean) = copy(isGenresLoading = value)
+    fun withLoading(value: Boolean) =
+        copy(isLoading = value)
 
-    fun updateQuery(query: String) = copy(request = request.updateSearch(query))
+    fun withError(value: Boolean) =
+        copy(isError = value)
 
-    fun addGenre(genre: UiGenre) = copy(request = request.addGenre(genre))
+    fun withRandomAnimeLoading(value: Boolean) =
+        copy(isRandomAnimeLoading = value)
 
-    fun removeGenre(genre: UiGenre) = copy(request = request.removeGenre(genre))
+    fun withGenresLoading(value: Boolean) =
+        copy(isGenresLoading = value)
 
-    fun addSeason(season: Season) = copy(request = request.addSeason(season))
+    /* --- Request mutations --- */
 
-    fun removeSeason(season: Season) = copy(request = request.removeSeason(season))
+    fun updateRequest(block: UiFullRequestParameters.() -> UiFullRequestParameters) =
+        copy(request = request.block())
 
-    fun updateFromYear(year: Int) = copy(request = request.updateYear(from = year))
-
-    fun updateToYear(year: Int) = copy(request = request.updateYear(to = year))
-
-    fun updateSorting(sorting: Sorting) = copy(request = request.updateSorting(sorting))
-
-    fun updateGenres(genres: List<UiGenre>) = copy(genres = genres)
-
-    fun toggleIsOngoing(publishStatuses: List<PublishStatus>) = copy(request = request.toggleIsOngoing(publishStatuses))
+    fun updateGenres(genres: List<UiGenre>) =
+        copy(genres = genres)
 }

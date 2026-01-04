@@ -1,21 +1,14 @@
 package com.example.favorites.navigation
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.common.navigation.FavoritesRoute
-import com.example.common.reloads.ReloadsState
-import com.example.common.reloads.ReloadsVM
 import com.example.common.ui_helpers.HandleCommonEffects
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
@@ -29,21 +22,20 @@ fun NavGraphBuilder.favorites(
     enterTransition = { standardScreenEnterTransition() },
     exitTransition = { standardScreenExitTransition() }
 ) {
-    val favoritesState by favoritesVM.favoritesState.collectAsStateWithLifecycle()
-    val favoritesEffects = favoritesVM.favoritesEffects
-
+    val state by favoritesVM.state.collectAsStateWithLifecycle()
     val favorites = favoritesVM.favorites.collectAsLazyPagingItems()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Handle navigation & snackbar side-effects
     HandleCommonEffects(
-        effects = favoritesEffects,
+        effects = favoritesVM.effects,
         navController = navController,
         snackbarHostState = snackbarHostState
     )
 
     Favorites(
-        favoritesState = favoritesState,
+        state = state,
         favorites = favorites,
         snackbarHostState = snackbarHostState,
         onIntent = favoritesVM::sendIntent,

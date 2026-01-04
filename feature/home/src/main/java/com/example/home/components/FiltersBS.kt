@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -80,15 +81,17 @@ private val OngoingLabel = R.string.ongoing_label
 
 @Composable
 internal fun FiltersBS(
-    homeState: HomeState,
+    state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    // Load genres if not loaded
-    LaunchedEffect(homeState.genres) {
-        if (homeState.genres.isEmpty()) {
+    // Load genres once
+    LaunchedEffect(Unit) {
+        if (state.genres.isEmpty()) {
             onIntent(HomeIntent.GetGenres)
         }
     }
+
+    val request = state.request
 
     ModalBottomSheet(
         shape = mShapes.small,
@@ -101,39 +104,31 @@ internal fun FiltersBS(
             contentPadding = PaddingValues(CONTENT_PADDING.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
-            // --- Ongoing ---
+
             filterDivider(OngoingLabel)
+            releaseFinished(request.publishStatuses, onIntent)
 
-            releaseFinished(homeState.request.publishStatuses, onIntent)
-
-            // --- Sorting ---
             filterDivider(SortingLabel)
+            sortingBy(request.sorting, onIntent)
 
-            sortingBy(homeState, onIntent)
-
-            // --- YEARS ---
             filterDivider(YearLabel)
-
             yearField(
                 key = FROM_YEAR_KEY,
                 labelRes = FromYearLabel,
-                currentValue = homeState.request.years.from,
+                currentValue = request.years.from,
                 onValueChanged = { onIntent(HomeIntent.UpdateFromYear(it)) }
             )
-
             yearField(
                 key = TO_YEAR_KEY,
                 labelRes = ToYearLabel,
-                currentValue = homeState.request.years.to,
+                currentValue = request.years.to,
                 onValueChanged = { onIntent(HomeIntent.UpdateToYear(it)) }
             )
 
-            // --- SEASONS ---
             filterDivider(SeasonsLabel)
-
             selectableFilterItems(
                 items = Season.entries,
-                isSelected = { it in homeState.request.seasons },
+                isSelected = { it in request.seasons },
                 itemLabel = { stringResource(it.toName()) },
                 onItemClick = { season, selected ->
                     onIntent(
@@ -143,10 +138,9 @@ internal fun FiltersBS(
                 }
             )
 
-            // --- GENRES ---
             filterDivider(GenresLabel)
 
-            if (homeState.isGenresLoading) {
+            if (state.isGenresLoading) {
                 item(
                     key = GENRES_LOADING_INDICATOR_KEY,
                     span = { GridItemSpan(maxLineSpan) }
@@ -155,16 +149,16 @@ internal fun FiltersBS(
                 }
             } else {
                 selectableFilterItems(
-                    items = homeState.genres,
-                    isSelected = { it in homeState.request.genres },
+                    items = state.genres,
+                    isSelected = { it in request.genres },
                     itemLabel = { it.name },
+                    itemKey = { it.id },
                     onItemClick = { genre, selected ->
                         onIntent(
                             if (selected) HomeIntent.RemoveGenre(genre)
                             else HomeIntent.AddGenre(genre)
                         )
-                    },
-                    itemKey = { it.id }
+                    }
                 )
             }
         }
@@ -277,12 +271,12 @@ private fun LazyGridItemScope.FilterItem(
     }
 }
 
+private val sortings = listOf(Sorting.RATING_DESC, Sorting.FRESH_AT_DESC)
+
 private fun LazyGridScope.sortingBy(
-    homeState: HomeState,
+    currentSorting: Sorting,
     onIntent: (HomeIntent) -> Unit
 ) {
-    val sortings = listOf(Sorting.RATING_DESC, Sorting.FRESH_AT_DESC)
-
     items(
         items = sortings,
         key = { it },
@@ -293,11 +287,9 @@ private fun LazyGridScope.sortingBy(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(SORTING_SPACED_BY.dp)
         ) {
-            val chosen = sort == homeState.request.sorting
-
             RadioButton(
-                selected = chosen,
-                onClick = { onIntent(HomeIntent.UpdateSorting(sort)) },
+                selected = sort == currentSorting,
+                onClick = { onIntent(HomeIntent.UpdateSorting(sort)) }
             )
 
             Text(
@@ -348,7 +340,7 @@ private fun FiltersBSPreview() {
             )
 
             FiltersBS(
-                homeState = HomeState(genres = genres),
+                state = HomeState(genres = genres),
                 onIntent = {}
             )
         }

@@ -31,87 +31,118 @@ import javax.inject.Inject
 class FavoritesVM @Inject constructor(
     authRepo: AuthRepo,
     private val favoritesRepo: FavoritesRepo,
-    @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-): BaseAuthVM(authRepo, dispatcherIo) {
+    @param:Dispatcher(LibertyFlowDispatcher.IO)
+    private val dispatcherIo: CoroutineDispatcher
+) : BaseAuthVM(authRepo, dispatcherIo) {
 
     // UI state
-    private val _favoritesState = MutableStateFlow(FavoritesState())
-    val favoritesState = _favoritesState.toLazily(FavoritesState())
+    private val _state = MutableStateFlow(FavoritesState())
+    val state = _state.toLazily(FavoritesState())
 
-    private val _favoritesEffects = Channel<UiEffect>(Channel.BUFFERED)
-    val favoritesEffects = _favoritesEffects.receiveAsFlow()
+    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
-    // Paging: Favorites
-    private val requestParameters = _favoritesState
+    // Paging request driven by search query
+    private val requestFlow = _state
         .map { UiShortRequestParameters(search = it.query) }
         .distinctUntilChanged()
 
-    val favorites = requestParameters
+    val favorites = requestFlow
         .flatMapLatest { request ->
             favoritesRepo.getFavorites(UiCommonRequest(request))
         }
         .cachedIn(viewModelScope)
 
     /**
-     * Handles UI intents.
+     * Entry point for UI events.
      */
     fun sendIntent(intent: FavoritesIntent) {
         when (intent) {
 
-            // Ui toggles
+            /* --- UI toggles --- */
+
             FavoritesIntent.ToggleIsAuthBSVisible ->
-                _favoritesState.update { it.toggleAuthBS() }
+                _state.update { it.toggleAuthBS() }
 
             FavoritesIntent.ToggleIsSearching ->
-                _favoritesState.update { it.toggleIsSearching() }
+                _state.update { it.toggleSearching() }
 
-            // Ui sets
+            /* --- Flags --- */
+
             is FavoritesIntent.SetIsLoading ->
-                _favoritesState.update { it.setLoading(intent.value) }
+                _state.update { it.withLoading(intent.value) }
 
             is FavoritesIntent.SetIsError ->
-                _favoritesState.update { it.setError(intent.value) }
+                _state.update { it.withError(intent.value) }
 
-            // Ui updates
+            /* --- Search --- */
+
             is FavoritesIntent.UpdateQuery ->
-                _favoritesState.update { it.updateQuery(intent.query) }
+                _state.update { it.updateQuery(intent.query) }
+
+            /* --- Auth input --- */
 
             is FavoritesIntent.UpdateEmail ->
-                _favoritesState.update { it.updateEmail(intent.email) }
+                _state.update { it.updateAuthInput(email = intent.email) }
 
             is FavoritesIntent.UpdatePassword ->
-                _favoritesState.update { it.updatePassword(intent.password) }
+                _state.update { it.updateAuthInput(password = intent.password) }
 
-            // Actions
-            FavoritesIntent.GetTokens -> {
-                getAuthToken(
-                    request = UiTokenRequest(_favoritesState.value.email, _favoritesState.value.password),
-                    onStart = { _favoritesState.update { it.copy(isLoading = true, isPasswordOrEmailIncorrect = false) } },
-                    onSuccess = { _favoritesState.update { it.setLoading(false) } },
-                    onIncorrectData = { _favoritesState.update { it.copy(isPasswordOrEmailIncorrect = true) } },
-                    onAnyError = { messageRes, retry ->
-                        sendEffect(
-                            effect = UiEffect.ShowSnackbar(
-                                messageRes = messageRes,
-                                actionLabel = "Retry",
-                                action = retry
-                            )
-                        )
-                    }
+            /* --- Auth action --- */
+
+            FavoritesIntent.GetTokens ->
+                requestAuthTokens()
+        }
+    }
+
+    /* --- Auth flow --- */
+
+    private fun requestAuthTokens() {
+        val current = _state.value
+
+        getAuthToken(
+            request = UiTokenRequest(
+                login = current.email,
+                password = current.password
+            ),
+            onStart = {
+                _state.update {
+                    it.copy(
+                        isLoading = true,
+                        isPasswordOrEmailIncorrect = false
+                    )
+                }
+            },
+            onSuccess = {
+                _state.update { it.withLoading(false) }
+            },
+            onIncorrectData = {
+                _state.update {
+                    it.copy(isPasswordOrEmailIncorrect = true)
+                }
+            },
+            onAnyError = { messageRes, retry ->
+                sendEffect(
+                    UiEffect.ShowSnackbar(
+                        messageRes = messageRes,
+                        actionLabel = "Retry",
+                        action = retry
+                    )
                 )
             }
-        }
+        )
     }
 
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
-            _favoritesEffects.send(effect)
+            _effects.send(effect)
         }
     }
 
     init {
+        // Sync auth state from BaseAuthVM
         observeAuthState { authState ->
-            _favoritesState.update { it.setAuthState(authState) }
+            _state.update { it.withAuthState(authState) }
         }
     }
 }

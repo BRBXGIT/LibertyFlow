@@ -35,47 +35,59 @@ private val TopBarLabel = R.string.favorites_top_bar_label
 
 @Composable
 fun Favorites(
-    favoritesState: FavoritesState,
+    state: FavoritesState,
     favorites: LazyPagingItems<UiAnimeItem>,
     snackbarHostState: SnackbarHostState,
     onIntent: (FavoritesIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
-        topBar = {
-            SearchingTopBar(
-                isLoading = favoritesState.isLoading,
-                label = stringResource(TopBarLabel),
-                scrollBehavior = topBarScrollBehaviour,
-                query = favoritesState.query,
-                onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
-                isSearching = favoritesState.isSearching,
-                onSearchChange = { onIntent(FavoritesIntent.ToggleIsSearching) },
-            )
-        },
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
+
+        topBar = {
+            SearchingTopBar(
+                isLoading = state.isLoading,
+                label = stringResource(TopBarLabel),
+                scrollBehavior = scrollBehavior,
+                query = state.query,
+                isSearching = state.isSearching,
+                onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
+                onSearchChange = { onIntent(FavoritesIntent.ToggleIsSearching) },
+            )
+        }
     ) { innerPadding ->
-        if (favoritesState.isAuthBSVisible) {
+
+        if (state.isAuthBSVisible) {
             AuthBS(
-                email = favoritesState.email,
-                password = favoritesState.password,
-                incorrectEmailOrPassword = favoritesState.isPasswordOrEmailIncorrect,
-                onDismissRequest = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) },
-                onAuthClick = { onIntent(FavoritesIntent.GetTokens) },
-                onPasswordChange = { onIntent(FavoritesIntent.UpdatePassword(it)) },
-                onEmailChange = { onIntent(FavoritesIntent.UpdateEmail(it)) }
+                email = state.email,
+                password = state.password,
+                incorrectEmailOrPassword = state.isPasswordOrEmailIncorrect,
+                onDismissRequest = {
+                    onIntent(FavoritesIntent.ToggleIsAuthBSVisible)
+                },
+                onAuthClick = {
+                    onIntent(FavoritesIntent.GetTokens)
+                },
+                onPasswordChange = {
+                    onIntent(FavoritesIntent.UpdatePassword(it))
+                },
+                onEmailChange = {
+                    onIntent(FavoritesIntent.UpdateEmail(it))
+                }
             )
         }
 
+        // Pull-to-refresh container
         VibratingContainer(
-            isRefreshing = favoritesState.isLoading,
-            onRefresh = { favorites.refresh() },
+            isRefreshing = state.isLoading,
+            onRefresh = favorites::refresh,
             modifier = Modifier
                 .fillMaxSize()
                 .background(mColors.background)
@@ -85,9 +97,9 @@ fun Favorites(
                 )
         ) {
             MainContent(
-                isError = favoritesState.isError,
+                authState = state.authState,
+                isError = state.isError,
                 favorites = favorites,
-                authState = favoritesState.authState,
                 onIntent = onIntent,
                 onEffect = onEffect
             )
@@ -97,25 +109,39 @@ fun Favorites(
 
 @Composable
 private fun MainContent(
+    authState: AuthState,
     isError: Boolean,
     favorites: LazyPagingItems<UiAnimeItem>,
-    onEffect: (UiEffect) -> Unit,
     onIntent: (FavoritesIntent) -> Unit,
-    authState: AuthState
+    onEffect: (UiEffect) -> Unit
 ) {
-    when(authState) {
-        AuthState.LoggedIn -> LoggedInContent(isError, favorites, onEffect, onIntent)
-        AuthState.LoggedOut -> LoggedOutSection(onAuthClick = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) })
+    when (authState) {
+        AuthState.LoggedIn ->
+            LoggedInContent(
+                isError = isError,
+                favorites = favorites,
+                onIntent = onIntent,
+                onEffect = onEffect
+            )
+
+        AuthState.LoggedOut ->
+            LoggedOutSection(
+                onAuthClick = {
+                    onIntent(FavoritesIntent.ToggleIsAuthBSVisible)
+                }
+            )
     }
 }
+
 
 @Composable
 private fun LoggedInContent(
     isError: Boolean,
     favorites: LazyPagingItems<UiAnimeItem>,
-    onEffect: (UiEffect) -> Unit,
-    onIntent: (FavoritesIntent) -> Unit
+    onIntent: (FavoritesIntent) -> Unit,
+    onEffect: (UiEffect) -> Unit
 ) {
+    // Sync paging state with UI flags
     PagingStatesContainer(
         items = favorites,
         onLoadingChange = { onIntent(FavoritesIntent.SetIsLoading(it)) },
@@ -131,11 +157,15 @@ private fun LoggedInContent(
         }
     )
 
-    when(isError) {
-        true -> ErrorSection()
-        false -> PagingAnimeItemsLazyVerticalGrid(
-            anime = favorites,
-            onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
-        )
+    if (isError) {
+        ErrorSection()
+        return
     }
+
+    PagingAnimeItemsLazyVerticalGrid(
+        anime = favorites,
+        onItemClick = {
+            onEffect(UiEffect.Navigate(AnimeDetailsRoute(it)))
+        }
+    )
 }

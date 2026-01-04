@@ -1,8 +1,5 @@
 package com.example.home.navigation
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -25,22 +22,21 @@ fun NavGraphBuilder.home(
     enterTransition = { standardScreenEnterTransition() },
     exitTransition = { standardScreenExitTransition() }
 ) {
-    val homeState by homeVM.homeState.collectAsStateWithLifecycle()
-    val homeEffects = homeVM.homeEffects
-
+    val state by homeVM.state.collectAsStateWithLifecycle()
     val anime = homeVM.anime.collectAsLazyPagingItems()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Handle navigation & snackbar effects
     HandleCommonEffects(
-        effects = homeEffects,
+        effects = homeVM.effects,
         navController = navController,
         snackbarHostState = snackbarHostState
     )
 
     Home(
+        state = state,
         anime = anime,
-        homeState = homeState,
         snackbarHostState = snackbarHostState,
         onIntent = homeVM::sendIntent,
         onEffect = homeVM::sendEffect

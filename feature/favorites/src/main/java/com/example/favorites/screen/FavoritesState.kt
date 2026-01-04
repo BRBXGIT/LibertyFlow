@@ -18,19 +18,38 @@ data class FavoritesState(
     val query: String = "",
     val isSearching: Boolean = false
 ) {
-    fun toggleAuthBS() = copy(isAuthBSVisible = !isAuthBSVisible)
 
-    fun toggleIsSearching() = copy(isSearching = !isSearching)
+    /* --- UI toggles --- */
 
-    fun setLoading(value: Boolean) = copy(isLoading = value)
+    fun toggleAuthBS() =
+        copy(isAuthBSVisible = !isAuthBSVisible)
 
-    fun setError(value: Boolean) = copy(isError = value)
+    fun toggleSearching() =
+        copy(isSearching = !isSearching)
 
-    fun setAuthState(value: AuthState) = copy(authState = value)
+    /* --- Flags --- */
 
-    fun updateQuery(query: String) = copy(query = query)
+    fun withLoading(value: Boolean) =
+        copy(isLoading = value)
 
-    fun updateEmail(email: String) = copy(email = email)
+    fun withError(value: Boolean) =
+        copy(isError = value)
 
-    fun updatePassword(password: String) = copy(password = password)
+    fun withAuthState(state: AuthState) =
+        copy(authState = state)
+
+    /* --- Search --- */
+
+    fun updateQuery(query: String) =
+        copy(query = query)
+
+    /* --- Auth input --- */
+
+    fun updateAuthInput(
+        email: String = this.email,
+        password: String = this.password
+    ) = copy(
+        email = email,
+        password = password
+    )
 }
