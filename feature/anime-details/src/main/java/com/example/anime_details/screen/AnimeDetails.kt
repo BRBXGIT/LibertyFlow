@@ -41,6 +41,7 @@ import com.example.data.models.auth.AuthState
 import com.example.data.models.releases.anime_details.UiEpisode
 import com.example.data.models.releases.anime_details.UiTorrent
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
+import com.example.design_system.components.dividers.dividerWithLabel
 
 // Vertical spacing between LazyColumn items
 private const val LC_ARRANGEMENT = 16
@@ -122,7 +123,7 @@ internal fun AnimeDetails(
                 )
 
                 // Torrents divider
-                divider(TORRENTS_LABEL_RES)
+                dividerWithLabel(TORRENTS_LABEL_RES)
 
                 // Torrents list
                 torrents(anime.torrents, onEffect)
@@ -180,21 +181,6 @@ private fun LazyListScope.description(
 ) {
     item(key = DESCRIPTION_KEY) {
         Description(description, isExpanded, onIntent)
-    }
-}
-
-// Horizontal padding for labeled divider
-private const val HORIZONTAL_PADDING = 16
-
-private fun LazyListScope.divider(labelRes: Int) {
-    item(key = labelRes) {
-        DividerWithLabel(
-            modifier = Modifier
-                .animateItem()
-                .fillMaxWidth()
-                .padding(horizontal = HORIZONTAL_PADDING.dp),
-            labelRes = labelRes
-        )
     }
 }
 

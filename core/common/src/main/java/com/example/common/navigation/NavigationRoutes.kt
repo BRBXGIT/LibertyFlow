@@ -13,3 +13,6 @@ data object CollectionsRoute: NavigationBase, NavBarItem
 
 @Serializable
 data class AnimeDetailsRoute(val animeId: Int): NavigationBase
+
+@Serializable
+data object MoreRoute: NavigationBase, NavBarItem

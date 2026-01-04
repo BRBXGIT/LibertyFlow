@@ -23,6 +23,9 @@ object LibertyFlowIcons {
     val PlusCircle = R.drawable.ic_plus_circle
     val MinusCircle = R.drawable.ic_minus_circle
     val DangerCircle = R.drawable.ic_danger_circle
+    val Logout = R.drawable.ic_logout
+    val Info = R.drawable.ic_info
+    val Settings = R.drawable.ic_settings
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled
@@ -30,4 +33,12 @@ object LibertyFlowIcons {
     val DoubleArrowUp = R.drawable.ic_double_arrow_up_filled
     val DoubleArrowDown = R.drawable.ic_double_arrow_down_filled
     val Download = R.drawable.ic_download_filled
+
+    // Multicolored
+    val AniLiberty = R.drawable.ic_aniliberty_multicolored
+    val VK = R.drawable.ic_vk_multicolored
+    val YouTube = R.drawable.ic_youtube_multicolored
+    val Patreon = R.drawable.ic_patreon_multicolored
+    val Telegram = R.drawable.ic_telegram_multicolored
+    val Discord = R.drawable.ic_discord_multicolored
 }

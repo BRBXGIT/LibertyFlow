@@ -17,12 +17,14 @@ import com.example.collections.screen.CollectionsVM
 import com.example.common.navigation.CollectionsRoute
 import com.example.common.navigation.FavoritesRoute
 import com.example.common.navigation.HomeRoute
+import com.example.common.navigation.MoreRoute
 import com.example.common.navigation.NavigationBase
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBar
 import com.example.favorites.navigation.favorites
 import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home
 import com.example.home.screen.HomeVM
+import com.example.more.navigation.more
 
 @Composable
 fun NavGraph() {
@@ -45,6 +47,7 @@ fun NavGraph() {
             favorites(favoritesVM, navController)
             collections(collectionsVM, navController)
             animeDetails(navController)
+            more()
         }
 
         BottomNavBar(
@@ -65,5 +68,6 @@ private fun NavBackStackEntry.currentNavBarRoute(): NavigationBase? =
         destination.hasRoute<HomeRoute>() -> HomeRoute
         destination.hasRoute<FavoritesRoute>() -> FavoritesRoute
         destination.hasRoute<CollectionsRoute>() -> CollectionsRoute
+        destination.hasRoute<MoreRoute>() -> MoreRoute
         else -> null // Others
     }

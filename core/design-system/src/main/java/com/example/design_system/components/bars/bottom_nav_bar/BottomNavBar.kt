@@ -32,12 +32,14 @@ import androidx.compose.ui.unit.dp
 import com.example.common.navigation.CollectionsRoute
 import com.example.common.navigation.FavoritesRoute
 import com.example.common.navigation.HomeRoute
+import com.example.common.navigation.MoreRoute
 import com.example.common.navigation.NavBarItem
 import com.example.common.navigation.NavigationBase
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.CollectionsLabel
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.FavoritesLabel
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.HomeLabel
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.LABEL_MAX_LINES
+import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.MoreLabel
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.VISIBLE_OFFSET
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.LibertyFlowTheme
@@ -67,6 +69,11 @@ private val navItems = listOf(
         labelRes = CollectionsLabel,
         iconRes = LibertyFlowIcons.BookAnimated,
         destination = CollectionsRoute
+    ),
+    NavItem(
+        labelRes = MoreLabel,
+        iconRes = LibertyFlowIcons.DotsAnimated,
+        destination = MoreRoute
     )
 )
 

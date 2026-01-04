@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_label">Settings</string>
+    <string name="info_label">Information</string>
+    <string name="links_label">Links</string>
+
+    <string name="vk_label">VK group</string>
+    <string name="youtube_label">YouTube channel</string>
+    <string name="patreon_label">Patreon</string>
+    <string name="telegram_label">Telegram channel</string>
+    <string name="discord_label">Discord chat</string>
+    <string name="aniliberty_label">AniLiberty site</string>
+</resources>

@@ -63,6 +63,7 @@ dependencies {
     implementation(project(":feature:favorites"))
     implementation(project(":feature:collections"))
     implementation(project(":feature:anime-details"))
+    implementation(project(":feature:more"))
 
     // Core
     implementation(libs.androidx.core.ktx)

@@ -27,8 +27,18 @@ android {
 
 dependencies {
 
+    // Core modules
+    implementation(project(":core:design-system"))
+    implementation(project(":core:common"))
+
+    // Nav
+    implementation(libs.navigation.compose)
+    // Material 3
+    implementation(libs.androidx.material3.android)
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime
     implementation(libs.androidx.compose.runtime)
+    // Compose debug
+    debugImplementation(libs.androidx.ui.tooling)
 }

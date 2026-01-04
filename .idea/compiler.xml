@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
       <module name="LibertyFlow.feature.search" target="21" />
+      <module name="LibertyFlow.feature.support" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>

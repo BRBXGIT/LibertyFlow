@@ -2,6 +2,9 @@ package com.example.design_system.components.dividers
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,5 +37,19 @@ fun DividerWithLabel(
         )
 
         HorizontalDivider(modifier = Modifier.weight(WEIGHT))
+    }
+}
+
+private const val HORIZONTAL_PADDING = 16
+
+fun LazyListScope.dividerWithLabel(labelRes: Int) {
+    item(key = labelRes) {
+        DividerWithLabel(
+            modifier = Modifier
+                .animateItem()
+                .fillMaxWidth()
+                .padding(horizontal = HORIZONTAL_PADDING.dp),
+            labelRes = labelRes
+        )
     }
 }

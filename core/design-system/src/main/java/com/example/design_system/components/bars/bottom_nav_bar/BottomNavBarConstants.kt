@@ -10,4 +10,5 @@ internal object BottomNavBarConstants {
     val HomeLabel = R.string.home_label
     val FavoritesLabel = R.string.favorites_label
     val CollectionsLabel = R.string.collections_label
+    val MoreLabel = R.string.more_label
 }

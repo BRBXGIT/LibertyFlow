@@ -27,7 +27,6 @@
             <option value="$PROJECT_DIR$/feature/more" />
             <option value="$PROJECT_DIR$/feature/player" />
             <option value="$PROJECT_DIR$/feature/settings" />
-            <option value="$PROJECT_DIR$/feature/support" />
           </set>
         </option>
       </GradleProjectSettings>
