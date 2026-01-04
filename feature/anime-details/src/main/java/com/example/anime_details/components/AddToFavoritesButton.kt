@@ -173,6 +173,24 @@ private fun animatedBorderAlpha(isVisible: Boolean): Float {
     return alpha
 }
 
+// Gradient border colors
+private val FAVORITES_BORDER_COLOR_RED = Color(0xFFE57373)
+private val FAVORITES_BORDER_COLOR_ORANGE = Color(0xFFFFB74D)
+private val FAVORITES_BORDER_COLOR_YELLOW = Color(0xFFFFF176)
+private val FAVORITES_BORDER_COLOR_GREEN = Color(0xFF81C784)
+private val FAVORITES_BORDER_COLOR_BLUE = Color(0xFF64B5F6)
+private val FAVORITES_BORDER_COLOR_PURPLE = Color(0xFFBA68C8)
+
+private val FAVORITES_BORDER_COLORS = listOf(
+    FAVORITES_BORDER_COLOR_RED,
+    FAVORITES_BORDER_COLOR_ORANGE,
+    FAVORITES_BORDER_COLOR_YELLOW,
+    FAVORITES_BORDER_COLOR_GREEN,
+    FAVORITES_BORDER_COLOR_BLUE,
+    FAVORITES_BORDER_COLOR_PURPLE
+)
+
+
 /**
  * Creates a sweep gradient brush whose visibility is controlled via alpha animation.
  */
@@ -183,14 +201,7 @@ private fun animatedBorderBrush(
     val alpha = animatedBorderAlpha(showAnimation)
 
     return Brush.sweepGradient(
-        colors = listOf(
-            Color(0xFFE57373),
-            Color(0xFFFFB74D),
-            Color(0xFFFFF176),
-            Color(0xFF81C784),
-            Color(0xFF64B5F6),
-            Color(0xFFBA68C8)
-        ).map { it.copy(alpha = alpha) }
+        colors = FAVORITES_BORDER_COLORS.map { it.copy(alpha = alpha) }
     )
 }
 

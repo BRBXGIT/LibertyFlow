@@ -168,6 +168,7 @@ private fun CollectionsContent(
         )
 
         val isLoading = collections[pagerState.currentPage].loadState.refresh is LoadState.Loading
+        val isError = collections[pagerState.currentPage].loadState.refresh is LoadState.Error
 
         // TODO change to m3 expressive indicator
         // Pull-to-refresh wrapper
@@ -181,7 +182,7 @@ private fun CollectionsContent(
                 onIntent = onIntent
             ) { pageIndex ->
                 CollectionPage(
-                    isError = collectionsState.isError,
+                    isError = isError,
                     isLoading = isLoading,
                     collection = collections[pageIndex],
                     onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }

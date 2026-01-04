@@ -19,6 +19,7 @@ import com.example.data.utils.remote.network_request.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -116,6 +117,7 @@ class AnimeDetailsVM @Inject constructor(
             val request = UiFavoriteRequest().apply {
                 add(UiFavoriteItem(_animeDetailsState.value.anime!!.id))
             }
+            delay(2000) // Just cause i want to show animation :)
             favoritesRepo.addFavorite(request)
                 .onSuccess {
                     _animeDetailsState.update { it.addAnimeToFavorites() }
@@ -143,6 +145,7 @@ class AnimeDetailsVM @Inject constructor(
             val request = UiFavoriteRequest().apply {
                 add(UiFavoriteItem(_animeDetailsState.value.anime!!.id))
             }
+            delay(2000) // Just cause i want to show animation :)
             favoritesRepo.deleteFavorite(request)
                 .onSuccess {
                     _animeDetailsState.update { it.removeAnimeFromFavorites() }

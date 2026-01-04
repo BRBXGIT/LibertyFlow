@@ -28,6 +28,7 @@ import com.example.home.screen.HomeVM
 fun NavGraph() {
     val navController = rememberNavController()
 
+    // Initialize vm's here to don't refetch values
     val homeVM = hiltViewModel<HomeVM>()
     val favoritesVM = hiltViewModel<FavoritesVM>()
     val collectionsVM = hiltViewModel<CollectionsVM>()

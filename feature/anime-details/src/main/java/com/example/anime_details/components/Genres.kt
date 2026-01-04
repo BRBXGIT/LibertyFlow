@@ -1,5 +1,6 @@
 package com.example.anime_details.components
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -8,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,7 +37,8 @@ internal fun LazyItemScope.Genres(
         // Genre chips
         items(genres) { genre ->
             SuggestionChip(
-                onClick = { /* TODO: Handle click */ },
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { /* TODO: handle click */ },
                 label = {
                     Text(
                         text = genre,

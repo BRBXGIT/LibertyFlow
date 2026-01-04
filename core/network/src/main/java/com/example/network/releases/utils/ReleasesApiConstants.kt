@@ -1,10 +1,10 @@
-package com.example.network.releases.api
+package com.example.network.releases.utils
 
 internal object ReleasesApiConstants {
     const val RANDOM_ANIME_INCLUDE = "id"
     const val RANDOM_ANIME_LIMIT = 1
 
-    const val CURRENT_ANIME_INCLUDE = "poster," +
+    const val CURRENT_ANIME_INCLUDE = "poster.optimized," +
             "name," +
             "season.description," +
             "type.description," +

@@ -89,9 +89,9 @@ internal fun Genre.toUiGenre(): UiGenre {
 
 internal fun Poster.toUiPoster(): UiPoster {
     return UiPoster(
-        thumbnail = thumbnail,
-        preview = preview,
-        src = src
+        thumbnail = optimized.thumbnail,
+        preview = optimized.preview,
+        src = optimized.src
     )
 }
 

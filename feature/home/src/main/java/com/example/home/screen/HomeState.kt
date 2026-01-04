@@ -14,7 +14,6 @@ data class HomeState(
 
     val isRandomAnimeLoading: Boolean = false,
 
-    val randomAnimeId: Int? = null,
     val isSearching: Boolean = false,
     val isFiltersBSVisible: Boolean = false,
 
@@ -50,6 +49,8 @@ data class HomeState(
     fun updateToYear(year: Int) = copy(request = request.updateYear(to = year))
 
     fun updateSorting(sorting: Sorting) = copy(request = request.updateSorting(sorting))
+
+    fun updateGenres(genres: List<UiGenre>) = copy(genres = genres)
 
     fun toggleIsOngoing(publishStatuses: List<PublishStatus>) = copy(request = request.toggleIsOngoing(publishStatuses))
 }

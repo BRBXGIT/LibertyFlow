@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
+import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.UiEffect
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.CatalogRepo
@@ -68,11 +69,13 @@ class HomeVM @Inject constructor(
 
             releasesRepo.getRandomAnime()
                 .onSuccess { anime ->
-                    _homeState.update { it.copy(randomAnimeId = anime.id, isRandomAnimeLoading = false) }
+                    sendEffect(
+                        effect = UiEffect.Navigate(
+                            AnimeDetailsRoute(anime.id)
+                        )
+                    )
                 }
                 .onError { _, messageRes ->
-                    _homeState.update { it.setRandomAnimeLoading(false) }
-
                     sendEffect(
                         effect = UiEffect.ShowSnackbar(
                             messageRes = messageRes,
@@ -81,6 +84,8 @@ class HomeVM @Inject constructor(
                         )
                     )
                 }
+
+            _homeState.update { it.setRandomAnimeLoading(false) }
         }
     }
 
@@ -90,11 +95,9 @@ class HomeVM @Inject constructor(
 
             genresRepo.getGenres()
                 .onSuccess { genres ->
-                    _homeState.update { it.copy(genres = genres, isGenresLoading = false) }
+                    _homeState.update { it.updateGenres(genres) }
                 }
                 .onError { _, messageRes ->
-                    _homeState.update { it.setGenresLoading(false) }
-
                     sendEffect(
                         effect = UiEffect.ShowSnackbar(
                             messageRes = messageRes,
@@ -103,6 +106,8 @@ class HomeVM @Inject constructor(
                         )
                     )
                 }
+
+            _homeState.update { it.setGenresLoading(false) }
         }
     }
 

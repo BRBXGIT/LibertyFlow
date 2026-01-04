@@ -3,6 +3,7 @@ package com.example.network.releases.api
 import com.example.network.common.common_utils.CommonNetworkConstants
 import com.example.network.releases.models.anime_details_item_response.AnimeDetailsItem
 import com.example.network.releases.models.anime_id_item_response.AnimeIdItem
+import com.example.network.releases.utils.ReleasesApiConstants
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

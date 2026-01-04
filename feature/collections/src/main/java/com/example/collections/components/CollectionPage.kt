@@ -22,6 +22,7 @@ internal fun CollectionPage(
     onItemClick: (Int) -> Unit,
 ) {
     when {
+        // TODO: check why label shows only `Error` word
         // Global error state
         isError -> ErrorSection()
 
