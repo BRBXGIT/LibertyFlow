@@ -13,18 +13,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.collections.screen.CollectionsIntent
-import com.example.data.models.common.mappers.toIndex
+import com.example.collections.screen.toIndex
 import com.example.data.models.common.mappers.toName
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.Typography
 
-private object CollectionsTabRowConstants {
-    const val EDGE_PADDING = 16
-    const val TAB_CORNER_RADIUS = 8
-    const val TAB_PADDING = 12
-}
+private const val EDGE_PADDING = 16
+private const val TAB_CORNER_RADIUS = 8
+private const val TAB_PADDING = 12
 
 @Composable
 internal fun CollectionsTabRow(
@@ -34,14 +31,14 @@ internal fun CollectionsTabRow(
     val collections = Collection.entries
 
     SecondaryScrollableTabRow(
-        edgePadding = CollectionsTabRowConstants.EDGE_PADDING.dp,
+        edgePadding = EDGE_PADDING.dp,
         modifier = Modifier.fillMaxWidth(),
         selectedTabIndex = selectedCollection.toIndex()
     ) {
         val tabShape = remember {
             RoundedCornerShape(
-                topStart = CollectionsTabRowConstants.TAB_CORNER_RADIUS.dp,
-                topEnd = CollectionsTabRowConstants.TAB_CORNER_RADIUS.dp
+                topStart = TAB_CORNER_RADIUS.dp,
+                topEnd = TAB_CORNER_RADIUS.dp
             )
         }
 
@@ -56,7 +53,7 @@ internal fun CollectionsTabRow(
                 Text(
                     text = stringResource(collection.toName()),
                     style = Typography.bodyLarge,
-                    modifier = Modifier.padding(CollectionsTabRowConstants.TAB_PADDING.dp)
+                    modifier = Modifier.padding(TAB_PADDING.dp)
                 )
             }
         }

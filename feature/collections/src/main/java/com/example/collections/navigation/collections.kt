@@ -7,13 +7,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.collections.screen.Collections
 import com.example.collections.screen.CollectionsVM
 import com.example.common.navigation.CollectionsRoute
 import com.example.common.ui_helpers.effects.HandleCommonEffects
+import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
+import com.example.data.models.common.request.request_parameters.Collection
 
 fun NavGraphBuilder.collections(
     collectionsVM: CollectionsVM,
@@ -23,25 +26,26 @@ fun NavGraphBuilder.collections(
     exitTransition = { standardScreenExitTransition() }
 ) {
     val state by collectionsVM.state.collectAsStateWithLifecycle()
-    val effects = collectionsVM.effects
 
-    val plannedAnime = collectionsVM.plannedAnime.collectAsLazyPagingItems()
-    val watchedAnime = collectionsVM.watchedAnime.collectAsLazyPagingItems()
-    val watchingAnime = collectionsVM.watchingAnime.collectAsLazyPagingItems()
-    val postponedAnime = collectionsVM.postponedAnime.collectAsLazyPagingItems()
-    val abandonedAnime = collectionsVM.abandonedAnime.collectAsLazyPagingItems()
+    // UI Logic: Collect all flows into a Map of LazyPagingItems.
+    // This must be done in the Composable scope.
+    // The key is the Collection Enum, ensuring O(1) access in the Pager.
+    val pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>> =
+        Collection.entries.associateWith { collection ->
+            collectionsVM.pagingFlows.getValue(collection).collectAsLazyPagingItems()
+        }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleCommonEffects(
-        effects = effects,
+        effects = collectionsVM.effects,
         navController = navController,
         snackbarHostState = snackbarHostState
     )
 
     Collections(
         state = state,
-        collections = listOf(plannedAnime, watchedAnime, watchingAnime, postponedAnime, abandonedAnime),
+        pagingItemsMap = pagingItemsMap,
         snackbarHostState = snackbarHostState,
         onIntent = collectionsVM::sendIntent,
         onEffect = collectionsVM::sendEffect
