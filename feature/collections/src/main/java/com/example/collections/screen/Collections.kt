@@ -15,14 +15,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.collections.R
 import com.example.collections.components.CollectionPage
@@ -138,21 +137,18 @@ private fun CollectionsPagerContent(
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    // Determine the initial page based on the state's selected collection
+    val pagerScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = collectionsState.selectedCollection.toIndex()
     ) { Collection.entries.size }
 
-    val pagerScope = rememberCoroutineScope()
-
-    // Sync Pager state with Tab state (if state changes externally)
-    LaunchedEffect(collectionsState.selectedCollection) {
-        if (collectionsState.selectedCollection.toIndex() != pagerState.currentPage) {
-            pagerState.animateScrollToPage(collectionsState.selectedCollection.toIndex())
-        }
-    }
-
     Column {
+        LaunchedEffect(pagerState) {
+            snapshotFlow { pagerState.currentPage }.collect { page ->
+                onIntent(CollectionsIntent.SetCollection(page.toCollection()))
+            }
+        }
+
         CollectionsTabRow(
             selectedCollection = collectionsState.selectedCollection,
             onTabClick = { collection ->
@@ -161,45 +157,18 @@ private fun CollectionsPagerContent(
             }
         )
 
-        // Get current page's data safely using the Map and Enum
-        val currentCollectionEnum = pagerState.currentPage.toCollection()
-        val currentPagingItems = pagingItemsMap.getValue(currentCollectionEnum)
+        HorizontalPager(
+            modifier = Modifier.fillMaxSize(),
+            state = pagerState,
+            key = { index -> index.toCollection() }
+        ) { pageIndex ->
+            val collectionEnum = pageIndex.toCollection()
+            val pagingItems = pagingItemsMap.getValue(collectionEnum)
 
-        val isLoading = currentPagingItems.loadState.refresh is LoadState.Loading
-        val isError = currentPagingItems.loadState.refresh is LoadState.Error
-
-        PullToRefreshBox(
-            isRefreshing = isLoading,
-            onRefresh = { currentPagingItems.refresh() }
-        ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxSize(),
-                // Key is crucial for correct state restoration in Pagers
-                key = { pageIndex -> pageIndex.toCollection() }
-            ) { pageIndex ->
-
-                // Fetch the specific LazyPagingItems for this page
-                val collectionEnum = pageIndex.toCollection()
-                val pagingItems = pagingItemsMap.getValue(collectionEnum)
-
-                // Update selected collection when swiping finishes
-                LaunchedEffect(pagerState.currentPage) {
-                    if (pagerState.currentPage == pageIndex) {
-                        // Use snapshotFlow or simple check to avoid spamming intents during scroll
-                        if (collectionsState.selectedCollection != collectionEnum) {
-                            onIntent(CollectionsIntent.SetCollection(collectionEnum))
-                        }
-                    }
-                }
-
-                CollectionPage(
-                    isError = isError, // Note: You might want page-specific error state here
-                    isLoading = isLoading, // Note: You might want page-specific loading state here
-                    collection = pagingItems,
-                    onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
-                )
-            }
+            CollectionPage(
+                items = pagingItems,
+                onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
+            )
         }
     }
 }

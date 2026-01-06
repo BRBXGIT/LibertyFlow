@@ -11,14 +11,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.collections.R
-import com.example.collections.components.EmptyCollectionConstants.EmptyCollectionLabel
 import com.example.design_system.theme.mTypography
 
-private object EmptyCollectionConstants {
-    const val HORIZONTAL_PADDING = 16
+const val HORIZONTAL_PADDING = 16
 
-    val EmptyCollectionLabel = R.string.empty_collection_label
-}
+val EmptyCollectionLabel = R.string.empty_collection_label
 
 @Composable
 internal fun EmptyCollectionSection() {
@@ -26,7 +23,7 @@ internal fun EmptyCollectionSection() {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = EmptyCollectionConstants.HORIZONTAL_PADDING.dp)
+            .padding(horizontal = HORIZONTAL_PADDING.dp)
     ) {
         Text(
             text = stringResource(EmptyCollectionLabel),

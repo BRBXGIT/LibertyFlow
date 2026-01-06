@@ -1,13 +1,21 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.example.collections.components
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ContainedLoadingIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 
 private const val ZERO_ELEMENTS = 0
-
 /**
  * Displays a single collection page.
  *
@@ -16,25 +24,32 @@ private const val ZERO_ELEMENTS = 0
  */
 @Composable
 internal fun CollectionPage(
-    isError: Boolean,
-    collection: LazyPagingItems<UiAnimeItem>,
-    isLoading: Boolean,
+    items: LazyPagingItems<UiAnimeItem>,
     onItemClick: (Int) -> Unit,
 ) {
-    when {
-        // TODO: check why label shows only `Error` word
-        // Global error state
-        isError -> ErrorSection()
+    val loadState = items.loadState.refresh
 
-        // Empty collection
-        collection.itemCount == ZERO_ELEMENTS && !isLoading -> {
-            EmptyCollectionSection()
+    val isLoading = loadState is LoadState.Loading
+    val isError = loadState is LoadState.Error
+
+    val isEmpty = loadState is LoadState.NotLoading && items.itemCount == ZERO_ELEMENTS
+
+    Box(Modifier.fillMaxSize()) {
+        when {
+            isError -> ErrorSection()
+
+            isEmpty -> EmptyCollectionSection()
+
+            else -> {
+                if (isLoading && items.itemCount == ZERO_ELEMENTS) {
+                    ContainedLoadingIndicator(Modifier.align(Alignment.Center))
+                } else {
+                    PagingAnimeItemsLazyVerticalGrid(
+                        anime = items,
+                        onItemClick = onItemClick
+                    )
+                }
+            }
         }
-
-        // Successfully loaded list
-        else -> PagingAnimeItemsLazyVerticalGrid(
-            anime = collection,
-            onItemClick = onItemClick
-        )
     }
 }

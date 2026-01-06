@@ -5,6 +5,7 @@ package com.example.home.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ModalBottomSheet
@@ -28,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -42,7 +43,6 @@ import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
 import com.example.design_system.components.dividers.DividerWithLabel
-import com.example.design_system.components.indicators.CenteredCircularIndicator
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
@@ -141,12 +141,7 @@ internal fun FiltersBS(
             filterDivider(GenresLabel)
 
             if (state.isGenresLoading) {
-                item(
-                    key = GENRES_LOADING_INDICATOR_KEY,
-                    span = { GridItemSpan(maxLineSpan) }
-                ) {
-                    CenteredCircularIndicator()
-                }
+                centeredCircularIndicator()
             } else {
                 selectableFilterItems(
                     items = state.genres,
@@ -324,6 +319,20 @@ private fun LazyGridScope.releaseFinished(
                 text = stringResource(IsOngoingLabel),
                 style = mTypography.bodyLarge
             )
+        }
+    }
+}
+
+private fun LazyGridScope.centeredCircularIndicator() {
+    item(
+        key = GENRES_LOADING_INDICATOR_KEY,
+        span = { GridItemSpan(maxLineSpan) }
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            ContainedLoadingIndicator()
         }
     }
 }
