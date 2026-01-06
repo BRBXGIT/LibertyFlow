@@ -1,6 +1,7 @@
 package com.example.collections.screen
 
 import androidx.compose.runtime.Immutable
+import com.example.common.ui_helpers.auth.AuthFormState
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.request.request_parameters.Collection
 
@@ -11,9 +12,7 @@ data class CollectionsState(
     val isError: Boolean = false,
 
     val isAuthBSVisible: Boolean = false,
-    val email: String = "",
-    val password: String = "",
-    val isPasswordOrEmailIncorrect: Boolean = false,
+    val authForm: AuthFormState = AuthFormState(),
 
     val query: String = "",
     val isSearching: Boolean = false,
@@ -32,7 +31,8 @@ data class CollectionsState(
 
     fun updateQuery(query: String) = copy(query = query)
 
-    fun updateEmail(email: String) = copy(email = email)
-
-    fun updatePassword(password: String) = copy(password = password)
+    // Using `copy` on nested objects keeps the main `copy` clean
+    fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): CollectionsState {
+        return copy(authForm = transformer(authForm))
+    }
 }

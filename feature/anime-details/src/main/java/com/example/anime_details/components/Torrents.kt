@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.releases.anime_details.UiTorrent
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors

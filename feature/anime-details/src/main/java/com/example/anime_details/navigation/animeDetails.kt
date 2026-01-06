@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -16,7 +15,7 @@ import com.example.anime_details.screen.AnimeDetails
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.anime_details.screen.AnimeDetailsVM
 import com.example.common.navigation.AnimeDetailsRoute
-import com.example.common.ui_helpers.HandleCommonEffects
+import com.example.common.ui_helpers.effects.HandleCommonEffects
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
 
@@ -30,8 +29,8 @@ fun NavGraphBuilder.animeDetails(
 
     val animeDetailsVM = hiltViewModel<AnimeDetailsVM>()
 
-    val animeDetailsState by animeDetailsVM.animeDetailsState.collectAsStateWithLifecycle()
-    val animeDetailsEffects = animeDetailsVM.animeDetailsEffects
+    val animeDetailsState by animeDetailsVM.state.collectAsStateWithLifecycle()
+    val animeDetailsEffects = animeDetailsVM.effects
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -45,7 +44,7 @@ fun NavGraphBuilder.animeDetails(
     )
 
     AnimeDetails(
-        animeDetailsState = animeDetailsState,
+        state = animeDetailsState,
         snackbarHostState = snackbarHostState,
         onEffect = animeDetailsVM::sendEffect,
         onIntent = animeDetailsVM::sendIntent

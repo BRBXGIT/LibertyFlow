@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.AuthRepo
@@ -42,20 +42,21 @@ class FavoritesVM @Inject constructor(
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    // Paging request driven by search query
-    private val requestFlow = _state
-        .map { UiShortRequestParameters(search = it.query) }
-        .distinctUntilChanged()
-
-    val favorites = requestFlow
-        .flatMapLatest { request ->
-            favoritesRepo.getFavorites(UiCommonRequest(request))
+    init {
+        // Sync auth state from BaseAuthVM
+        observeAuthState { authState ->
+            _state.update { it.withAuthState(authState) }
         }
-        .cachedIn(viewModelScope)
+    }
 
-    /**
-     * Entry point for UI events.
-     */
+    // Effects
+    fun sendEffect(effect: UiEffect) {
+        viewModelScope.launch(dispatcherIo) {
+            _effects.send(effect)
+        }
+    }
+
+    // Intents
     fun sendIntent(intent: FavoritesIntent) {
         when (intent) {
 
@@ -82,67 +83,59 @@ class FavoritesVM @Inject constructor(
 
             /* --- Auth input --- */
 
-            is FavoritesIntent.UpdateEmail ->
-                _state.update { it.updateAuthInput(email = intent.email) }
+            is FavoritesIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)
 
-            is FavoritesIntent.UpdatePassword ->
-                _state.update { it.updateAuthInput(password = intent.password) }
 
             /* --- Auth action --- */
 
-            FavoritesIntent.GetTokens ->
-                requestAuthTokens()
+            FavoritesIntent.GetTokens -> performLogin()
         }
     }
 
+    // Paging request driven by search query
+    private val requestFlow = _state
+        .map { UiShortRequestParameters(search = it.query) }
+        .distinctUntilChanged()
+
+    val favorites = requestFlow
+        .flatMapLatest { request ->
+            favoritesRepo.getFavorites(UiCommonRequest(request))
+        }
+        .cachedIn(viewModelScope)
+
     /* --- Auth flow --- */
 
-    private fun requestAuthTokens() {
-        val current = _state.value
+    private fun performLogin() {
+        val currentState = _state.value.authForm
 
         getAuthToken(
-            request = UiTokenRequest(
-                login = current.email,
-                password = current.password
-            ),
+            request = UiTokenRequest(currentState.email, currentState.password),
             onStart = {
-                _state.update {
-                    it.copy(
-                        isLoading = true,
-                        isPasswordOrEmailIncorrect = false
-                    )
-                }
-            },
-            onSuccess = {
-                _state.update { it.withLoading(false) }
+                _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
             },
             onIncorrectData = {
-                _state.update {
-                    it.copy(isPasswordOrEmailIncorrect = true)
-                }
+                _state.update { it.updateAuthForm { f -> f.copy(isError = true) } }
             },
-            onAnyError = { messageRes, retry ->
+            onAnyError = { messageRes, retryAction ->
                 sendEffect(
                     UiEffect.ShowSnackbar(
                         messageRes = messageRes,
                         actionLabel = "Retry",
-                        action = retry
+                        action = retryAction
                     )
                 )
             }
         )
     }
 
-    fun sendEffect(effect: UiEffect) {
-        viewModelScope.launch(dispatcherIo) {
-            _effects.send(effect)
-        }
-    }
-
-    init {
-        // Sync auth state from BaseAuthVM
-        observeAuthState { authState ->
-            _state.update { it.withAuthState(authState) }
+    private fun handleAuthFormUpdate(field: FavoritesIntent.UpdateAuthForm.AuthField) {
+        _state.update { state ->
+            state.updateAuthForm { form ->
+                when (field) {
+                    is FavoritesIntent.UpdateAuthForm.AuthField.Email -> form.copy(email = field.value)
+                    is FavoritesIntent.UpdateAuthForm.AuthField.Password -> form.copy(password = field.value)
+                }
+            }
         }
     }
 }

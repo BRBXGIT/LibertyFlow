@@ -1,6 +1,7 @@
 package com.example.favorites.screen
 
 import androidx.compose.runtime.Immutable
+import com.example.common.ui_helpers.auth.AuthFormState
 import com.example.data.models.auth.AuthState
 
 @Immutable
@@ -11,9 +12,8 @@ data class FavoritesState(
     val isError: Boolean = false,
 
     val isAuthBSVisible: Boolean = false,
-    val email: String = "",
-    val password: String = "",
-    val isPasswordOrEmailIncorrect: Boolean = false,
+    val authForm: AuthFormState = AuthFormState(),
+
 
     val query: String = "",
     val isSearching: Boolean = false
@@ -45,11 +45,8 @@ data class FavoritesState(
 
     /* --- Auth input --- */
 
-    fun updateAuthInput(
-        email: String = this.email,
-        password: String = this.password
-    ) = copy(
-        email = email,
-        password = password
-    )
+    // Using `copy` on nested objects keeps the main `copy` clean
+    fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): FavoritesState {
+        return copy(authForm = transformer(authForm))
+    }
 }

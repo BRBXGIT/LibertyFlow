@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.AuthRepo
@@ -35,13 +35,54 @@ class CollectionsVM @Inject constructor(
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
 ): BaseAuthVM(authRepo, dispatcherIo) {
 
-    private val _collectionsState = MutableStateFlow(CollectionsState())
-    val collectionsState = _collectionsState.toLazily(CollectionsState())
+    private val _state = MutableStateFlow(CollectionsState())
+    val state = _state.toLazily(CollectionsState())
 
-    private val _collectionEffects = Channel<UiEffect>(Channel.BUFFERED)
-    val collectionEffects = _collectionEffects.receiveAsFlow()
+    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
-    private val query = _collectionsState
+    init {
+        observeAuthState { authState ->
+            _state.update { it.setAuthState(authState) }
+        }
+    }
+
+    fun sendEffect(effect: UiEffect) {
+        viewModelScope.launch(dispatcherIo) {
+            _effects.send(effect)
+        }
+    }
+
+    fun sendIntent(intent: CollectionsIntent) {
+        when (intent) {
+
+            // Ui toggles
+            CollectionsIntent.ToggleIsAuthBSVisible ->
+                _state.update { it.toggleAuthBS() }
+
+            CollectionsIntent.ToggleIsSearching ->
+                _state.update { it.toggleIsSearching() }
+
+            // Ui sets
+            is CollectionsIntent.SetIsError ->
+                _state.update { it.setError(intent.value) }
+
+            is CollectionsIntent.SetCollection ->
+                _state.update { it.setCollection(intent.collection) }
+
+            // Ui updates
+            is CollectionsIntent.UpdateQuery ->
+                _state.update { it.updateQuery(intent.query) }
+
+            // Auth
+            is CollectionsIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)
+
+            // Actions
+            CollectionsIntent.GetTokens -> performLogin()
+        }
+    }
+
+    private val query = _state
         .map { state -> state.query }
         .distinctUntilChanged()
 
@@ -89,62 +130,37 @@ class CollectionsVM @Inject constructor(
         collectionsRepo.getAnimeInCollection(request)
     }.cachedIn(viewModelScope)
 
-    fun sendIntent(intent: CollectionsIntent) {
-        when (intent) {
+    private fun performLogin() {
+        val currentState = _state.value.authForm
 
-            // Ui toggles
-            CollectionsIntent.ToggleIsAuthBSVisible ->
-                _collectionsState.update { it.toggleAuthBS() }
-
-            CollectionsIntent.ToggleIsSearching ->
-                _collectionsState.update { it.toggleIsSearching() }
-
-            // Ui sets
-            is CollectionsIntent.SetIsError ->
-                _collectionsState.update { it.setError(intent.value) }
-
-            is CollectionsIntent.SetCollection ->
-                _collectionsState.update { it.setCollection(intent.collection) }
-
-            // Ui updates
-            is CollectionsIntent.UpdateQuery ->
-                _collectionsState.update { it.updateQuery(intent.query) }
-
-            is CollectionsIntent.UpdateEmail ->
-                _collectionsState.update { it.updateEmail(intent.email) }
-
-            is CollectionsIntent.UpdatePassword ->
-                _collectionsState.update { it.updatePassword(intent.password) }
-
-            // Actions
-            CollectionsIntent.GetTokens -> {
-                getAuthToken(
-                    request = UiTokenRequest(_collectionsState.value.email, _collectionsState.value.password),
-                    onStart = { _collectionsState.update { it.copy(isPasswordOrEmailIncorrect = false) } },
-                    onIncorrectData = { _collectionsState.update { it.copy(isPasswordOrEmailIncorrect = true) } },
-                    onAnyError = { messageRes, retry ->
-                        sendEffect(
-                            effect = UiEffect.ShowSnackbar(
-                                messageRes = messageRes,
-                                actionLabel = "Retry",
-                                action = retry
-                            )
-                        )
-                    },
+        getAuthToken(
+            request = UiTokenRequest(currentState.email, currentState.password),
+            onStart = {
+                _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
+            },
+            onIncorrectData = {
+                _state.update { it.updateAuthForm { f -> f.copy(isError = true) } }
+            },
+            onAnyError = { messageRes, retryAction ->
+                sendEffect(
+                    UiEffect.ShowSnackbar(
+                        messageRes = messageRes,
+                        actionLabel = "Retry",
+                        action = retryAction
+                    )
                 )
             }
-        }
+        )
     }
 
-    fun sendEffect(effect: UiEffect) {
-        viewModelScope.launch(dispatcherIo) {
-            _collectionEffects.send(effect)
-        }
-    }
-
-    init {
-        observeAuthState { authState ->
-            _collectionsState.update { it.setAuthState(authState) }
+    private fun handleAuthFormUpdate(field: CollectionsIntent.UpdateAuthForm.AuthField) {
+        _state.update { state ->
+            state.updateAuthForm { form ->
+                when (field) {
+                    is CollectionsIntent.UpdateAuthForm.AuthField.Email -> form.copy(email = field.value)
+                    is CollectionsIntent.UpdateAuthForm.AuthField.Password -> form.copy(password = field.value)
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 
 package com.example.favorites.screen
 
+import com.example.favorites.screen.FavoritesIntent.UpdateAuthForm.AuthField
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.common.navigation.AnimeDetailsRoute
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
@@ -66,9 +67,9 @@ fun Favorites(
 
         if (state.isAuthBSVisible) {
             AuthBS(
-                email = state.email,
-                password = state.password,
-                incorrectEmailOrPassword = state.isPasswordOrEmailIncorrect,
+                email = state.authForm.email,
+                password = state.authForm.password,
+                incorrectEmailOrPassword = state.authForm.isError,
                 onDismissRequest = {
                     onIntent(FavoritesIntent.ToggleIsAuthBSVisible)
                 },
@@ -76,10 +77,10 @@ fun Favorites(
                     onIntent(FavoritesIntent.GetTokens)
                 },
                 onPasswordChange = {
-                    onIntent(FavoritesIntent.UpdatePassword(it))
+                    onIntent(FavoritesIntent.UpdateAuthForm(AuthField.Password(it)))
                 },
                 onEmailChange = {
-                    onIntent(FavoritesIntent.UpdateEmail(it))
+                    onIntent(FavoritesIntent.UpdateAuthForm(AuthField.Email(it)))
                 }
             )
         }

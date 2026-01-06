@@ -3,7 +3,7 @@ package com.example.anime_details.screen
 import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toWhileSubscribed
 import com.example.data.domain.AuthRepo
@@ -33,193 +33,181 @@ class AnimeDetailsVM @Inject constructor(
     private val watchedEpsRepo: WatchedEpsRepo,
     private val favoritesRepo: FavoritesRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-): BaseAuthVM(authRepo, dispatcherIo) {
+) : BaseAuthVM(authRepo, dispatcherIo) {
 
-    private val _animeDetailsState = MutableStateFlow(AnimeDetailsState())
-    val animeDetailsState = _animeDetailsState.toWhileSubscribed(AnimeDetailsState())
+    private val _state = MutableStateFlow(AnimeDetailsState())
+    val state = _state.toWhileSubscribed(AnimeDetailsState())
 
-    private val _animeDetailsEffects = Channel<UiEffect>(Channel.BUFFERED)
-    val animeDetailsEffects = _animeDetailsEffects.receiveAsFlow()
+    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
-    // Main data
-    private fun fetchAnime(id: Int) {
-        viewModelScope.launch(dispatcherIo) {
-            _animeDetailsState.update { it.onDataQueryStart() }
-
-            releasesRepo.getAnime(id)
-                .onSuccess { uiAnimeDetails ->
-                    _animeDetailsState.update { it.copy(anime = uiAnimeDetails) }
-                }
-                .onError { _, messageRes ->
-                    _animeDetailsState.update { it.onDataQueryError() }
-
-                    sendEffect(
-                        UiEffect.ShowSnackbar(
-                            messageRes = messageRes,
-                            actionLabel = "Retry",
-                            action = { fetchAnime(id) }
-                        )
-                    )
-                }
-
-            _animeDetailsState.update { it.onDataQueryEnd() }
-        }
-    }
-
-    // Episodes
-    private fun observeWatchedEpisodes(animeId: Int) {
-        viewModelScope.launch(dispatcherIo) {
-            watchedEpsRepo.insertTitle(animeId)
-            watchedEpsRepo.getWatchedEpisodes(animeId).collect { episodes ->
-                _animeDetailsState.update { it.setWatchedEps(episodes) }
+    init {
+        // Observe auth state changes from the BaseVM/Repo
+        observeAuthState { authState ->
+            _state.update { state ->
+                state.copy(authState = authState)
+            }
+            if (authState is AuthState.LoggedIn) {
+                fetchFavoritesIds()
             }
         }
     }
 
-    private fun addEpisodeToWatched(episodeIndex: Int) {
-        viewModelScope.launch(dispatcherIo) {
-            watchedEpsRepo.insertWatchedEpisode(
-                animeId = _animeDetailsState.value.anime!!.id,
-                episodeIndex = episodeIndex
-            )
-        }
-    }
+    fun sendIntent(intent: AnimeDetailsIntent) {
+        when (intent) {
+            is AnimeDetailsIntent.FetchAnime -> fetchAnime(intent.id)
+            is AnimeDetailsIntent.ObserveWatchedEps -> observeWatchedEpisodes(intent.id)
+            is AnimeDetailsIntent.AddEpisodeToWatched -> addEpisodeToWatched(intent.episodeIndex)
 
-    // Favorites
-    private fun fetchFavoritesIds() {
-        viewModelScope.launch(dispatcherIo) {
-            _animeDetailsState.update { it.onFavoritesQueryStart() }
+            // Favorites
+            AnimeDetailsIntent.AddToFavorite -> toggleFavorite(shouldAdd = true)
+            AnimeDetailsIntent.RemoveFromFavorite -> toggleFavorite(shouldAdd = false)
 
-            favoritesRepo.getFavoritesIds()
-                .onSuccess { ids ->
-                    _animeDetailsState.update { it.copy(favoritesIds = ids) }
-                }
-                .onError { _, messageRes ->
-                    _animeDetailsState.update { it.onFavoritesQueryError() }
+            // Auth
+            AnimeDetailsIntent.GetTokens -> performLogin()
 
-                    sendEffect(
-                        UiEffect.ShowSnackbar(
-                            messageRes = messageRes,
-                            actionLabel = "Retry",
-                            action = { fetchFavoritesIds() }
-                        )
-                    )
-                }
+            // UI Toggles
+            AnimeDetailsIntent.ToggleIsDescriptionExpanded ->
+                _state.update { it.copy(isDescriptionExpanded = !it.isDescriptionExpanded) }
+            AnimeDetailsIntent.ToggleIsAuthBsVisible ->
+                _state.update { it.copy(isAuthBSVisible = !it.isAuthBSVisible) }
 
-            _animeDetailsState.update { it.onFavoritesQueryEnd() }
-        }
-    }
-
-    private fun addToFavorites() {
-        viewModelScope.launch(dispatcherIo) {
-            _animeDetailsState.update { it.onFavoritesQueryStart() }
-
-            val request = UiFavoriteRequest().apply {
-                add(UiFavoriteItem(_animeDetailsState.value.anime!!.id))
-            }
-            delay(2000) // Just cause i want to show animation :)
-            favoritesRepo.addFavorite(request)
-                .onSuccess {
-                    _animeDetailsState.update { it.addAnimeToFavorites() }
-                }
-                .onError { _, messageRes ->
-                    _animeDetailsState.update { it.onFavoritesQueryError() }
-
-                    sendEffect(
-                        UiEffect.ShowSnackbar(
-                            messageRes = messageRes,
-                            actionLabel = "Retry",
-                            action = { addToFavorites() }
-                        )
-                    )
-                }
-
-            _animeDetailsState.update { it.onFavoritesQueryEnd() }
-        }
-    }
-
-    private fun removeFromFavorites() {
-        viewModelScope.launch(dispatcherIo) {
-            _animeDetailsState.update { it.onFavoritesQueryStart() }
-
-            val request = UiFavoriteRequest().apply {
-                add(UiFavoriteItem(_animeDetailsState.value.anime!!.id))
-            }
-            delay(2000) // Just cause i want to show animation :)
-            favoritesRepo.deleteFavorite(request)
-                .onSuccess {
-                    _animeDetailsState.update { it.removeAnimeFromFavorites() }
-                }
-                .onError { _, messageRes ->
-                    _animeDetailsState.update { it.onFavoritesQueryError() }
-
-                    sendEffect(
-                        UiEffect.ShowSnackbar(
-                            messageRes = messageRes,
-                            actionLabel = "Retry",
-                            action = { removeFromFavorites() }
-                        )
-                    )
-                }
-
-            _animeDetailsState.update { it.onFavoritesQueryEnd() }
+            // Form Updates (Consolidated)
+            is AnimeDetailsIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)
         }
     }
 
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
-            _animeDetailsEffects.send(effect)
+            _effects.send(effect)
         }
     }
 
-    fun sendIntent(intent: AnimeDetailsIntent) {
-        when(intent) {
-            // Data
-            is AnimeDetailsIntent.FetchAnime ->
-                fetchAnime(intent.id)
-            is AnimeDetailsIntent.ObserveWatchedEps ->
-                observeWatchedEpisodes(intent.id)
-            is AnimeDetailsIntent.AddEpisodeToWatched ->
-                addEpisodeToWatched(intent.episodeIndex)
-            AnimeDetailsIntent.GetTokens -> {
-                getAuthToken(
-                    request = UiTokenRequest(_animeDetailsState.value.email, _animeDetailsState.value.password),
-                    onStart = { _animeDetailsState.update { it.setIsPasswordOrEmailIncorrect(false) } },
-                    onIncorrectData = { _animeDetailsState.update { it.setIsPasswordOrEmailIncorrect(true) } },
-                    onAnyError = { messageRes, retry ->
-                        sendEffect(
-                            effect = UiEffect.ShowSnackbar(
-                                messageRes = messageRes,
-                                actionLabel = "Retry",
-                                action = retry
-                            )
-                        )
-                    }
-                )
+    private fun fetchAnime(id: Int) {
+        viewModelScope.launch(dispatcherIo) {
+            _state.update { it.copy(isLoading = true, isError = false) }
+
+            releasesRepo.getAnime(id)
+                .onSuccess { uiAnimeDetails ->
+                    _state.update { it.copy(anime = uiAnimeDetails, isLoading = false) }
+                }
+                .onError { _, messageRes ->
+                    _state.update { it.copy(isError = true, isLoading = false) }
+                    sendSnackbar(messageRes) { fetchAnime(id) }
+                }
+        }
+    }
+
+    private fun observeWatchedEpisodes(animeId: Int) {
+        viewModelScope.launch(dispatcherIo) {
+            // Ensure title exists before observing
+            watchedEpsRepo.insertTitle(animeId)
+            watchedEpsRepo.getWatchedEpisodes(animeId).collect { episodes ->
+                _state.update { it.copy(watchedEps = episodes) }
             }
-
-            // Favorites
-            AnimeDetailsIntent.AddToFavorite -> addToFavorites()
-            AnimeDetailsIntent.RemoveFromFavorite -> removeFromFavorites()
-
-            // Toggles
-            AnimeDetailsIntent.ToggleIsDescriptionExpanded ->
-                _animeDetailsState.update { it.toggleIsDescriptionExpanded() }
-            AnimeDetailsIntent.ToggleIsAuthBsVisible ->
-                _animeDetailsState.update { it.toggleAuthBSVisible() }
-
-            // Updates
-            is AnimeDetailsIntent.UpdateEmail ->
-                _animeDetailsState.update { it.updateEmail(intent.email) }
-            is AnimeDetailsIntent.UpdatePassword ->
-                _animeDetailsState.update { it.updatePassword(intent.password) }
         }
     }
 
-    init {
-        observeAuthState { authState ->
-            _animeDetailsState.update { it.setAuthState(authState) }
-            if (authState is AuthState.LoggedIn) fetchFavoritesIds()
+    private fun addEpisodeToWatched(episodeIndex: Int) {
+        // Safe call: operate only if anime data is loaded
+        val animeId = _state.value.anime?.id ?: return
+
+        viewModelScope.launch(dispatcherIo) {
+            watchedEpsRepo.insertWatchedEpisode(
+                animeId = animeId,
+                episodeIndex = episodeIndex
+            )
+        }
+    }
+
+    private fun fetchFavoritesIds() {
+        viewModelScope.launch(dispatcherIo) {
+            _state.update { it.updateFavorites { f -> f.copy(isLoading = true, isError = false) } }
+
+            favoritesRepo.getFavoritesIds()
+                .onSuccess { ids ->
+                    _state.update {
+                        it.updateFavorites { f -> f.copy(ids = ids, isLoading = false) }
+                    }
+                }
+                .onError { _, messageRes ->
+                    _state.update {
+                        it.updateFavorites { f -> f.copy(isError = true, isLoading = false) }
+                    }
+                    sendSnackbar(messageRes) { fetchFavoritesIds() }
+                }
+        }
+    }
+
+    // Unified method for Add/Remove to reduce code duplication
+    private fun toggleFavorite(shouldAdd: Boolean) {
+        val animeId = _state.value.anime?.id ?: return
+
+        viewModelScope.launch(dispatcherIo) {
+            _state.update { it.updateFavorites { f -> f.copy(isLoading = true, isError = false) } }
+
+            // Construct request
+            val request = UiFavoriteRequest().apply { add(UiFavoriteItem(animeId)) }
+
+            // Just cause i want to show animation :)
+            delay(2000)
+
+            val result = if (shouldAdd) favoritesRepo.addFavorite(request) else favoritesRepo.deleteFavorite(request)
+
+            result
+                .onSuccess {
+                    _state.update {
+                        // Reuse the safe logic from State class
+                        it.updateFavorites { f -> f.copy(isLoading = false) }.run {
+                            if (shouldAdd) addAnimeToFavorites() else removeAnimeFromFavorites()
+                        }
+                    }
+                }
+                .onError { _, messageRes ->
+                    _state.update { it.updateFavorites { f -> f.copy(isError = true, isLoading = false) } }
+                    sendSnackbar(messageRes) { toggleFavorite(shouldAdd) }
+                }
+        }
+    }
+
+    private fun performLogin() {
+        val currentState = _state.value.authForm
+
+        getAuthToken(
+            request = UiTokenRequest(currentState.email, currentState.password),
+            onStart = {
+                _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
+            },
+            onIncorrectData = {
+                _state.update { it.updateAuthForm { f -> f.copy(isError = true) } }
+            },
+            onAnyError = { messageRes, retryAction ->
+                sendSnackbar(messageRes, retryAction)
+            }
+        )
+    }
+
+    private fun handleAuthFormUpdate(field: AnimeDetailsIntent.UpdateAuthForm.AuthField) {
+        _state.update { state ->
+            state.updateAuthForm { form ->
+                when (field) {
+                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Email -> form.copy(email = field.value)
+                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Password -> form.copy(password = field.value)
+                }
+            }
+        }
+    }
+
+    // Helper to reduce boilerplate for effects
+    private fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
+        viewModelScope.launch(dispatcherIo) {
+            _effects.send(
+                UiEffect.ShowSnackbar(
+                    messageRes = messageRes,
+                    actionLabel = action?.let { "Retry" },
+                    action = action
+                )
+            )
         }
     }
 }

@@ -1,58 +1,58 @@
 package com.example.anime_details.screen
 
 import androidx.compose.runtime.Immutable
+import com.example.common.ui_helpers.auth.AuthFormState
 import com.example.data.models.auth.AuthState
 import com.example.data.models.releases.anime_details.UiAnimeDetails
 
 @Immutable
 data class AnimeDetailsState(
-    // Auth
+    // Global Auth Status
     val authState: AuthState = AuthState.LoggedOut,
 
-    // Sets
+    // Screen Loading/Error States
     val isLoading: Boolean = false,
     val isError: Boolean = false,
-    val watchedEps: List<Int> = emptyList(),
-    val isFavoritesLoading: Boolean = false,
-    val isFavoritesError: Boolean = false,
 
-    // Auth bs
-    val isAuthBSVisible: Boolean = false,
-    val email: String = "",
-    val password: String = "",
-    val isPasswordOrEmailIncorrect: Boolean = false,
-
-    // Anime data
+    // Domain Data
     val anime: UiAnimeDetails? = null,
+    val watchedEps: List<Int> = emptyList(),
 
-    // Toggles
+    // Favorites Logic (Grouped for clarity)
+    val favoritesState: FavoritesState = FavoritesState(),
+
+    // Auth Bottom Sheet & Form (Grouped to isolate frequent updates)
+    val isAuthBSVisible: Boolean = false,
+    val authForm: AuthFormState = AuthFormState(),
+
+    // UI Toggles
     val isDescriptionExpanded: Boolean = false,
-
-    // Updates
-    val favoritesIds: List<Int> = emptyList()
 ) {
-    // Sets
-    fun setAuthState(value: AuthState) = copy(authState = value)
-    fun setWatchedEps(value: List<Int>) = copy(watchedEps = value)
-    fun setIsPasswordOrEmailIncorrect(value: Boolean) = copy(isPasswordOrEmailIncorrect = value)
+    // --- Nested States ---
+    @Immutable
+    data class FavoritesState(
+        val isLoading: Boolean = false,
+        val isError: Boolean = false,
+        val ids: List<Int> = emptyList()
+    )
 
-    // Data
-    fun onDataQueryStart() = copy(isLoading = true, isError = false)
-    fun onDataQueryEnd() = copy(isLoading = false)
-    fun onDataQueryError() = copy(isError = true)
+    // Using `copy` on nested objects keeps the main `copy` clean
+    fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): AnimeDetailsState {
+        return copy(authForm = transformer(authForm))
+    }
 
-    // Favorites
-    fun onFavoritesQueryStart() = copy(isFavoritesLoading = true, isFavoritesError = false)
-    fun onFavoritesQueryEnd() = copy(isFavoritesLoading = false)
-    fun onFavoritesQueryError() = copy(isFavoritesError = true)
-    fun addAnimeToFavorites() = copy(favoritesIds = favoritesIds + anime!!.id)
-    fun removeAnimeFromFavorites() = copy(favoritesIds = favoritesIds - anime!!.id)
+    fun updateFavorites(transformer: (FavoritesState) -> FavoritesState): AnimeDetailsState {
+        return copy(favoritesState = transformer(favoritesState))
+    }
 
-    // Toggles
-    fun toggleIsDescriptionExpanded() = copy(isDescriptionExpanded = !isDescriptionExpanded)
-    fun toggleAuthBSVisible() = copy(isAuthBSVisible = !isAuthBSVisible)
+    // Safer collection modification (avoids crash if anime is null)
+    fun addAnimeToFavorites(): AnimeDetailsState {
+        val animeId = anime?.id ?: return this
+        return updateFavorites { it.copy(ids = it.ids + animeId) }
+    }
 
-    // Updates
-    fun updateEmail(email: String) = copy(email = email)
-    fun updatePassword(password: String) = copy(password = password)
+    fun removeAnimeFromFavorites(): AnimeDetailsState {
+        val animeId = anime?.id ?: return this
+        return updateFavorites { it.copy(ids = it.ids - animeId) }
+    }
 }

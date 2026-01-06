@@ -1,4 +1,4 @@
-package com.example.common.ui_helpers
+package com.example.common.ui_helpers.effects
 
 import com.example.common.navigation.NavigationBase
 import android.content.Intent

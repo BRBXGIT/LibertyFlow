@@ -1,4 +1,4 @@
-package com.example.common.ui_helpers
+package com.example.common.ui_helpers.effects
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult

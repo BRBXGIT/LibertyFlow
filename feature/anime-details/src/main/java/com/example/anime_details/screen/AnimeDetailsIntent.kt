@@ -1,20 +1,25 @@
 package com.example.anime_details.screen
 
 sealed interface AnimeDetailsIntent {
-
-    // Data
-    data class FetchAnime(val id: Int): AnimeDetailsIntent
-    data class ObserveWatchedEps(val id: Int): AnimeDetailsIntent
+    // --- Data Operations ---
+    data class FetchAnime(val id: Int) : AnimeDetailsIntent
+    data class ObserveWatchedEps(val id: Int) : AnimeDetailsIntent
     data class AddEpisodeToWatched(val episodeIndex: Int): AnimeDetailsIntent
     data object GetTokens: AnimeDetailsIntent
 
-    // Favorites
+    // --- Favorites Operations ---
     data object AddToFavorite: AnimeDetailsIntent
     data object RemoveFromFavorite: AnimeDetailsIntent
 
-    // Ui
+    // --- UI Interactions ---
     data object ToggleIsDescriptionExpanded: AnimeDetailsIntent
     data object ToggleIsAuthBsVisible: AnimeDetailsIntent
-    data class UpdateEmail(val email: String): AnimeDetailsIntent
-    data class UpdatePassword(val password: String): AnimeDetailsIntent
+
+    // Grouped form updates to avoid polluting the intent root
+    data class UpdateAuthForm(val field: AuthField): AnimeDetailsIntent {
+        sealed interface AuthField {
+            data class Email(val value: String): AuthField
+            data class Password(val value: String): AuthField
+        }
+    }
 }

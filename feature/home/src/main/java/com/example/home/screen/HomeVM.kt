@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.navigation.AnimeDetailsRoute
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo

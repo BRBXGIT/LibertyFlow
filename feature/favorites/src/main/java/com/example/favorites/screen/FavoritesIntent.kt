@@ -5,8 +5,14 @@ sealed interface FavoritesIntent {
     // Auth
     data object GetTokens : FavoritesIntent
     data object ToggleIsAuthBSVisible : FavoritesIntent
-    data class UpdateEmail(val email: String) : FavoritesIntent
-    data class UpdatePassword(val password: String) : FavoritesIntent
+
+    // Grouped form updates to avoid polluting the intent root
+    data class UpdateAuthForm(val field: AuthField): FavoritesIntent {
+        sealed interface AuthField {
+            data class Email(val value: String): AuthField
+            data class Password(val value: String): AuthField
+        }
+    }
 
     // Search
     data object ToggleIsSearching : FavoritesIntent

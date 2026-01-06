@@ -2,6 +2,7 @@
 
 package com.example.collections.screen
 
+import com.example.collections.screen.CollectionsIntent.UpdateAuthForm.AuthField
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,8 +27,9 @@ import com.example.collections.R
 import com.example.collections.components.CollectionPage
 import com.example.collections.components.CollectionsPager
 import com.example.collections.components.CollectionsTabRow
+import com.example.collections.screen.CollectionsIntent
 import com.example.common.navigation.AnimeDetailsRoute
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.mappers.toIndex
 import com.example.data.models.common.request.request_parameters.Collection
@@ -44,7 +46,7 @@ private val TopBarLabel = R.string.collections_top_bar_label
 
 @Composable
 fun Collections(
-    collectionsState: CollectionsState,
+    state: CollectionsState,
     collections: List<LazyPagingItems<UiAnimeItem>>,
     snackbarHostState: SnackbarHostState,
     onIntent: (CollectionsIntent) -> Unit,
@@ -62,9 +64,9 @@ fun Collections(
                 showIndicator = false,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = topBarScrollBehavior,
-                query = collectionsState.query,
+                query = state.query,
                 onQueryChange = { onIntent(CollectionsIntent.UpdateQuery(it)) },
-                isSearching = collectionsState.isSearching,
+                isSearching = state.isSearching,
                 onSearchChange = { onIntent(CollectionsIntent.ToggleIsSearching) },
             )
         },
@@ -73,15 +75,15 @@ fun Collections(
             .nestedScroll(topBarScrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         // Authentication BottomSheet
-        if (collectionsState.isAuthBSVisible) {
+        if (state.isAuthBSVisible) {
             AuthBS(
-                email = collectionsState.email,
-                password = collectionsState.password,
-                incorrectEmailOrPassword = collectionsState.isPasswordOrEmailIncorrect,
+                email = state.authForm.email,
+                password = state.authForm.password,
+                incorrectEmailOrPassword = state.authForm.isError,
                 onDismissRequest = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) },
                 onAuthClick = { onIntent(CollectionsIntent.GetTokens) },
-                onPasswordChange = { onIntent(CollectionsIntent.UpdatePassword(it)) },
-                onEmailChange = { onIntent(CollectionsIntent.UpdateEmail(it)) }
+                onPasswordChange = { onIntent(CollectionsIntent.UpdateAuthForm(AuthField.Password(it))) },
+                onEmailChange = { onIntent(CollectionsIntent.UpdateAuthForm(AuthField.Email(it))) }
             )
         }
 
@@ -95,9 +97,9 @@ fun Collections(
                 )
         ) {
             // Switch content based on auth state
-            when (collectionsState.authState) {
+            when (state.authState) {
                 AuthState.LoggedIn -> LoggedInContent(
-                    collectionsState = collectionsState,
+                    collectionsState = state,
                     collections = collections,
                     onIntent = onIntent,
                     onEffect = onEffect

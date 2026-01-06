@@ -38,7 +38,6 @@ import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
 
-
 // String resource used as the button label
 private val AddToFavoritesLabelRes = R.string.add_to_favorites_button_label
 private val RemoveFromFavoritesLabelRes = R.string.remove_from_favorites_button_label

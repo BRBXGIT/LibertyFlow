@@ -9,7 +9,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.common.navigation.FavoritesRoute
-import com.example.common.ui_helpers.HandleCommonEffects
+import com.example.common.ui_helpers.effects.HandleCommonEffects
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
 import com.example.favorites.screen.Favorites

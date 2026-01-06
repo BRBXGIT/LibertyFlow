@@ -4,8 +4,6 @@ package com.example.anime_details.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -29,14 +27,14 @@ import com.example.anime_details.components.Genres
 import com.example.anime_details.components.HEADER_KEY
 import com.example.anime_details.components.Header
 import com.example.anime_details.components.HeaderData
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.common.common.PosterType
 import com.example.data.models.releases.anime_details.UiAnimeDetails
-import com.example.design_system.components.dividers.DividerWithLabel
 import com.example.anime_details.R
 import com.example.anime_details.components.EPISODES_KEY
 import com.example.anime_details.components.Episodes
 import com.example.anime_details.components.Torrent
+import com.example.anime_details.screen.AnimeDetailsIntent.UpdateAuthForm.AuthField
 import com.example.data.models.auth.AuthState
 import com.example.data.models.releases.anime_details.UiEpisode
 import com.example.data.models.releases.anime_details.UiTorrent
@@ -54,7 +52,7 @@ private const val PLUS_TOP_PADDING = 12
 
 @Composable
 internal fun AnimeDetails(
-    animeDetailsState: AnimeDetailsState,
+    state: AnimeDetailsState,
     snackbarHostState: SnackbarHostState,
     onEffect: (UiEffect) -> Unit,
     onIntent: (AnimeDetailsIntent) -> Unit
@@ -66,9 +64,9 @@ internal fun AnimeDetails(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             AnimeDetailsTopBar(
-                isError = animeDetailsState.isError,
-                englishTitle = animeDetailsState.anime?.name?.english,
-                isLoading = animeDetailsState.isLoading,
+                isError = state.isError,
+                englishTitle = state.anime?.name?.english,
+                isLoading = state.isLoading,
                 scrollBehavior = topBarScrollBehavior,
                 onEffect = onEffect
             )
@@ -77,19 +75,19 @@ internal fun AnimeDetails(
             .fillMaxSize()
             .nestedScroll(topBarScrollBehavior.nestedScrollConnection)
     ) { innerPadding ->
-        val anime = animeDetailsState.anime
+        val anime = state.anime
 
         // Render content only when anime data is available
         anime?.let {
-            if (animeDetailsState.isAuthBSVisible) {
+            if (state.isAuthBSVisible) {
                 AuthBS(
-                    email = animeDetailsState.email,
-                    password = animeDetailsState.password,
-                    incorrectEmailOrPassword = animeDetailsState.isPasswordOrEmailIncorrect,
+                    email = state.authForm.email,
+                    password = state.authForm.password,
+                    incorrectEmailOrPassword = state.authForm.isError,
                     onDismissRequest = { onIntent(AnimeDetailsIntent.ToggleIsAuthBsVisible) },
                     onAuthClick = { onIntent(AnimeDetailsIntent.GetTokens) },
-                    onPasswordChange = { onIntent(AnimeDetailsIntent.UpdatePassword(it)) },
-                    onEmailChange = { onIntent(AnimeDetailsIntent.UpdateEmail(it)) }
+                    onPasswordChange = { onIntent(AnimeDetailsIntent.UpdateAuthForm(AuthField.Password(it))) },
+                    onEmailChange = { onIntent(AnimeDetailsIntent.UpdateAuthForm(AuthField.Email(it))) }
                 )
             }
 
@@ -104,12 +102,12 @@ internal fun AnimeDetails(
 
                 // Add to favorites button
                 addToFavoriteButton(
-                    isFavoritesLoading = animeDetailsState.isFavoritesLoading,
-                    isInFavorites = anime.id in animeDetailsState.favoritesIds,
-                    authState = animeDetailsState.authState,
+                    isFavoritesLoading = state.favoritesState.isLoading,
+                    isInFavorites = anime.id in state.favoritesState.ids,
+                    authState = state.authState,
                     onIntent = onIntent,
-                    showAnimation = animeDetailsState.isLoading,
-                    isFavoritesError = animeDetailsState.isFavoritesError
+                    showAnimation = state.isLoading,
+                    isFavoritesError = state.favoritesState.isError
                 )
 
                 // Genres list
@@ -118,7 +116,7 @@ internal fun AnimeDetails(
                 // Description section
                 description(
                     anime.description,
-                    animeDetailsState.isDescriptionExpanded,
+                    state.isDescriptionExpanded,
                     onIntent
                 )
 
@@ -129,7 +127,7 @@ internal fun AnimeDetails(
                 torrents(anime.torrents, onEffect)
 
                 // Episodes list
-                episodes(anime.episodes, animeDetailsState.watchedEps, onIntent)
+                episodes(anime.episodes, state.watchedEps, onIntent)
             }
         }
     }

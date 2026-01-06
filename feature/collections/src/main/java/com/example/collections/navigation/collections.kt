@@ -1,8 +1,5 @@
 package com.example.collections.navigation
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -14,7 +11,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.collections.screen.Collections
 import com.example.collections.screen.CollectionsVM
 import com.example.common.navigation.CollectionsRoute
-import com.example.common.ui_helpers.HandleCommonEffects
+import com.example.common.ui_helpers.effects.HandleCommonEffects
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
 
@@ -25,8 +22,8 @@ fun NavGraphBuilder.collections(
     enterTransition = { standardScreenEnterTransition() },
     exitTransition = { standardScreenExitTransition() }
 ) {
-    val collectionsState by collectionsVM.collectionsState.collectAsStateWithLifecycle()
-    val collectionEffects = collectionsVM.collectionEffects
+    val state by collectionsVM.state.collectAsStateWithLifecycle()
+    val effects = collectionsVM.effects
 
     val plannedAnime = collectionsVM.plannedAnime.collectAsLazyPagingItems()
     val watchedAnime = collectionsVM.watchedAnime.collectAsLazyPagingItems()
@@ -37,13 +34,13 @@ fun NavGraphBuilder.collections(
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleCommonEffects(
-        effects = collectionEffects,
+        effects = effects,
         navController = navController,
         snackbarHostState = snackbarHostState
     )
 
     Collections(
-        collectionsState = collectionsState,
+        state = state,
         collections = listOf(plannedAnime, watchedAnime, watchingAnime, postponedAnime, abandonedAnime),
         snackbarHostState = snackbarHostState,
         onIntent = collectionsVM::sendIntent,
