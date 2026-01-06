@@ -2,4 +2,5 @@
 <resources>
     <string name="collections_top_bar_label">Collections</string>
     <string name="empty_collection_label">Collection is empty, add something (◔◡◔)</string>
+    <string name="empty_collection_with_query_label">Nothing found (̶◉͛‿◉̶)</string>
 </resources>

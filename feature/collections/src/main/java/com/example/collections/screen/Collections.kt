@@ -91,7 +91,7 @@ internal fun Collections(
         ) {
             when (state.authState) {
                 AuthState.LoggedIn -> LoggedInContent(
-                    collectionsState = state,
+                    state = state,
                     pagingItemsMap = pagingItemsMap,
                     onIntent = onIntent,
                     onEffect = onEffect
@@ -106,7 +106,7 @@ internal fun Collections(
 
 @Composable
 private fun LoggedInContent(
-    collectionsState: CollectionsState,
+    state: CollectionsState,
     pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
@@ -123,7 +123,7 @@ private fun LoggedInContent(
     }
 
     CollectionsPagerContent(
-        collectionsState = collectionsState,
+        state = state,
         pagingItemsMap = pagingItemsMap,
         onIntent = onIntent,
         onEffect = onEffect
@@ -132,14 +132,14 @@ private fun LoggedInContent(
 
 @Composable
 private fun CollectionsPagerContent(
-    collectionsState: CollectionsState,
+    state: CollectionsState,
     pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
     val pagerScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
-        initialPage = collectionsState.selectedCollection.toIndex()
+        initialPage = state.selectedCollection.toIndex()
     ) { Collection.entries.size }
 
     Column {
@@ -150,7 +150,7 @@ private fun CollectionsPagerContent(
         }
 
         CollectionsTabRow(
-            selectedCollection = collectionsState.selectedCollection,
+            selectedCollection = state.selectedCollection,
             onTabClick = { collection ->
                 onIntent(CollectionsIntent.SetCollection(collection))
                 pagerScope.launch { pagerState.animateScrollToPage(collection.toIndex()) }
@@ -167,7 +167,8 @@ private fun CollectionsPagerContent(
 
             CollectionPage(
                 items = pagingItems,
-                onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
+                onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) },
+                query = state.query
             )
         }
     }

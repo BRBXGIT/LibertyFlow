@@ -24,6 +24,7 @@ private const val ZERO_ELEMENTS = 0
  */
 @Composable
 internal fun CollectionPage(
+    query: String,
     items: LazyPagingItems<UiAnimeItem>,
     onItemClick: (Int) -> Unit,
 ) {
@@ -32,13 +33,20 @@ internal fun CollectionPage(
     val isLoading = loadState is LoadState.Loading
     val isError = loadState is LoadState.Error
 
-    val isEmpty = loadState is LoadState.NotLoading && items.itemCount == ZERO_ELEMENTS
+    val isEmptyWithQuery = loadState is LoadState.NotLoading
+            && items.itemCount == ZERO_ELEMENTS
+                && query.isNotEmpty()
+    val isEmptyWithoutQuery = loadState is LoadState.NotLoading
+            && items.itemCount == ZERO_ELEMENTS
+                && query.isEmpty()
 
     Box(Modifier.fillMaxSize()) {
         when {
             isError -> ErrorSection()
 
-            isEmpty -> EmptyCollectionSection()
+            isEmptyWithQuery -> EmptyCollectionSection(false)
+
+            isEmptyWithoutQuery -> EmptyCollectionSection(true)
 
             else -> {
                 if (isLoading && items.itemCount == ZERO_ELEMENTS) {

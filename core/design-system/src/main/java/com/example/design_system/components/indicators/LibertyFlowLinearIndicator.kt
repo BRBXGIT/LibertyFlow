@@ -7,15 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-private object LinearIndicatorConstants {
-    const val HORIZONTAL_PADDING = 16
-}
+private const val HORIZONTAL_PADDING = 16
 
 @Composable
 fun LibertyFlowLinearIndicator() {
     LinearProgressIndicator(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = LinearIndicatorConstants.HORIZONTAL_PADDING.dp)
+            .padding(horizontal = HORIZONTAL_PADDING.dp)
     )
 }

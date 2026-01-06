@@ -2,6 +2,7 @@
 
 package com.example.collections.screen
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -62,11 +63,7 @@ class CollectionsVM @Inject constructor(
      * but removes code duplication.
      */
     val pagingFlows: Map<Collection, Flow<PagingData<UiAnimeItem>>> = Collection.entries.associateWith { collection ->
-        createPagingFlow(collection)
-    }
-
-    private fun createPagingFlow(collection: Collection): Flow<PagingData<UiAnimeItem>> {
-        return queryFlow.flatMapLatest { query ->
+        queryFlow.flatMapLatest { query ->
             val request = UiCommonRequestWithCollectionType(
                 requestParameters = UiShortRequestParameters(search = query),
                 collection = collection

@@ -2,4 +2,5 @@
 <resources>
     <string name="collections_top_bar_label">Коллекции</string>
     <string name="empty_collection_label">Коллекция пустая, добавьте что-нибудь (◔◡◔)</string>
+    <string name="empty_collection_with_query_label">Ничего не найдено (̶◉͛‿◉̶)</string>
 </resources>

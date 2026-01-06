@@ -16,9 +16,10 @@ import com.example.design_system.theme.mTypography
 const val HORIZONTAL_PADDING = 16
 
 val EmptyCollectionLabel = R.string.empty_collection_label
+val EmptyCollectionWithQueryLabel = R.string.empty_collection_with_query_label
 
 @Composable
-internal fun EmptyCollectionSection() {
+internal fun EmptyCollectionSection(emptyQuery: Boolean) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -26,7 +27,7 @@ internal fun EmptyCollectionSection() {
             .padding(horizontal = HORIZONTAL_PADDING.dp)
     ) {
         Text(
-            text = stringResource(EmptyCollectionLabel),
+            text = stringResource(if (emptyQuery) EmptyCollectionLabel else EmptyCollectionWithQueryLabel),
             style = mTypography.titleMedium,
             textAlign = TextAlign.Center
         )
