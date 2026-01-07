@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.components.ADD_TO_FAVORITE_BUTTON_KEY
 import com.example.anime_details.components.AddToFavoritesButton
-import com.example.anime_details.components.AnimeDetailsTopBar
+import com.example.anime_details.components.TopBar
 import com.example.anime_details.components.DESCRIPTION_KEY
 import com.example.anime_details.components.Description
 import com.example.anime_details.components.GENRES_LR_KEY
@@ -35,6 +35,7 @@ import com.example.anime_details.components.EPISODES_KEY
 import com.example.anime_details.components.Episodes
 import com.example.anime_details.components.Torrent
 import com.example.anime_details.screen.AnimeDetailsIntent.UpdateAuthForm.AuthField
+import com.example.common.refresh.RefreshEffect
 import com.example.data.models.auth.AuthState
 import com.example.data.models.releases.anime_details.UiEpisode
 import com.example.data.models.releases.anime_details.UiTorrent
@@ -55,7 +56,8 @@ internal fun AnimeDetails(
     state: AnimeDetailsState,
     snackbarHostState: SnackbarHostState,
     onEffect: (UiEffect) -> Unit,
-    onIntent: (AnimeDetailsIntent) -> Unit
+    onIntent: (AnimeDetailsIntent) -> Unit,
+    onRefreshEffect: (RefreshEffect) -> Unit
 ) {
     // Pinned scroll behavior for the top bar
     val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -63,7 +65,7 @@ internal fun AnimeDetails(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            AnimeDetailsTopBar(
+            TopBar(
                 isError = state.isError,
                 englishTitle = state.anime?.name?.english,
                 isLoading = state.isLoading,
@@ -102,12 +104,12 @@ internal fun AnimeDetails(
 
                 // Add to favorites button
                 addToFavoriteButton(
-                    isFavoritesLoading = state.favoritesState.isLoading,
-                    isInFavorites = anime.id in state.favoritesState.ids,
+                    animeId = state.anime.id,
                     authState = state.authState,
                     onIntent = onIntent,
                     showAnimation = state.isLoading,
-                    isFavoritesError = state.favoritesState.isError
+                    favoritesState = state.favoritesState,
+                    onRefreshEffect = onRefreshEffect
                 )
 
                 // Genres list
@@ -154,15 +156,15 @@ private fun LazyListScope.header(
 }
 
 private fun LazyListScope.addToFavoriteButton(
+    animeId: Int,
     onIntent: (AnimeDetailsIntent) -> Unit,
-    isFavoritesError: Boolean,
-    isFavoritesLoading: Boolean,
-    isInFavorites: Boolean,
+    onRefreshEffect: (RefreshEffect) -> Unit,
+    favoritesState: AnimeDetailsState.FavoritesState,
     authState: AuthState,
     showAnimation: Boolean
 ) {
     item(key = ADD_TO_FAVORITE_BUTTON_KEY) {
-        AddToFavoritesButton(isFavoritesLoading, isInFavorites, isFavoritesError, authState, onIntent, showAnimation)
+        AddToFavoritesButton(animeId, favoritesState, authState, showAnimation, onIntent, onRefreshEffect)
     }
 }
 

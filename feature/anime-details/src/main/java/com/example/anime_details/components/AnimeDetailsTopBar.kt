@@ -49,7 +49,7 @@ private const val TEXT_MAX_LINES = 1
 private const val ICON_SIZE = 22
 
 @Composable
-fun AnimeDetailsTopBar(
+fun TopBar(
     isError: Boolean,
     englishTitle: String?,
     isLoading: Boolean,
@@ -165,7 +165,7 @@ private fun AnimeScreenTopBaPreview() {
     LibertyFlowTheme {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-        AnimeDetailsTopBar(
+        TopBar(
             englishTitle = "Death Note",
             isLoading = true,
             scrollBehavior = scrollBehavior,

@@ -6,13 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
 import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun HandleCommonEffects(
     effects: Flow<UiEffect>,
     navController: NavController,
-    snackbarHostState: SnackbarHostState? = null
+    snackbarHostState: SnackbarHostState? = null,
 ) {
     val context = LocalContext.current
 

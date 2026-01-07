@@ -19,6 +19,7 @@ import com.example.common.navigation.FavoritesRoute
 import com.example.common.navigation.HomeRoute
 import com.example.common.navigation.MoreRoute
 import com.example.common.navigation.NavigationBase
+import com.example.common.refresh.RefreshVM
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBar
 import com.example.favorites.navigation.favorites
 import com.example.favorites.screen.FavoritesVM
@@ -35,6 +36,8 @@ fun NavGraph() {
     val favoritesVM = hiltViewModel<FavoritesVM>()
     val collectionsVM = hiltViewModel<CollectionsVM>()
 
+    val refreshVM = hiltViewModel<RefreshVM>()
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val selectedRoute = backStackEntry?.currentNavBarRoute()
 
@@ -44,9 +47,9 @@ fun NavGraph() {
             startDestination = HomeRoute
         ) {
             home(homeVM, navController)
-            favorites(favoritesVM, navController)
-            collections(collectionsVM, navController)
-            animeDetails(navController)
+            favorites(favoritesVM, refreshVM, navController)
+            collections(collectionsVM, refreshVM, navController)
+            animeDetails(refreshVM, navController)
             more(navController)
         }
 

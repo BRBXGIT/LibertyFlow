@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
+import com.example.anime_details.screen.AnimeDetailsState
+import com.example.common.refresh.RefreshEffect
 import com.example.data.models.auth.AuthState
 import com.example.design_system.containers.AnimatedBorderContainer
 import com.example.design_system.theme.LibertyFlowIcons
@@ -69,18 +72,23 @@ private const val OFFSET_DIVIDER = 2
  */
 @Composable
 internal fun LazyItemScope.AddToFavoritesButton(
-    isFavoritesLoading: Boolean,
-    isInFavorites: Boolean,
-    isFavoritesError: Boolean,
+    animeId: Int,
+    favoritesState: AnimeDetailsState.FavoritesState,
     authState: AuthState,
+    showAnimation: Boolean,
     onIntent: (AnimeDetailsIntent) -> Unit,
-    showAnimation: Boolean
+    onRefreshEffect: (RefreshEffect) -> Unit
 ) {
     val state = resolveButtonState(
-        isFavoritesLoading,
-        isInFavorites,
-        isFavoritesError,
-        authState
+        isFavoritesLoading = favoritesState.isLoading,
+        isInFavorites = animeId in favoritesState.ids,
+        isFavoritesError = favoritesState.isError,
+        authState = authState
+    )
+
+    CheckIsFavoritesNeedRefresh(
+        isInFavorites = animeId in favoritesState.ids,
+        onRefreshEffect = onRefreshEffect
     )
 
     AnimatedBorderContainer(
@@ -93,7 +101,7 @@ internal fun LazyItemScope.AddToFavoritesButton(
             }
         },
         shape = mShapes.extraLarge,
-        brush = animatedBorderBrush(isFavoritesLoading || showAnimation),
+        brush = animatedBorderBrush(favoritesState.isLoading || showAnimation),
         modifier = Modifier
             .animateItem()
             .fillParentMaxWidth()
@@ -226,3 +234,13 @@ private fun resolveButtonState(
         isInFavorites -> FavoritesButtonState.Remove
         else -> FavoritesButtonState.Add
     }
+
+@Composable
+private fun CheckIsFavoritesNeedRefresh(
+    isInFavorites: Boolean,
+    onRefreshEffect: (RefreshEffect) -> Unit
+) {
+    LaunchedEffect(isInFavorites) {
+        onRefreshEffect(RefreshEffect.RefreshFavorites)
+    }
+}

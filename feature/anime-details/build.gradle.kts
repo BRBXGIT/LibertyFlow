@@ -44,7 +44,6 @@ dependencies {
     implementation(project(":core:design-system"))
     implementation(project(":core:common"))
     // Feature modules
-    implementation(project(":feature:common"))
 
     // Compose animation graphics
     implementation(libs.androidx.animation.graphics)

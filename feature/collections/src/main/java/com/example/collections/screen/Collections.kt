@@ -111,16 +111,15 @@ private fun LoggedInContent(
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    // Observe LoadState for all collections to handle global errors (SnackBar)
-    pagingItemsMap.values.forEach { pagingItems ->
-        PagingStatesContainer(
-            items = pagingItems,
-            onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
-            onRetryRequest = { messageRes, retry ->
-                onEffect(UiEffect.ShowSnackbar(messageRes.toInt(), "Retry", retry))
-            }
-        )
-    }
+    // Observe LoadState for current collection to handle errors (SnackBar)
+    val currentItems = pagingItemsMap[state.selectedCollection]!!
+    PagingStatesContainer(
+        items = currentItems,
+        onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
+        onRetryRequest = { messageRes, retry ->
+            onEffect(UiEffect.ShowSnackbar(messageRes.toInt(), "Retry", retry))
+        }
+    )
 
     CollectionsPagerContent(
         state = state,
