@@ -54,18 +54,18 @@ fun Favorites(
 
         topBar = {
             SearchingTopBar(
-                isLoading = state.isLoading,
+                isLoading = state.loadingState.isLoading,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = scrollBehavior,
-                query = state.query,
-                isSearching = state.isSearching,
+                query = state.searchForm.query,
+                isSearching = state.searchForm.isSearching,
                 onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
                 onSearchChange = { onIntent(FavoritesIntent.ToggleIsSearching) },
             )
         }
     ) { innerPadding ->
 
-        if (state.isAuthBSVisible) {
+        if (state.authForm.isAuthBSVisible) {
             AuthBS(
                 email = state.authForm.email,
                 password = state.authForm.password,
@@ -87,7 +87,7 @@ fun Favorites(
 
         // Pull-to-refresh container
         VibratingContainer(
-            isRefreshing = state.isLoading,
+            isRefreshing = state.loadingState.isLoading,
             onRefresh = favorites::refresh,
             modifier = Modifier
                 .fillMaxSize()
@@ -99,7 +99,7 @@ fun Favorites(
         ) {
             MainContent(
                 authState = state.authState,
-                isError = state.isError,
+                isError = state.loadingState.isError,
                 favorites = favorites,
                 onIntent = onIntent,
                 onEffect = onEffect

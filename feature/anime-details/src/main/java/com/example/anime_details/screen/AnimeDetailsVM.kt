@@ -70,7 +70,7 @@ class AnimeDetailsVM @Inject constructor(
             AnimeDetailsIntent.ToggleIsDescriptionExpanded ->
                 _state.update { it.copy(isDescriptionExpanded = !it.isDescriptionExpanded) }
             AnimeDetailsIntent.ToggleIsAuthBsVisible ->
-                _state.update { it.copy(isAuthBSVisible = !it.isAuthBSVisible) }
+                _state.update { it.copy(authForm = it.authForm.toggleIsAuthBSVisible()) }
 
             // Form Updates (Consolidated)
             is AnimeDetailsIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)

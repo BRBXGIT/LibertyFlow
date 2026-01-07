@@ -37,16 +37,13 @@ import com.example.design_system.theme.mTypography
 import kotlinx.coroutines.delay
 
 // Static error title text
-private val ERROR_TEXT = R.string.error_label
+private val ERROR_TEXT = R.string.error_section_label
 
 // Fully transparent top bar background
 private const val TOP_BAR_ALPHA = 0f
 
 // Title text configuration
 private const val TEXT_MAX_LINES = 1
-
-// Navigation icon size
-private const val ICON_SIZE = 22
 
 @Composable
 fun TopBar(
@@ -83,13 +80,16 @@ fun TopBar(
         },
         navigationIcon = {
             // Back navigation
-            IconButton(onClick = { onEffect(UiEffect.NavigateBack) }) {
-                Icon(
-                    painter = painterResource(LibertyFlowIcons.ArrowLeftFilled),
-                    contentDescription = null,
-                    modifier = Modifier.size(ICON_SIZE.dp)
-                )
-            }
+            TopBarIconButton(
+                icon = LibertyFlowIcons.ArrowLeftFilled,
+                onClick = { onEffect(UiEffect.NavigateBack) }
+            )
+        },
+        actions = {
+            TopBarIconButton(
+                icon = LibertyFlowIcons.List,
+                onClick = {}
+            )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = mColors.surfaceContainer.copy(alpha = TOP_BAR_ALPHA),
@@ -147,6 +147,25 @@ private fun AnimatedLoadingText() {
                 modifier = Modifier.alpha(alpha.value),
             )
         }
+    }
+}
+
+// Navigation icon size
+private const val ICON_SIZE = 22
+
+@Composable
+private fun TopBarIconButton(
+    icon: Int,
+    onClick: () -> Unit
+) {
+    IconButton(
+        onClick = onClick
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            modifier = Modifier.size(ICON_SIZE.dp)
+        )
     }
 }
 

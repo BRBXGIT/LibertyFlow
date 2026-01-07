@@ -46,19 +46,7 @@ class HomeVM @Inject constructor(
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    // Emits whenever request parameters change
-    private val requestFlow = _state
-        .map { it.request }
-        .distinctUntilChanged()
-
-    // Paged anime list driven by requestFlow
-    val anime = requestFlow
-        .flatMapLatest { request ->
-            catalogRepo.getAnimeByQuery(UiCommonRequest(request))
-        }
-        .cachedIn(viewModelScope)
-
-    /* --- Public API --- */
+    /* --- Intents --- */
 
     fun sendIntent(intent: HomeIntent) {
         when (intent) {
@@ -74,10 +62,10 @@ class HomeVM @Inject constructor(
             /* --- Flags --- */
 
             is HomeIntent.SetLoading ->
-                _state.update { it.withLoading(intent.value) }
+                _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
 
             is HomeIntent.SetError ->
-                _state.update { it.withError(intent.value) }
+                _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
 
             is HomeIntent.SetRandomAnimeLoading ->
                 _state.update { it.withRandomAnimeLoading(intent.value) }
@@ -150,6 +138,18 @@ class HomeVM @Inject constructor(
             _effects.send(effect)
         }
     }
+
+    // Emits whenever request parameters change
+    private val requestFlow = _state
+        .map { it.request }
+        .distinctUntilChanged()
+
+    // Paged anime list driven by requestFlow
+    val anime = requestFlow
+        .flatMapLatest { request ->
+            catalogRepo.getAnimeByQuery(UiCommonRequest(request))
+        }
+        .cachedIn(viewModelScope)
 
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {

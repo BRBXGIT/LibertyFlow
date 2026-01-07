@@ -81,7 +81,7 @@ internal fun AnimeDetails(
 
         // Render content only when anime data is available
         anime?.let {
-            if (state.isAuthBSVisible) {
+            if (state.authForm.isAuthBSVisible) {
                 AuthBS(
                     email = state.authForm.email,
                     password = state.authForm.password,

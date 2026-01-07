@@ -63,23 +63,23 @@ class FavoritesVM @Inject constructor(
             /* --- UI toggles --- */
 
             FavoritesIntent.ToggleIsAuthBSVisible ->
-                _state.update { it.toggleAuthBS() }
+                _state.update { it.copy(authForm = it.authForm.toggleIsAuthBSVisible()) }
 
             FavoritesIntent.ToggleIsSearching ->
-                _state.update { it.toggleSearching() }
+                _state.update { it.copy(searchForm = it.searchForm.toggleSearching()) }
 
             /* --- Flags --- */
 
             is FavoritesIntent.SetIsLoading ->
-                _state.update { it.withLoading(intent.value) }
+                _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
 
             is FavoritesIntent.SetIsError ->
-                _state.update { it.withError(intent.value) }
+                _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
 
             /* --- Search --- */
 
             is FavoritesIntent.UpdateQuery ->
-                _state.update { it.updateQuery(intent.query) }
+                _state.update { it.copy(searchForm = it.searchForm.updateQuery(intent.query)) }
 
             /* --- Auth input --- */
 
@@ -94,7 +94,7 @@ class FavoritesVM @Inject constructor(
 
     // Paging request driven by search query
     private val requestFlow = _state
-        .map { UiShortRequestParameters(search = it.query) }
+        .map { UiShortRequestParameters(search = it.searchForm.query) }
         .distinctUntilChanged()
 
     val favorites = requestFlow

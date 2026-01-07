@@ -22,7 +22,6 @@ data class AnimeDetailsState(
     val favoritesState: FavoritesState = FavoritesState(),
 
     // Auth Bottom Sheet & Form (Grouped to isolate frequent updates)
-    val isAuthBSVisible: Boolean = false,
     val authForm: AuthFormState = AuthFormState(),
 
     // UI Toggles

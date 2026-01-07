@@ -1,6 +1,7 @@
 package com.example.home.screen
 
 import androidx.compose.runtime.Immutable
+import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.data.models.common.common.UiGenre
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
@@ -9,8 +10,7 @@ import com.example.data.models.common.request.request_parameters.UiFullRequestPa
 
 @Immutable
 data class HomeState(
-    val isError: Boolean = false,
-    val isLoading: Boolean = false,
+    val loadingState: LoadingState = LoadingState(),
     val isRandomAnimeLoading: Boolean = false,
 
     val isSearching: Boolean = false,
@@ -29,14 +29,6 @@ data class HomeState(
 
     fun toggleFilters() =
         copy(isFiltersVisible = !isFiltersVisible)
-
-    /* --- Flags --- */
-
-    fun withLoading(value: Boolean) =
-        copy(isLoading = value)
-
-    fun withError(value: Boolean) =
-        copy(isError = value)
 
     fun withRandomAnimeLoading(value: Boolean) =
         copy(isRandomAnimeLoading = value)

@@ -52,7 +52,7 @@ class CollectionsVM @Inject constructor(
 
     // Shared query flow to avoid recreating it for every collection
     private val queryFlow = _state
-        .map { state -> state.query }
+        .map { state -> state.searchForm.query }
         .distinctUntilChanged()
 
     /**
@@ -76,15 +76,15 @@ class CollectionsVM @Inject constructor(
     fun sendIntent(intent: CollectionsIntent) {
         when (intent) {
             // Ui toggles
-            CollectionsIntent.ToggleIsAuthBSVisible -> _state.update { it.toggleAuthBS() }
-            CollectionsIntent.ToggleIsSearching -> _state.update { it.toggleIsSearching() }
+            CollectionsIntent.ToggleIsAuthBSVisible -> _state.update { it.copy(authForm = it.authForm.toggleIsAuthBSVisible()) }
+            CollectionsIntent.ToggleIsSearching -> _state.update { it.copy(searchForm = it.searchForm.toggleSearching())}
 
             // Ui sets
             is CollectionsIntent.SetIsError -> _state.update { it.setError(intent.value) }
             is CollectionsIntent.SetCollection -> _state.update { it.setCollection(intent.collection) }
 
             // Ui updates
-            is CollectionsIntent.UpdateQuery -> _state.update { it.updateQuery(intent.query) }
+            is CollectionsIntent.UpdateQuery -> _state.update { it.copy(searchForm = it.searchForm.updateQuery(intent.query)) }
 
             // Auth (Logic preserved as requested)
             is CollectionsIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)

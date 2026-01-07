@@ -23,7 +23,7 @@ import com.example.design_system.R
 import com.example.design_system.theme.mTypography
 
 
-private val ErrorLabel = R.string.error_label
+private val ErrorLabel = R.string.error_section_label
 
 @Composable
 fun ErrorSection() {

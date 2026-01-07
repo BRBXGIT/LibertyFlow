@@ -75,7 +75,7 @@ internal fun Home(
                 query = state.request.search,
                 label = stringResource(TopBarLabel),
                 isSearching = state.isSearching,
-                isLoading = state.isLoading,
+                isLoading = state.loadingState.isLoading,
                 scrollBehavior = scrollBehavior,
                 onSearchChange = { onIntent(HomeIntent.ToggleSearching) },
                 onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
@@ -96,7 +96,7 @@ internal fun Home(
 
         // Pull-to-refresh container
         VibratingContainer(
-            isRefreshing = state.isLoading,
+            isRefreshing = state.loadingState.isLoading,
             onRefresh = anime::refresh,
             modifier = Modifier
                 .fillMaxSize()
@@ -107,7 +107,7 @@ internal fun Home(
                 )
         ) {
             MainContent(
-                isError = state.isError,
+                isError = state.loadingState.isError,
                 isRandomAnimeLoading = state.isRandomAnimeLoading,
                 anime = anime,
                 onIntent = onIntent,

@@ -59,9 +59,9 @@ internal fun Collections(
                 showIndicator = false,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = topBarScrollBehavior,
-                query = state.query,
+                query = state.searchForm.query,
                 onQueryChange = { onIntent(CollectionsIntent.UpdateQuery(it)) },
-                isSearching = state.isSearching,
+                isSearching = state.searchForm.isSearching,
                 onSearchChange = { onIntent(CollectionsIntent.ToggleIsSearching) },
             )
         },
@@ -71,7 +71,7 @@ internal fun Collections(
     ) { innerPadding ->
 
         // Auth Bottom Sheet
-        if (state.isAuthBSVisible) {
+        if (state.authForm.isAuthBSVisible) {
             AuthBS(
                 email = state.authForm.email,
                 password = state.authForm.password,
@@ -167,7 +167,7 @@ private fun CollectionsPagerContent(
             CollectionPage(
                 items = pagingItems,
                 onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) },
-                query = state.query
+                query = state.searchForm.query
             )
         }
     }
