@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toWhileSubscribed
 import com.example.data.domain.AuthRepo
@@ -85,14 +86,14 @@ class AnimeDetailsVM @Inject constructor(
 
     private fun fetchAnime(id: Int) {
         viewModelScope.launch(dispatcherIo) {
-            _state.update { it.copy(isLoading = true, isError = false) }
+            _state.update { it.copy(loadingState = LoadingState(isLoading = true, isError = false)) }
 
             releasesRepo.getAnime(id)
                 .onSuccess { uiAnimeDetails ->
-                    _state.update { it.copy(anime = uiAnimeDetails, isLoading = false) }
+                    _state.update { it.copy(anime = uiAnimeDetails, loadingState = it.loadingState.copy(isLoading = false)) }
                 }
                 .onError { _, messageRes ->
-                    _state.update { it.copy(isError = true, isLoading = false) }
+                    _state.update { it.copy(loadingState = LoadingState(isLoading = true, isError = false)) }
                     sendSnackbar(messageRes) { fetchAnime(id) }
                 }
         }

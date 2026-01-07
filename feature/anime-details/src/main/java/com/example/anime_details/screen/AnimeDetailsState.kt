@@ -2,6 +2,7 @@ package com.example.anime_details.screen
 
 import androidx.compose.runtime.Immutable
 import com.example.common.ui_helpers.auth.AuthFormState
+import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.data.models.auth.AuthState
 import com.example.data.models.releases.anime_details.UiAnimeDetails
 
@@ -11,8 +12,7 @@ data class AnimeDetailsState(
     val authState: AuthState = AuthState.LoggedOut,
 
     // Screen Loading/Error States
-    val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val loadingState: LoadingState = LoadingState(),
 
     // Domain Data
     val anime: UiAnimeDetails? = null,
