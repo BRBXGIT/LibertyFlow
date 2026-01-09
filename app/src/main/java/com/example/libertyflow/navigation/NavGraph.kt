@@ -18,6 +18,7 @@ import com.example.common.navigation.CollectionsRoute
 import com.example.common.navigation.FavoritesRoute
 import com.example.common.navigation.HomeRoute
 import com.example.common.navigation.MoreRoute
+import com.example.common.navigation.NavBarItem
 import com.example.common.navigation.NavigationBase
 import com.example.common.refresh.RefreshVM
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBar
@@ -26,8 +27,7 @@ import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home
 import com.example.home.screen.HomeVM
 import com.example.more.navigation.more
-import com.example.player.player.DraggableMiniPlayer
-import com.example.player.player.FloatingMiniPlayer
+import com.example.player.player.PlayerContainer
 
 @Composable
 fun NavGraph() {
@@ -55,7 +55,9 @@ fun NavGraph() {
             more(navController)
         }
 
+        val navBarVisible = selectedRoute is NavBarItem
         BottomNavBar(
+            visible = navBarVisible,
             selectedRoute = selectedRoute,
             onNavItemClick = { route ->
                 navController.navigate(route) {
@@ -66,7 +68,7 @@ fun NavGraph() {
             }
         )
 
-        DraggableMiniPlayer()
+        PlayerContainer(navBarVisible)
     }
 }
 
