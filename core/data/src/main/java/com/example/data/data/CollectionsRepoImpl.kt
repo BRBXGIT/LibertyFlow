@@ -5,8 +5,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.data.domain.CollectionsRepo
-import com.example.data.models.collections.UiCollectionRequest
-import com.example.data.models.collections.toCollectionRequest
+import com.example.data.models.collections.collection_ids.UiCollectionIds
+import com.example.data.models.collections.request.UiCollectionRequest
+import com.example.data.models.collections.mappers.toCollectionRequest
+import com.example.data.models.collections.mappers.toUiCollectionIds
 import com.example.data.models.common.mappers.toCommonRequestWithCollectionType
 import com.example.data.models.common.mappers.toUiAnimeItem
 import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
@@ -43,6 +45,15 @@ internal class CollectionsRepoImpl @Inject constructor(
                 )
             }
         ).flow.map { pagingData -> pagingData.map { it.toUiAnimeItem() } }
+    }
+
+    override suspend fun getCollectionsIds(): NetworkResult<UiCollectionIds> {
+        val token = authPrefsManager.token.first()!!
+
+        return NetworkRequest.safeApiCall(
+            call = { collectionsApi.getCollectionsIds(token) },
+            map = { it.toUiCollectionIds() }
+        )
     }
 
     override suspend fun addToCollection(request: UiCollectionRequest): NetworkResult<Unit> {

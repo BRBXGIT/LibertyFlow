@@ -23,6 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -240,7 +243,13 @@ private fun CheckIsFavoritesNeedRefresh(
     isInFavorites: Boolean,
     onRefreshEffect: (RefreshEffect) -> Unit
 ) {
+    var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
+
     LaunchedEffect(isInFavorites) {
-        onRefreshEffect(RefreshEffect.RefreshFavorites)
+        if (isFirstLaunch) {
+            isFirstLaunch = false
+        } else {
+            onRefreshEffect(RefreshEffect.RefreshFavorites)
+        }
     }
 }

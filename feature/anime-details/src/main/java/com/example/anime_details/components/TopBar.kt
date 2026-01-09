@@ -86,6 +86,7 @@ fun TopBar(
             )
         },
         actions = {
+            // TODO: Add lists logic
             TopBarIconButton(
                 icon = LibertyFlowIcons.List,
                 onClick = {}

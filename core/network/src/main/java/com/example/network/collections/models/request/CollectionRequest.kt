@@ -1,3 +1,3 @@
-package com.example.network.collections.models
+package com.example.network.collections.models.request
 
 class CollectionRequest(): ArrayList<CollectionItem>()

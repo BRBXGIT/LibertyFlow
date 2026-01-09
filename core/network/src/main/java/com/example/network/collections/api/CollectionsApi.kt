@@ -1,10 +1,12 @@
 package com.example.network.collections.api
 
-import com.example.network.collections.models.CollectionRequest
+import com.example.network.collections.models.ids.CollectionsIds
+import com.example.network.collections.models.request.CollectionRequest
 import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPagination
 import com.example.network.common.common_request_models.common_request.CommonRequestWithCollectionType
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -16,6 +18,11 @@ interface CollectionsApi {
         @Header("Authorization") sessionToken: String,
         @Body request: CommonRequestWithCollectionType
     ): Response<AnimeItemsPagination>
+
+    @GET
+    suspend fun getCollectionsIds(
+        @Header("Authorization") sessionToken: String,
+    ): Response<CollectionsIds>
 
     @POST("accounts/users/me/collections")
     suspend fun addToCollection(

@@ -54,6 +54,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
+    // --- Effects and intents ---
     fun sendIntent(intent: AnimeDetailsIntent) {
         when (intent) {
             is AnimeDetailsIntent.FetchAnime -> fetchAnime(intent.id)
@@ -84,6 +85,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
+    // --- Anime ---
     private fun fetchAnime(id: Int) {
         viewModelScope.launch(dispatcherIo) {
             _state.update { it.copy(loadingState = LoadingState(isLoading = true, isError = false)) }
@@ -93,7 +95,7 @@ class AnimeDetailsVM @Inject constructor(
                     _state.update { it.copy(anime = uiAnimeDetails, loadingState = it.loadingState.copy(isLoading = false)) }
                 }
                 .onError { _, messageRes ->
-                    _state.update { it.copy(loadingState = LoadingState(isLoading = true, isError = false)) }
+                    _state.update { it.copy(loadingState = LoadingState(isLoading = false, isError = true)) }
                     sendSnackbar(messageRes) { fetchAnime(id) }
                 }
         }
@@ -121,6 +123,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
+    // --- Favorites ---
     private fun fetchFavoritesIds() {
         viewModelScope.launch(dispatcherIo) {
             _state.update { it.updateFavorites { f -> f.copy(isLoading = true, isError = false) } }
@@ -140,7 +143,6 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
-    // Unified method for Add/Remove to reduce code duplication
     private fun toggleFavorite(shouldAdd: Boolean) {
         val animeId = _state.value.anime?.id ?: return
 
@@ -171,6 +173,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
+    // --- Auth ---
     private fun performLogin() {
         val currentState = _state.value.authForm
 

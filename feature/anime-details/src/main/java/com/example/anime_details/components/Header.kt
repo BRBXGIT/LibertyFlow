@@ -119,7 +119,7 @@ internal fun LazyItemScope.Header(
         // Poster background image
         LibertyFlowAsyncImage(
             modifier = Modifier
-                .fillMaxSize()
+                .matchParentSize()
                 .hazeSource(hazeState),
             imagePath = headerData.posterPath,
             showError = false

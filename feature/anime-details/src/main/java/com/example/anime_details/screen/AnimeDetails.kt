@@ -66,9 +66,9 @@ internal fun AnimeDetails(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopBar(
-                isError = state.isError,
+                isError = state.loadingState.isError,
                 englishTitle = state.anime?.name?.english,
-                isLoading = state.isLoading,
+                isLoading = state.loadingState.isLoading,
                 scrollBehavior = topBarScrollBehavior,
                 onEffect = onEffect
             )
@@ -107,7 +107,7 @@ internal fun AnimeDetails(
                     animeId = state.anime.id,
                     authState = state.authState,
                     onIntent = onIntent,
-                    showAnimation = state.isLoading,
+                    showAnimation = state.loadingState.isLoading,
                     favoritesState = state.favoritesState,
                     onRefreshEffect = onRefreshEffect
                 )

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.more.screen
 
 import android.content.Intent
@@ -11,7 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -34,8 +38,10 @@ private val LINKS_LABEL = R.string.links_label
 internal fun More(
     onEffect: (UiEffect) -> Unit
 ) {
+    val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     Scaffold(
-        topBar = { TopBar() },
+        topBar = { TopBar(topBarScrollBehavior) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->

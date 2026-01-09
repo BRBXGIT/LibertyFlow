@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,8 +23,11 @@ import com.example.design_system.theme.mTypography
 private const val ICON_SIZE = 22
 
 @Composable
-internal fun TopBar() {
+internal fun TopBar(
+    scrollBehavior: TopAppBarScrollBehavior
+) {
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = { Title() },
         actions = {
             IconButton(

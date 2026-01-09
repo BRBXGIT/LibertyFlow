@@ -63,9 +63,9 @@ retrofit = "3.0.0"
 converterGson = "3.0.0"
 
 # Exo player
-media3Exoplayer = "1.8.0"
-media3ExoplayerHls = "1.8.0"
-media3Ui = "1.8.0"
+media3Exoplayer = "1.9.0"
+media3ExoplayerHls = "1.9.0"
+media3Ui = "1.9.0"
 
 #System Ui controller
 accompanistSystemuicontroller = "0.36.0"
