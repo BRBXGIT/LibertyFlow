@@ -63,6 +63,7 @@ dependencies {
     implementation(project(":feature:collections"))
     implementation(project(":feature:anime-details"))
     implementation(project(":feature:more"))
+    implementation(project(":feature:player"))
 
     // Core
     implementation(libs.androidx.core.ktx)

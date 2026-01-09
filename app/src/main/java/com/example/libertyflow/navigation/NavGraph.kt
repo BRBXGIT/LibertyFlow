@@ -26,6 +26,8 @@ import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home
 import com.example.home.screen.HomeVM
 import com.example.more.navigation.more
+import com.example.player.player.DraggableMiniPlayer
+import com.example.player.player.FloatingMiniPlayer
 
 @Composable
 fun NavGraph() {
@@ -63,6 +65,8 @@ fun NavGraph() {
                 }
             }
         )
+
+        DraggableMiniPlayer()
     }
 }
 
