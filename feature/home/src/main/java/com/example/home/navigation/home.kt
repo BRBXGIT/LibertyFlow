@@ -9,30 +9,34 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.common.navigation.HomeRoute
-import com.example.common.ui_helpers.HandleCommonEffects
+import com.example.common.ui_helpers.effects.HandleCommonEffects
+import com.example.design_system.utils.standardScreenEnterTransition
+import com.example.design_system.utils.standardScreenExitTransition
 import com.example.home.screen.Home
 import com.example.home.screen.HomeVM
 
 fun NavGraphBuilder.home(
     homeVM: HomeVM,
     navController: NavController
-) = composable<HomeRoute> {
-    val homeState by homeVM.homeState.collectAsStateWithLifecycle()
-    val effects = homeVM.effects
-
+) = composable<HomeRoute>(
+    enterTransition = { standardScreenEnterTransition() },
+    exitTransition = { standardScreenExitTransition() }
+) {
+    val state by homeVM.state.collectAsStateWithLifecycle()
     val anime = homeVM.anime.collectAsLazyPagingItems()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Handle navigation & snackbar effects
     HandleCommonEffects(
-        effects = effects,
+        effects = homeVM.effects,
         navController = navController,
         snackbarHostState = snackbarHostState
     )
 
     Home(
+        state = state,
         anime = anime,
-        homeState = homeState,
         snackbarHostState = snackbarHostState,
         onIntent = homeVM::sendIntent,
         onEffect = homeVM::sendEffect

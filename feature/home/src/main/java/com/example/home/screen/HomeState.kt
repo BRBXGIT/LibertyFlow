@@ -1,6 +1,7 @@
 package com.example.home.screen
 
 import androidx.compose.runtime.Immutable
+import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.data.models.common.common.UiGenre
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
@@ -9,47 +10,37 @@ import com.example.data.models.common.request.request_parameters.UiFullRequestPa
 
 @Immutable
 data class HomeState(
-    val isError: Boolean = false,
-    val isLoading: Boolean = false,
-
+    val loadingState: LoadingState = LoadingState(),
     val isRandomAnimeLoading: Boolean = false,
 
-    val randomAnimeId: Int? = null,
     val isSearching: Boolean = false,
-    val isFiltersBSVisible: Boolean = false,
+    val isFiltersVisible: Boolean = false,
 
     val request: UiFullRequestParameters = UiFullRequestParameters(),
 
     val genres: List<UiGenre> = emptyList(),
     val isGenresLoading: Boolean = false
 ) {
-    fun toggleIsSearching() = copy(isSearching = !isSearching)
 
-    fun toggleFiltersBottomSheet() = copy(isFiltersBSVisible = !isFiltersBSVisible)
+    /* --- UI toggles --- */
 
-    fun setLoading(value: Boolean) = copy(isLoading = value)
+    fun toggleSearching() =
+        copy(isSearching = !isSearching)
 
-    fun setError(value: Boolean) = copy(isError = value)
+    fun toggleFilters() =
+        copy(isFiltersVisible = !isFiltersVisible)
 
-    fun setRandomAnimeLoading(value: Boolean) = copy(isRandomAnimeLoading = value)
+    fun withRandomAnimeLoading(value: Boolean) =
+        copy(isRandomAnimeLoading = value)
 
-    fun setGenresLoading(value: Boolean) = copy(isGenresLoading = value)
+    fun withGenresLoading(value: Boolean) =
+        copy(isGenresLoading = value)
 
-    fun updateQuery(query: String) = copy(request = request.updateSearch(query))
+    /* --- Request mutations --- */
 
-    fun addGenre(genre: UiGenre) = copy(request = request.addGenre(genre))
+    fun updateRequest(block: UiFullRequestParameters.() -> UiFullRequestParameters) =
+        copy(request = request.block())
 
-    fun removeGenre(genre: UiGenre) = copy(request = request.removeGenre(genre))
-
-    fun addSeason(season: Season) = copy(request = request.addSeason(season))
-
-    fun removeSeason(season: Season) = copy(request = request.removeSeason(season))
-
-    fun updateFromYear(year: Int) = copy(request = request.updateYear(from = year))
-
-    fun updateToYear(year: Int) = copy(request = request.updateYear(to = year))
-
-    fun updateSorting(sorting: Sorting) = copy(request = request.updateSorting(sorting))
-
-    fun toggleIsOngoing(publishStatuses: List<PublishStatus>) = copy(request = request.toggleIsOngoing(publishStatuses))
+    fun updateGenres(genres: List<UiGenre>) =
+        copy(genres = genres)
 }

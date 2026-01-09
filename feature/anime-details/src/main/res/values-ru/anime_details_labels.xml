@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_label">Загрузка</string>
+    <string name="error_section_label">Ошибка</string>
+
+    <string name="favorites_loading_label">Загрузка…</string>
+    <string name="add_to_favorites_button_label">Добавить в избранные</string>
+    <string name="remove_from_favorites_button_label">Удалить из избранных</string>
+    <string name="authorize_label">Авторизоваться</string>
+
+    <string name="no_description_provided_label">Описания нет</string>
+
+    <string name="torrents_label">Торренты</string>
+
+    <string name="to_episode_title_provided_label">Без названия</string>
+</resources>

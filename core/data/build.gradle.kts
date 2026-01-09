@@ -45,6 +45,9 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime
     implementation(libs.androidx.compose.runtime)
+    // Room for hilt injection
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     // === Testing ===
     // Unit tests

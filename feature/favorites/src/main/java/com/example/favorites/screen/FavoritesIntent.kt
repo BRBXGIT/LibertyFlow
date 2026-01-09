@@ -1,17 +1,24 @@
 package com.example.favorites.screen
 
-// Intents / actions from the UI to the ViewModel
 sealed interface FavoritesIntent {
 
-    object GetTokens: FavoritesIntent
+    // Auth
+    data object GetTokens : FavoritesIntent
+    data object ToggleIsAuthBSVisible : FavoritesIntent
 
-    data object ToggleIsSearching: FavoritesIntent
-    data object ToggleIsAuthBSVisible: FavoritesIntent
+    // Grouped form updates to avoid polluting the intent root
+    data class UpdateAuthForm(val field: AuthField): FavoritesIntent {
+        sealed interface AuthField {
+            data class Email(val value: String): AuthField
+            data class Password(val value: String): AuthField
+        }
+    }
 
-    data class UpdateQuery(val query: String): FavoritesIntent
-    data class UpdateEmail(val email: String): FavoritesIntent
-    data class UpdatePassword(val password: String): FavoritesIntent
+    // Search
+    data object ToggleIsSearching : FavoritesIntent
+    data class UpdateQuery(val query: String) : FavoritesIntent
 
-    data class SetIsLoading(val value: Boolean): FavoritesIntent
-    data class SetIsError(val value: Boolean): FavoritesIntent
+    // UI flags
+    data class SetIsLoading(val value: Boolean) : FavoritesIntent
+    data class SetIsError(val value: Boolean) : FavoritesIntent
 }

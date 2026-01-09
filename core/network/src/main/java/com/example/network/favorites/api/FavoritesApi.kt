@@ -2,9 +2,11 @@ package com.example.network.favorites.api
 
 import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPagination
 import com.example.network.common.common_request_models.common_request.CommonRequest
+import com.example.network.favorites.models.FavoriteIdsResponse
 import com.example.network.favorites.models.FavoriteRequest
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -16,6 +18,11 @@ interface FavoritesApi {
         @Header("Authorization") sessionToken: String,
         @Body request: CommonRequest
     ): Response<AnimeItemsPagination>
+
+    @GET("accounts/users/me/favorites/ids")
+    suspend fun getFavoritesIds(
+        @Header("Authorization") sessionToken: String
+    ): Response<FavoriteIdsResponse>
 
     @POST("accounts/users/me/favorites")
     suspend fun addFavorite(

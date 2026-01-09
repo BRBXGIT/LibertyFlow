@@ -8,28 +8,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.collections.R
 import com.example.collections.components.CollectionPage
-import com.example.collections.components.CollectionsPager
 import com.example.collections.components.CollectionsTabRow
 import com.example.common.navigation.AnimeDetailsRoute
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.AuthState
-import com.example.data.models.common.mappers.toIndex
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
@@ -43,28 +42,26 @@ import kotlinx.coroutines.launch
 private val TopBarLabel = R.string.collections_top_bar_label
 
 @Composable
-fun Collections(
-    collectionsState: CollectionsState,
-    collections: List<LazyPagingItems<UiAnimeItem>>,
+internal fun Collections(
+    state: CollectionsState,
+    pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>>,
     snackbarHostState: SnackbarHostState,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    // Pinned TopAppBar behavior
     val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
-            // Searchable top bar
             SearchingTopBar(
                 showIndicator = false,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = topBarScrollBehavior,
-                query = collectionsState.query,
+                query = state.searchForm.query,
                 onQueryChange = { onIntent(CollectionsIntent.UpdateQuery(it)) },
-                isSearching = collectionsState.isSearching,
+                isSearching = state.searchForm.isSearching,
                 onSearchChange = { onIntent(CollectionsIntent.ToggleIsSearching) },
             )
         },
@@ -72,16 +69,17 @@ fun Collections(
             .fillMaxSize()
             .nestedScroll(topBarScrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
-        // Authentication BottomSheet
-        if (collectionsState.isAuthBSVisible) {
+
+        // Auth Bottom Sheet
+        if (state.authForm.isAuthBSVisible) {
             AuthBS(
-                email = collectionsState.email,
-                password = collectionsState.password,
-                incorrectEmailOrPassword = collectionsState.isPasswordOrEmailIncorrect,
+                email = state.authForm.email,
+                password = state.authForm.password,
+                incorrectEmailOrPassword = state.authForm.isError,
                 onDismissRequest = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) },
                 onAuthClick = { onIntent(CollectionsIntent.GetTokens) },
-                onPasswordChange = { onIntent(CollectionsIntent.UpdatePassword(it)) },
-                onEmailChange = { onIntent(CollectionsIntent.UpdateEmail(it)) }
+                onPasswordChange = { onIntent(CollectionsIntent.UpdateAuthForm(CollectionsIntent.UpdateAuthForm.AuthField.Password(it))) },
+                onEmailChange = { onIntent(CollectionsIntent.UpdateAuthForm(CollectionsIntent.UpdateAuthForm.AuthField.Email(it))) }
             )
         }
 
@@ -89,24 +87,17 @@ fun Collections(
             modifier = Modifier
                 .fillMaxSize()
                 .background(mColors.background)
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    bottom = calculateNavBarSize()
-                )
+                .padding(top = innerPadding.calculateTopPadding(), bottom = calculateNavBarSize())
         ) {
-            // Switch content based on auth state
-            when (collectionsState.authState) {
+            when (state.authState) {
                 AuthState.LoggedIn -> LoggedInContent(
-                    collectionsState = collectionsState,
-                    collections = collections,
+                    state = state,
+                    pagingItemsMap = pagingItemsMap,
                     onIntent = onIntent,
                     onEffect = onEffect
                 )
-
                 AuthState.LoggedOut -> LoggedOutSection(
-                    onAuthClick = {
-                        onIntent(CollectionsIntent.ToggleIsAuthBSVisible)
-                    }
+                    onAuthClick = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) }
                 )
             }
         }
@@ -115,77 +106,74 @@ fun Collections(
 
 @Composable
 private fun LoggedInContent(
-    collectionsState: CollectionsState,
-    collections: List<LazyPagingItems<UiAnimeItem>>,
+    state: CollectionsState,
+    pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    // Observe paging states for every collection
-    collections.forEach { collection ->
-        PagingStatesContainer(
-            items = collection,
-            onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
-            onRetryRequest = { messageRes, retry ->
-                onEffect(
-                    UiEffect.ShowSnackbar(
-                        messageRes = messageRes.toInt(),
-                        actionLabel = "Retry",
-                        action = retry
-                    )
-                )
-            }
-        )
-    }
+    // Observe LoadState for current collection to handle errors (SnackBar)
+    val currentItems = pagingItemsMap[state.selectedCollection]!!
+    PagingStatesContainer(
+        items = currentItems,
+        onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
+        onRetryRequest = { messageRes, retry ->
+            onEffect(UiEffect.ShowSnackbar(messageRes.toInt(), "Retry", retry))
+        }
+    )
 
-    CollectionsContent(
-        collectionsState = collectionsState,
-        collections = collections,
+    CollectionsPagerContent(
+        state = state,
+        pagingItemsMap = pagingItemsMap,
         onIntent = onIntent,
         onEffect = onEffect
     )
 }
 
 @Composable
-private fun CollectionsContent(
-    collectionsState: CollectionsState,
-    collections: List<LazyPagingItems<UiAnimeItem>>,
+private fun CollectionsPagerContent(
+    state: CollectionsState,
+    pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    val pagerState = rememberPagerState { Collection.entries.size }
     val pagerScope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(
+        initialPage = state.selectedCollection.toIndex()
+    ) { Collection.entries.size }
 
     Column {
-        // Tabs for collections
+        LaunchedEffect(pagerState) {
+            snapshotFlow { pagerState.currentPage }.collect { page ->
+                onIntent(CollectionsIntent.SetCollection(page.toCollection()))
+            }
+        }
+
         CollectionsTabRow(
-            selectedCollection = collectionsState.selectedCollection,
+            selectedCollection = state.selectedCollection,
             onTabClick = { collection ->
                 onIntent(CollectionsIntent.SetCollection(collection))
-                pagerScope.launch {
-                    pagerState.animateScrollToPage(collection.toIndex())
-                }
+                pagerScope.launch { pagerState.animateScrollToPage(collection.toIndex()) }
             }
         )
 
-        val isLoading = collections[pagerState.currentPage].loadState.refresh is LoadState.Loading
+        HorizontalPager(
+            modifier = Modifier.fillMaxSize(),
+            state = pagerState,
+            key = { index -> index.toCollection() }
+        ) { pageIndex ->
+            val collectionEnum = pageIndex.toCollection()
+            val pagingItems = pagingItemsMap.getValue(collectionEnum)
 
-        // Pull-to-refresh wrapper
-        PullToRefreshBox(
-            isRefreshing = isLoading,
-            onRefresh = { collections[pagerState.currentPage].refresh() }
-        ) {
-            // Horizontal pager with collections
-            CollectionsPager(
-                state = pagerState,
-                onIntent = onIntent
-            ) { pageIndex ->
-                CollectionPage(
-                    isError = collectionsState.isError,
-                    isLoading = isLoading,
-                    collection = collections[pageIndex],
-                    onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
-                )
-            }
+            CollectionPage(
+                items = pagingItems,
+                onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) },
+                query = state.searchForm.query
+            )
         }
     }
 }
+
+// Helpers for Enum <-> Index conversion to keep code clean
+// Assuming your Enum looks like this, extend these helpers:
+internal fun Collection.toIndex(): Int = ordinal
+internal fun Int.toCollection(): Collection = Collection.entries[this]

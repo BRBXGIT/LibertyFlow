@@ -18,7 +18,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.common.navigation.AnimeDetailsRoute
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.common.ui_anime_item.UiAnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
@@ -38,13 +38,13 @@ private val TopBarLabel = R.string.home_top_bar_label
 
 @Composable
 internal fun Home(
-    homeState: HomeState,
+    state: HomeState,
     anime: LazyPagingItems<UiAnimeItem>,
     snackbarHostState: SnackbarHostState,
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    // Handle paging loading/error states
+    // Sync paging state with UI flags
     PagingStatesContainer(
         items = anime,
         onLoadingChange = { onIntent(HomeIntent.SetLoading(it)) },
@@ -60,40 +60,44 @@ internal fun Home(
         }
     )
 
-    val topBarScrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+
         snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
+
         topBar = {
-            // Top search bar with query input & actions
             SearchingTopBar(
-                query = homeState.request.search,
+                query = state.request.search,
                 label = stringResource(TopBarLabel),
-                isSearching = homeState.isSearching,
-                isLoading = homeState.isLoading,
-                scrollBehavior = topBarScrollBehaviour,
+                isSearching = state.isSearching,
+                isLoading = state.loadingState.isLoading,
+                scrollBehavior = scrollBehavior,
                 onSearchChange = { onIntent(HomeIntent.ToggleSearching) },
                 onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
             )
         },
+
         floatingActionButton = {
             BasicFAB(
                 icon = LibertyFlowIcons.Filters,
                 onClick = { onIntent(HomeIntent.ToggleFiltersBottomSheet) }
             )
-        },
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(topBarScrollBehaviour.nestedScrollConnection),
+        }
     ) { innerPadding ->
-        if (homeState.isFiltersBSVisible) {
-            FiltersBS(homeState, onIntent)
+
+        if (state.isFiltersVisible) {
+            FiltersBS(state, onIntent)
         }
 
-        // Pull-to-refresh container with vibration feedback
+        // Pull-to-refresh container
         VibratingContainer(
-            isRefreshing = homeState.isLoading,
-            onRefresh = { anime.refresh() },
+            isRefreshing = state.loadingState.isLoading,
+            onRefresh = anime::refresh,
             modifier = Modifier
                 .fillMaxSize()
                 .background(mColors.background)
@@ -102,13 +106,12 @@ internal fun Home(
                     bottom = calculateNavBarSize()
                 )
         ) {
-            // Main content logic depending on search mode + error state
             MainContent(
-                isError = homeState.isError,
-                isRandomAnimeLoading = homeState.isRandomAnimeLoading,
+                isError = state.loadingState.isError,
+                isRandomAnimeLoading = state.isRandomAnimeLoading,
+                anime = anime,
                 onIntent = onIntent,
-                onEffect = onEffect,
-                anime = anime
+                onEffect = onEffect
             )
         }
     }
@@ -118,22 +121,24 @@ internal fun Home(
 private fun MainContent(
     isError: Boolean,
     isRandomAnimeLoading: Boolean,
+    anime: LazyPagingItems<UiAnimeItem>,
     onIntent: (HomeIntent) -> Unit,
-    onEffect: (UiEffect) -> Unit,
-    anime: LazyPagingItems<UiAnimeItem>
+    onEffect: (UiEffect) -> Unit
 ) {
-    when(isError) {
-        true -> ErrorSection()
-        false -> PagingAnimeItemsLazyVerticalGrid(
-            anime = anime,
-            onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
+    if (isError) {
+        ErrorSection()
+        return
+    }
+
+    PagingAnimeItemsLazyVerticalGrid(
+        anime = anime,
+        onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
+    ) {
+        item(
+            key = RANDOM_BUTTON_KEY,
+            span = { GridItemSpan(maxLineSpan) }
         ) {
-            item(
-                key = RANDOM_BUTTON_KEY,
-                span = { GridItemSpan(maxLineSpan) }
-            ) {
-                RandomAnimeButton(onIntent, isRandomAnimeLoading)
-            }
+            RandomAnimeButton(onIntent, isRandomAnimeLoading)
         }
     }
 }

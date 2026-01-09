@@ -38,6 +38,8 @@ dependencies {
     // Core modules
     implementation(project(":core:data"))
 
+    // Paging
+    implementation(libs.androidx.paging.compose)
     // Nav
     implementation(libs.navigation.compose)
     // Material 3

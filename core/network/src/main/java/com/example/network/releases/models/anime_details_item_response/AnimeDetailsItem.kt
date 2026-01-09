@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AnimeDetailsItem(
     @SerializedName("id") val id: Int,
-    @SerializedName("description") val description: String,
+    @SerializedName("description") val description: String?,
     @SerializedName("episodes") val episodes: List<Episode>,
     @SerializedName("genres") val genres: List<Genre>,
     @SerializedName("is_ongoing") val isOngoing: Boolean,

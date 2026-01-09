@@ -29,6 +29,12 @@ android {
     kotlinOptions { jvmTarget = "11" }
 
     buildFeatures { compose = true }
+
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-parameters")
+        }
+    }
 }
 
 dependencies {
@@ -38,8 +44,11 @@ dependencies {
     implementation(project(":core:design-system"))
     implementation(project(":core:common"))
     // Feature modules
-    implementation(project(":feature:common"))
 
+    // Compose animation graphics
+    implementation(libs.androidx.animation.graphics)
+    // Haze materials
+    implementation(libs.haze.materials)
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -52,4 +61,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime
     implementation(libs.androidx.compose.runtime)
+    // Compose debug
+    debugImplementation(libs.androidx.ui.tooling)
 }

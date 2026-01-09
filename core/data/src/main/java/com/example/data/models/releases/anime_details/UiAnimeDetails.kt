@@ -6,7 +6,7 @@ import com.example.data.models.common.common.UiPoster
 
 data class UiAnimeDetails(
     val id: Int,
-    val description: String,
+    val description: String?,
     val episodes: List<UiEpisode>,
     val genres: List<UiGenre>,
     val isOngoing: Boolean,

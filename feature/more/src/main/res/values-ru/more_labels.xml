@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_label">Настройки</string>
+    <string name="info_label">Информация</string>
+    <string name="links_label">Ссылки</string>
+
+    <string name="vk_label">Группа VK</string>
+    <string name="youtube_label">Канал YouTube</string>
+    <string name="patreon_label">Patreon</string>
+    <string name="telegram_label"> Канал Telegram</string>
+    <string name="discord_label">Чат Discord</string>
+    <string name="aniliberty_label">Сайт AniLiberty</string>
+</resources>

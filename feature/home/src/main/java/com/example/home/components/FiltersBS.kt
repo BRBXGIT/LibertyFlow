@@ -5,6 +5,7 @@ package com.example.home.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +19,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -32,7 +33,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +42,7 @@ import com.example.data.models.common.mappers.toName
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
-import com.example.design_system.components.indicators.CenteredCircularIndicator
+import com.example.design_system.components.dividers.DividerWithLabel
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
@@ -58,7 +58,6 @@ private const val GENRES_LOADING_INDICATOR_KEY = "GenresLoadingIndicatorKey"
 private const val MIN_GRID_CELLS_SIZE = 90
 private const val SPACED_BY = 8
 private const val CONTENT_PADDING = 16
-private const val FILTER_DIVIDER_SPACED_BY = 16
 private const val SORTING_SPACED_BY = 8
 private const val YEAR_TF_MAX_LINES = 1
 private const val FILTER_ITEM_TEXT_MAX_LINES = 1
@@ -66,7 +65,6 @@ private const val FILTER_ITEM_SELECTED_CONTAINER_SHAPE = 100
 private const val FILTER_ITEM_UNSELECTED_CONTAINER_SHAPE = 8
 private const val FILTER_ITEM_TEXT_PADDING = 10
 
-private const val FILTER_DIVIDER_WEIGHT = 1f
 
 private const val FROM_YEAR_KEY = "FromYearKey"
 private const val TO_YEAR_KEY = "ToYearKey"
@@ -83,15 +81,17 @@ private val OngoingLabel = R.string.ongoing_label
 
 @Composable
 internal fun FiltersBS(
-    homeState: HomeState,
+    state: HomeState,
     onIntent: (HomeIntent) -> Unit,
 ) {
-    // Load genres if not loaded
-    LaunchedEffect(homeState.genres) {
-        if (homeState.genres.isEmpty()) {
+    // Load genres once
+    LaunchedEffect(Unit) {
+        if (state.genres.isEmpty()) {
             onIntent(HomeIntent.GetGenres)
         }
     }
+
+    val request = state.request
 
     ModalBottomSheet(
         shape = mShapes.small,
@@ -104,39 +104,31 @@ internal fun FiltersBS(
             contentPadding = PaddingValues(CONTENT_PADDING.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
-            // --- Ongoing ---
+
             filterDivider(OngoingLabel)
+            releaseFinished(request.publishStatuses, onIntent)
 
-            releaseFinished(homeState.request.publishStatuses, onIntent)
-
-            // --- Sorting ---
             filterDivider(SortingLabel)
+            sortingBy(request.sorting, onIntent)
 
-            sortingBy(homeState, onIntent)
-
-            // --- YEARS ---
             filterDivider(YearLabel)
-
             yearField(
                 key = FROM_YEAR_KEY,
                 labelRes = FromYearLabel,
-                currentValue = homeState.request.years.from,
+                currentValue = request.years.from,
                 onValueChanged = { onIntent(HomeIntent.UpdateFromYear(it)) }
             )
-
             yearField(
                 key = TO_YEAR_KEY,
                 labelRes = ToYearLabel,
-                currentValue = homeState.request.years.to,
+                currentValue = request.years.to,
                 onValueChanged = { onIntent(HomeIntent.UpdateToYear(it)) }
             )
 
-            // --- SEASONS ---
             filterDivider(SeasonsLabel)
-
             selectableFilterItems(
                 items = Season.entries,
-                isSelected = { it in homeState.request.seasons },
+                isSelected = { it in request.seasons },
                 itemLabel = { stringResource(it.toName()) },
                 onItemClick = { season, selected ->
                     onIntent(
@@ -146,28 +138,22 @@ internal fun FiltersBS(
                 }
             )
 
-            // --- GENRES ---
             filterDivider(GenresLabel)
 
-            if (homeState.isGenresLoading) {
-                item(
-                    key = GENRES_LOADING_INDICATOR_KEY,
-                    span = { GridItemSpan(maxLineSpan) }
-                ) {
-                    CenteredCircularIndicator()
-                }
+            if (state.isGenresLoading) {
+                centeredCircularIndicator()
             } else {
                 selectableFilterItems(
-                    items = homeState.genres,
-                    isSelected = { it in homeState.request.genres },
+                    items = state.genres,
+                    isSelected = { it in request.genres },
                     itemLabel = { it.name },
+                    itemKey = { it.id },
                     onItemClick = { genre, selected ->
                         onIntent(
                             if (selected) HomeIntent.RemoveGenre(genre)
                             else HomeIntent.AddGenre(genre)
                         )
-                    },
-                    itemKey = { it.id }
+                    }
                 )
             }
         }
@@ -208,20 +194,10 @@ private fun LazyGridScope.filterDivider(textRes: Int) {
         key = textRes,
         span = { GridItemSpan(maxLineSpan) }
     ) {
-        Row(
+        DividerWithLabel(
             modifier = Modifier.fillMaxWidth().animateItem(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(FILTER_DIVIDER_SPACED_BY.dp)
-        ) {
-            HorizontalDivider(modifier = Modifier.weight(FILTER_DIVIDER_WEIGHT))
-
-            Text(
-                text = stringResource(textRes),
-                style = mTypography.bodyLarge.copy(fontWeight = FontWeight.W600),
-            )
-
-            HorizontalDivider(modifier = Modifier.weight(FILTER_DIVIDER_WEIGHT))
-        }
+            labelRes = textRes
+        )
     }
 }
 
@@ -290,12 +266,12 @@ private fun LazyGridItemScope.FilterItem(
     }
 }
 
+private val sortings = listOf(Sorting.RATING_DESC, Sorting.FRESH_AT_DESC)
+
 private fun LazyGridScope.sortingBy(
-    homeState: HomeState,
+    currentSorting: Sorting,
     onIntent: (HomeIntent) -> Unit
 ) {
-    val sortings = listOf(Sorting.RATING_DESC, Sorting.FRESH_AT_DESC)
-
     items(
         items = sortings,
         key = { it },
@@ -306,11 +282,9 @@ private fun LazyGridScope.sortingBy(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(SORTING_SPACED_BY.dp)
         ) {
-            val chosen = sort == homeState.request.sorting
-
             RadioButton(
-                selected = chosen,
-                onClick = { onIntent(HomeIntent.UpdateSorting(sort)) },
+                selected = sort == currentSorting,
+                onClick = { onIntent(HomeIntent.UpdateSorting(sort)) }
             )
 
             Text(
@@ -349,6 +323,20 @@ private fun LazyGridScope.releaseFinished(
     }
 }
 
+private fun LazyGridScope.centeredCircularIndicator() {
+    item(
+        key = GENRES_LOADING_INDICATOR_KEY,
+        span = { GridItemSpan(maxLineSpan) }
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            ContainedLoadingIndicator()
+        }
+    }
+}
+
 @Preview
 @Composable
 private fun FiltersBSPreview() {
@@ -361,7 +349,7 @@ private fun FiltersBSPreview() {
             )
 
             FiltersBS(
-                homeState = HomeState(genres = genres),
+                state = HomeState(genres = genres),
                 onIntent = {}
             )
         }

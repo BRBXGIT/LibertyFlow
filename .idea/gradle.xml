@@ -20,14 +20,12 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/anime-details" />
             <option value="$PROJECT_DIR$/feature/collections" />
-            <option value="$PROJECT_DIR$/feature/common" />
             <option value="$PROJECT_DIR$/feature/favorites" />
             <option value="$PROJECT_DIR$/feature/home" />
             <option value="$PROJECT_DIR$/feature/info" />
             <option value="$PROJECT_DIR$/feature/more" />
             <option value="$PROJECT_DIR$/feature/player" />
             <option value="$PROJECT_DIR$/feature/settings" />
-            <option value="$PROJECT_DIR$/feature/support" />
           </set>
         </option>
       </GradleProjectSettings>

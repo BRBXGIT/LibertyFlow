@@ -59,10 +59,10 @@ dependencies {
     implementation(project(":core:common"))
     // Feature modules
     implementation(project(":feature:home"))
-    implementation(project(":feature:common"))
     implementation(project(":feature:favorites"))
     implementation(project(":feature:collections"))
     implementation(project(":feature:anime-details"))
+    implementation(project(":feature:more"))
 
     // Core
     implementation(libs.androidx.core.ktx)

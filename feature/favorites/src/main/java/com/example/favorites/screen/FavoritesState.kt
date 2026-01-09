@@ -1,36 +1,28 @@
 package com.example.favorites.screen
 
 import androidx.compose.runtime.Immutable
+import com.example.common.ui_helpers.auth.AuthFormState
+import com.example.common.ui_helpers.loading_state.LoadingState
+import com.example.common.ui_helpers.search.SearchForm
 import com.example.data.models.auth.AuthState
 
 @Immutable
 data class FavoritesState(
     val authState: AuthState = AuthState.LoggedOut,
 
-    val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val loadingState: LoadingState = LoadingState(),
 
-    val isAuthBSVisible: Boolean = false,
-    val email: String = "",
-    val password: String = "",
-    val isPasswordOrEmailIncorrect: Boolean = false,
+    val authForm: AuthFormState = AuthFormState(),
 
-    val query: String = "",
-    val isSearching: Boolean = false
+    val searchForm: SearchForm = SearchForm()
 ) {
-    fun toggleAuthBS() = copy(isAuthBSVisible = !isAuthBSVisible)
+    fun withAuthState(state: AuthState) =
+        copy(authState = state)
 
-    fun toggleIsSearching() = copy(isSearching = !isSearching)
+    /* --- Auth input --- */
 
-    fun setLoading(value: Boolean) = copy(isLoading = value)
-
-    fun setError(value: Boolean) = copy(isError = value)
-
-    fun setAuthState(value: AuthState) = copy(authState = value)
-
-    fun updateQuery(query: String) = copy(query = query)
-
-    fun updateEmail(email: String) = copy(email = email)
-
-    fun updatePassword(password: String) = copy(password = password)
+    // Using `copy` on nested objects keeps the main `copy` clean
+    fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): FavoritesState {
+        return copy(authForm = transformer(authForm))
+    }
 }

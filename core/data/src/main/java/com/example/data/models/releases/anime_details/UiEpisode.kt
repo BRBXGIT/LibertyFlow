@@ -1,5 +1,8 @@
 package com.example.data.models.releases.anime_details
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class UiEpisode(
     val opening: UiOpening,
     val ending: UiEnding,

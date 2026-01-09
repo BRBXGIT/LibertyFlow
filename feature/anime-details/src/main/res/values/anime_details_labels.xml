@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_label">Loading</string>
+    <string name="error_section_label">Error</string>
+
+    <string name="favorites_loading_label">Loading…</string>
+    <string name="add_to_favorites_button_label">Add to favorites</string>
+    <string name="remove_from_favorites_button_label">Remove from favorites</string>
+    <string name="authorize_label">Authorize</string>
+
+    <string name="no_description_provided_label">No description provided</string>
+
+    <string name="torrents_label">Torrents</string>
+
+    <string name="to_episode_title_provided_label">No title provided</string>
+</resources>

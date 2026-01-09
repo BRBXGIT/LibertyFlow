@@ -22,9 +22,8 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.design_system.R
 import com.example.design_system.theme.mTypography
 
-private object ErrorSectionConstants {
-    val ErrorLabel = R.string.error_label
-}
+
+private val ErrorLabel = R.string.error_section_label
 
 @Composable
 fun ErrorSection() {
@@ -52,7 +51,7 @@ fun ErrorSection() {
 
             // Error label text
             Text(
-                text = stringResource(ErrorSectionConstants.ErrorLabel),
+                text = stringResource(ErrorLabel),
                 style = mTypography.bodyLarge.copy(lineBreak = LineBreak.Paragraph),
                 textAlign = TextAlign.Center
             )

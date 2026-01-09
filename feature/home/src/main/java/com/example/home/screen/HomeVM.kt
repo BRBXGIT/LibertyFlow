@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
-import com.example.common.ui_helpers.UiEffect
+import com.example.common.navigation.AnimeDetailsRoute
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
@@ -35,76 +36,102 @@ class HomeVM @Inject constructor(
     private val releasesRepo: ReleasesRepo,
     private val catalogRepo: CatalogRepo,
     private val genresRepo: GenresRepo,
-    @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
-): ViewModel() {
+    @param:Dispatcher(LibertyFlowDispatcher.IO)
+    private val dispatcherIo: CoroutineDispatcher,
+) : ViewModel() {
 
-    private val _homeState = MutableStateFlow(HomeState())
-    val homeState = _homeState.toLazily(HomeState())
+    private val _state = MutableStateFlow(HomeState())
+    val state = _state.toLazily(HomeState())
 
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    /**
-     * Emits request parameters whenever filters/search change.
-     */
-    private val requestParameters = _homeState
-        .map { it.request }
-        .distinctUntilChanged()
+    /* --- Intents --- */
 
-    /**
-     * Paged anime list, updates automatically on request changes.
-     */
-    val anime = requestParameters
-        .flatMapLatest { request ->
-            catalogRepo.getAnimeByQuery(UiCommonRequest(request))
-        }
-        .cachedIn(viewModelScope)
+    fun sendIntent(intent: HomeIntent) {
+        when (intent) {
 
-    private fun getRandomAnime() {
-        viewModelScope.launch(dispatcherIo) {
-            _homeState.update { it.setRandomAnimeLoading(true) }
+            /* --- UI toggles --- */
 
-            delay(2000) // Just cause i want to show animation :)
+            HomeIntent.ToggleSearching ->
+                _state.update { it.toggleSearching() }
 
-            releasesRepo.getRandomAnime()
-                .onSuccess { anime ->
-                    _homeState.update { it.copy(randomAnimeId = anime.id, isRandomAnimeLoading = false) }
+            HomeIntent.ToggleFiltersBottomSheet ->
+                _state.update { it.toggleFilters() }
+
+            /* --- Flags --- */
+
+            is HomeIntent.SetLoading ->
+                _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
+
+            is HomeIntent.SetError ->
+                _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
+
+            is HomeIntent.SetRandomAnimeLoading ->
+                _state.update { it.withRandomAnimeLoading(intent.value) }
+
+            /* --- Search --- */
+
+            is HomeIntent.UpdateQuery ->
+                _state.update {
+                    it.updateRequest { updateSearch(intent.query) }
                 }
-                .onError { _, messageRes ->
-                    _homeState.update { it.setRandomAnimeLoading(false) }
 
-                    sendEffect(
-                        effect = UiEffect.ShowSnackbar(
-                            messageRes = messageRes,
-                            actionLabel = "Retry",
-                            action = ::getRandomAnime
+            /* --- Filters --- */
+
+            is HomeIntent.AddGenre ->
+                _state.update {
+                    it.updateRequest { addGenre(intent.genre) }
+                }
+
+            is HomeIntent.RemoveGenre ->
+                _state.update {
+                    it.updateRequest { removeGenre(intent.genre) }
+                }
+
+            is HomeIntent.AddSeason ->
+                _state.update {
+                    it.updateRequest { addSeason(intent.season) }
+                }
+
+            is HomeIntent.RemoveSeason ->
+                _state.update {
+                    it.updateRequest { removeSeason(intent.season) }
+                }
+
+            is HomeIntent.UpdateFromYear ->
+                _state.update {
+                    it.updateRequest { updateYear(from = intent.year) }
+                }
+
+            is HomeIntent.UpdateToYear ->
+                _state.update {
+                    it.updateRequest { updateYear(to = intent.year) }
+                }
+
+            is HomeIntent.UpdateSorting ->
+                _state.update {
+                    it.updateRequest { updateSorting(intent.sorting) }
+                }
+
+            HomeIntent.ToggleIsOngoing ->
+                _state.update {
+                    val enabled = it.request.publishStatuses.isEmpty()
+                    it.updateRequest {
+                        toggleIsOngoing(
+                            if (enabled) listOf(PublishStatus.IS_ONGOING) else emptyList()
                         )
-                    )
+                    }
                 }
+
+            /* --- Data --- */
+
+            HomeIntent.GetRandomAnime -> getRandomAnime()
+            HomeIntent.GetGenres -> getGenres()
         }
     }
 
-    private fun getGenres() {
-        viewModelScope.launch(dispatcherIo) {
-            _homeState.update { it.setGenresLoading(true) }
-
-            genresRepo.getGenres()
-                .onSuccess { genres ->
-                    _homeState.update { it.copy(genres = genres, isGenresLoading = false) }
-                }
-                .onError { _, messageRes ->
-                    _homeState.update { it.setGenresLoading(false) }
-
-                    sendEffect(
-                        effect = UiEffect.ShowSnackbar(
-                            messageRes = messageRes,
-                            actionLabel = "Retry",
-                            action = ::getGenres
-                        )
-                    )
-                }
-        }
-    }
+    /* --- Side effects --- */
 
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
@@ -112,64 +139,65 @@ class HomeVM @Inject constructor(
         }
     }
 
-    fun sendIntent(intent: HomeIntent) {
-        when (intent) {
+    // Emits whenever request parameters change
+    private val requestFlow = _state
+        .map { it.request }
+        .distinctUntilChanged()
 
-            /* --- UI toggles --- */
-            HomeIntent.ToggleSearching ->
-                _homeState.update { it.toggleIsSearching() }
+    // Paged anime list driven by requestFlow
+    val anime = requestFlow
+        .flatMapLatest { request ->
+            catalogRepo.getAnimeByQuery(UiCommonRequest(request))
+        }
+        .cachedIn(viewModelScope)
 
-            HomeIntent.ToggleFiltersBottomSheet ->
-                _homeState.update { it.toggleFiltersBottomSheet() }
+    private fun getRandomAnime() {
+        viewModelScope.launch(dispatcherIo) {
+            _state.update { it.withRandomAnimeLoading(true) }
 
+            delay(2_000)
 
-            /* --- UI flags --- */
-            is HomeIntent.SetLoading ->
-                _homeState.update { it.setLoading(intent.value) }
-
-            is HomeIntent.SetError ->
-                _homeState.update { it.setError(intent.value) }
-
-            is HomeIntent.SetRandomAnimeLoading ->
-                _homeState.update { it.setRandomAnimeLoading(intent.value) }
-
-            /* --- Query change --- */
-            is HomeIntent.UpdateQuery ->
-                _homeState.update { it.updateQuery(intent.query) }
-
-            /* --- Filters --- */
-            is HomeIntent.AddGenre ->
-                _homeState.update { it.addGenre(intent.genre) }
-
-            is HomeIntent.RemoveGenre ->
-                _homeState.update { it.removeGenre(intent.genre) }
-
-            is HomeIntent.AddSeason ->
-                _homeState.update { it.addSeason(intent.season) }
-
-            is HomeIntent.RemoveSeason ->
-                _homeState.update { it.removeSeason(intent.season) }
-
-            is HomeIntent.UpdateFromYear ->
-                _homeState.update { it.updateFromYear(intent.year) }
-
-            is HomeIntent.UpdateToYear ->
-                _homeState.update { it.updateToYear(intent.year) }
-
-            is HomeIntent.UpdateSorting ->
-                _homeState.update { it.updateSorting(intent.sorting) }
-
-            is HomeIntent.ToggleIsOngoing -> {
-                if(_homeState.value.request.publishStatuses.isEmpty()) {
-                    _homeState.update { it.toggleIsOngoing(listOf(PublishStatus.IS_ONGOING)) }
-                } else {
-                    _homeState.update { it.toggleIsOngoing(emptyList()) }
+            releasesRepo.getRandomAnime()
+                .onSuccess { anime ->
+                    sendEffect(
+                        UiEffect.Navigate(
+                            AnimeDetailsRoute(anime.id)
+                        )
+                    )
                 }
-            }
+                .onError { _, messageRes ->
+                    sendEffect(
+                        UiEffect.ShowSnackbar(
+                            messageRes = messageRes,
+                            actionLabel = "Retry",
+                            action = ::getRandomAnime
+                        )
+                    )
+                }
 
-            /* --- Data operations --- */
-            HomeIntent.GetRandomAnime -> getRandomAnime()
-            HomeIntent.GetGenres -> getGenres()
+            _state.update { it.withRandomAnimeLoading(false) }
+        }
+    }
+
+    private fun getGenres() {
+        viewModelScope.launch(dispatcherIo) {
+            _state.update { it.withGenresLoading(true) }
+
+            genresRepo.getGenres()
+                .onSuccess { genres ->
+                    _state.update { it.updateGenres(genres) }
+                }
+                .onError { _, messageRes ->
+                    sendEffect(
+                        UiEffect.ShowSnackbar(
+                            messageRes = messageRes,
+                            actionLabel = "Retry",
+                            action = ::getGenres
+                        )
+                    )
+                }
+
+            _state.update { it.withGenresLoading(false) }
         }
     }
 }
