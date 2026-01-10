@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
-package com.example.player.player
+package com.example.player.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
@@ -25,9 +25,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.media3.exoplayer.ExoPlayer
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
+import com.example.player.player.Player
+import com.example.player.player.PlayerEffect
+import com.example.player.player.PlayerState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -39,7 +44,13 @@ private const val CENTER_DIVIDER = 2
 private const val ZERO_OFFSET = 0f
 
 @Composable
-fun PlayerContainer(navBarVisible: Boolean) {
+fun PlayerContainer(
+    navBarVisible: Boolean,
+    player: ExoPlayer,
+    playerState: PlayerState,
+    playerEffects: Flow<PlayerEffect>,
+    onPlayerEffect: (PlayerEffect) -> Unit
+) {
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
 
@@ -84,7 +95,7 @@ fun PlayerContainer(navBarVisible: Boolean) {
         val motionScheme = mMotionScheme
         Box(
             modifier = Modifier
-                .offset { IntOffset(offset.value.x.roundToInt(), offset.value.y.roundToInt()) }
+                .offset { IntOffset(x = offset.value.x.roundToInt(), y = offset.value.y.roundToInt()) }
                 .size(WIDTH.dp, HEIGHT.dp)
                 .clip(mShapes.small)
                 .background(Color.Black)
@@ -93,7 +104,7 @@ fun PlayerContainer(navBarVisible: Boolean) {
                         onDrag = { change, dragAmount ->
                             change.consume()
 
-                            // Use dynamic bottom limit instead of 0f..screenHeight
+                            // Use dynamic bottom limit
                             val limitY = screenHeightPx - playerHeightPx - bottomMarginPx
 
                             val newX = (offset.value.x + dragAmount.x)
@@ -123,16 +134,15 @@ fun PlayerContainer(navBarVisible: Boolean) {
 
                             scope.launch {
                                 offset.animateTo(
-                                    targetValue = Offset(targetX, targetY),
+                                    targetValue = Offset(x = targetX, y = targetY),
                                     animationSpec = motionScheme.slowSpatialSpec()
                                 )
                             }
                         }
                     )
-                },
-            contentAlignment = Alignment.Center
+                }
         ) {
-            Text("Player Placeholder", color = Color.White)
+            Player(player)
         }
     }
 }

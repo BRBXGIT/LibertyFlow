@@ -25,8 +25,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions { jvmTarget = "11" }
+
     buildFeatures { compose = true }
+
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-parameters")
+        }
+    }
 }
 
 dependencies {
@@ -34,7 +42,12 @@ dependencies {
     // Core modules
     implementation(project(":core:design-system"))
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
 
+    // Media 3
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
+    implementation(libs.androidx.media3.ui)
     // Material 3
     implementation(libs.androidx.material3.android)
     // Hilt

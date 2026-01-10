@@ -41,6 +41,7 @@ import com.example.data.models.releases.anime_details.UiEpisode
 import com.example.data.models.releases.anime_details.UiTorrent
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.dividers.dividerWithLabel
+import com.example.player.player.PlayerEffect
 
 // Vertical spacing between LazyColumn items
 private const val LC_ARRANGEMENT = 16
@@ -57,7 +58,8 @@ internal fun AnimeDetails(
     snackbarHostState: SnackbarHostState,
     onEffect: (UiEffect) -> Unit,
     onIntent: (AnimeDetailsIntent) -> Unit,
-    onRefreshEffect: (RefreshEffect) -> Unit
+    onRefreshEffect: (RefreshEffect) -> Unit,
+    onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     // Pinned scroll behavior for the top bar
     val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -129,7 +131,7 @@ internal fun AnimeDetails(
                 torrents(anime.torrents, onEffect)
 
                 // Episodes list
-                episodes(anime.episodes, state.watchedEps, onIntent)
+                episodes(anime.episodes, state.watchedEps, onIntent, onPlayerEffect)
             }
         }
     }
@@ -199,9 +201,10 @@ private fun LazyListScope.torrents(
 private fun LazyListScope.episodes(
     episodes: List<UiEpisode>,
     watchedEps: List<Int>,
-    onIntent: (AnimeDetailsIntent) -> Unit
+    onIntent: (AnimeDetailsIntent) -> Unit,
+    onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     item(key = EPISODES_KEY) {
-        Episodes(episodes, watchedEps, onIntent)
+        Episodes(episodes, watchedEps, onIntent, onPlayerEffect)
     }
 }

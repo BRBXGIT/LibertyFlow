@@ -33,9 +33,6 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:local"))
 
-    // Retrofit for hilt injection
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -48,6 +45,11 @@ dependencies {
     // Room for hilt injection
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    // Retrofit for hilt injection
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    // Media 3 for hilt injection
+    implementation(libs.androidx.media3.exoplayer)
 
     // === Testing ===
     // Unit tests

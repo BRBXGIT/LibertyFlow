@@ -65,6 +65,8 @@ dependencies {
     implementation(project(":feature:more"))
     implementation(project(":feature:player"))
 
+    // Media 3 only for arguments
+    implementation(libs.androidx.media3.exoplayer)
     // Core
     implementation(libs.androidx.core.ktx)
     // Activity

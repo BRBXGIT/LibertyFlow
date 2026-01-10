@@ -30,6 +30,7 @@ import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
+import com.example.player.player.PlayerEffect
 
 // Rounded corner size for the top of the episodes container
 private const val COLUMN_SHAPE = 16
@@ -46,7 +47,8 @@ private const val COLUMN_VERTICAL_PADDING = 16
 internal fun LazyItemScope.Episodes(
     episodes: List<UiEpisode>,
     watchedEps: List<Int>,
-    onIntent: (AnimeDetailsIntent) -> Unit
+    onIntent: (AnimeDetailsIntent) -> Unit,
+    onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     // TODO: Fix bug with cropped column if a few items
     Column(
@@ -62,7 +64,15 @@ internal fun LazyItemScope.Episodes(
     ) {
         // Episode list
         episodes.forEachIndexed { index, episode ->
-            Episode(index, episode, watchedEps, onIntent)
+            Episode(
+                index = index,
+                episode = episode,
+                watchedEps = watchedEps,
+                onClick = {
+                    onIntent(AnimeDetailsIntent.AddEpisodeToWatched(index))
+                    onPlayerEffect(PlayerEffect.SetUpPlayer(episodes, index))
+                },
+            )
         }
     }
 }
@@ -93,7 +103,7 @@ private fun Episode(
     index: Int,
     episode: UiEpisode,
     watchedEps: List<Int>,
-    onIntent: (AnimeDetailsIntent) -> Unit
+    onClick: () -> Unit
 ) {
     val alpha by animateFloatAsState(
         targetValue = if (index in watchedEps) WATCHED_ALPHA else UNWATCHED_ALPHA,
@@ -107,7 +117,7 @@ private fun Episode(
             .fillMaxWidth()
             .padding(horizontal = HORIZONTAL_PADDING.dp)
             .clip(mShapes.small)
-            .clickable { onIntent(AnimeDetailsIntent.AddEpisodeToWatched(index)) }
+            .clickable(onClick = onClick)
             .background(mColors.surfaceContainerHigh)
             .alpha(alpha)
     ) {

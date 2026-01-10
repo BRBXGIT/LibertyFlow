@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
@@ -27,19 +28,26 @@ import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home
 import com.example.home.screen.HomeVM
 import com.example.more.navigation.more
-import com.example.player.player.PlayerContainer
+import com.example.player.components.PlayerContainer
+import com.example.player.player.PlayerVM
 
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
 
     // Initialize vm's here to don't refetch values
+    // Screens vm's
     val homeVM = hiltViewModel<HomeVM>()
     val favoritesVM = hiltViewModel<FavoritesVM>()
     val collectionsVM = hiltViewModel<CollectionsVM>()
 
+    // Refresh vm
     val refreshVM = hiltViewModel<RefreshVM>()
 
+    // Player vm
+    val playerVM = hiltViewModel<PlayerVM>()
+
+    // Current nav destination
     val backStackEntry by navController.currentBackStackEntryAsState()
     val selectedRoute = backStackEntry?.currentNavBarRoute()
 
@@ -51,7 +59,7 @@ fun NavGraph() {
             home(homeVM, navController)
             favorites(favoritesVM, refreshVM, navController)
             collections(collectionsVM, refreshVM, navController)
-            animeDetails(refreshVM, navController)
+            animeDetails(refreshVM, playerVM, navController)
             more(navController)
         }
 
@@ -68,7 +76,14 @@ fun NavGraph() {
             }
         )
 
-        PlayerContainer(navBarVisible)
+        val playerState by playerVM.playerState.collectAsStateWithLifecycle()
+        PlayerContainer(
+            player = playerVM.player,
+            navBarVisible = navBarVisible,
+            playerState = playerState,
+            playerEffects = playerVM.playerEffects,
+            onPlayerEffect = playerVM::sendEffect
+        )
     }
 }
 

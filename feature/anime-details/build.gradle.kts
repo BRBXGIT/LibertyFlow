@@ -43,6 +43,8 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:design-system"))
     implementation(project(":core:common"))
+    // Feature modules
+    implementation(project(":feature:player"))
 
     // Compose animation graphics
     implementation(libs.androidx.animation.graphics)
