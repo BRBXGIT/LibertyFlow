@@ -26,4 +26,9 @@ data class PlayerState(
         val current: Long = 0L,
         val total: Long = 0L,
     )
+
+    // Sets
+    fun setPlayerState(value: PlayerState) = copy(playerState = value)
+
+    fun setEpisodeState(value: EpisodeState) = copy(episodeState = value)
 }

@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,17 +27,22 @@ class PlayerVM @Inject constructor(
     private val _playerEffects = Channel<PlayerEffect>(Channel.BUFFERED)
     val playerEffects = _playerEffects.receiveAsFlow()
 
+    // --- Intents ---
     fun sendIntent(intent: PlayerIntent) {
         // TODO: handle intent
     }
 
+    // --- Effects ---
     fun sendEffect(effect: PlayerEffect) {
         when(effect) {
             is PlayerEffect.SetUpPlayer -> setUpPlayer(effect.episodes, effect.startIndex)
         }
     }
 
+    // --- Player ---
     private fun setUpPlayer(episodes: List<UiEpisode>, startIndex: Int) {
+        _playerState.update { it.setPlayerState(PlayerState.PlayerState.Mini) }
+
         player.clearMediaItems()
 
         val quality = _playerState.value.videoQuality
@@ -46,13 +52,45 @@ class PlayerVM @Inject constructor(
         player.prepare()
         player.playWhenReady = true
     }
+
+    private fun skipEpisode(forward: Boolean) {
+        when(forward) {
+            true -> {
+                if (player.hasNextMediaItem()) player.seekToNextMediaItem()
+            }
+            false -> {
+                if (player.hasPreviousMediaItem()) player.seekToPreviousMediaItem()
+            }
+        }
+    }
+
+    private fun playPauseEpisode() {
+        when(player.isPlaying) {
+            true -> {
+                player.pause()
+                _playerState.update { it.setEpisodeState(PlayerState.EpisodeState.Paused) }
+            }
+            false -> {
+                player.play()
+                _playerState.update { it.setEpisodeState(PlayerState.EpisodeState.Playing) }
+            }
+        }
+    }
+
+    private fun seekEpisodeForFiveSeconds(forward: Boolean) =
+        when(forward) {
+            true -> player.seekForward()
+            false -> player.seekBack()
+        }
+
+    private fun seekEpisode(position: Long) = player.seekTo(position)
 }
 
 private fun UiEpisode.toMediaItem(quality: PlayerState.VideoQuality) =
     MediaItem.fromUri(
         when(quality) {
             PlayerState.VideoQuality.SD -> hls480
-            PlayerState.VideoQuality.HD -> hls720
-            PlayerState.VideoQuality.FHD -> hls1080 ?: hls720
+            PlayerState.VideoQuality.HD -> hls720 ?: hls480
+            PlayerState.VideoQuality.FHD -> hls1080 ?: hls720 ?: hls480
         }
     )

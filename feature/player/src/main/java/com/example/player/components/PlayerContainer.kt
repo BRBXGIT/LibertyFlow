@@ -2,27 +2,36 @@
 
 package com.example.player.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
@@ -42,6 +51,9 @@ private const val MARGIN = 16
 private const val CENTER_DIVIDER = 2
 
 private const val ZERO_OFFSET = 0f
+private const val VISIBLE = 1f
+private const val INVISIBLE = 0f
+private const val ALPHA_ANIMATION_LABEL = "Animate player visible"
 
 @Composable
 fun PlayerContainer(
@@ -63,6 +75,10 @@ fun PlayerContainer(
     val bottomMarginPx = with(density) {
         MARGIN.dp.toPx() + if (navBarVisible) navBarSize.toPx() else ZERO_OFFSET
     }
+
+    // Calculate actual top margin
+    val statusBarHeightPx = with(density) { calculateStatusBarSize().toPx() }
+    val topLimitPx = statusBarHeightPx + marginPx
 
     BoxWithConstraints {
         val screenWidthPx = constraints.maxWidth.toFloat()
@@ -93,8 +109,14 @@ fun PlayerContainer(
         }
 
         val motionScheme = mMotionScheme
+        val animatedPlayerAlpha by animateFloatAsState(
+            targetValue = if (playerState.playerState != PlayerState.PlayerState.Closed) VISIBLE else INVISIBLE,
+            animationSpec = motionScheme.slowEffectsSpec(),
+            label = ALPHA_ANIMATION_LABEL
+        )
         Box(
             modifier = Modifier
+                .alpha(animatedPlayerAlpha)
                 .offset { IntOffset(x = offset.value.x.roundToInt(), y = offset.value.y.roundToInt()) }
                 .size(WIDTH.dp, HEIGHT.dp)
                 .clip(mShapes.small)
@@ -104,37 +126,31 @@ fun PlayerContainer(
                         onDrag = { change, dragAmount ->
                             change.consume()
 
-                            // Use dynamic bottom limit
-                            val limitY = screenHeightPx - playerHeightPx - bottomMarginPx
+                            val limitYMax = screenHeightPx - playerHeightPx - bottomMarginPx
 
                             val newX = (offset.value.x + dragAmount.x)
                                 .coerceIn(marginPx, screenWidthPx - playerWidthPx - marginPx)
                             val newY = (offset.value.y + dragAmount.y)
-                                .coerceIn(marginPx, limitY)
+                                .coerceIn(topLimitPx, limitYMax)
 
-                            scope.launch {
-                                offset.snapTo(Offset(newX, newY))
-                            }
+                            scope.launch { offset.snapTo(Offset(newX, newY)) }
                         },
                         onDragEnd = {
                             val centerX = offset.value.x + playerWidthPx / CENTER_DIVIDER
                             val centerY = offset.value.y + playerHeightPx / CENTER_DIVIDER
 
-                            val targetX = if (centerX < screenWidthPx / CENTER_DIVIDER) {
-                                marginPx
-                            } else {
-                                screenWidthPx - playerWidthPx - marginPx
-                            }
+                            val targetX = if (centerX < screenWidthPx / CENTER_DIVIDER) marginPx
+                            else screenWidthPx - playerWidthPx - marginPx
 
                             val targetY = if (centerY < screenHeightPx / CENTER_DIVIDER) {
-                                marginPx
+                                topLimitPx
                             } else {
                                 screenHeightPx - playerHeightPx - bottomMarginPx
                             }
 
                             scope.launch {
                                 offset.animateTo(
-                                    targetValue = Offset(x = targetX, y = targetY),
+                                    targetValue = Offset(targetX, targetY),
                                     animationSpec = motionScheme.slowSpatialSpec()
                                 )
                             }
@@ -145,4 +161,9 @@ fun PlayerContainer(
             Player(player)
         }
     }
+}
+
+@Composable
+private fun calculateStatusBarSize(): Dp {
+    return WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 }

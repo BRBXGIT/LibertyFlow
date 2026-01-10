@@ -8,6 +8,6 @@ data class UiEpisode(
     val ending: UiEnding,
     val hls1080: String?,
     val hls480: String,
-    val hls720: String,
+    val hls720: String?,
     val name: String?,
 )

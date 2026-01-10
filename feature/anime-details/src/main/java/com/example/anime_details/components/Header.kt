@@ -122,7 +122,8 @@ internal fun LazyItemScope.Header(
                 .matchParentSize()
                 .hazeSource(hazeState),
             imagePath = headerData.posterPath,
-            showError = false
+            showError = false,
+            showShimmer = false
         )
 
         // Blur + gradient overlay
