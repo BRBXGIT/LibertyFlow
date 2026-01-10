@@ -1,6 +1,7 @@
 package com.example.player.player
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.common.dispatchers.Dispatcher
@@ -9,10 +10,13 @@ import com.example.common.vm_helpers.toLazily
 import com.example.data.models.releases.anime_details.UiEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +39,14 @@ class PlayerVM @Inject constructor(
     // --- Effects ---
     fun sendEffect(effect: PlayerEffect) {
         when(effect) {
+            // --- Player ---
             is PlayerEffect.SetUpPlayer -> setUpPlayer(effect.episodes, effect.startIndex)
+            is PlayerEffect.SeekForFiveSeconds -> seekEpisodeForFiveSeconds(effect.forward)
+            PlayerEffect.TogglePlayPause -> playPauseEpisode()
+            PlayerEffect.StopPlayer -> stopPlayer()
+
+            // --- Controller ---
+            PlayerEffect.ToggleControllerVisible -> toggleControllerVisible()
         }
     }
 
@@ -51,6 +62,13 @@ class PlayerVM @Inject constructor(
 
         player.prepare()
         player.playWhenReady = true
+    }
+
+    private fun stopPlayer() {
+        player.clearMediaItems()
+        player.stop()
+
+        _playerState.update { it.setPlayerState(PlayerState.PlayerState.Closed) }
     }
 
     private fun skipEpisode(forward: Boolean) {
@@ -84,6 +102,22 @@ class PlayerVM @Inject constructor(
         }
 
     private fun seekEpisode(position: Long) = player.seekTo(position)
+
+    // --- Controller ---
+    private var controllerJob: Job? = null
+    private fun toggleControllerVisible() {
+        controllerJob?.cancel()
+
+        if (_playerState.value.isControllerVisible) {
+            _playerState.update { it.setControllerVisible(false) }
+        } else {
+            controllerJob = viewModelScope.launch {
+                _playerState.update { it.setControllerVisible(true) }
+                delay(4000)
+                _playerState.update { it.setControllerVisible(false) }
+            }
+        }
+    }
 }
 
 private fun UiEpisode.toMediaItem(quality: PlayerState.VideoQuality) =

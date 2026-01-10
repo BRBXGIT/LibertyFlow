@@ -13,7 +13,7 @@ data class PlayerState(
     // Episode states
     val episodeState: EpisodeState = EpisodeState.Loading,
     val episodeTime: EpisodeTime = EpisodeTime(),
-    val isControlsVisible: Boolean = false,
+    val isControllerVisible: Boolean = false,
 ) {
     enum class EpisodeState { Loading, Playing, Paused }
 
@@ -31,4 +31,6 @@ data class PlayerState(
     fun setPlayerState(value: PlayerState) = copy(playerState = value)
 
     fun setEpisodeState(value: EpisodeState) = copy(episodeState = value)
+
+    fun setControllerVisible(value: Boolean) = copy(isControllerVisible = value)
 }

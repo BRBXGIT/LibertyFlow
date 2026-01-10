@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    // Compose animation graphics
+    implementation(libs.androidx.animation.graphics)
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime

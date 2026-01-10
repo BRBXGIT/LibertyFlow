@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.zIndex
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.compose.PlayerSurface
 import androidx.media3.ui.compose.SURFACE_TYPE_TEXTURE_VIEW
@@ -15,6 +16,7 @@ internal fun BoxScope.Player(player: ExoPlayer) {
         player = player,
         surfaceType = SURFACE_TYPE_TEXTURE_VIEW,
         modifier = Modifier
+            .zIndex(0f)
             .fillMaxSize()
             .align(Alignment.Center),
     )

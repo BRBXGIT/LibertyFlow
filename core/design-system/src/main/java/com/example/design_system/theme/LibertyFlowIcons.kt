@@ -10,6 +10,7 @@ object LibertyFlowIcons {
     val BookAnimated = R.drawable.ic_book_animated
     val DotsAnimated = R.drawable.ic_dots_animated
     val EyeAnimated = R.drawable.ic_eye_animated
+    val PlayPauseAnimated = R.drawable.ic_play_pause_animated
 
     // Outlined
     val Magnifier = R.drawable.ic_magnifier
@@ -26,6 +27,8 @@ object LibertyFlowIcons {
     val Info = R.drawable.ic_info
     val Settings = R.drawable.ic_settings
     val List = R.drawable.ic_list
+    val Rewind = R.drawable.ic_rewind
+    val RewindBack = R.drawable.ic_rewind_back
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled
