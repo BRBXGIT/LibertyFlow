@@ -5,12 +5,10 @@ package com.example.player.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -22,17 +20,14 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
@@ -52,10 +47,12 @@ private const val MARGIN = 16
 private const val CENTER_DIVIDER = 2
 
 private const val ZERO_OFFSET = 0f
-private const val VISIBLE = 1f
-private const val INVISIBLE = 0f
-private const val ALPHA_ANIMATION_LABEL = "Animate player visible"
 
+
+/**
+ * A floating player container that supports dragging and snapping to screen corners.
+ * Adjusts its position dynamically based on Navigation Bar visibility.
+ */
 @Composable
 fun PlayerContainer(
     navBarVisible: Boolean,
@@ -64,109 +61,116 @@ fun PlayerContainer(
     playerEffects: Flow<PlayerEffect>,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
-    val density = LocalDensity.current
-    val scope = rememberCoroutineScope()
+    AnimatedVisibility(
+        visible = playerState.playerState != PlayerState.PlayerState.Closed,
+        enter = fadeIn(tween(300)),
+        exit = fadeOut(tween(300))
+    ) {
+        val density = LocalDensity.current
+        val scope = rememberCoroutineScope()
 
-    val playerWidthPx = with(density) { WIDTH.dp.toPx() }
-    val playerHeightPx = with(density) { HEIGHT.dp.toPx() }
-    val marginPx = with(density) { MARGIN.dp.toPx() }
+        // Convert DP constants to pixels for precise coordinate calculations
+        val playerWidthPx = with(density) { WIDTH.dp.toPx() }
+        val playerHeightPx = with(density) { HEIGHT.dp.toPx() }
+        val marginPx = with(density) { MARGIN.dp.toPx() }
 
-    // Calculate actual bottom margin including Nav Bar
-    val navBarSize = calculateNavBarSize()
-    val bottomMarginPx = with(density) {
-        MARGIN.dp.toPx() + if (navBarVisible) navBarSize.toPx() else ZERO_OFFSET
-    }
-
-    // Calculate actual top margin
-    val statusBarHeightPx = with(density) { calculateStatusBarSize().toPx() }
-    val topLimitPx = statusBarHeightPx + marginPx
-
-    BoxWithConstraints {
-        val screenWidthPx = constraints.maxWidth.toFloat()
-        val screenHeightPx = constraints.maxHeight.toFloat()
-
-        // 1. Initial position (only set once)
-        val offset = remember {
-            Animatable(
-                initialValue = Offset(
-                    x = screenWidthPx - playerWidthPx - marginPx,
-                    y = screenHeightPx - playerHeightPx - bottomMarginPx
-                ),
-                typeConverter = Offset.VectorConverter
-            )
+        // Dynamic calculation of available screen space considering system bars
+        val navBarSize = calculateNavBarSize()
+        val bottomMarginPx = with(density) {
+            MARGIN.dp.toPx() + if (navBarVisible) navBarSize.toPx() else ZERO_OFFSET
         }
+        val statusBarHeightPx = with(density) { calculateStatusBarSize().toPx() }
+        val topLimitPx = statusBarHeightPx + marginPx
 
-        // 2. React to Navigation Bar visibility changes
-        // This will smoothly move the player up/down when navBar appears
-        LaunchedEffect(navBarVisible) {
-            val currentX = offset.value.x
-            // Check if player is currently snapped to the bottom
-            val isAtBottom = offset.value.y > (screenHeightPx / CENTER_DIVIDER)
+        BoxWithConstraints {
+            val screenWidthPx = constraints.maxWidth.toFloat()
+            val screenHeightPx = constraints.maxHeight.toFloat()
 
-            if (isAtBottom) {
-                val targetY = screenHeightPx - playerHeightPx - bottomMarginPx
-                offset.animateTo(Offset(currentX, targetY))
+            // Persistent state for the player's position
+            val offset = remember {
+                Animatable(
+                    initialValue = Offset(
+                        x = screenWidthPx - playerWidthPx - marginPx,
+                        y = screenHeightPx - playerHeightPx - bottomMarginPx
+                    ),
+                    typeConverter = Offset.VectorConverter
+                )
+            }
+
+            // Adjust vertical position when Navigation Bar appears/disappears
+            LaunchedEffect(navBarVisible) {
+                val isAtBottomHalf = offset.value.y > (screenHeightPx / CENTER_DIVIDER)
+                if (isAtBottomHalf) {
+                    val targetY = screenHeightPx - playerHeightPx - bottomMarginPx
+                    offset.animateTo(Offset(offset.value.x, targetY))
+                }
+            }
+
+            val motionScheme = mMotionScheme
+            Box(
+                modifier = Modifier
+                    // Use lambda-based offset to avoid frequent recompositions during drag
+                    .offset {
+                        IntOffset(
+                            offset.value.x.roundToInt(),
+                            offset.value.y.roundToInt()
+                        )
+                    }
+                    .size(WIDTH.dp, HEIGHT.dp)
+                    .clip(mShapes.small)
+                    .background(Color.Black)
+                    .pointerInput(navBarVisible) {
+                        detectDragGestures(
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+
+                                // Define drag boundaries
+                                val limitYMax = screenHeightPx - playerHeightPx - bottomMarginPx
+                                val newX = (offset.value.x + dragAmount.x)
+                                    .coerceIn(marginPx, screenWidthPx - playerWidthPx - marginPx)
+                                val newY = (offset.value.y + dragAmount.y)
+                                    .coerceIn(topLimitPx, limitYMax)
+
+                                scope.launch { offset.snapTo(Offset(newX, newY)) }
+                            },
+                            onDragEnd = {
+                                // Snap logic: find the nearest horizontal and vertical edge
+                                val centerX = offset.value.x + playerWidthPx / CENTER_DIVIDER
+                                val centerY = offset.value.y + playerHeightPx / CENTER_DIVIDER
+
+                                val targetX = if (centerX < screenWidthPx / CENTER_DIVIDER) {
+                                    marginPx
+                                } else {
+                                    screenWidthPx - playerWidthPx - marginPx
+                                }
+
+                                val targetY = if (centerY < screenHeightPx / CENTER_DIVIDER) {
+                                    topLimitPx
+                                } else {
+                                    screenHeightPx - playerHeightPx - bottomMarginPx
+                                }
+
+                                scope.launch {
+                                    offset.animateTo(
+                                        targetValue = Offset(targetX, targetY),
+                                        animationSpec = motionScheme.slowSpatialSpec()
+                                    )
+                                }
+                            }
+                        )
+                    }
+            ) {
+                // Internal UI layers
+                MiniPlayerController(playerState, onPlayerEffect)
+                Player(player)
             }
         }
-
-        val motionScheme = mMotionScheme
-        val animatedPlayerAlpha by animateFloatAsState(
-            targetValue = if (playerState.playerState != PlayerState.PlayerState.Closed) VISIBLE else INVISIBLE,
-            animationSpec = motionScheme.slowEffectsSpec(),
-            label = ALPHA_ANIMATION_LABEL
-        )
-        Box(
-            modifier = Modifier
-                .alpha(animatedPlayerAlpha)
-                .offset { IntOffset(x = offset.value.x.roundToInt(), y = offset.value.y.roundToInt()) }
-                .size(WIDTH.dp, HEIGHT.dp)
-                .clip(mShapes.small)
-                .background(Color.Black)
-                .pointerInput(navBarVisible) { // Re-bind input when navBar changes
-                    detectDragGestures(
-                        onDrag = { change, dragAmount ->
-                            change.consume()
-
-                            val limitYMax = screenHeightPx - playerHeightPx - bottomMarginPx
-
-                            val newX = (offset.value.x + dragAmount.x)
-                                .coerceIn(marginPx, screenWidthPx - playerWidthPx - marginPx)
-                            val newY = (offset.value.y + dragAmount.y)
-                                .coerceIn(topLimitPx, limitYMax)
-
-                            scope.launch { offset.snapTo(Offset(newX, newY)) }
-                        },
-                        onDragEnd = {
-                            val centerX = offset.value.x + playerWidthPx / CENTER_DIVIDER
-                            val centerY = offset.value.y + playerHeightPx / CENTER_DIVIDER
-
-                            val targetX = if (centerX < screenWidthPx / CENTER_DIVIDER) marginPx
-                            else screenWidthPx - playerWidthPx - marginPx
-
-                            val targetY = if (centerY < screenHeightPx / CENTER_DIVIDER) {
-                                topLimitPx
-                            } else {
-                                screenHeightPx - playerHeightPx - bottomMarginPx
-                            }
-
-                            scope.launch {
-                                offset.animateTo(
-                                    targetValue = Offset(targetX, targetY),
-                                    animationSpec = motionScheme.slowSpatialSpec()
-                                )
-                            }
-                        }
-                    )
-                }
-        ) {
-            MiniPlayerController(playerState, onPlayerEffect)
-
-            Player(player)
-        }
     }
 }
 
+/**
+ * Utility to retrieve current status bar height for boundary calculations.
+ */
 @Composable
-private fun calculateStatusBarSize(): Dp {
-    return WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-}
+private fun calculateStatusBarSize() =
+    WindowInsets.statusBars.asPaddingValues().calculateTopPadding()

@@ -29,6 +29,7 @@ object LibertyFlowIcons {
     val List = R.drawable.ic_list
     val Rewind = R.drawable.ic_rewind
     val RewindBack = R.drawable.ic_rewind_back
+    val FullScreen = R.drawable.ic_full_screen
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled
