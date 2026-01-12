@@ -47,6 +47,9 @@ class PlayerVM @Inject constructor(
 
             // --- Controller ---
             PlayerEffect.ToggleControllerVisible -> toggleControllerVisible()
+
+            // --- Ui ---
+            PlayerEffect.ToggleFullScreen -> toggleFullScreen()
         }
     }
 
@@ -116,6 +119,16 @@ class PlayerVM @Inject constructor(
                 delay(4000)
                 _playerState.update { it.setControllerVisible(false) }
             }
+        }
+    }
+
+    // --- Ui ---
+    // В PlayerVM
+    fun toggleFullScreen() {
+        _playerState.update {
+            val newState = if (it.playerState == PlayerState.PlayerState.Full)
+                PlayerState.PlayerState.Mini else PlayerState.PlayerState.Full
+            it.setPlayerState(newState)
         }
     }
 }

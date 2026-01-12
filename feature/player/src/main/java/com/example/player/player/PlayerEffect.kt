@@ -11,4 +11,7 @@ sealed interface PlayerEffect {
 
     // --- Controller ---
     data object ToggleControllerVisible: PlayerEffect
+
+    // --- Ui ---
+    data object ToggleFullScreen : PlayerEffect
 }

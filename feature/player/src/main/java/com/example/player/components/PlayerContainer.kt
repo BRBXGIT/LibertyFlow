@@ -1,8 +1,11 @@
-@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalSharedTransitionApi::class)
 
 package com.example.player.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.tween
@@ -59,54 +62,52 @@ fun PlayerContainer(
     player: ExoPlayer,
     playerState: PlayerState,
     playerEffects: Flow<PlayerEffect>,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
-    AnimatedVisibility(
-        visible = playerState.playerState != PlayerState.PlayerState.Closed,
-        enter = fadeIn(tween(300)),
-        exit = fadeOut(tween(300))
-    ) {
-        val density = LocalDensity.current
-        val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
+    val scope = rememberCoroutineScope()
 
-        // Convert DP constants to pixels for precise coordinate calculations
-        val playerWidthPx = with(density) { WIDTH.dp.toPx() }
-        val playerHeightPx = with(density) { HEIGHT.dp.toPx() }
-        val marginPx = with(density) { MARGIN.dp.toPx() }
+    // Convert DP constants to pixels for precise coordinate calculations
+    val playerWidthPx = with(density) { WIDTH.dp.toPx() }
+    val playerHeightPx = with(density) { HEIGHT.dp.toPx() }
+    val marginPx = with(density) { MARGIN.dp.toPx() }
 
-        // Dynamic calculation of available screen space considering system bars
-        val navBarSize = calculateNavBarSize()
-        val bottomMarginPx = with(density) {
-            MARGIN.dp.toPx() + if (navBarVisible) navBarSize.toPx() else ZERO_OFFSET
+    // Dynamic calculation of available screen space considering system bars
+    val navBarSize = calculateNavBarSize()
+    val bottomMarginPx = with(density) {
+        MARGIN.dp.toPx() + if (navBarVisible) navBarSize.toPx() else ZERO_OFFSET
+    }
+    val statusBarHeightPx = with(density) { calculateStatusBarSize().toPx() }
+    val topLimitPx = statusBarHeightPx + marginPx
+
+    BoxWithConstraints {
+        val screenWidthPx = constraints.maxWidth.toFloat()
+        val screenHeightPx = constraints.maxHeight.toFloat()
+
+        // Persistent state for the player's position
+        val offset = remember {
+            Animatable(
+                initialValue = Offset(
+                    x = screenWidthPx - playerWidthPx - marginPx,
+                    y = screenHeightPx - playerHeightPx - bottomMarginPx
+                ),
+                typeConverter = Offset.VectorConverter
+            )
         }
-        val statusBarHeightPx = with(density) { calculateStatusBarSize().toPx() }
-        val topLimitPx = statusBarHeightPx + marginPx
 
-        BoxWithConstraints {
-            val screenWidthPx = constraints.maxWidth.toFloat()
-            val screenHeightPx = constraints.maxHeight.toFloat()
-
-            // Persistent state for the player's position
-            val offset = remember {
-                Animatable(
-                    initialValue = Offset(
-                        x = screenWidthPx - playerWidthPx - marginPx,
-                        y = screenHeightPx - playerHeightPx - bottomMarginPx
-                    ),
-                    typeConverter = Offset.VectorConverter
-                )
+        // Adjust vertical position when Navigation Bar appears/disappears
+        LaunchedEffect(navBarVisible) {
+            val isAtBottomHalf = offset.value.y > (screenHeightPx / CENTER_DIVIDER)
+            if (isAtBottomHalf) {
+                val targetY = screenHeightPx - playerHeightPx - bottomMarginPx
+                offset.animateTo(Offset(offset.value.x, targetY))
             }
+        }
 
-            // Adjust vertical position when Navigation Bar appears/disappears
-            LaunchedEffect(navBarVisible) {
-                val isAtBottomHalf = offset.value.y > (screenHeightPx / CENTER_DIVIDER)
-                if (isAtBottomHalf) {
-                    val targetY = screenHeightPx - playerHeightPx - bottomMarginPx
-                    offset.animateTo(Offset(offset.value.x, targetY))
-                }
-            }
-
-            val motionScheme = mMotionScheme
+        val motionScheme = mMotionScheme
+        with(sharedTransitionScope) {
             Box(
                 modifier = Modifier
                     // Use lambda-based offset to avoid frequent recompositions during drag
@@ -116,6 +117,10 @@ fun PlayerContainer(
                             offset.value.y.roundToInt()
                         )
                     }
+                    .sharedElement(
+                        rememberSharedContentState(key = "player_video"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
                     .size(WIDTH.dp, HEIGHT.dp)
                     .clip(mShapes.small)
                     .background(Color.Black)

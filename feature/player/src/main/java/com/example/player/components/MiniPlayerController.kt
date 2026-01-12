@@ -83,7 +83,7 @@ internal fun BoxScope.MiniPlayerController(
     ) {
         ControllerButton(
             icon = LibertyFlowIcons.FullScreen,
-            onClick = { /* TODO: Handle click */ },
+            onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) },
             visible = visible,
             modifier = Modifier.align(Alignment.TopStart)
         )
