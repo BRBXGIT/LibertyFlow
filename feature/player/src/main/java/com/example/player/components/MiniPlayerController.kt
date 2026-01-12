@@ -2,8 +2,6 @@
 
 package com.example.player.components
 
-import android.app.Activity
-import android.content.pm.ActivityInfo
 import android.view.Window
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.graphics.res.animatedVectorResource
@@ -25,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -89,15 +85,11 @@ internal fun BoxScope.MiniPlayerController(
             )
             .padding(CONTROLLER_PADDING.dp)
     ) {
-        val window = (LocalView.current.context as Activity).window
         ControllerButton(
             icon = LibertyFlowIcons.FullScreen,
-            onClick = {
-                onPlayerEffect(PlayerEffect.ToggleFullScreen)
-                hideSystemBars(window)
-            },
             visible = visible,
-            modifier = Modifier.align(Alignment.TopStart)
+            modifier = Modifier.align(Alignment.TopStart),
+            onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) }
         )
 
         // Top-right exit/stop button
@@ -174,13 +166,4 @@ private fun ControllerButton(
             tint = mColors.onBackground
         )
     }
-}
-
-private fun hideSystemBars(window: Window) {
-    val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
-
-    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-
-    windowInsetsController.systemBarsBehavior =
-        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 }

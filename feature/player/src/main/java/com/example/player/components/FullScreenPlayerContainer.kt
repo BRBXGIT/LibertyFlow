@@ -2,7 +2,6 @@
 
 package com.example.player.components
 
-import android.app.Activity
 import android.view.Window
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -14,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.exoplayer.ExoPlayer
@@ -30,10 +29,8 @@ fun FullScreenPlayerContainer(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
-    val window = (LocalView.current.context as Activity).window
     BackHandler {
         onPlayerEffect(PlayerEffect.ToggleFullScreen)
-        showSystemBars(window)
     }
 
     with(sharedTransitionScope) {
@@ -41,21 +38,12 @@ fun FullScreenPlayerContainer(
             modifier = Modifier
                 .fillMaxSize()
                 .sharedElement(
-                    rememberSharedContentState(key = "player_video"),
-                    animatedVisibilityScope = animatedVisibilityScope
+                    sharedContentState = rememberSharedContentState(key = PLAYER_SHARED_ELEMENT_KEY),
+                    animatedVisibilityScope = animatedVisibilityScope,
                 )
                 .background(Color.Black)
         ) {
-            Player(player)
+            Player(player = player, isLandscape = true)
         }
     }
-}
-
-private fun showSystemBars(window: Window) {
-    val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
-
-    windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
-
-    windowInsetsController.systemBarsBehavior =
-        WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -49,8 +50,6 @@ private const val MARGIN = 16
 private const val CENTER_DIVIDER = 2
 private const val ZERO = 0
 
-private const val SHARED_ELEMENT_KEY = "MiniPlayer"
-
 @Composable
 fun MiniPlayerContainer(
     navBarVisible: Boolean,
@@ -70,10 +69,7 @@ fun MiniPlayerContainer(
 
     with(sharedTransitionScope) {
         BoxWithConstraints(
-            modifier = Modifier.sharedElement(
-                sharedContentState = rememberSharedContentState(key = SHARED_ELEMENT_KEY),
-                animatedVisibilityScope = animatedVisibilityScope
-            )
+            modifier = Modifier.fillMaxSize()
         ) {
             val playerStateHolder = rememberMiniPlayerState(
                 screenWidth = constraints.toPx(maxWidth),
@@ -88,6 +84,10 @@ fun MiniPlayerContainer(
             Box(
                 modifier = Modifier
                     .offset { playerStateHolder.offset.value.toIntOffset() }
+                    .sharedElement(
+                        sharedContentState = rememberSharedContentState(key = PLAYER_SHARED_ELEMENT_KEY),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                    )
                     .size(WIDTH.dp, HEIGHT.dp)
                     .clip(mShapes.small)
                     .background(Color.Black)
@@ -102,7 +102,7 @@ fun MiniPlayerContainer(
                     }
             ) {
                 MiniPlayerController(playerState, onPlayerEffect)
-                Player(player)
+                Player(player = player, isLandscape = false)
             }
         }
     }

@@ -18,6 +18,8 @@ private const val ANIMATION_DURATION = 500
 
 private const val ANIMATED_CONTENT_LABEL = "PlayerTransition"
 
+internal const val PLAYER_SHARED_ELEMENT_KEY = "player_shared_element_key"
+
 @Composable
 fun SharedTransitionScope.PlayerContainer(
     playerState: PlayerState,
@@ -25,6 +27,7 @@ fun SharedTransitionScope.PlayerContainer(
     navBarVisible: Boolean,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
+    // TODO: maybe need to delete shared transition
     AnimatedContent(
         targetState = playerState.playerState,
         transitionSpec = {
