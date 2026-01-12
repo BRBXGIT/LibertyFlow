@@ -2,13 +2,8 @@
 
 package com.example.libertyflow.navigation
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -37,9 +32,7 @@ import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home
 import com.example.home.screen.HomeVM
 import com.example.more.navigation.more
-import com.example.player.components.FullScreenPlayer
 import com.example.player.components.PlayerContainer
-import com.example.player.player.PlayerState
 import com.example.player.player.PlayerVM
 
 @Composable
@@ -89,39 +82,12 @@ fun NavGraph() {
             )
 
             val playerState by playerVM.playerState.collectAsStateWithLifecycle()
-            AnimatedContent(
-                targetState = playerState.playerState,
-                transitionSpec = {
-                    fadeIn(tween(500)) togetherWith fadeOut(tween(500))
-                },
-                label = "PlayerTransition"
-            ) { targetState ->
-                when (targetState) {
-                    PlayerState.PlayerState.Full -> {
-                        FullScreenPlayer(
-                            player = playerVM.player,
-                            playerState = playerState,
-                            onPlayerEffect = playerVM::sendEffect,
-                            sharedTransitionScope = this@SharedTransitionLayout,
-                            animatedVisibilityScope = this@AnimatedContent
-                        )
-                    }
-
-                    PlayerState.PlayerState.Mini -> {
-                        PlayerContainer(
-                            player = playerVM.player,
-                            navBarVisible = navBarVisible,
-                            playerState = playerState,
-                            playerEffects = playerVM.playerEffects,
-                            onPlayerEffect = playerVM::sendEffect,
-                            sharedTransitionScope = this@SharedTransitionLayout,
-                            animatedVisibilityScope = this@AnimatedContent
-                        )
-                    }
-
-                    PlayerState.PlayerState.Closed -> {}
-                }
-            }
+            PlayerContainer(
+                playerState = playerState,
+                player = playerVM.player,
+                navBarVisible = navBarVisible,
+                onPlayerEffect = playerVM::sendEffect
+            )
         }
     }
 }

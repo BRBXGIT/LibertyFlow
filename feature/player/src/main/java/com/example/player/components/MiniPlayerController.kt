@@ -2,6 +2,8 @@
 
 package com.example.player.components
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
@@ -22,12 +24,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -81,9 +85,14 @@ internal fun BoxScope.MiniPlayerController(
             )
             .padding(CONTROLLER_PADDING.dp)
     ) {
+        val activity = LocalContext.current as Activity
+
         ControllerButton(
             icon = LibertyFlowIcons.FullScreen,
-            onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) },
+            onClick = {
+                onPlayerEffect(PlayerEffect.ToggleFullScreen)
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            },
             visible = visible,
             modifier = Modifier.align(Alignment.TopStart)
         )

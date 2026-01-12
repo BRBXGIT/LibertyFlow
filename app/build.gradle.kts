@@ -65,6 +65,8 @@ dependencies {
     implementation(project(":feature:more"))
     implementation(project(":feature:player"))
 
+    // System ui controller
+    implementation(libs.accompanist.systemuicontroller)
     // Media 3 only for arguments
     implementation(libs.androidx.media3.exoplayer)
     // Core
