@@ -65,9 +65,6 @@ converterGson = "3.0.0"
 # Exo player
 media3 = "1.9.0"
 
-#System Ui controller
-accompanistSystemuicontroller = "0.36.0"
-
 # Material
 material = "1.9.4"
 
@@ -140,9 +137,6 @@ androidx-media3-ui = { module = "androidx.media3:media3-ui-compose", version.ref
 # Retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
-
-# System Ui controller
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 
 # Material
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }

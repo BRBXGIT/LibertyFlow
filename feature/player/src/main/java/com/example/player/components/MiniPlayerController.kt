@@ -4,6 +4,7 @@ package com.example.player.components
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.view.Window
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
@@ -32,9 +33,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
@@ -85,13 +89,12 @@ internal fun BoxScope.MiniPlayerController(
             )
             .padding(CONTROLLER_PADDING.dp)
     ) {
-        val activity = LocalContext.current as Activity
-
+        val window = (LocalView.current.context as Activity).window
         ControllerButton(
             icon = LibertyFlowIcons.FullScreen,
             onClick = {
                 onPlayerEffect(PlayerEffect.ToggleFullScreen)
-                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                hideSystemBars(window)
             },
             visible = visible,
             modifier = Modifier.align(Alignment.TopStart)
@@ -171,4 +174,13 @@ private fun ControllerButton(
             tint = mColors.onBackground
         )
     }
+}
+
+private fun hideSystemBars(window: Window) {
+    val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+
+    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+
+    windowInsetsController.systemBarsBehavior =
+        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 }

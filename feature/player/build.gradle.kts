@@ -44,8 +44,6 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
 
-    // System ui controller
-    implementation(libs.accompanist.systemuicontroller)
     // Media 3
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.hls)
