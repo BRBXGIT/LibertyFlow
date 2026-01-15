@@ -51,12 +51,10 @@ private const val CENTER_DIVIDER = 2
 private const val ZERO = 0
 
 @Composable
-fun MiniPlayerContainer(
+internal fun MiniPlayerContainer(
     navBarVisible: Boolean,
     player: ExoPlayer,
     playerState: PlayerState,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     val density = LocalDensity.current
@@ -67,43 +65,37 @@ fun MiniPlayerContainer(
         PlayerConstraints(density, navBarVisible, navBarSize, statusBarSize)
     }
 
-    with(sharedTransitionScope) {
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            val playerStateHolder = rememberMiniPlayerState(
-                screenWidth = constraints.toPx(maxWidth),
-                screenHeight = constraints.toPx(maxHeight),
-                playerConstraints = constraints
-            )
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val playerStateHolder = rememberMiniPlayerState(
+            screenWidth = constraints.toPx(maxWidth),
+            screenHeight = constraints.toPx(maxHeight),
+            playerConstraints = constraints
+        )
 
-            LaunchedEffect(navBarVisible) {
-                playerStateHolder.onNavBarVisibilityChanged()
-            }
+        LaunchedEffect(navBarVisible) {
+            playerStateHolder.onNavBarVisibilityChanged()
+        }
 
-            Box(
-                modifier = Modifier
-                    .offset { playerStateHolder.offset.value.toIntOffset() }
-                    .sharedElement(
-                        sharedContentState = rememberSharedContentState(key = PLAYER_SHARED_ELEMENT_KEY),
-                        animatedVisibilityScope = animatedVisibilityScope,
+        Box(
+            modifier = Modifier
+                .offset { playerStateHolder.offset.value.toIntOffset() }
+                .size(WIDTH.dp, HEIGHT.dp)
+                .clip(mShapes.small)
+                .background(Color.Black)
+                .pointerInput(navBarVisible) {
+                    detectDragGestures(
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            playerStateHolder.dragBy(dragAmount)
+                        },
+                        onDragEnd = { playerStateHolder.snapToCorner() }
                     )
-                    .size(WIDTH.dp, HEIGHT.dp)
-                    .clip(mShapes.small)
-                    .background(Color.Black)
-                    .pointerInput(navBarVisible) {
-                        detectDragGestures(
-                            onDrag = { change, dragAmount ->
-                                change.consume()
-                                playerStateHolder.dragBy(dragAmount)
-                            },
-                            onDragEnd = { playerStateHolder.snapToCorner() }
-                        )
-                    }
-            ) {
-                MiniPlayerController(playerState, onPlayerEffect)
-                Player(player = player, isLandscape = false)
-            }
+                }
+        ) {
+            MiniPlayerController(playerState, onPlayerEffect)
+            Player(player = player)
         }
     }
 }

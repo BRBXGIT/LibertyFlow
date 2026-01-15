@@ -6,7 +6,7 @@ import com.example.data.models.releases.anime_details.UiEpisode
 @Immutable
 data class PlayerState(
     // Player states
-    val playerState: PlayerState = PlayerState.Closed,
+    val uiPlayerState: UiPlayerState = UiPlayerState.Closed,
     val episodes: List<UiEpisode> = emptyList(),
     val videoQuality: VideoQuality = VideoQuality.SD,
 
@@ -19,7 +19,7 @@ data class PlayerState(
 
     enum class VideoQuality { SD, HD, FHD }
 
-    enum class PlayerState { Closed, Mini, Full }
+    enum class UiPlayerState { Closed, Mini, Full }
 
     @Immutable
     data class EpisodeTime(
@@ -28,7 +28,7 @@ data class PlayerState(
     )
 
     // Sets
-    fun setPlayerState(value: PlayerState) = copy(playerState = value)
+    fun setPlayerState(value: UiPlayerState) = copy(uiPlayerState = value)
 
     fun setEpisodeState(value: EpisodeState) = copy(episodeState = value)
 

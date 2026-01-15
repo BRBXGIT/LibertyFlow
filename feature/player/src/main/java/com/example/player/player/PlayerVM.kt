@@ -55,7 +55,7 @@ class PlayerVM @Inject constructor(
 
     // --- Player ---
     private fun setUpPlayer(episodes: List<UiEpisode>, startIndex: Int) {
-        _playerState.update { it.setPlayerState(PlayerState.PlayerState.Mini) }
+        _playerState.update { it.setPlayerState(PlayerState.UiPlayerState.Mini) }
 
         player.clearMediaItems()
 
@@ -71,7 +71,7 @@ class PlayerVM @Inject constructor(
         player.clearMediaItems()
         player.stop()
 
-        _playerState.update { it.setPlayerState(PlayerState.PlayerState.Closed) }
+        _playerState.update { it.setPlayerState(PlayerState.UiPlayerState.Closed) }
     }
 
     private fun skipEpisode(forward: Boolean) {
@@ -126,8 +126,8 @@ class PlayerVM @Inject constructor(
     // В PlayerVM
     fun toggleFullScreen() {
         _playerState.update {
-            val newState = if (it.playerState == PlayerState.PlayerState.Full)
-                PlayerState.PlayerState.Mini else PlayerState.PlayerState.Full
+            val newState = if (it.uiPlayerState == PlayerState.UiPlayerState.Full)
+                PlayerState.UiPlayerState.Mini else PlayerState.UiPlayerState.Full
             it.setPlayerState(newState)
         }
     }

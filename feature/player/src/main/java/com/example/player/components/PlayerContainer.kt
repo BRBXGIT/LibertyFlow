@@ -2,62 +2,94 @@
 
 package com.example.player.components
 
-import androidx.compose.animation.AnimatedContent
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
+import android.view.Window
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerState
 
-private const val ANIMATION_DURATION = 500
-
-private const val ANIMATED_CONTENT_LABEL = "PlayerTransition"
-
-internal const val PLAYER_SHARED_ELEMENT_KEY = "player_shared_element_key"
-
 @Composable
-fun SharedTransitionScope.PlayerContainer(
+fun PlayerContainer(
     playerState: PlayerState,
     player: ExoPlayer,
     navBarVisible: Boolean,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
-    // TODO: maybe need to delete shared transition
-    AnimatedContent(
-        targetState = playerState.playerState,
-        transitionSpec = {
-            fadeIn(tween(ANIMATION_DURATION)) togetherWith fadeOut(tween(ANIMATION_DURATION))
-        },
-        label = ANIMATED_CONTENT_LABEL
-    ) { targetState ->
-        when (targetState) {
-            PlayerState.PlayerState.Full -> {
-                FullScreenPlayerContainer(
-                    player = player,
-                    playerState = playerState,
-                    onPlayerEffect = onPlayerEffect,
-                    sharedTransitionScope = this@PlayerContainer,
-                    animatedVisibilityScope = this@AnimatedContent
-                )
-            }
+    val uiPlayerState = playerState.uiPlayerState
 
-            PlayerState.PlayerState.Mini -> {
-                MiniPlayerContainer(
-                    player = player,
-                    navBarVisible = navBarVisible,
-                    playerState = playerState,
-                    onPlayerEffect = onPlayerEffect,
-                    sharedTransitionScope = this@PlayerContainer,
-                    animatedVisibilityScope = this@AnimatedContent
-                )
-            }
+    HandleLandscape(uiPlayerState)
 
-            PlayerState.PlayerState.Closed -> {}
+    when (uiPlayerState) {
+        PlayerState.UiPlayerState.Full -> {
+            FullScreenPlayerContainer(
+                player = player,
+                playerState = playerState,
+                onPlayerEffect = onPlayerEffect
+            )
+        }
+
+        PlayerState.UiPlayerState.Mini -> {
+            MiniPlayerContainer(
+                player = player,
+                navBarVisible = navBarVisible,
+                playerState = playerState,
+                onPlayerEffect = onPlayerEffect,
+            )
+        }
+
+        PlayerState.UiPlayerState.Closed -> {}
+    }
+}
+
+@Composable
+private fun HandleLandscape(uiPlayerState: PlayerState.UiPlayerState) {
+    val window = LocalContext.current.findActivity()?.window
+
+    LaunchedEffect(uiPlayerState) {
+        window?.let {
+            val isLandscape = uiPlayerState == PlayerState.UiPlayerState.Full
+            changeSystemBars(it, isLandscape)
+
+            val activity = it.context.findActivity()
+            activity?.requestedOrientation = if (isLandscape) {
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+        }
+    }
+}
+
+private fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
+
+private fun changeSystemBars(window: Window, hide: Boolean) {
+    val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+
+    when(hide) {
+        true -> {
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+
+            windowInsetsController.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+        false -> {
+            windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+
+            windowInsetsController.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
     }
 }
