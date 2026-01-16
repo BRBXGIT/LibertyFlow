@@ -3,6 +3,7 @@
     <string name="settings_label">Настройки</string>
     <string name="info_label">Информация</string>
     <string name="links_label">Ссылки</string>
+    <string name="app_label">Приложение</string>
 
     <string name="vk_label">Группа VK</string>
     <string name="youtube_label">Канал YouTube</string>

@@ -123,7 +123,6 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Ui ---
-    // В PlayerVM
     fun toggleFullScreen() {
         _playerState.update {
             val newState = if (it.uiPlayerState == PlayerState.UiPlayerState.Full)
