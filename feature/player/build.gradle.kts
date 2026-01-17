@@ -46,7 +46,7 @@ dependencies {
     // Media 3
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.hls)
-    implementation(libs.androidx.media3.ui)
+    implementation(libs.media3.ui)
     // Material 3
     implementation(libs.androidx.material3.android)
     // Hilt
