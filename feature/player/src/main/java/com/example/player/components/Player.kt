@@ -2,6 +2,7 @@ package com.example.player.components
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -17,7 +18,7 @@ import com.example.player.player.PlayerState
 
 private const val zIndex = 0f
 
-@UnstableApi
+@OptIn(UnstableApi::class)
 @Composable
 internal fun BoxScope.Player(player: ExoPlayer, playerState: PlayerState) {
     AndroidView(
@@ -40,7 +41,7 @@ internal fun BoxScope.Player(player: ExoPlayer, playerState: PlayerState) {
     )
 }
 
-@UnstableApi
+@OptIn(UnstableApi::class)
 private fun getResizeMode(cropped: Boolean, uiPlayerState: PlayerState.UiPlayerState): Int {
     if (uiPlayerState == PlayerState.UiPlayerState.Mini) return AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 

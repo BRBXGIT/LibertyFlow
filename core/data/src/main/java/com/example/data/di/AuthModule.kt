@@ -4,6 +4,7 @@ import com.example.data.data.AuthRepoImpl
 import com.example.data.domain.AuthRepo
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.auth.api.AuthApi
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,15 +14,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AuthModule {
+interface AuthModule {
 
-    @Provides
-    @Singleton
-    fun provideAuthApi(retrofit: Retrofit): AuthApi =
-        retrofit.create(AuthApi::class.java)
+    companion object {
+        @Provides
+        @Singleton
+        fun provideAuthApi(retrofit: Retrofit): AuthApi =
+            retrofit.create(AuthApi::class.java)
+    }
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideAuthRepo(authApi: AuthApi, authPrefsManager: AuthPrefsManager): AuthRepo =
-        AuthRepoImpl(authApi, authPrefsManager)
+    fun bindAuthRepo(impl: AuthRepoImpl): AuthRepo
 }

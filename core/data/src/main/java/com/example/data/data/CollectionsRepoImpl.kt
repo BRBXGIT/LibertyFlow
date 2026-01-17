@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-internal class CollectionsRepoImpl @Inject constructor(
+class CollectionsRepoImpl @Inject constructor(
     private val collectionsApi: CollectionsApi,
     private val authPrefsManager: AuthPrefsManager
 ): CollectionsRepo {

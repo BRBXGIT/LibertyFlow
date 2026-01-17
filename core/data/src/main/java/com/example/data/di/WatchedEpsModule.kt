@@ -6,6 +6,7 @@ import com.example.data.data.WatchedEpsRepoImpl
 import com.example.data.domain.WatchedEpsRepo
 import com.example.local.watched_eps_db.WatchedEpsDao
 import com.example.local.watched_eps_db.WatchedEpsDb
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,22 +16,23 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object WatchedEpsModule {
+interface WatchedEpsModule {
 
-    @Provides
-    @Singleton
-    fun provideWatchedEpsDao(
-        @ApplicationContext context: Context
-    ): WatchedEpsDao {
-        return Room.databaseBuilder(
-            context = context,
-            klass = WatchedEpsDb::class.java,
-            name = "WatchedEpsDb",
-        ).build().watchedEpsDao()
+    companion object {
+        @Provides
+        @Singleton
+        fun provideWatchedEpsDao(
+            @ApplicationContext context: Context
+        ): WatchedEpsDao {
+            return Room.databaseBuilder(
+                context = context,
+                klass = WatchedEpsDb::class.java,
+                name = "WatchedEpsDb",
+            ).build().watchedEpsDao()
+        }
     }
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideWatchedEpsRepo(watchedEpsDao: WatchedEpsDao): WatchedEpsRepo =
-        WatchedEpsRepoImpl(watchedEpsDao)
+    fun bindWatchedEpsRepo(impl: WatchedEpsRepoImpl): WatchedEpsRepo
 }

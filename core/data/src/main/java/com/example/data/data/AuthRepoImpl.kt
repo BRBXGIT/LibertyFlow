@@ -14,7 +14,7 @@ import com.example.network.auth.api.AuthApi
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-internal class AuthRepoImpl @Inject constructor(
+class AuthRepoImpl @Inject constructor(
     private val authApi: AuthApi,
     private val authPrefsManager: AuthPrefsManager
 ): AuthRepo {

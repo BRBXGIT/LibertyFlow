@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-internal class FavoritesRepoImpl @Inject constructor(
+class FavoritesRepoImpl @Inject constructor(
     private val favoritesApi: FavoritesApi,
     private val authPrefsManager: AuthPrefsManager
 ): FavoritesRepo {

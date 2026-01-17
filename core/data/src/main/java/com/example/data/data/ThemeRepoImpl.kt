@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-internal class ThemeRepoImpl @Inject constructor(
+class ThemeRepoImpl @Inject constructor(
     private val themePrefsManager: ThemePrefsManager
 ) : ThemeRepo {
 

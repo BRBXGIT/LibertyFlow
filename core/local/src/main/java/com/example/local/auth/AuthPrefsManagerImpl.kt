@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 // TODO rewrite to encrypted
-class AuthPrefsManagerImpl(
-    private val context: Context
+class AuthPrefsManagerImpl @Inject constructor(
+    @param:ApplicationContext private val context: Context
 ): AuthPrefsManager {
 
     private companion object {

@@ -3,6 +3,7 @@ package com.example.data.di
 import com.example.data.data.ReleasesRepoImpl
 import com.example.data.domain.ReleasesRepo
 import com.example.network.releases.api.ReleasesApi
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,15 +13,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ReleasesModule {
+interface ReleasesModule {
 
-    @Provides
-    @Singleton
-    fun provideReleasesApi(retrofit: Retrofit): ReleasesApi =
-        retrofit.create(ReleasesApi::class.java)
+    companion object{
+        @Provides
+        @Singleton
+        fun provideReleasesApi(retrofit: Retrofit): ReleasesApi =
+            retrofit.create(ReleasesApi::class.java)
+    }
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideReleasesRepo(releasesApi: ReleasesApi): ReleasesRepo =
-        ReleasesRepoImpl(releasesApi)
+    fun bindReleasesRepo(impl: ReleasesRepoImpl): ReleasesRepo
 }
