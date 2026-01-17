@@ -2,9 +2,7 @@
 
 package com.example.player.components
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.background
@@ -37,7 +35,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
-import com.example.player.player.Player
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerState
 import kotlinx.coroutines.CoroutineScope
@@ -95,7 +92,7 @@ internal fun MiniPlayerContainer(
                 }
         ) {
             MiniPlayerController(playerState, onPlayerEffect)
-            Player(player = player)
+            Player(player, playerState)
         }
     }
 }

@@ -13,7 +13,12 @@ data class PlayerState(
     // Episode states
     val episodeState: EpisodeState = EpisodeState.Loading,
     val episodeTime: EpisodeTime = EpisodeTime(),
+
+    // --- Controller ---
     val isControllerVisible: Boolean = false,
+
+    // --- Ui ---
+    val isCropped: Boolean = false
 ) {
     enum class EpisodeState { Loading, Playing, Paused }
 

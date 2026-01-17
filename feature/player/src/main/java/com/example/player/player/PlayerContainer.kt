@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalSharedTransitionApi::class)
 
-package com.example.player.components
+package com.example.player.player
 
 import android.app.Activity
 import android.content.Context
@@ -14,8 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.player.player.PlayerEffect
-import com.example.player.player.PlayerState
+import com.example.player.components.FullScreenPlayerContainer
+import com.example.player.components.MiniPlayerContainer
 
 @Composable
 fun PlayerContainer(

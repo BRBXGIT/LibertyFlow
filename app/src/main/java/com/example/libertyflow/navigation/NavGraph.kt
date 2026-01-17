@@ -32,7 +32,7 @@ import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home
 import com.example.home.screen.HomeVM
 import com.example.more.navigation.more
-import com.example.player.components.PlayerContainer
+import com.example.player.player.PlayerContainer
 import com.example.player.player.PlayerVM
 
 @Composable
