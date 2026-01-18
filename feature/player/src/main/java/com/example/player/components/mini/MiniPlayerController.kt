@@ -1,13 +1,7 @@
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
-package com.example.player.components
+package com.example.player.components.mini
 
-import android.view.Window
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
-import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,72 +16,48 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
+import com.example.player.components.common.AnimatedPlayPauseButton
+import com.example.player.components.common.rememberControllerVisibility
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerState
 
-private const val VISIBLE = 1f
-private const val INVISIBLE = 0f
-private const val ALMOST_INVISIBLE = 0.7f
+private const val MAIN_BOX_Z_INDEX = 1f
 
 private const val CONTROLLER_PADDING = 4
-private const val ANIMATED_CONTROLLER_ALPHA_LABEL = "Animated alpha for controller"
-private const val ANIMATED_CONTROLLER_TINT_ALPHA = "Animated alpha for controller tint"
+
+private val PLAY_PAUSE_BUTTON_SIZE = 28.dp
 
 @Composable
 internal fun BoxScope.MiniPlayerController(
     playerState: PlayerState,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
-    val visible = playerState.isControllerVisible
-
-    // Animates the overall visibility of the controller overlay
-    val animatedAlpha by animateFloatAsState(
-        targetValue = if (visible) VISIBLE else INVISIBLE,
-        animationSpec = mMotionScheme.slowEffectsSpec(),
-        label = ANIMATED_CONTROLLER_ALPHA_LABEL
-    )
-
-    // Animates the background dimming effect (tint)
-    val animatedTintAlpha by animateFloatAsState(
-        targetValue = if (visible) ALMOST_INVISIBLE else INVISIBLE,
-        animationSpec = mMotionScheme.slowEffectsSpec(),
-        label = ANIMATED_CONTROLLER_TINT_ALPHA
-    )
-
+    val visibility = rememberControllerVisibility(playerState.isControllerVisible)
     Box(
         modifier = Modifier
             .align(Alignment.Center)
             .fillMaxSize()
-            .zIndex(1f) // Ensure controller stays above the content
-            .graphicsLayer { alpha = animatedAlpha }
+            .zIndex(MAIN_BOX_Z_INDEX) // Ensure controller stays above the content
+            .graphicsLayer { alpha = visibility.alpha }
             .clip(mShapes.small)
-            .background(Color.Black.copy(alpha = animatedTintAlpha))
-            .clickable(
-                enabled = true,
-                onClick = { onPlayerEffect(PlayerEffect.ToggleControllerVisible) }
-            )
+            .background(Color.Black.copy(alpha = visibility.tint))
+            .clickable { onPlayerEffect(PlayerEffect.ToggleControllerVisible) }
             .padding(CONTROLLER_PADDING.dp)
     ) {
         ControllerButton(
             icon = LibertyFlowIcons.FullScreen,
-            visible = visible,
+            visible = playerState.isControllerVisible,
             modifier = Modifier.align(Alignment.TopStart),
             onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) }
         )
@@ -96,7 +66,7 @@ internal fun BoxScope.MiniPlayerController(
         ControllerButton(
             icon = LibertyFlowIcons.CrossCircle,
             onClick = { onPlayerEffect(PlayerEffect.StopPlayer) },
-            visible = visible,
+            visible = playerState.isControllerVisible,
             modifier = Modifier.align(Alignment.TopEnd)
         )
 
@@ -111,32 +81,20 @@ internal fun BoxScope.MiniPlayerController(
             ControllerButton(
                 icon = LibertyFlowIcons.RewindBack,
                 onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(false)) },
-                visible = visible
+                visible = playerState.isControllerVisible
             )
 
-            // Animated Play/Pause icon handling
-            val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.PlayPauseAnimated)
-            val isPaused = playerState.episodeState == PlayerState.EpisodeState.Paused
-            val painter = rememberAnimatedVectorPainter(
-                animatedImageVector = animatedVector,
-                atEnd = !isPaused
+            AnimatedPlayPauseButton(
+                playerState = playerState,
+                onPlayerEffect = onPlayerEffect,
+                iconSize = ICON_SIZE.dp,
+                buttonSize = PLAY_PAUSE_BUTTON_SIZE
             )
-
-            IconButton(
-                onClick = { if (visible) onPlayerEffect(PlayerEffect.TogglePlayPause) }
-            ) {
-                Image(
-                    painter = painter,
-                    contentDescription = "Play/Pause Toggle",
-                    colorFilter = ColorFilter.tint(mColors.onBackground),
-                    modifier = Modifier.size(ICON_SIZE.dp)
-                )
-            }
 
             ControllerButton(
                 icon = LibertyFlowIcons.Rewind,
                 onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(true)) },
-                visible = visible
+                visible = playerState.isControllerVisible
             )
         }
     }

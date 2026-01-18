@@ -1,4 +1,4 @@
-package com.example.player.components
+package com.example.player.components.player
 
 import android.view.ViewGroup
 import android.widget.FrameLayout

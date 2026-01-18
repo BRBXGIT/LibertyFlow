@@ -9,6 +9,7 @@ data class PlayerState(
     val uiPlayerState: UiPlayerState = UiPlayerState.Closed,
     val episodes: List<UiEpisode> = emptyList(),
     val videoQuality: VideoQuality = VideoQuality.SD,
+    val currentEpisodeIndex: Int = 0,
 
     // Episode states
     val episodeState: EpisodeState = EpisodeState.Loading,
@@ -33,9 +34,12 @@ data class PlayerState(
     )
 
     // Sets
-    fun setPlayerState(value: UiPlayerState) = copy(uiPlayerState = value)
+    fun setUiPlayerState(value: UiPlayerState) = copy(uiPlayerState = value)
 
     fun setEpisodeState(value: EpisodeState) = copy(episodeState = value)
 
     fun setControllerVisible(value: Boolean) = copy(isControllerVisible = value)
+
+    // Toggles
+    fun toggleIsCropped() = copy(isCropped = !isCropped)
 }

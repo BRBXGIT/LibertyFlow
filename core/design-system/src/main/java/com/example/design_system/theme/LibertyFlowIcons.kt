@@ -11,6 +11,7 @@ object LibertyFlowIcons {
     val DotsAnimated = R.drawable.ic_dots_animated
     val EyeAnimated = R.drawable.ic_eye_animated
     val PlayPauseAnimated = R.drawable.ic_play_pause_animated
+    val CropAnimated = R.drawable.ic_crop_animated
 
     // Outlined
     val Magnifier = R.drawable.ic_magnifier
@@ -30,6 +31,14 @@ object LibertyFlowIcons {
     val Rewind = R.drawable.ic_rewind
     val RewindBack = R.drawable.ic_rewind_back
     val FullScreen = R.drawable.ic_full_screen
+    val Next = R.drawable.ic_next
+    val Previous = R.drawable.ic_previous
+    val QuitFullScreen = R.drawable.quit_full_screen
+    val Pip = R.drawable.ic_pip
+    val Lock = R.drawable.ic_lock
+    val Unlock = R.drawable.ic_unlock
+    val Checklist = R.drawable.ic_checklist
+    val ArrowDown = R.drawable.ic_arrow_down
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled

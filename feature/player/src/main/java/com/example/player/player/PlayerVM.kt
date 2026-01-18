@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val START_POSITION = 0L
+
 @HiltViewModel
 class PlayerVM @Inject constructor(
     val player: ExoPlayer,
@@ -42,6 +44,7 @@ class PlayerVM @Inject constructor(
             // --- Player ---
             is PlayerEffect.SetUpPlayer -> setUpPlayer(effect.episodes, effect.startIndex)
             is PlayerEffect.SeekForFiveSeconds -> seekEpisodeForFiveSeconds(effect.forward)
+            is PlayerEffect.SkipEpisode -> skipEpisode(effect.forward)
             PlayerEffect.TogglePlayPause -> playPauseEpisode()
             PlayerEffect.StopPlayer -> stopPlayer()
 
@@ -50,18 +53,25 @@ class PlayerVM @Inject constructor(
 
             // --- Ui ---
             PlayerEffect.ToggleFullScreen -> toggleFullScreen()
+            PlayerEffect.ToggleCropped -> _playerState.update { it.toggleIsCropped() }
         }
     }
 
     // --- Player ---
     private fun setUpPlayer(episodes: List<UiEpisode>, startIndex: Int) {
-        _playerState.update { it.setPlayerState(PlayerState.UiPlayerState.Mini) }
+        _playerState.update {
+            it.copy(
+                uiPlayerState = PlayerState.UiPlayerState.Mini,
+                episodes = episodes,
+                currentEpisodeIndex = startIndex
+            )
+        }
 
         player.clearMediaItems()
 
         val quality = _playerState.value.videoQuality
         val mediaItems = episodes.map { it.toMediaItem(quality) }
-        player.setMediaItems(mediaItems, startIndex, 0L)
+        player.setMediaItems(mediaItems, startIndex, START_POSITION)
 
         player.prepare()
         player.playWhenReady = true
@@ -71,7 +81,7 @@ class PlayerVM @Inject constructor(
         player.clearMediaItems()
         player.stop()
 
-        _playerState.update { it.setPlayerState(PlayerState.UiPlayerState.Closed) }
+        _playerState.value = PlayerState()
     }
 
     private fun skipEpisode(forward: Boolean) {
@@ -127,12 +137,8 @@ class PlayerVM @Inject constructor(
         _playerState.update {
             val newState = if (it.uiPlayerState == PlayerState.UiPlayerState.Full)
                 PlayerState.UiPlayerState.Mini else PlayerState.UiPlayerState.Full
-            it.setPlayerState(newState)
+            it.setUiPlayerState(newState)
         }
-    }
-
-    private fun toggleCrop() {
-
     }
 }
 

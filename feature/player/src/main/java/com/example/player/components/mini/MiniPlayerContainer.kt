@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalSharedTransitionApi::class)
 
-package com.example.player.components
+package com.example.player.components.mini
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.Animatable
@@ -35,6 +35,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
+import com.example.player.components.player.Player
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerState
 import kotlinx.coroutines.CoroutineScope
