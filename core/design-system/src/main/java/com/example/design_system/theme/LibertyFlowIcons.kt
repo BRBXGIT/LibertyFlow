@@ -46,6 +46,7 @@ object LibertyFlowIcons {
     val DoubleArrowUp = R.drawable.ic_double_arrow_up_filled
     val DoubleArrowDown = R.drawable.ic_double_arrow_down_filled
     val Download = R.drawable.ic_download_filled
+    val DoubleCheckFilled = R.drawable.ic_double_check_filled
 
     // Multicolored
     val AniLiberty = R.drawable.ic_aniliberty_multicolored

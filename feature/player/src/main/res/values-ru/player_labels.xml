@@ -4,4 +4,8 @@
     <string name="no_title_provided_label">Без названия</string>
 
     <string name="unlock_label">Разблокировать</string>
+
+    <string name="cancel_label">Отмена</string>
+    <string name="select_label">Выбрать</string>
+    <string name="choose_episode_label">Выбор эпизода</string>
 </resources>

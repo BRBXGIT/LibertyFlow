@@ -9,6 +9,7 @@ sealed interface PlayerEffect {
     data class SkipEpisode(val forward: Boolean): PlayerEffect
     data object TogglePlayPause: PlayerEffect
     data object StopPlayer: PlayerEffect
+    data class ChangeEpisode(val index: Int): PlayerEffect
 
     // --- Controller ---
     data object ToggleControllerVisible: PlayerEffect
@@ -17,4 +18,5 @@ sealed interface PlayerEffect {
     data object ToggleFullScreen: PlayerEffect
     data object ToggleCropped: PlayerEffect
     data object ToggleIsLocked: PlayerEffect
+    data object ToggleEpisodesDialog: PlayerEffect
 }

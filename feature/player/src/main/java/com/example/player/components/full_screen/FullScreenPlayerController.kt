@@ -68,6 +68,10 @@ internal fun FullScreenPlayerController(
     playerState: PlayerState,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
+    if (playerState.isEpisodesDialogVisible) {
+        EpisodeDialog(onPlayerEffect, playerState)
+    }
+
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
     val visibility = rememberControllerVisibility(playerState.isControllerVisible)
 
@@ -129,7 +133,7 @@ private fun MainControlsOverlay(
                 end = EdgePadding
             )
     ) {
-        Header(title, episodeNumber, onPlayerEffect)
+        Header(title, episodeNumber, playerState, onPlayerEffect)
         CenterControls(playerState, onPlayerEffect)
         Footer(playerState, onPlayerEffect)
     }
@@ -141,6 +145,7 @@ private val EpisodeLabel = R.string.episode_label
 private fun BoxScope.Header(
     title: String,
     episodeNumber: Int,
+    playerState: PlayerState,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     Row(
@@ -154,7 +159,8 @@ private fun BoxScope.Header(
         ) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.ArrowDown,
-                onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) }
+                onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) },
+                isEnabled = playerState.isControllerVisible
             )
             Column(verticalArrangement = Arrangement.spacedBy(HeaderSpacing)) {
                 Text(
@@ -170,8 +176,16 @@ private fun BoxScope.Header(
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
-            PlayerIconButton(icon = LibertyFlowIcons.Checklist, onClick = {})
-            PlayerIconButton(icon = LibertyFlowIcons.Settings, onClick = {})
+            PlayerIconButton(
+                icon = LibertyFlowIcons.Checklist,
+                onClick = { onPlayerEffect(PlayerEffect.ToggleEpisodesDialog) },
+                isEnabled = playerState.isControllerVisible
+            )
+            PlayerIconButton(
+                icon = LibertyFlowIcons.Settings,
+                onClick = {},
+                isEnabled = playerState.isControllerVisible
+            )
         }
     }
 }
@@ -179,7 +193,7 @@ private fun BoxScope.Header(
 @Composable
 private fun BoxScope.CenterControls(
     playerState: PlayerState,
-    onEffect: (PlayerEffect) -> Unit
+    onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     Row(
         modifier = Modifier.align(Alignment.Center),
@@ -190,24 +204,29 @@ private fun BoxScope.CenterControls(
             icon = LibertyFlowIcons.Previous,
             iconSize = SkipIconSize,
             modifier = Modifier.size(SkipButtonSize),
-            onClick = { onEffect(PlayerEffect.SkipEpisode(forward = false)) }
+            onClick = { onPlayerEffect(PlayerEffect.SkipEpisode(forward = false)) },
+            isEnabled = playerState.isControllerVisible
         )
 
         AnimatedPlayPauseButton(
             playerState = playerState,
-            onPlayerEffect = onEffect,
+            onPlayerEffect = onPlayerEffect,
             iconSize = PlayPauseIconSize,
-            buttonSize = PlayPauseButtonSize
+            buttonSize = PlayPauseButtonSize,
+            isEnabled = playerState.isControllerVisible
         )
 
         PlayerIconButton(
             icon = LibertyFlowIcons.Next,
             iconSize = SkipIconSize,
             modifier = Modifier.size(SkipButtonSize),
-            onClick = { onEffect(PlayerEffect.SkipEpisode(forward = true)) }
+            onClick = { onPlayerEffect(PlayerEffect.SkipEpisode(forward = true)) },
+            isEnabled = playerState.isControllerVisible
         )
     }
 }
+
+private const val TRACK_ALPHA = 0.24f
 
 @Composable
 private fun BoxScope.Footer(
@@ -231,7 +250,8 @@ private fun BoxScope.Footer(
             Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
                 PlayerIconButton(
                     icon = LibertyFlowIcons.Lock,
-                    onClick = { onPlayerEffect(PlayerEffect.ToggleIsLocked) }
+                    onClick = { onPlayerEffect(PlayerEffect.ToggleIsLocked) },
+                    isEnabled = playerState.isControllerVisible
                 )
 
                 // Animated Crop Toggle
@@ -241,10 +261,15 @@ private fun BoxScope.Footer(
                     Image(painter = painter, contentDescription = null, colorFilter = ColorFilter.tint(Color.White))
                 }
 
-                PlayerIconButton(icon = LibertyFlowIcons.Pip, onClick = { /* Handle PiP */ })
+                PlayerIconButton(
+                    icon = LibertyFlowIcons.Pip,
+                    onClick = { /* Handle PiP */ },
+                    isEnabled = playerState.isControllerVisible
+                )
                 PlayerIconButton(
                     icon = LibertyFlowIcons.QuitFullScreen,
-                    onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) }
+                    onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) },
+                    isEnabled = playerState.isControllerVisible
                 )
             }
         }
@@ -253,7 +278,7 @@ private fun BoxScope.Footer(
             progress = { 0.5f }, // Use lambda for performance
             modifier = Modifier.fillMaxWidth(),
             color = Color.White,
-            trackColor = Color.White.copy(alpha = 0.24f)
+            trackColor = Color.White.copy(alpha = TRACK_ALPHA)
         )
     }
 }

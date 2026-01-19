@@ -20,7 +20,8 @@ internal fun AnimatedPlayPauseButton(
     playerState: PlayerState,
     onPlayerEffect: (PlayerEffect) -> Unit,
     iconSize: Dp,
-    buttonSize: Dp
+    buttonSize: Dp,
+    isEnabled: Boolean = true
 ) {
     // Animated Play/Pause icon handling
     val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.PlayPauseAnimated)
@@ -32,7 +33,8 @@ internal fun AnimatedPlayPauseButton(
 
     IconButton(
         modifier = Modifier.size(buttonSize),
-        onClick = { if (playerState.isControllerVisible) onPlayerEffect(PlayerEffect.TogglePlayPause) }
+        onClick = { if (playerState.isControllerVisible) onPlayerEffect(PlayerEffect.TogglePlayPause) },
+        enabled = isEnabled
     ) {
         Image(
             contentDescription = null,

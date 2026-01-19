@@ -4,4 +4,8 @@
     <string name="no_title_provided_label">No title provided</string>
 
     <string name="unlock_label">Unlock</string>
+    
+    <string name="cancel_label">Cancel</string>
+    <string name="select_label">Selected</string>
+    <string name="choose_episode_label">Choose episode</string>
 </resources>

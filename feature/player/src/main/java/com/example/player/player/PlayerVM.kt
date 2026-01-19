@@ -45,6 +45,7 @@ class PlayerVM @Inject constructor(
             is PlayerEffect.SetUpPlayer -> setUpPlayer(effect.episodes, effect.startIndex)
             is PlayerEffect.SeekForFiveSeconds -> seekEpisodeForFiveSeconds(effect.forward)
             is PlayerEffect.SkipEpisode -> skipEpisode(effect.forward)
+            is PlayerEffect.ChangeEpisode -> changeEpisode(effect.index)
             PlayerEffect.TogglePlayPause -> playPauseEpisode()
             PlayerEffect.StopPlayer -> stopPlayer()
 
@@ -55,6 +56,7 @@ class PlayerVM @Inject constructor(
             PlayerEffect.ToggleFullScreen -> toggleFullScreen()
             PlayerEffect.ToggleCropped -> _playerState.update { it.toggleIsCropped() }
             PlayerEffect.ToggleIsLocked -> _playerState.update { it.toggleIsLocked() }
+            PlayerEffect.ToggleEpisodesDialog -> _playerState.update { it.toggleEpisodesDialog() }
         }
     }
 
@@ -116,6 +118,8 @@ class PlayerVM @Inject constructor(
         }
 
     private fun seekEpisode(position: Long) = player.seekTo(position)
+
+    private fun changeEpisode(index: Int) = player.seekTo(index, START_POSITION)
 
     // --- Controller ---
     private var controllerJob: Job? = null
