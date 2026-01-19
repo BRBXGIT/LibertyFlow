@@ -19,7 +19,8 @@ data class PlayerState(
     val isControllerVisible: Boolean = false,
 
     // --- Ui ---
-    val isCropped: Boolean = false
+    val isCropped: Boolean = false,
+    val isLocked: Boolean = false
 ) {
     enum class EpisodeState { Loading, Playing, Paused }
 
@@ -42,4 +43,6 @@ data class PlayerState(
 
     // Toggles
     fun toggleIsCropped() = copy(isCropped = !isCropped)
+
+    fun toggleIsLocked() = copy(isLocked = !isLocked, isControllerVisible = false)
 }

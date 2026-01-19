@@ -54,6 +54,7 @@ class PlayerVM @Inject constructor(
             // --- Ui ---
             PlayerEffect.ToggleFullScreen -> toggleFullScreen()
             PlayerEffect.ToggleCropped -> _playerState.update { it.toggleIsCropped() }
+            PlayerEffect.ToggleIsLocked -> _playerState.update { it.toggleIsLocked() }
         }
     }
 

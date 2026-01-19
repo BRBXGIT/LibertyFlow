@@ -8,38 +8,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.example.design_system.theme.mMotionScheme
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.State
 
-private const val ANIMATED_CONTROLLER_ALPHA_LABEL = "Animated alpha for controller"
-private const val ANIMATED_CONTROLLER_TINT_ALPHA = "Animated alpha for controller tint"
-
-private const val VISIBLE = 1f
-private const val INVISIBLE = 0f
-private const val ALMOST_INVISIBLE = 0.7f
+private const val FULL_ALPHA = 1f
+private const val GHOST_ALPHA = 0f
+private const val OVERLAY_TINT_ALPHA = 0.5f
 
 internal class ControllerVisibility(
-    alphaState: State<Float>,
-    tintState: State<Float>
-) {
-    val alpha by alphaState
-    val tint by tintState
-}
+    val controlsAlpha: Float,
+    val overlayAlpha: Float
+)
 
 @Composable
 internal fun rememberControllerVisibility(isVisible: Boolean): ControllerVisibility {
-    val motionScheme = mMotionScheme
-    
-    val alpha = animateFloatAsState(
-        targetValue = if (isVisible) VISIBLE else INVISIBLE,
-        animationSpec = motionScheme.slowEffectsSpec(),
-        label = ANIMATED_CONTROLLER_ALPHA_LABEL
-    )
-    
-    val tint = animateFloatAsState(
-        targetValue = if (isVisible) ALMOST_INVISIBLE else INVISIBLE,
-        animationSpec = motionScheme.slowEffectsSpec(),
-        label = ANIMATED_CONTROLLER_TINT_ALPHA
+    val motion = mMotionScheme
+
+    val controlsAlpha by animateFloatAsState(
+        targetValue = if (isVisible) FULL_ALPHA else GHOST_ALPHA,
+        animationSpec = motion.slowEffectsSpec(),
+        label = "ControlsAlpha"
     )
 
-    return remember(alpha, tint) { ControllerVisibility(alpha, tint) }
+    val overlayAlpha by animateFloatAsState(
+        targetValue = if (isVisible) OVERLAY_TINT_ALPHA else GHOST_ALPHA,
+        animationSpec = motion.slowEffectsSpec(),
+        label = "OverlayAlpha"
+    )
+
+    return remember(controlsAlpha, overlayAlpha) {
+        ControllerVisibility(controlsAlpha, overlayAlpha)
+    }
 }

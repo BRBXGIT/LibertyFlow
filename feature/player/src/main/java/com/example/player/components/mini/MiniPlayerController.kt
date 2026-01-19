@@ -49,9 +49,9 @@ internal fun BoxScope.MiniPlayerController(
             .align(Alignment.Center)
             .fillMaxSize()
             .zIndex(MAIN_BOX_Z_INDEX) // Ensure controller stays above the content
-            .graphicsLayer { alpha = visibility.alpha }
+            .graphicsLayer { alpha = visibility.overlayAlpha }
             .clip(mShapes.small)
-            .background(Color.Black.copy(alpha = visibility.tint))
+            .background(Color.Black.copy(alpha = visibility.controlsAlpha))
             .clickable { onPlayerEffect(PlayerEffect.ToggleControllerVisible) }
             .padding(CONTROLLER_PADDING.dp)
     ) {

@@ -23,6 +23,7 @@ internal fun FullScreenPlayerContainer(
 ) {
     BackHandler {
         onPlayerEffect(PlayerEffect.ToggleFullScreen)
+        if (playerState.isLocked) onPlayerEffect(PlayerEffect.ToggleIsLocked)
     }
 
     Box(

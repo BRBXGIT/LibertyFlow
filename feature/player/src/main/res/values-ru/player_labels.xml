@@ -2,4 +2,6 @@
 <resources>
     <string name="episode_label">Эпизод</string>
     <string name="no_title_provided_label">Без названия</string>
+
+    <string name="unlock_label">Разблокировать</string>
 </resources>

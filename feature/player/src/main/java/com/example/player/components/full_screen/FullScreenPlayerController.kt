@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -38,34 +39,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import com.example.design_system.components.buttons.ButtonWithIcon
+import com.example.design_system.components.buttons.ButtonWithIconType
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mTypography
 import com.example.player.R
 import com.example.player.components.common.AnimatedPlayPauseButton
+import com.example.player.components.common.ControllerVisibility
 import com.example.player.components.common.rememberControllerVisibility
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerState
 
-// --- Constants: Dimensions ---
-private const val MAIN_BOX_Z_INDEX = 1f
-private const val INDEX_OFFSET = 1
-private val SCREEN_EDGE_PADDING = 32.dp
-private val HEADER_SPACING = 4.dp
-private val COMMON_ICON_SPACING = 4.dp
-private val CENTER_CONTROLS_SPACING = 36.dp
+// --- Constants & Configuration ---
+private val EdgePadding = 32.dp
+private val HeaderSpacing = 4.dp
+private val ControlSpacing = 36.dp
+private val IconSpacing = 4.dp
 
-private const val HEADER_TEXT_MAX_LINES = 1
+private val SkipIconSize = 30.dp
+private val PlayPauseIconSize = 34.dp
+private val SkipButtonSize = 38.dp
+private val PlayPauseButtonSize = 40.dp
 
-// --- Constants: Icon Sizes ---
-private val SKIP_ICON_SIZE = 30.dp
-private val PLAY_PAUSE_ICON_SIZE = 34.dp
-private val SKIP_BUTTON_SIZE = 38.dp
-private val PLAY_PAUSE_BUTTON_SIZE = 40.dp
-
-// --- Constants: Resources ---
-private val EpisodeLabel = R.string.episode_label
-private val NoTitleProvidedLabel = R.string.no_title_provided_label
+private val NoTitleLabel = R.string.no_title_provided_label
 
 @Composable
 internal fun FullScreenPlayerController(
@@ -75,70 +71,71 @@ internal fun FullScreenPlayerController(
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
     val visibility = rememberControllerVisibility(playerState.isControllerVisible)
 
-    // Extracting data here ensures sub-components only recompose when their specific data changes
+    // Derived data for UI
     val currentEpisode = playerState.episodes.getOrNull(playerState.currentEpisodeIndex)
-    val title = currentEpisode?.name ?: stringResource(NoTitleProvidedLabel)
-    val episodeNumber = playerState.currentEpisodeIndex + INDEX_OFFSET
+    val title = currentEpisode?.name ?: stringResource(NoTitleLabel)
+    val episodeNumber = playerState.currentEpisodeIndex + 1
 
+    // 1. Interaction Layer (Captures taps to toggle visibility)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .zIndex(MAIN_BOX_Z_INDEX)
-            .background(Color.Black.copy(alpha = visibility.tint))
-            .graphicsLayer { alpha = visibility.alpha }
             .clickable(
                 onClick = { onPlayerEffect(PlayerEffect.ToggleControllerVisible) },
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             )
-            .padding(
-                top = systemBarsPadding.calculateTopPadding() + SCREEN_EDGE_PADDING,
-                bottom = systemBarsPadding.calculateBottomPadding() + SCREEN_EDGE_PADDING,
-                start = SCREEN_EDGE_PADDING,
-                end = SCREEN_EDGE_PADDING
-            )
-    ) {
-        Header(
+    )
+
+    // 2. Main Controls (Only visible when NOT locked)
+    if (!playerState.isLocked) {
+        MainControlsOverlay(
             title = title,
             episodeNumber = episodeNumber,
-            onPlayerEffect = onPlayerEffect
+            playerState = playerState,
+            onPlayerEffect = onPlayerEffect,
+            visibility = visibility,
+            contentPadding = systemBarsPadding
         )
+    }
 
-        CenterControls(
-            onEffect = onPlayerEffect,
-            playerState = playerState
+    // 3. Unlock Overlay (Only visible when locked)
+    if (playerState.isLocked) {
+        UnlockOverlay(
+            onPlayerEffect = onPlayerEffect,
+            alpha = visibility.controlsAlpha
         )
+    }
+}
 
+@Composable
+private fun MainControlsOverlay(
+    title: String,
+    episodeNumber: Int,
+    playerState: PlayerState,
+    visibility: ControllerVisibility,
+    onPlayerEffect: (PlayerEffect) -> Unit,
+    contentPadding: PaddingValues
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .graphicsLayer { this.alpha = visibility.overlayAlpha }
+            .background(Color.Black.copy(alpha = visibility.controlsAlpha))
+            .padding(
+                top = contentPadding.calculateTopPadding() + EdgePadding,
+                bottom = contentPadding.calculateBottomPadding() + EdgePadding,
+                start = EdgePadding,
+                end = EdgePadding
+            )
+    ) {
+        Header(title, episodeNumber, onPlayerEffect)
+        CenterControls(playerState, onPlayerEffect)
         Footer(playerState, onPlayerEffect)
     }
 }
 
-// --- Reusable Components ---
-
-@Composable
-private fun PlayerIconButton(
-    icon: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    iconSize: Dp = Dp.Unspecified,
-    tint: Color = Color.White,
-    isEnabled: Boolean = true
-) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = isEnabled
-    ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            modifier = if (iconSize != Dp.Unspecified) Modifier.size(iconSize) else Modifier,
-            tint = tint
-        )
-    }
-}
-
-// --- Sub-sections ---
+private val EpisodeLabel = R.string.episode_label
 
 @Composable
 private fun BoxScope.Header(
@@ -153,18 +150,17 @@ private fun BoxScope.Header(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(COMMON_ICON_SPACING)
+            horizontalArrangement = Arrangement.spacedBy(IconSpacing)
         ) {
-            PlayerIconButton(icon = LibertyFlowIcons.ArrowDown, onClick = {})
-
-            Column(verticalArrangement = Arrangement.spacedBy(HEADER_SPACING)) {
+            PlayerIconButton(
+                icon = LibertyFlowIcons.ArrowDown,
+                onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) }
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(HeaderSpacing)) {
                 Text(
                     text = title,
-                    style = mTypography.bodyLarge.copy(
-                        fontWeight = FontWeight.W600,
-                        color = Color.White
-                    ),
-                    maxLines = HEADER_TEXT_MAX_LINES
+                    style = mTypography.bodyLarge.copy(fontWeight = FontWeight.W600, color = Color.White),
+                    maxLines = 1
                 )
                 Text(
                     text = "${stringResource(EpisodeLabel)} $episodeNumber",
@@ -173,7 +169,7 @@ private fun BoxScope.Header(
             }
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(COMMON_ICON_SPACING)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
             PlayerIconButton(icon = LibertyFlowIcons.Checklist, onClick = {})
             PlayerIconButton(icon = LibertyFlowIcons.Settings, onClick = {})
         }
@@ -188,31 +184,26 @@ private fun BoxScope.CenterControls(
     Row(
         modifier = Modifier.align(Alignment.Center),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(CENTER_CONTROLS_SPACING)
+        horizontalArrangement = Arrangement.spacedBy(ControlSpacing)
     ) {
-        // Backward Button
         PlayerIconButton(
             icon = LibertyFlowIcons.Previous,
-            iconSize = SKIP_ICON_SIZE,
-            modifier = Modifier.size(SKIP_BUTTON_SIZE),
-            isEnabled = playerState.isControllerVisible,
+            iconSize = SkipIconSize,
+            modifier = Modifier.size(SkipButtonSize),
             onClick = { onEffect(PlayerEffect.SkipEpisode(forward = false)) }
         )
 
-        // Main Play/Pause Button
         AnimatedPlayPauseButton(
             playerState = playerState,
             onPlayerEffect = onEffect,
-            iconSize = PLAY_PAUSE_ICON_SIZE,
-            buttonSize = PLAY_PAUSE_BUTTON_SIZE
+            iconSize = PlayPauseIconSize,
+            buttonSize = PlayPauseButtonSize
         )
 
-        // Forward Button
         PlayerIconButton(
             icon = LibertyFlowIcons.Next,
-            iconSize = SKIP_ICON_SIZE,
-            modifier = Modifier.size(SKIP_BUTTON_SIZE),
-            isEnabled = playerState.isControllerVisible,
+            iconSize = SkipIconSize,
+            modifier = Modifier.size(SkipButtonSize),
             onClick = { onEffect(PlayerEffect.SkipEpisode(forward = true)) }
         )
     }
@@ -225,7 +216,7 @@ private fun BoxScope.Footer(
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
-        verticalArrangement = Arrangement.spacedBy(HEADER_SPACING)
+        verticalArrangement = Arrangement.spacedBy(HeaderSpacing)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -237,38 +228,73 @@ private fun BoxScope.Footer(
                 style = mTypography.bodyMedium.copy(color = Color.White)
             )
 
-            Row(horizontalArrangement = Arrangement.spacedBy(COMMON_ICON_SPACING)) {
-                PlayerIconButton(icon = LibertyFlowIcons.Lock, onClick = {})
-
-                // Animated Play/Pause icon handling
-                val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.CropAnimated)
-                val painter = rememberAnimatedVectorPainter(
-                    animatedImageVector = animatedVector,
-                    atEnd = !playerState.isCropped
+            Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
+                PlayerIconButton(
+                    icon = LibertyFlowIcons.Lock,
+                    onClick = { onPlayerEffect(PlayerEffect.ToggleIsLocked) }
                 )
 
-                IconButton(
-                    onClick = { if (playerState.isControllerVisible) onPlayerEffect(PlayerEffect.ToggleCropped) }
-                ) {
-                    Image(
-                        contentDescription = null,
-                        painter = painter,
-                        colorFilter = ColorFilter.tint(Color.White),
-                    )
+                // Animated Crop Toggle
+                val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.CropAnimated)
+                val painter = rememberAnimatedVectorPainter(animatedVector, !playerState.isCropped)
+                IconButton(onClick = { onPlayerEffect(PlayerEffect.ToggleCropped) }) {
+                    Image(painter = painter, contentDescription = null, colorFilter = ColorFilter.tint(Color.White))
                 }
 
-                PlayerIconButton(icon = LibertyFlowIcons.Pip, onClick = {})
-                PlayerIconButton(icon = LibertyFlowIcons.QuitFullScreen, onClick = {})
+                PlayerIconButton(icon = LibertyFlowIcons.Pip, onClick = { /* Handle PiP */ })
+                PlayerIconButton(
+                    icon = LibertyFlowIcons.QuitFullScreen,
+                    onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) }
+                )
             }
         }
 
-        // Use lambda-based progress for performance (Compose 1.5+)
-        // This avoids recomposing the whole Footer when only progress changes
         LinearProgressIndicator(
-            progress = { 0.5f },
+            progress = { 0.5f }, // Use lambda for performance
             modifier = Modifier.fillMaxWidth(),
             color = Color.White,
             trackColor = Color.White.copy(alpha = 0.24f)
+        )
+    }
+}
+
+private val UnlockLabel = R.string.unlock_label
+
+@Composable
+private fun UnlockOverlay(
+    onPlayerEffect: (PlayerEffect) -> Unit,
+    alpha: Float
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .graphicsLayer { this.alpha = alpha }
+            .padding(bottom = EdgePadding),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        ButtonWithIcon(
+            text = stringResource(UnlockLabel),
+            icon = LibertyFlowIcons.Unlock,
+            onClick = { onPlayerEffect(PlayerEffect.ToggleIsLocked) },
+            type = ButtonWithIconType.Outlined
+        )
+    }
+}
+
+@Composable
+private fun PlayerIconButton(
+    icon: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    iconSize: Dp = Dp.Unspecified,
+    isEnabled: Boolean = true
+) {
+    IconButton(onClick = onClick, modifier = modifier, enabled = isEnabled) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            modifier = if (iconSize != Dp.Unspecified) Modifier.size(iconSize) else Modifier,
+            tint = Color.White
         )
     }
 }

@@ -16,4 +16,5 @@ sealed interface PlayerEffect {
     // --- Ui ---
     data object ToggleFullScreen: PlayerEffect
     data object ToggleCropped: PlayerEffect
+    data object ToggleIsLocked: PlayerEffect
 }

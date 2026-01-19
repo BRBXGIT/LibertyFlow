@@ -2,4 +2,6 @@
 <resources>
     <string name="episode_label">Episode</string>
     <string name="no_title_provided_label">No title provided</string>
+
+    <string name="unlock_label">Unlock</string>
 </resources>
