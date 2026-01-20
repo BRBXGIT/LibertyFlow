@@ -17,6 +17,7 @@ data class PlayerState(
 
     // --- Controller ---
     val isControllerVisible: Boolean = false,
+    val isScrubbing: Boolean = false,
 
     // --- Ui ---
     val isCropped: Boolean = false,
@@ -33,19 +34,22 @@ data class PlayerState(
     data class EpisodeTime(
         val current: Long = 0L,
         val total: Long = 0L,
+        val isScrubbing: Boolean = false
     )
 
     // Sets
     fun setUiPlayerState(value: UiPlayerState) = copy(uiPlayerState = value)
-
     fun setEpisodeState(value: EpisodeState) = copy(episodeState = value)
-
     fun setControllerVisible(value: Boolean) = copy(isControllerVisible = value)
 
     // Toggles
     fun toggleIsCropped() = copy(isCropped = !isCropped)
-
     fun toggleIsLocked() = copy(isLocked = !isLocked, isControllerVisible = false)
-
     fun toggleEpisodesDialog() = copy(isEpisodesDialogVisible = !isEpisodesDialogVisible)
+    fun toggleIsScrubbing() = copy(isScrubbing = !isScrubbing)
+
+    // Updates
+    fun nextEpisode() = copy(currentEpisodeIndex = currentEpisodeIndex + 1)
+    fun previousEpisode() = copy(currentEpisodeIndex = currentEpisodeIndex - 1)
+    fun updateDuration(current: Long, total: Long) = copy(episodeTime = episodeTime.copy(current = current, total = total))
 }

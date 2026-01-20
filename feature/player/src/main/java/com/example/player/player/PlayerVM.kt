@@ -1,8 +1,10 @@
 package com.example.player.player
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
@@ -16,6 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,8 +49,10 @@ class PlayerVM @Inject constructor(
             is PlayerEffect.SeekForFiveSeconds -> seekEpisodeForFiveSeconds(effect.forward)
             is PlayerEffect.SkipEpisode -> skipEpisode(effect.forward)
             is PlayerEffect.ChangeEpisode -> changeEpisode(effect.index)
+            is PlayerEffect.SeekTo -> seekEpisode(effect.position)
             PlayerEffect.TogglePlayPause -> playPauseEpisode()
             PlayerEffect.StopPlayer -> stopPlayer()
+            PlayerEffect.ToggleIsScrubbing -> _playerState.update { it.toggleIsScrubbing() }
 
             // --- Controller ---
             PlayerEffect.ToggleControllerVisible -> toggleControllerVisible()
@@ -61,6 +66,19 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Player ---
+    @VisibleForTesting
+    internal val listener = object : Player.Listener {
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            val currentIndex = player.currentMediaItemIndex
+            val previousIndex = playerState.value.currentEpisodeIndex
+
+            when {
+                currentIndex > previousIndex -> { _playerState.update { it.nextEpisode() } }
+                currentIndex < previousIndex -> { _playerState.update { it.previousEpisode() } }
+            }
+        }
+    }
+
     private fun setUpPlayer(episodes: List<UiEpisode>, startIndex: Int) {
         _playerState.update {
             it.copy(
@@ -71,6 +89,7 @@ class PlayerVM @Inject constructor(
         }
 
         player.clearMediaItems()
+        player.addListener(listener)
 
         val quality = _playerState.value.videoQuality
         val mediaItems = episodes.map { it.toMediaItem(quality) }
@@ -78,10 +97,12 @@ class PlayerVM @Inject constructor(
 
         player.prepare()
         player.playWhenReady = true
+        startTrackingProgress()
     }
 
     private fun stopPlayer() {
         player.clearMediaItems()
+        stopTrackingProgress()
         player.stop()
 
         _playerState.value = PlayerState()
@@ -120,6 +141,26 @@ class PlayerVM @Inject constructor(
     private fun seekEpisode(position: Long) = player.seekTo(position)
 
     private fun changeEpisode(index: Int) = player.seekTo(index, START_POSITION)
+
+    private var progressJob: Job? = null
+    private fun startTrackingProgress() {
+        progressJob?.cancel()
+        progressJob = viewModelScope.launch(dispatcherMain) {
+            while (isActive) {
+                val current = player.currentPosition
+                val duration = player.duration.coerceAtLeast(0L)
+
+                _playerState.update { it.updateDuration(current, duration) }
+
+                delay(500)
+            }
+        }
+    }
+
+    private fun stopTrackingProgress() {
+        progressJob?.cancel()
+        progressJob = null
+    }
 
     // --- Controller ---
     private var controllerJob: Job? = null

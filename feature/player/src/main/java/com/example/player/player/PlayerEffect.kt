@@ -7,9 +7,11 @@ sealed interface PlayerEffect {
     data class SetUpPlayer(val episodes: List<UiEpisode>, val startIndex: Int): PlayerEffect
     data class SeekForFiveSeconds(val forward: Boolean): PlayerEffect
     data class SkipEpisode(val forward: Boolean): PlayerEffect
+    data class ChangeEpisode(val index: Int): PlayerEffect
+    data class SeekTo(val position: Long): PlayerEffect
     data object TogglePlayPause: PlayerEffect
     data object StopPlayer: PlayerEffect
-    data class ChangeEpisode(val index: Int): PlayerEffect
+    data object ToggleIsScrubbing: PlayerEffect
 
     // --- Controller ---
     data object ToggleControllerVisible: PlayerEffect

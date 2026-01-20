@@ -26,9 +26,15 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,6 +68,9 @@ private val SkipButtonSize = 38.dp
 private val PlayPauseButtonSize = 40.dp
 
 private val NoTitleLabel = R.string.no_title_provided_label
+
+private const val ZERO = 0
+private const val ONE = 1
 
 @Composable
 internal fun FullScreenPlayerController(
@@ -124,8 +133,8 @@ private fun MainControlsOverlay(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .graphicsLayer { this.alpha = visibility.overlayAlpha }
-            .background(Color.Black.copy(alpha = visibility.controlsAlpha))
+            .graphicsLayer { alpha = visibility.controlsAlpha }
+            .background(Color.Black.copy(alpha = visibility.overlayAlpha))
             .padding(
                 top = contentPadding.calculateTopPadding() + EdgePadding,
                 bottom = contentPadding.calculateBottomPadding() + EdgePadding,
@@ -201,6 +210,7 @@ private fun BoxScope.CenterControls(
         horizontalArrangement = Arrangement.spacedBy(ControlSpacing)
     ) {
         PlayerIconButton(
+            isAvailable = playerState.currentEpisodeIndex > ZERO,
             icon = LibertyFlowIcons.Previous,
             iconSize = SkipIconSize,
             modifier = Modifier.size(SkipButtonSize),
@@ -217,6 +227,7 @@ private fun BoxScope.CenterControls(
         )
 
         PlayerIconButton(
+            isAvailable = playerState.currentEpisodeIndex < playerState.episodes.size - ONE,
             icon = LibertyFlowIcons.Next,
             iconSize = SkipIconSize,
             modifier = Modifier.size(SkipButtonSize),
@@ -227,6 +238,8 @@ private fun BoxScope.CenterControls(
 }
 
 private const val TRACK_ALPHA = 0.24f
+
+private const val SLASH = "/"
 
 @Composable
 private fun BoxScope.Footer(
@@ -243,7 +256,7 @@ private fun BoxScope.Footer(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "00:12 / 23:58",
+                text = "${playerState.episodeTime.current.formatMinSec()} $SLASH ${playerState.episodeTime.total.formatMinSec()}",
                 style = mTypography.bodyMedium.copy(color = Color.White)
             )
 
@@ -257,7 +270,9 @@ private fun BoxScope.Footer(
                 // Animated Crop Toggle
                 val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.CropAnimated)
                 val painter = rememberAnimatedVectorPainter(animatedVector, !playerState.isCropped)
-                IconButton(onClick = { onPlayerEffect(PlayerEffect.ToggleCropped) }) {
+                IconButton(
+                    onClick = { onPlayerEffect(PlayerEffect.ToggleCropped) }
+                ) {
                     Image(painter = painter, contentDescription = null, colorFilter = ColorFilter.tint(Color.White))
                 }
 
@@ -274,13 +289,51 @@ private fun BoxScope.Footer(
             }
         }
 
+        PlayerSlider(playerState, onPlayerEffect)
+    }
+}
+
+@Composable
+private fun PlayerSlider(
+    playerState: PlayerState,
+    onPlayerEffect: (PlayerEffect) -> Unit
+) {
+    var scrubPosition by remember { mutableStateOf<Long?>(null) }
+
+    val displayPosition = (scrubPosition ?: playerState.episodeTime.current).toFloat()
+    val totalDuration = playerState.episodeTime.total.coerceAtLeast(1L).toFloat()
+
+    Box(contentAlignment = Alignment.CenterStart) {
         LinearProgressIndicator(
-            progress = { 0.5f }, // Use lambda for performance
+            progress = { displayPosition / totalDuration },
             modifier = Modifier.fillMaxWidth(),
             color = Color.White,
-            trackColor = Color.White.copy(alpha = TRACK_ALPHA)
+            trackColor = Color.White.copy(alpha = 0.24f)
+        )
+
+        Slider(
+            value = displayPosition,
+            valueRange = 0f..totalDuration,
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { newValue -> scrubPosition = newValue.toLong() },
+            onValueChangeFinished = {
+                scrubPosition?.let { onPlayerEffect(PlayerEffect.SeekTo(it)) }
+                scrubPosition = null
+            },
+            colors = SliderDefaults.colors(
+                thumbColor = Color.Transparent,
+                activeTrackColor = Color.Transparent,
+                inactiveTrackColor = Color.Transparent
+            )
         )
     }
+}
+
+private fun Long.formatMinSec(): String {
+    val totalSeconds = this / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "%02d:%02d".format(minutes, seconds)
 }
 
 private val UnlockLabel = R.string.unlock_label
@@ -312,14 +365,19 @@ private fun PlayerIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     iconSize: Dp = Dp.Unspecified,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
+    isAvailable: Boolean = true
 ) {
-    IconButton(onClick = onClick, modifier = modifier, enabled = isEnabled) {
+    IconButton(
+        onClick = { if (isAvailable) onClick() },
+        modifier = modifier,
+        enabled = isEnabled
+    ) {
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
             modifier = if (iconSize != Dp.Unspecified) Modifier.size(iconSize) else Modifier,
-            tint = Color.White
+            tint = if (isAvailable) Color.White else Color.Gray
         )
     }
 }
