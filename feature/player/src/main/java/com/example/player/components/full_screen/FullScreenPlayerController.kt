@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -31,7 +32,6 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -82,12 +83,12 @@ internal fun FullScreenPlayerController(
     }
 
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
-    val visibility = rememberControllerVisibility(playerState.isControllerVisible)
+    val visibility = rememberControllerVisibility(playerState.isControllerVisible, playerState.episodeTime.isScrubbing)
 
     // Derived data for UI
     val currentEpisode = playerState.episodes.getOrNull(playerState.currentEpisodeIndex)
     val title = currentEpisode?.name ?: stringResource(NoTitleLabel)
-    val episodeNumber = playerState.currentEpisodeIndex + 1
+    val episodeNumber = playerState.currentEpisodeIndex + ONE
 
     // 1. Interaction Layer (Captures taps to toggle visibility)
     Box(
@@ -237,8 +238,6 @@ private fun BoxScope.CenterControls(
     }
 }
 
-private const val TRACK_ALPHA = 0.24f
-
 private const val SLASH = "/"
 
 @Composable
@@ -246,6 +245,11 @@ private fun BoxScope.Footer(
     playerState: PlayerState,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
+    var scrubPosition by remember { mutableStateOf<Long?>(null) }
+
+    val currentTime = scrubPosition ?: playerState.episodeTime.current
+    val totalTime = playerState.episodeTime.total
+
     Column(
         modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
         verticalArrangement = Arrangement.spacedBy(HeaderSpacing)
@@ -256,7 +260,7 @@ private fun BoxScope.Footer(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "${playerState.episodeTime.current.formatMinSec()} $SLASH ${playerState.episodeTime.total.formatMinSec()}",
+                text = "${currentTime.formatMinSec()} $SLASH ${totalTime.formatMinSec()}",
                 style = mTypography.bodyMedium.copy(color = Color.White)
             )
 
@@ -289,37 +293,56 @@ private fun BoxScope.Footer(
             }
         }
 
-        PlayerSlider(playerState, onPlayerEffect)
+        PlayerSlider(
+            currentPosition = playerState.episodeTime.current,
+            totalDuration = playerState.episodeTime.total,
+            scrubPosition = scrubPosition,
+            onScrubbing = {
+                onPlayerEffect(PlayerEffect.SetIsScrubbing(true))
+                scrubPosition = it
+            },
+            onSeekFinished = {
+                onPlayerEffect(PlayerEffect.SetIsScrubbing(false))
+                onPlayerEffect(PlayerEffect.SeekTo(it))
+                scrubPosition = null
+            }
+        )
     }
 }
 
+private const val TRACK_ALPHA = 0.24f
+private const val SAFE_RANGE_START = 0f
+
+private const val SAFE_TOTAL_DURATION = 0L
+
+private val SliderHeight = 1.dp
+
 @Composable
 private fun PlayerSlider(
-    playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    currentPosition: Long,
+    totalDuration: Long,
+    scrubPosition: Long?,
+    onScrubbing: (Long) -> Unit,
+    onSeekFinished: (Long) -> Unit
 ) {
-    var scrubPosition by remember { mutableStateOf<Long?>(null) }
+    val displayPosition = (scrubPosition ?: currentPosition).toFloat()
+    val safeTotalDuration = totalDuration.coerceAtLeast(SAFE_TOTAL_DURATION).toFloat()
 
-    val displayPosition = (scrubPosition ?: playerState.episodeTime.current).toFloat()
-    val totalDuration = playerState.episodeTime.total.coerceAtLeast(1L).toFloat()
-
-    Box(contentAlignment = Alignment.CenterStart) {
+    Box(contentAlignment = Alignment.CenterStart, modifier = Modifier.fillMaxWidth()) {
         LinearProgressIndicator(
-            progress = { displayPosition / totalDuration },
+            progress = { displayPosition / safeTotalDuration },
             modifier = Modifier.fillMaxWidth(),
             color = Color.White,
-            trackColor = Color.White.copy(alpha = 0.24f)
+            trackColor = Color.White.copy(alpha = TRACK_ALPHA),
+            strokeCap = StrokeCap.Round
         )
 
         Slider(
             value = displayPosition,
-            valueRange = 0f..totalDuration,
-            modifier = Modifier.fillMaxWidth(),
-            onValueChange = { newValue -> scrubPosition = newValue.toLong() },
-            onValueChangeFinished = {
-                scrubPosition?.let { onPlayerEffect(PlayerEffect.SeekTo(it)) }
-                scrubPosition = null
-            },
+            valueRange = SAFE_RANGE_START..safeTotalDuration,
+            modifier = Modifier.fillMaxWidth().height(SliderHeight),
+            onValueChange = { newValue -> onScrubbing(newValue.toLong()) },
+            onValueChangeFinished = { onSeekFinished(displayPosition.toLong()) },
             colors = SliderDefaults.colors(
                 thumbColor = Color.Transparent,
                 activeTrackColor = Color.Transparent,
@@ -329,11 +352,15 @@ private fun PlayerSlider(
     }
 }
 
+private const val TOTAL_SECONDS_DIVIDER = 1000
+private const val SECONDS_MINUTES_DIVIDER = 60
+private const val FORMAT = "%02d:%02d"
+
 private fun Long.formatMinSec(): String {
-    val totalSeconds = this / 1000
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return "%02d:%02d".format(minutes, seconds)
+    val totalSeconds = this / TOTAL_SECONDS_DIVIDER
+    val minutes = totalSeconds / SECONDS_MINUTES_DIVIDER
+    val seconds = totalSeconds % SECONDS_MINUTES_DIVIDER
+    return FORMAT.format(minutes, seconds)
 }
 
 private val UnlockLabel = R.string.unlock_label

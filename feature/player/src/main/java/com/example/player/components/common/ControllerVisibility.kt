@@ -19,17 +19,20 @@ internal class ControllerVisibility(
 )
 
 @Composable
-internal fun rememberControllerVisibility(isVisible: Boolean): ControllerVisibility {
+internal fun rememberControllerVisibility(
+    isVisible: Boolean,
+    isScrubbing: Boolean = false,
+): ControllerVisibility {
     val motion = mMotionScheme
 
     val controlsAlpha by animateFloatAsState(
-        targetValue = if (isVisible) FULL_ALPHA else GHOST_ALPHA,
+        targetValue = if (isVisible || isScrubbing) FULL_ALPHA else GHOST_ALPHA,
         animationSpec = motion.slowEffectsSpec(),
         label = "ControlsAlpha"
     )
 
     val overlayAlpha by animateFloatAsState(
-        targetValue = if (isVisible) OVERLAY_TINT_ALPHA else GHOST_ALPHA,
+        targetValue = if (isVisible || isScrubbing) OVERLAY_TINT_ALPHA else GHOST_ALPHA,
         animationSpec = motion.slowEffectsSpec(),
         label = "OverlayAlpha"
     )

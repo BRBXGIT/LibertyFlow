@@ -9,9 +9,9 @@ sealed interface PlayerEffect {
     data class SkipEpisode(val forward: Boolean): PlayerEffect
     data class ChangeEpisode(val index: Int): PlayerEffect
     data class SeekTo(val position: Long): PlayerEffect
+    data class SetIsScrubbing(val value: Boolean): PlayerEffect
     data object TogglePlayPause: PlayerEffect
     data object StopPlayer: PlayerEffect
-    data object ToggleIsScrubbing: PlayerEffect
 
     // --- Controller ---
     data object ToggleControllerVisible: PlayerEffect

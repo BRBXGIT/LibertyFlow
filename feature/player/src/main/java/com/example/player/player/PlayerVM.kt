@@ -50,9 +50,9 @@ class PlayerVM @Inject constructor(
             is PlayerEffect.SkipEpisode -> skipEpisode(effect.forward)
             is PlayerEffect.ChangeEpisode -> changeEpisode(effect.index)
             is PlayerEffect.SeekTo -> seekEpisode(effect.position)
+            is PlayerEffect.SetIsScrubbing -> _playerState.update { it.setIsScrabbing(effect.value) }
             PlayerEffect.TogglePlayPause -> playPauseEpisode()
             PlayerEffect.StopPlayer -> stopPlayer()
-            PlayerEffect.ToggleIsScrubbing -> _playerState.update { it.toggleIsScrubbing() }
 
             // --- Controller ---
             PlayerEffect.ToggleControllerVisible -> toggleControllerVisible()
