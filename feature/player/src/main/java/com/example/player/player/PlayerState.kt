@@ -1,6 +1,7 @@
 package com.example.player.player
 
 import androidx.compose.runtime.Immutable
+import com.example.data.models.player.VideoQuality
 import com.example.data.models.releases.anime_details.UiEpisode
 
 @Immutable
@@ -24,8 +25,6 @@ data class PlayerState(
     val isEpisodesDialogVisible: Boolean = false
 ) {
     enum class EpisodeState { Loading, Playing, Paused }
-
-    enum class VideoQuality { SD, HD, FHD }
 
     enum class UiPlayerState { Closed, Mini, Full }
 
