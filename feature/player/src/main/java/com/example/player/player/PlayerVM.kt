@@ -9,14 +9,14 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
+import com.example.data.domain.PlayerSettingsRepo
+import com.example.data.models.player.VideoQuality
 import com.example.data.models.releases.anime_details.UiEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -27,18 +27,22 @@ private const val START_POSITION = 0L
 @HiltViewModel
 class PlayerVM @Inject constructor(
     val player: ExoPlayer,
+    private val playerSettingsRepo: PlayerSettingsRepo,
+    @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
     @param:Dispatcher(LibertyFlowDispatcher.Main) private val dispatcherMain: CoroutineDispatcher
 ): ViewModel() {
 
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.toLazily(PlayerState())
 
-    private val _playerEffects = Channel<PlayerEffect>(Channel.BUFFERED)
-    val playerEffects = _playerEffects.receiveAsFlow()
-
     // --- Intents ---
     fun sendIntent(intent: PlayerIntent) {
-        // TODO: handle intent
+        when(intent) {
+            is PlayerIntent.SaveQuality -> saveQuality(intent.quality)
+            PlayerIntent.ToggleAutoPlay -> toggleAutoPlay()
+            PlayerIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening()
+            PlayerIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton()
+        }
     }
 
     // --- Effects ---
@@ -79,19 +83,25 @@ class PlayerVM @Inject constructor(
         }
     }
 
+    // Set up player and observe player settings from datastore
     private fun setUpPlayer(episodes: List<UiEpisode>, startIndex: Int) {
-        _playerState.update {
-            it.copy(
-                uiPlayerState = PlayerState.UiPlayerState.Mini,
-                episodes = episodes,
-                currentEpisodeIndex = startIndex
-            )
+        viewModelScope.launch(dispatcherIo) {
+            playerSettingsRepo.playerSettings.collect { playerSettings ->
+                _playerState.update {
+                    it.copy(
+                        uiPlayerState = PlayerState.UiPlayerState.Mini,
+                        episodes = episodes,
+                        currentEpisodeIndex = startIndex,
+                        playerSettings = playerSettings
+                    )
+                }
+            }
         }
 
         player.clearMediaItems()
         player.addListener(listener)
 
-        val quality = _playerState.value.videoQuality
+        val quality = _playerState.value.playerSettings.quality
         val mediaItems = episodes.map { it.toMediaItem(quality) }
         player.setMediaItems(mediaItems, startIndex, START_POSITION)
 
@@ -110,12 +120,8 @@ class PlayerVM @Inject constructor(
 
     private fun skipEpisode(forward: Boolean) {
         when(forward) {
-            true -> {
-                if (player.hasNextMediaItem()) player.seekToNextMediaItem()
-            }
-            false -> {
-                if (player.hasPreviousMediaItem()) player.seekToPreviousMediaItem()
-            }
+            true -> if (player.hasNextMediaItem()) player.seekToNextMediaItem()
+            false -> if (player.hasPreviousMediaItem()) player.seekToPreviousMediaItem()
         }
     }
 
@@ -162,6 +168,23 @@ class PlayerVM @Inject constructor(
         progressJob = null
     }
 
+    // --- Player settings ---
+    private fun saveQuality(quality: VideoQuality) = viewModelScope.launch(dispatcherIo) {
+        playerSettingsRepo.saveQuality(quality)
+    }
+
+    private fun toggleShowSkipOpeningButton() = viewModelScope.launch(dispatcherIo) {
+        playerSettingsRepo.saveShowSkipOpeningButton(!_playerState.value.playerSettings.showSkipOpeningButton)
+    }
+
+    private fun toggleAutoSkipOpening() = viewModelScope.launch(dispatcherIo) {
+        playerSettingsRepo.saveAutoSkipOpening(!_playerState.value.playerSettings.autoSkipOpening)
+    }
+
+    private fun toggleAutoPlay() = viewModelScope.launch(dispatcherIo) {
+        playerSettingsRepo.saveAutoPlay(!_playerState.value.playerSettings.autoPlay)
+    }
+
     // --- Controller ---
     private var controllerJob: Job? = null
     private fun toggleControllerVisible() {
@@ -188,11 +211,11 @@ class PlayerVM @Inject constructor(
     }
 }
 
-private fun UiEpisode.toMediaItem(quality: PlayerState.VideoQuality) =
+private fun UiEpisode.toMediaItem(quality: VideoQuality) =
     MediaItem.fromUri(
         when(quality) {
-            PlayerState.VideoQuality.SD -> hls480
-            PlayerState.VideoQuality.HD -> hls720 ?: hls480
-            PlayerState.VideoQuality.FHD -> hls1080 ?: hls720 ?: hls480
+            VideoQuality.SD -> hls480
+            VideoQuality.HD -> hls720 ?: hls480
+            VideoQuality.FHD -> hls1080 ?: hls720 ?: hls480
         }
     )

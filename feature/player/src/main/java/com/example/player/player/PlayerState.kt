@@ -1,6 +1,7 @@
 package com.example.player.player
 
 import androidx.compose.runtime.Immutable
+import com.example.data.models.player.PlayerSettings
 import com.example.data.models.player.VideoQuality
 import com.example.data.models.releases.anime_details.UiEpisode
 
@@ -9,8 +10,8 @@ data class PlayerState(
     // Player states
     val uiPlayerState: UiPlayerState = UiPlayerState.Closed,
     val episodes: List<UiEpisode> = emptyList(),
-    val videoQuality: VideoQuality = VideoQuality.SD,
     val currentEpisodeIndex: Int = 0,
+    val playerSettings: PlayerSettings = PlayerSettings(),
 
     // Episode states
     val episodeState: EpisodeState = EpisodeState.Loading,
