@@ -44,6 +44,7 @@ import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
 import com.example.player.R
 import com.example.player.player.PlayerEffect
+import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
 // --- Dimens ---
@@ -67,6 +68,7 @@ private val ChooseEpisodeLabel = R.string.choose_episode_label
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EpisodeDialog(
+    onPlayerIntent: (PlayerIntent) -> Unit,
     onPlayerEffect: (PlayerEffect) -> Unit,
     playerState: PlayerState
 ) {
@@ -74,7 +76,7 @@ fun EpisodeDialog(
     var selectedIndex by rememberSaveable { mutableIntStateOf(playerState.currentEpisodeIndex) }
 
     BasicAlertDialog(
-        onDismissRequest = { onPlayerEffect(PlayerEffect.ToggleEpisodesDialog) },
+        onDismissRequest = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },
         modifier = Modifier
             .padding(vertical = DialogPadding)
             .background(
@@ -98,7 +100,7 @@ fun EpisodeDialog(
                 onSelect = { selectedIndex = it }
             )
 
-            DialogButtons(selectedIndex,onPlayerEffect)
+            DialogButtons(selectedIndex,onPlayerIntent, onPlayerEffect)
         }
     }
 }
@@ -188,6 +190,7 @@ private val DismissLabel = R.string.cancel_label
 @Composable
 private fun DialogButtons(
     selectedIndex: Int,
+    onPlayerIntent: (PlayerIntent) -> Unit,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     Row(
@@ -197,14 +200,14 @@ private fun DialogButtons(
     ) {
         Spacer(modifier = Modifier.weight(WEIGHT))
 
-        TextButton(onClick = { onPlayerEffect(PlayerEffect.ToggleEpisodesDialog) }) {
+        TextButton(onClick = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) }) {
             Text(text = stringResource(DismissLabel))
         }
 
         TextButton(
             onClick = {
                 onPlayerEffect(PlayerEffect.ChangeEpisode(selectedIndex))
-                onPlayerEffect(PlayerEffect.ToggleEpisodesDialog)
+                onPlayerIntent(PlayerIntent.ToggleEpisodesDialog)
             }
         ) {
             Text(text = stringResource(SelectLabel))

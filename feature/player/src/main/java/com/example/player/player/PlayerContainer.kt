@@ -22,7 +22,8 @@ fun PlayerContainer(
     playerState: PlayerState,
     player: ExoPlayer,
     navBarVisible: Boolean,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val uiPlayerState = playerState.uiPlayerState
 
@@ -33,7 +34,8 @@ fun PlayerContainer(
             FullScreenPlayerContainer(
                 player = player,
                 playerState = playerState,
-                onPlayerEffect = onPlayerEffect
+                onPlayerEffect = onPlayerEffect,
+                onPlayerIntent = onPlayerIntent
             )
         }
 
@@ -43,6 +45,7 @@ fun PlayerContainer(
                 navBarVisible = navBarVisible,
                 playerState = playerState,
                 onPlayerEffect = onPlayerEffect,
+                onPlayerIntent = onPlayerIntent
             )
         }
 

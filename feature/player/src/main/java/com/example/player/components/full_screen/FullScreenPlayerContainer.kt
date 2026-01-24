@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.player.components.player.Player
 import com.example.player.player.PlayerEffect
+import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
 @Composable
@@ -20,10 +21,11 @@ internal fun FullScreenPlayerContainer(
     player: ExoPlayer,
     playerState: PlayerState,
     onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     BackHandler {
-        onPlayerEffect(PlayerEffect.ToggleFullScreen)
-        if (playerState.isLocked) onPlayerEffect(PlayerEffect.ToggleIsLocked)
+        onPlayerIntent(PlayerIntent.ToggleFullScreen)
+        if (playerState.isLocked) onPlayerIntent(PlayerIntent.ToggleIsLocked)
     }
 
     Box(
@@ -33,6 +35,8 @@ internal fun FullScreenPlayerContainer(
     ) {
         Player(player, playerState)
 
-        FullScreenPlayerController(playerState, onPlayerEffect)
+        if (playerState.isSettingsBSVisible) SettingsBS(playerState.playerSettings, onPlayerIntent)
+
+        FullScreenPlayerController(playerState, onPlayerEffect, onPlayerIntent)
     }
 }

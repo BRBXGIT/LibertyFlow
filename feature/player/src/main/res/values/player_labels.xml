@@ -8,4 +8,9 @@
     <string name="cancel_label">Cancel</string>
     <string name="select_label">Selected</string>
     <string name="choose_episode_label">Choose episode</string>
+
+    <string name="quality_label">Video quality</string>
+    <string name="skip_opening_buttons_label">Skip opening buttons</string>
+    <string name="auto_skip_opening_label">Auto skip opening</string>
+    <string name="autoplay_label">Autoplay</string>
 </resources>

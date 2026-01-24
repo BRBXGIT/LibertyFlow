@@ -39,6 +39,12 @@ object LibertyFlowIcons {
     val Unlock = R.drawable.ic_unlock
     val Checklist = R.drawable.ic_checklist
     val ArrowDown = R.drawable.ic_arrow_down
+    val ArrowRightCircle = R.drawable.ic_arrow_right_circle
+    val HighQuality = R.drawable.ic_high_quality
+    val RewindForwardCircle = R.drawable.ic_rewind_forward_circle
+    val PlayCircle = R.drawable.ic_play_circle
+    val CheckCircle = R.drawable.ic_check_circle
+    val Rocket = R.drawable.ic_rocket
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled

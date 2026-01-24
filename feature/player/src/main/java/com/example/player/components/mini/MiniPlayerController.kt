@@ -30,6 +30,7 @@ import com.example.design_system.theme.mShapes
 import com.example.player.components.common.AnimatedPlayPauseButton
 import com.example.player.components.common.rememberControllerVisibility
 import com.example.player.player.PlayerEffect
+import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
 private const val MAIN_BOX_Z_INDEX = 1f
@@ -41,7 +42,8 @@ private val PLAY_PAUSE_BUTTON_SIZE = 28.dp
 @Composable
 internal fun BoxScope.MiniPlayerController(
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val visibility = rememberControllerVisibility(playerState.isControllerVisible)
     Box(
@@ -52,20 +54,20 @@ internal fun BoxScope.MiniPlayerController(
             .graphicsLayer { alpha = visibility.controlsAlpha }
             .clip(mShapes.small)
             .background(Color.Black.copy(alpha = visibility.overlayAlpha))
-            .clickable { onPlayerEffect(PlayerEffect.ToggleControllerVisible) }
+            .clickable { onPlayerIntent(PlayerIntent.ToggleControllerVisible) }
             .padding(CONTROLLER_PADDING.dp)
     ) {
         ControllerButton(
             icon = LibertyFlowIcons.FullScreen,
             visible = playerState.isControllerVisible,
             modifier = Modifier.align(Alignment.TopStart),
-            onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) }
+            onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) }
         )
 
         // Top-right exit/stop button
         ControllerButton(
             icon = LibertyFlowIcons.CrossCircle,
-            onClick = { onPlayerEffect(PlayerEffect.StopPlayer) },
+            onClick = { onPlayerIntent(PlayerIntent.StopPlayer) },
             visible = playerState.isControllerVisible,
             modifier = Modifier.align(Alignment.TopEnd)
         )
@@ -86,7 +88,7 @@ internal fun BoxScope.MiniPlayerController(
 
             AnimatedPlayPauseButton(
                 playerState = playerState,
-                onPlayerEffect = onPlayerEffect,
+                onPlayerIntent = onPlayerIntent,
                 iconSize = ICON_SIZE.dp,
                 buttonSize = PLAY_PAUSE_BUTTON_SIZE
             )

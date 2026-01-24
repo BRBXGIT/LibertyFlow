@@ -17,9 +17,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val START_POSITION = 0L
@@ -38,10 +40,27 @@ class PlayerVM @Inject constructor(
     // --- Intents ---
     fun sendIntent(intent: PlayerIntent) {
         when(intent) {
+            // --- Player ---
+            is PlayerIntent.SetUpPlayer -> setUpPlayer(intent.episodes, intent.startIndex)
+            is PlayerIntent.SetIsScrubbing -> _playerState.update { it.setIsScrabbing(intent.value) }
+            PlayerIntent.TogglePlayPause -> togglePlayPause()
+            PlayerIntent.StopPlayer -> stopPlayer()
+
+            // --- Player settings ---
             is PlayerIntent.SaveQuality -> saveQuality(intent.quality)
             PlayerIntent.ToggleAutoPlay -> toggleAutoPlay()
             PlayerIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening()
             PlayerIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton()
+
+            // --- Controller ---
+            PlayerIntent.ToggleControllerVisible -> toggleControllerVisible()
+
+            // --- Ui ---
+            PlayerIntent.ToggleFullScreen -> toggleFullScreen()
+            PlayerIntent.ToggleCropped -> _playerState.update { it.toggleIsCropped() }
+            PlayerIntent.ToggleIsLocked -> _playerState.update { it.toggleIsLocked() }
+            PlayerIntent.ToggleEpisodesDialog -> _playerState.update { it.toggleEpisodesDialog() }
+            PlayerIntent.ToggleSettingsBS -> _playerState.update { it.toggleSettingsBS() }
         }
     }
 
@@ -49,23 +68,10 @@ class PlayerVM @Inject constructor(
     fun sendEffect(effect: PlayerEffect) {
         when(effect) {
             // --- Player ---
-            is PlayerEffect.SetUpPlayer -> setUpPlayer(effect.episodes, effect.startIndex)
             is PlayerEffect.SeekForFiveSeconds -> seekEpisodeForFiveSeconds(effect.forward)
             is PlayerEffect.SkipEpisode -> skipEpisode(effect.forward)
             is PlayerEffect.ChangeEpisode -> changeEpisode(effect.index)
             is PlayerEffect.SeekTo -> seekEpisode(effect.position)
-            is PlayerEffect.SetIsScrubbing -> _playerState.update { it.setIsScrabbing(effect.value) }
-            PlayerEffect.TogglePlayPause -> playPauseEpisode()
-            PlayerEffect.StopPlayer -> stopPlayer()
-
-            // --- Controller ---
-            PlayerEffect.ToggleControllerVisible -> toggleControllerVisible()
-
-            // --- Ui ---
-            PlayerEffect.ToggleFullScreen -> toggleFullScreen()
-            PlayerEffect.ToggleCropped -> _playerState.update { it.toggleIsCropped() }
-            PlayerEffect.ToggleIsLocked -> _playerState.update { it.toggleIsLocked() }
-            PlayerEffect.ToggleEpisodesDialog -> _playerState.update { it.toggleEpisodesDialog() }
         }
     }
 
@@ -83,31 +89,33 @@ class PlayerVM @Inject constructor(
         }
     }
 
-    // Set up player and observe player settings from datastore
     private fun setUpPlayer(episodes: List<UiEpisode>, startIndex: Int) {
         viewModelScope.launch(dispatcherIo) {
-            playerSettingsRepo.playerSettings.collect { playerSettings ->
-                _playerState.update {
-                    it.copy(
-                        uiPlayerState = PlayerState.UiPlayerState.Mini,
-                        episodes = episodes,
-                        currentEpisodeIndex = startIndex,
-                        playerSettings = playerSettings
-                    )
-                }
+            val initialSettings = playerSettingsRepo.playerSettings.first()
+
+            _playerState.update {
+                it.copy(
+                    uiPlayerState = PlayerState.UiPlayerState.Mini,
+                    episodes = episodes,
+                    currentEpisodeIndex = startIndex,
+                    playerSettings = initialSettings
+                )
+            }
+
+            withContext(dispatcherMain) {
+                player.clearMediaItems()
+                player.addListener(listener)
+
+                val mediaItems = episodes.map { it.toMediaItem(initialSettings.quality) }
+                player.setMediaItems(mediaItems, startIndex, START_POSITION)
+
+                player.prepare()
+                player.playWhenReady = true
+                startTrackingProgress()
             }
         }
 
-        player.clearMediaItems()
-        player.addListener(listener)
-
-        val quality = _playerState.value.playerSettings.quality
-        val mediaItems = episodes.map { it.toMediaItem(quality) }
-        player.setMediaItems(mediaItems, startIndex, START_POSITION)
-
-        player.prepare()
-        player.playWhenReady = true
-        startTrackingProgress()
+        observeSettings()
     }
 
     private fun stopPlayer() {
@@ -125,7 +133,7 @@ class PlayerVM @Inject constructor(
         }
     }
 
-    private fun playPauseEpisode() {
+    private fun togglePlayPause() {
         when(player.isPlaying) {
             true -> {
                 player.pause()
@@ -169,6 +177,38 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Player settings ---
+    private var settingsJob: Job? = null
+
+    private fun observeSettings() {
+        settingsJob?.cancel()
+        settingsJob = viewModelScope.launch(dispatcherIo) {
+            playerSettingsRepo.playerSettings.collect { newSettings ->
+                val oldSettings = _playerState.value.playerSettings
+
+                _playerState.update { it.copy(playerSettings = newSettings) }
+
+                if (oldSettings.quality != newSettings.quality) {
+                    updatePlayerQuality(newSettings.quality)
+                }
+            }
+        }
+    }
+
+    private suspend fun updatePlayerQuality(newQuality: VideoQuality) {
+        withContext(dispatcherMain) {
+            val currentPos = player.currentPosition
+            val currentIndex = player.currentMediaItemIndex
+            val isPlaying = player.isPlaying
+
+            val newItems = _playerState.value.episodes.map { it.toMediaItem(newQuality) }
+
+            player.setMediaItems(newItems, currentIndex, currentPos)
+
+            player.prepare()
+            if (isPlaying) player.play()
+        }
+    }
+
     private fun saveQuality(quality: VideoQuality) = viewModelScope.launch(dispatcherIo) {
         playerSettingsRepo.saveQuality(quality)
     }

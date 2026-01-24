@@ -53,7 +53,7 @@ fun NavGraphBuilder.animeDetails(
         onEffect = animeDetailsVM::sendEffect,
         onIntent = animeDetailsVM::sendIntent,
         onRefreshEffect = refreshVM::sendEffect,
-        onPlayerEffect = playerVM::sendEffect
+        onPlayerIntent = playerVM::sendIntent
     )
 }
 

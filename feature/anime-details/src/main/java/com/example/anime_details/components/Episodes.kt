@@ -30,7 +30,7 @@ import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
-import com.example.player.player.PlayerEffect
+import com.example.player.player.PlayerIntent
 
 // Rounded corner size for the top of the episodes container
 private const val COLUMN_SHAPE = 16
@@ -48,7 +48,7 @@ internal fun LazyItemScope.Episodes(
     episodes: List<UiEpisode>,
     watchedEps: List<Int>,
     onIntent: (AnimeDetailsIntent) -> Unit,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     // TODO: Fix bug with cropped column if a few items
     Column(
@@ -70,7 +70,7 @@ internal fun LazyItemScope.Episodes(
                 watchedEps = watchedEps,
                 onClick = {
                     onIntent(AnimeDetailsIntent.AddEpisodeToWatched(index))
-                    onPlayerEffect(PlayerEffect.SetUpPlayer(episodes, index))
+                    onPlayerIntent(PlayerIntent.SetUpPlayer(episodes, index))
                 },
             )
         }

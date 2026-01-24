@@ -12,13 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.Dp
 import com.example.design_system.theme.LibertyFlowIcons
-import com.example.player.player.PlayerEffect
+import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
 @Composable
 internal fun AnimatedPlayPauseButton(
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit,
     iconSize: Dp,
     buttonSize: Dp,
     isEnabled: Boolean = true
@@ -33,7 +33,7 @@ internal fun AnimatedPlayPauseButton(
 
     IconButton(
         modifier = Modifier.size(buttonSize),
-        onClick = { if (playerState.isControllerVisible) onPlayerEffect(PlayerEffect.TogglePlayPause) },
+        onClick = { if (playerState.isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause) },
         enabled = isEnabled
     ) {
         Image(

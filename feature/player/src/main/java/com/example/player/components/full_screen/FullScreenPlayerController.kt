@@ -55,6 +55,7 @@ import com.example.player.components.common.AnimatedPlayPauseButton
 import com.example.player.components.common.ControllerVisibility
 import com.example.player.components.common.rememberControllerVisibility
 import com.example.player.player.PlayerEffect
+import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
 // --- Constants & Configuration ---
@@ -76,11 +77,10 @@ private const val ONE = 1
 @Composable
 internal fun FullScreenPlayerController(
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
-    if (playerState.isEpisodesDialogVisible) {
-        EpisodeDialog(onPlayerEffect, playerState)
-    }
+    if (playerState.isEpisodesDialogVisible) EpisodeDialog(onPlayerIntent, onPlayerEffect, playerState)
 
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
     val visibility = rememberControllerVisibility(playerState.isControllerVisible, playerState.episodeTime.isScrubbing)
@@ -95,7 +95,7 @@ internal fun FullScreenPlayerController(
         modifier = Modifier
             .fillMaxSize()
             .clickable(
-                onClick = { onPlayerEffect(PlayerEffect.ToggleControllerVisible) },
+                onClick = { onPlayerIntent(PlayerIntent.ToggleControllerVisible) },
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             )
@@ -109,14 +109,15 @@ internal fun FullScreenPlayerController(
             playerState = playerState,
             onPlayerEffect = onPlayerEffect,
             visibility = visibility,
-            contentPadding = systemBarsPadding
+            contentPadding = systemBarsPadding,
+            onPlayerIntent = onPlayerIntent
         )
     }
 
     // 3. Unlock Overlay (Only visible when locked)
     if (playerState.isLocked) {
         UnlockOverlay(
-            onPlayerEffect = onPlayerEffect,
+            onPlayerIntent = onPlayerIntent,
             alpha = visibility.controlsAlpha
         )
     }
@@ -129,6 +130,7 @@ private fun MainControlsOverlay(
     playerState: PlayerState,
     visibility: ControllerVisibility,
     onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit,
     contentPadding: PaddingValues
 ) {
     Box(
@@ -143,9 +145,9 @@ private fun MainControlsOverlay(
                 end = EdgePadding
             )
     ) {
-        Header(title, episodeNumber, playerState, onPlayerEffect)
-        CenterControls(playerState, onPlayerEffect)
-        Footer(playerState, onPlayerEffect)
+        Header(title, episodeNumber, playerState, onPlayerIntent)
+        CenterControls(playerState, onPlayerEffect, onPlayerIntent)
+        Footer(playerState, onPlayerEffect, onPlayerIntent)
     }
 }
 
@@ -156,7 +158,7 @@ private fun BoxScope.Header(
     title: String,
     episodeNumber: Int,
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
@@ -169,7 +171,7 @@ private fun BoxScope.Header(
         ) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.ArrowDown,
-                onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) },
+                onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) },
                 isEnabled = playerState.isControllerVisible
             )
             Column(verticalArrangement = Arrangement.spacedBy(HeaderSpacing)) {
@@ -188,12 +190,12 @@ private fun BoxScope.Header(
         Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.Checklist,
-                onClick = { onPlayerEffect(PlayerEffect.ToggleEpisodesDialog) },
+                onClick = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },
                 isEnabled = playerState.isControllerVisible
             )
             PlayerIconButton(
                 icon = LibertyFlowIcons.Settings,
-                onClick = {},
+                onClick = { onPlayerIntent(PlayerIntent.ToggleSettingsBS) },
                 isEnabled = playerState.isControllerVisible
             )
         }
@@ -203,7 +205,8 @@ private fun BoxScope.Header(
 @Composable
 private fun BoxScope.CenterControls(
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     Row(
         modifier = Modifier.align(Alignment.Center),
@@ -221,7 +224,7 @@ private fun BoxScope.CenterControls(
 
         AnimatedPlayPauseButton(
             playerState = playerState,
-            onPlayerEffect = onPlayerEffect,
+            onPlayerIntent = onPlayerIntent,
             iconSize = PlayPauseIconSize,
             buttonSize = PlayPauseButtonSize,
             isEnabled = playerState.isControllerVisible
@@ -243,7 +246,8 @@ private const val SLASH = "/"
 @Composable
 private fun BoxScope.Footer(
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     var scrubPosition by remember { mutableStateOf<Long?>(null) }
 
@@ -267,7 +271,7 @@ private fun BoxScope.Footer(
             Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
                 PlayerIconButton(
                     icon = LibertyFlowIcons.Lock,
-                    onClick = { onPlayerEffect(PlayerEffect.ToggleIsLocked) },
+                    onClick = { onPlayerIntent(PlayerIntent.ToggleIsLocked) },
                     isEnabled = playerState.isControllerVisible
                 )
 
@@ -275,7 +279,7 @@ private fun BoxScope.Footer(
                 val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.CropAnimated)
                 val painter = rememberAnimatedVectorPainter(animatedVector, !playerState.isCropped)
                 IconButton(
-                    onClick = { onPlayerEffect(PlayerEffect.ToggleCropped) }
+                    onClick = { onPlayerIntent(PlayerIntent.ToggleCropped) }
                 ) {
                     Image(painter = painter, contentDescription = null, colorFilter = ColorFilter.tint(Color.White))
                 }
@@ -287,7 +291,7 @@ private fun BoxScope.Footer(
                 )
                 PlayerIconButton(
                     icon = LibertyFlowIcons.QuitFullScreen,
-                    onClick = { onPlayerEffect(PlayerEffect.ToggleFullScreen) },
+                    onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) },
                     isEnabled = playerState.isControllerVisible
                 )
             }
@@ -298,11 +302,11 @@ private fun BoxScope.Footer(
             totalDuration = playerState.episodeTime.total,
             scrubPosition = scrubPosition,
             onScrubbing = {
-                onPlayerEffect(PlayerEffect.SetIsScrubbing(true))
+                onPlayerIntent(PlayerIntent.SetIsScrubbing(true))
                 scrubPosition = it
             },
             onSeekFinished = {
-                onPlayerEffect(PlayerEffect.SetIsScrubbing(false))
+                onPlayerIntent(PlayerIntent.SetIsScrubbing(false))
                 onPlayerEffect(PlayerEffect.SeekTo(it))
                 scrubPosition = null
             }
@@ -367,7 +371,7 @@ private val UnlockLabel = R.string.unlock_label
 
 @Composable
 private fun UnlockOverlay(
-    onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit,
     alpha: Float
 ) {
     Box(
@@ -380,7 +384,7 @@ private fun UnlockOverlay(
         ButtonWithIcon(
             text = stringResource(UnlockLabel),
             icon = LibertyFlowIcons.Unlock,
-            onClick = { onPlayerEffect(PlayerEffect.ToggleIsLocked) },
+            onClick = { onPlayerIntent(PlayerIntent.ToggleIsLocked) },
             type = ButtonWithIconType.Outlined
         )
     }

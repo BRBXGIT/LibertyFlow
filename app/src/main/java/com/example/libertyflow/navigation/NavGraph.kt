@@ -86,7 +86,8 @@ fun NavGraph() {
                 playerState = playerState,
                 player = playerVM.player,
                 navBarVisible = navBarVisible,
-                onPlayerEffect = playerVM::sendEffect
+                onPlayerEffect = playerVM::sendEffect,
+                onPlayerIntent = playerVM::sendIntent
             )
         }
     }

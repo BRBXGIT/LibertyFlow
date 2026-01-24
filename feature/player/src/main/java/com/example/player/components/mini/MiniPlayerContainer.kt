@@ -37,6 +37,7 @@ import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
 import com.example.player.components.player.Player
 import com.example.player.player.PlayerEffect
+import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -53,7 +54,8 @@ internal fun MiniPlayerContainer(
     navBarVisible: Boolean,
     player: ExoPlayer,
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit
+    onPlayerEffect: (PlayerEffect) -> Unit,
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val density = LocalDensity.current
     val navBarSize = calculateNavBarSize()
@@ -92,7 +94,7 @@ internal fun MiniPlayerContainer(
                     )
                 }
         ) {
-            MiniPlayerController(playerState, onPlayerEffect)
+            MiniPlayerController(playerState, onPlayerEffect, onPlayerIntent)
             Player(player, playerState)
         }
     }

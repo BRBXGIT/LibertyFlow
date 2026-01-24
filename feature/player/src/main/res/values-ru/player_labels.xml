@@ -8,4 +8,9 @@
     <string name="cancel_label">Отмена</string>
     <string name="select_label">Выбрать</string>
     <string name="choose_episode_label">Выбор эпизода</string>
+
+    <string name="quality_label">Quality</string>
+    <string name="skip_opening_buttons_label">Кнопки пропуска опенинга</string>
+    <string name="auto_skip_opening_label">Автоматически пропускать опенинг</string>
+    <string name="autoplay_label">Автовоспроизведение</string>
 </resources>
