@@ -12,7 +12,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 // Singleton DataStore instance to prevent multiple open files
-private val Context.dataStore by preferencesDataStore("liberty_flow_theme_prefs")
+private const val DATA_STORE_NAME = "liberty_flow_theme_prefs"
+private val Context.dataStore by preferencesDataStore(DATA_STORE_NAME)
 
 @Singleton
 class ThemePrefsManagerImpl @Inject constructor(

@@ -2,25 +2,28 @@ package com.example.data.data
 
 import com.example.data.domain.ThemeRepo
 import com.example.data.models.theme.ColorSchemeValue
+import com.example.data.models.theme.LibertyFlowTheme
 import com.example.data.models.theme.ThemeValue
 import com.example.local.theme.ThemePrefsManager
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class ThemeRepoImpl @Inject constructor(
     private val themePrefsManager: ThemePrefsManager
-) : ThemeRepo {
+): ThemeRepo {
 
-    override val theme: Flow<ThemeValue> = themePrefsManager.theme
-        .map { it.toEnumOrDefault(ThemeValue.SYSTEM) }
-
-    // We return nullable here so the VM knows if the user has never picked a color
-    override val storedColorScheme: Flow<ColorSchemeValue?> = themePrefsManager.colorSystem
-        .map { it.toEnumOrNull<ColorSchemeValue>() }
-
-    override val useExpressive: Flow<Boolean> = themePrefsManager.useExpressive
-        .map { it ?: false }
+    override val libertyFlowTheme: Flow<LibertyFlowTheme> = combine(
+        flow = themePrefsManager.theme,
+        flow2 = themePrefsManager.colorSystem,
+        flow3 = themePrefsManager.useExpressive
+    ) { theme, colorSystem, useExpressive ->
+        LibertyFlowTheme(
+            useExpressive = useExpressive ?: false,
+            userThemePreference = theme.toEnumOrDefault(ThemeValue.SYSTEM),
+            activeColorScheme = colorSystem.toEnumOrNull<ColorSchemeValue>()
+        )
+    }
 
     override suspend fun saveTheme(themeValue: ThemeValue) =
         themePrefsManager.saveTheme(themeValue.name)

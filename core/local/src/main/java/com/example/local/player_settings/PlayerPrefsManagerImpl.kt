@@ -8,25 +8,22 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
+// Singleton DataStore instance to prevent multiple open files
+private const val DATASTORE_NAME = "liberty_flow_player_prefs"
+private val Context.datastore by preferencesDataStore(DATASTORE_NAME)
+
+@Singleton
 class PlayerPrefsManagerImpl @Inject constructor(
     @param:ApplicationContext private val context: Context
 ): PlayerPrefsManager {
     private companion object {
-        private const val DATASTORE_NAME = "liberty_flow_player_prefs"
-
-        private const val QUALITY_KEY_NAME = "quality"
-        private const val SHOW_SKIP_OPENING_BUTTON_KEY_NAME = "show_skip_opening_button"
-        private const val AUTO_SKIP_OPENING_KEY_NAME = "auto_skip_opening"
-        private const val AUTO_PLAY_KEY_NAME = "auto_play"
-
-        private val QUALITY_KEY = stringPreferencesKey(QUALITY_KEY_NAME)
-        private val SHOW_SKIP_OPENING_BUTTON_KEY = booleanPreferencesKey(SHOW_SKIP_OPENING_BUTTON_KEY_NAME)
-        private val AUTO_SKIP_OPENING_KEY = booleanPreferencesKey(AUTO_SKIP_OPENING_KEY_NAME)
-        private val AUTO_PLAY_KEY = booleanPreferencesKey(AUTO_PLAY_KEY_NAME)
+        private val QUALITY_KEY = stringPreferencesKey("quality")
+        private val SHOW_SKIP_OPENING_BUTTON_KEY = booleanPreferencesKey("show_skip_opening_button")
+        private val AUTO_SKIP_OPENING_KEY = booleanPreferencesKey("auto_skip_opening")
+        private val AUTO_PLAY_KEY = booleanPreferencesKey("auto_play")
     }
-
-    private val Context.datastore by preferencesDataStore(DATASTORE_NAME)
 
     override val quality = context.datastore.data
         .map { preferences -> preferences[QUALITY_KEY] }

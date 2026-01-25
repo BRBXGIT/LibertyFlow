@@ -38,8 +38,11 @@ class PlayerSettingsRepoImpl @Inject constructor(
         playerPrefsManager.saveAutoPlay(autoPlay)
 }
 
+private const val FHD = "FHD"
+private const val HD = "HD"
+
 private fun String?.toVideoQuality() = when(this) {
-    "FHD" -> VideoQuality.FHD
-    "HD" -> VideoQuality.HD
+    FHD -> VideoQuality.FHD
+    HD -> VideoQuality.HD
     else -> VideoQuality.SD
 }

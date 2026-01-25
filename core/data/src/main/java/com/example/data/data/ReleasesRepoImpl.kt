@@ -10,6 +10,8 @@ import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.network.releases.api.ReleasesApi
 import javax.inject.Inject
 
+private const val ZERO = 0
+
 class ReleasesRepoImpl @Inject constructor(
     private val releasesApi: ReleasesApi
 ): ReleasesRepo {
@@ -24,7 +26,7 @@ class ReleasesRepoImpl @Inject constructor(
     override suspend fun getRandomAnime(): NetworkResult<AnimeId> {
         return NetworkRequest.safeApiCall(
             call = { releasesApi.getRandomAnime() },
-            map = { it[0].toAnimeId() } // First and the only item
+            map = { it[ZERO].toAnimeId() } // First and the only item
         )
     }
 }

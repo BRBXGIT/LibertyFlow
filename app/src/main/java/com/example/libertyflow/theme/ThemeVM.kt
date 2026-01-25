@@ -19,21 +19,19 @@ class ThemeVM @Inject constructor(themeRepo: ThemeRepo): ViewModel() {
 
     // Combine all sources of truth: Repo (User Prefs) + UI State (System Dark Mode)
     val themeState: StateFlow<ThemeState> = combine(
-        flow = themeRepo.theme,
-        flow2 = themeRepo.storedColorScheme,
-        flow3 = themeRepo.useExpressive,
-        flow4 = _isSystemInDarkMode
-    ) { themePref, storedColor, expressive, isSystemDark ->
+        flow = themeRepo.libertyFlowTheme,
+        flow2 = _isSystemInDarkMode
+    ) { theme, isSystemDark ->
 
         val finalColorScheme = resolveColorScheme(
-            storedColor = storedColor,
-            themePref = themePref,
+            storedColor = theme.activeColorScheme,
+            themePref = theme.userThemePreference,
             isSystemDark = isSystemDark
         )
 
         ThemeState(
-            useExpressive = expressive,
-            userThemePreference = themePref,
+            useExpressive = theme.useExpressive,
+            userThemePreference = theme.userThemePreference,
             activeColorScheme = finalColorScheme
         )
     }.toEagerly(ThemeState())
