@@ -59,10 +59,9 @@ internal fun Collections(
                 showIndicator = false,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = topBarScrollBehavior,
-                query = state.searchForm.query,
+                searchForm = state.searchForm,
                 onQueryChange = { onIntent(CollectionsIntent.UpdateQuery(it)) },
-                isSearching = state.searchForm.isSearching,
-                onSearchChange = { onIntent(CollectionsIntent.ToggleIsSearching) },
+                onToggleSearch = { onIntent(CollectionsIntent.ToggleIsSearching) },
             )
         },
         modifier = Modifier

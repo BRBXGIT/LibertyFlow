@@ -2,4 +2,6 @@
 <resources>
     <string name="home_top_bar_label">Latest updates</string>
     <string name="random_button_label">Random anime</string>
+    <string name="random_anime_button_error_label">Error</string>
+    <string name="random_anime_button_loading_label">Loading…</string>
 </resources>

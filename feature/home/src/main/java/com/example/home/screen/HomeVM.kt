@@ -31,6 +31,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val RETRY = "Retry"
+private const val ANIMATION_DELAY = 2_000L
+
 @HiltViewModel
 class HomeVM @Inject constructor(
     private val releasesRepo: ReleasesRepo,
@@ -45,74 +48,14 @@ class HomeVM @Inject constructor(
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    /* --- Intents --- */
-
+    // --- Intents ---
     fun sendIntent(intent: HomeIntent) {
         when (intent) {
-
-            /* --- UI toggles --- */
-
+            // Toggles
             HomeIntent.ToggleSearching ->
                 _state.update { it.toggleSearching() }
-
             HomeIntent.ToggleFiltersBottomSheet ->
                 _state.update { it.toggleFilters() }
-
-            /* --- Flags --- */
-
-            is HomeIntent.SetLoading ->
-                _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
-
-            is HomeIntent.SetError ->
-                _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
-
-            is HomeIntent.SetRandomAnimeLoading ->
-                _state.update { it.withRandomAnimeLoading(intent.value) }
-
-            /* --- Search --- */
-
-            is HomeIntent.UpdateQuery ->
-                _state.update {
-                    it.updateRequest { updateSearch(intent.query) }
-                }
-
-            /* --- Filters --- */
-
-            is HomeIntent.AddGenre ->
-                _state.update {
-                    it.updateRequest { addGenre(intent.genre) }
-                }
-
-            is HomeIntent.RemoveGenre ->
-                _state.update {
-                    it.updateRequest { removeGenre(intent.genre) }
-                }
-
-            is HomeIntent.AddSeason ->
-                _state.update {
-                    it.updateRequest { addSeason(intent.season) }
-                }
-
-            is HomeIntent.RemoveSeason ->
-                _state.update {
-                    it.updateRequest { removeSeason(intent.season) }
-                }
-
-            is HomeIntent.UpdateFromYear ->
-                _state.update {
-                    it.updateRequest { updateYear(from = intent.year) }
-                }
-
-            is HomeIntent.UpdateToYear ->
-                _state.update {
-                    it.updateRequest { updateYear(to = intent.year) }
-                }
-
-            is HomeIntent.UpdateSorting ->
-                _state.update {
-                    it.updateRequest { updateSorting(intent.sorting) }
-                }
-
             HomeIntent.ToggleIsOngoing ->
                 _state.update {
                     val enabled = it.request.publishStatuses.isEmpty()
@@ -123,19 +66,38 @@ class HomeVM @Inject constructor(
                     }
                 }
 
-            /* --- Data --- */
+            // Sets
+            is HomeIntent.SetLoading ->
+                _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
+            is HomeIntent.SetError ->
+                _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
 
+            // Updates
+            is HomeIntent.UpdateQuery ->
+                _state.update { it.updateRequest { updateSearch(intent.query) } }
+            is HomeIntent.AddGenre ->
+                _state.update { it.updateRequest { addGenre(intent.genre) } }
+            is HomeIntent.RemoveGenre ->
+                _state.update { it.updateRequest { removeGenre(intent.genre) } }
+            is HomeIntent.AddSeason ->
+                _state.update { it.updateRequest { addSeason(intent.season) } }
+            is HomeIntent.RemoveSeason ->
+                _state.update { it.updateRequest { removeSeason(intent.season) } }
+            is HomeIntent.UpdateFromYear ->
+                _state.update { it.updateRequest { updateYear(from = intent.year) } }
+            is HomeIntent.UpdateToYear ->
+                _state.update { it.updateRequest { updateYear(to = intent.year) } }
+            is HomeIntent.UpdateSorting ->
+                _state.update { it.updateRequest { updateSorting(intent.sorting) } }
+
+            // Data
             HomeIntent.GetRandomAnime -> getRandomAnime()
             HomeIntent.GetGenres -> getGenres()
         }
     }
 
-    /* --- Side effects --- */
-
-    fun sendEffect(effect: UiEffect) {
-        viewModelScope.launch(dispatcherIo) {
-            _effects.send(effect)
-        }
+    fun sendEffect(effect: UiEffect) = viewModelScope.launch(dispatcherIo) {
+        _effects.send(effect)
     }
 
     // Emits whenever request parameters change
@@ -152,10 +114,15 @@ class HomeVM @Inject constructor(
 
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {
-            _state.update { it.withRandomAnimeLoading(true) }
-
-            delay(2_000)
-
+            _state.update {
+                it.copy(
+                    randomAnimeState = it.randomAnimeState.withBoth(
+                        loading = true,
+                        error = false
+                    )
+                )
+            }
+            delay(ANIMATION_DELAY) // Just cause i want to show animation
             releasesRepo.getRandomAnime()
                 .onSuccess { anime ->
                     sendEffect(
@@ -165,16 +132,17 @@ class HomeVM @Inject constructor(
                     )
                 }
                 .onError { _, messageRes ->
+                    _state.update { it.copy(randomAnimeState = it.randomAnimeState.withError(true)) }
                     sendEffect(
                         UiEffect.ShowSnackbar(
                             messageRes = messageRes,
-                            actionLabel = "Retry",
+                            actionLabel = RETRY,
                             action = ::getRandomAnime
                         )
                     )
                 }
 
-            _state.update { it.withRandomAnimeLoading(false) }
+            _state.update { it.copy(randomAnimeState = it.randomAnimeState.withLoading(false)) }
         }
     }
 
@@ -190,7 +158,7 @@ class HomeVM @Inject constructor(
                     sendEffect(
                         UiEffect.ShowSnackbar(
                             messageRes = messageRes,
-                            actionLabel = "Retry",
+                            actionLabel = RETRY,
                             action = ::getGenres
                         )
                     )

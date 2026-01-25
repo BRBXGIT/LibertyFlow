@@ -57,10 +57,9 @@ fun Favorites(
                 isLoading = state.loadingState.isLoading,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = scrollBehavior,
-                query = state.searchForm.query,
-                isSearching = state.searchForm.isSearching,
+                searchForm = state.searchForm,
                 onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
-                onSearchChange = { onIntent(FavoritesIntent.ToggleIsSearching) },
+                onToggleSearch = { onIntent(FavoritesIntent.ToggleIsSearching) },
             )
         }
     ) { innerPadding ->

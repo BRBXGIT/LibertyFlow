@@ -7,37 +7,31 @@ import com.example.data.models.common.request.request_parameters.FullRequestPara
 
 @Immutable
 data class HomeState(
+    // Loading
     val loadingState: LoadingState = LoadingState(),
-    val isRandomAnimeLoading: Boolean = false,
 
+    // Random anime
+    val randomAnimeState: LoadingState = LoadingState(),
+
+    // Search
     val isSearching: Boolean = false,
     val isFiltersVisible: Boolean = false,
 
+    // Filters
     val request: FullRequestParameters = FullRequestParameters(),
 
+    // Genres
     val genres: List<Genre> = emptyList(),
     val isGenresLoading: Boolean = false
 ) {
+    // Toggles
+    fun toggleSearching() = copy(isSearching = !isSearching)
+    fun toggleFilters() = copy(isFiltersVisible = !isFiltersVisible)
+    fun withGenresLoading(value: Boolean) = copy(isGenresLoading = value)
 
-    /* --- UI toggles --- */
-
-    fun toggleSearching() =
-        copy(isSearching = !isSearching)
-
-    fun toggleFilters() =
-        copy(isFiltersVisible = !isFiltersVisible)
-
-    fun withRandomAnimeLoading(value: Boolean) =
-        copy(isRandomAnimeLoading = value)
-
-    fun withGenresLoading(value: Boolean) =
-        copy(isGenresLoading = value)
-
-    /* --- Request mutations --- */
-
+    // Request mutations
     fun updateRequest(block: FullRequestParameters.() -> FullRequestParameters) =
         copy(request = request.block())
-
     fun updateGenres(genres: List<Genre>) =
         copy(genres = genres)
 }

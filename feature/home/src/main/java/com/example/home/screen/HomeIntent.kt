@@ -13,7 +13,6 @@ sealed interface HomeIntent {
     // Flags
     data class SetLoading(val value: Boolean) : HomeIntent
     data class SetError(val value: Boolean) : HomeIntent
-    data class SetRandomAnimeLoading(val value: Boolean) : HomeIntent
 
     // Search
     data class UpdateQuery(val query: String) : HomeIntent
