@@ -1,50 +1,75 @@
 package com.example.libertyflow.theme
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.common.dispatchers.Dispatcher
-import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toEagerly
 import com.example.data.domain.ThemeRepo
+import com.example.data.models.theme.ColorSchemeValue
+import com.example.data.models.theme.ThemeValue
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-internal class ThemeVM @Inject constructor(
-    private val themeRepo: ThemeRepo,
-    @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-): ViewModel() {
-    private val _themeState = MutableStateFlow(ThemeState())
-    val themeState = _themeState.toEagerly(ThemeState())
+class ThemeVM @Inject constructor(themeRepo: ThemeRepo): ViewModel() {
 
-    private fun observeTheme(isSystemInDarkMode: Boolean) {
-        viewModelScope.launch(dispatcherIo) {
-            combine(
-                flow = themeRepo.theme,
-                flow2 = themeRepo.colorSystem(isSystemInDarkMode),
-                flow3 = themeRepo.useExpressive
-            ) { theme, colorScheme, useExpressive ->
-                Triple(theme, colorScheme, useExpressive)
-            }.collect { (theme, colorScheme, useExpressive) ->
-                _themeState.update {
-                    it.copy(
-                        useExpressive = useExpressive,
-                        theme = theme,
-                        colorScheme = colorScheme
-                    )
-                }
+    // Internal flow to track system dark mode state from UI
+    private val _isSystemInDarkMode = MutableStateFlow(false)
+
+    // Combine all sources of truth: Repo (User Prefs) + UI State (System Dark Mode)
+    val themeState: StateFlow<ThemeState> = combine(
+        flow = themeRepo.theme,
+        flow2 = themeRepo.storedColorScheme,
+        flow3 = themeRepo.useExpressive,
+        flow4 = _isSystemInDarkMode
+    ) { themePref, storedColor, expressive, isSystemDark ->
+
+        val finalColorScheme = resolveColorScheme(
+            storedColor = storedColor,
+            themePref = themePref,
+            isSystemDark = isSystemDark
+        )
+
+        ThemeState(
+            useExpressive = expressive,
+            userThemePreference = themePref,
+            activeColorScheme = finalColorScheme
+        )
+    }.toEagerly(ThemeState())
+
+    fun sendIntent(intent: ThemeIntent) {
+        when (intent) {
+            is ThemeIntent.UpdateSystemDarkMode -> {
+                _isSystemInDarkMode.value = intent.isSystemInDarkMode
             }
         }
     }
 
-    fun sendIntent(intent: ThemeIntent) {
-        when(intent) {
-            is ThemeIntent.ObserveTheme -> observeTheme(intent.isSystemInDarkMode)
+    /**
+     * Core Logic: Determines the actual color scheme based on preferences and system state.
+     */
+    private fun resolveColorScheme(
+        storedColor: ColorSchemeValue?,
+        themePref: ThemeValue,
+        isSystemDark: Boolean
+    ): ColorSchemeValue {
+        // 1. Determine if we effectively need Dark Mode
+        val shouldBeDark = when (themePref) {
+            ThemeValue.DARK -> true
+            ThemeValue.LIGHT -> false
+            ThemeValue.SYSTEM, ThemeValue.DYNAMIC -> isSystemDark
         }
+
+        // 2. Get the base color (or default if null)
+        val targetColor = storedColor ?: getDefaultColor(shouldBeDark)
+
+        // 3. Force the color to match the required mode
+        return targetColor.forMode(shouldBeDark)
+    }
+
+    private fun getDefaultColor(isDark: Boolean): ColorSchemeValue {
+        return if (isDark) ColorSchemeValue.DARK_LAVENDER_SCHEME
+        else ColorSchemeValue.LIGHT_LAVENDER_SCHEME
     }
 }

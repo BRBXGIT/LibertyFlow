@@ -5,6 +5,6 @@ import com.example.data.models.theme.ThemeValue
 
 data class ThemeState(
     val useExpressive: Boolean = false,
-    val theme: ThemeValue = ThemeValue.SYSTEM,
-    val colorScheme: ColorSchemeValue = ColorSchemeValue.DARK_LAVENDER_SCHEME,
+    val userThemePreference: ThemeValue = ThemeValue.SYSTEM,
+    val activeColorScheme: ColorSchemeValue = ColorSchemeValue.DARK_LAVENDER_SCHEME
 )
