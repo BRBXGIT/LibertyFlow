@@ -30,7 +30,7 @@ import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.request.request_parameters.Collection
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
@@ -44,7 +44,7 @@ private val TopBarLabel = R.string.collections_top_bar_label
 @Composable
 internal fun Collections(
     state: CollectionsState,
-    pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>>,
+    pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>>,
     snackbarHostState: SnackbarHostState,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
@@ -107,7 +107,7 @@ internal fun Collections(
 @Composable
 private fun LoggedInContent(
     state: CollectionsState,
-    pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>>,
+    pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
@@ -132,7 +132,7 @@ private fun LoggedInContent(
 @Composable
 private fun CollectionsPagerContent(
     state: CollectionsState,
-    pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>>,
+    pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {

@@ -15,7 +15,7 @@ import com.example.common.navigation.FavoritesRoute
 import com.example.common.refresh.RefreshEffect
 import com.example.common.refresh.RefreshVM
 import com.example.common.ui_helpers.effects.HandleCommonEffects
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
 import com.example.favorites.screen.Favorites
@@ -57,7 +57,7 @@ fun NavGraphBuilder.favorites(
 @Composable
 private fun RefreshFavorites(
     effects: Flow<RefreshEffect>,
-    favorites: LazyPagingItems<UiAnimeItem>
+    favorites: LazyPagingItems<AnimeItem>
 ) {
     LaunchedEffect(Unit) {
         effects.collect { effect ->

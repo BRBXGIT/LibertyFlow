@@ -1,15 +1,15 @@
 package com.example.data.models.auth
 
-import com.example.network.auth.models.SessionTokenRequest
-import com.example.network.auth.models.SessionTokenResponse
+import com.example.network.auth.models.SessionTokenRequestDto
+import com.example.network.auth.models.SessionTokenResponseDto
 
-internal fun UiTokenRequest.toSessionTokenRequest(): SessionTokenRequest {
-    return SessionTokenRequest(
+internal fun TokenRequest.toSessionTokenRequestDto(): SessionTokenRequestDto {
+    return SessionTokenRequestDto(
         login = login,
         password = password
     )
 }
 
-internal fun SessionTokenResponse.toUiToken(): UiToken {
-    return UiToken(token = token)
+internal fun SessionTokenResponseDto.toToken(): Token {
+    return Token(token = token)
 }

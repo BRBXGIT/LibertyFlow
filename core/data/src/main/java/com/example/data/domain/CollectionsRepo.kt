@@ -1,22 +1,22 @@
 package com.example.data.domain
 
 import androidx.paging.PagingData
-import com.example.data.models.collections.collection_ids.UiCollectionIds
-import com.example.data.models.collections.request.UiCollectionRequest
-import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.collections.collection_ids.CollectionIds
+import com.example.data.models.collections.request.CollectionRequest
+import com.example.data.models.common.request.common_request.CommonRequestWithCollectionType
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.data.utils.remote.network_request.NetworkResult
 import kotlinx.coroutines.flow.Flow
 
 interface CollectionsRepo {
 
     fun getAnimeInCollection(
-        request: UiCommonRequestWithCollectionType
-    ): Flow<PagingData<UiAnimeItem>>
+        request: CommonRequestWithCollectionType
+    ): Flow<PagingData<AnimeItem>>
 
-    suspend fun getCollectionsIds(): NetworkResult<UiCollectionIds>
+    suspend fun getCollectionsIds(): NetworkResult<CollectionIds>
 
-    suspend fun addToCollection(request: UiCollectionRequest): NetworkResult<Unit>
+    suspend fun addToCollection(request: CollectionRequest): NetworkResult<Unit>
 
-    suspend fun deleteFromCollection(request: UiCollectionRequest): NetworkResult<Unit>
+    suspend fun deleteFromCollection(request: CollectionRequest): NetworkResult<Unit>
 }

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.common.common.PosterType
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.components.cards.AnimeCard
 import com.example.design_system.components.cards.AnimeCardUtils
 
@@ -22,7 +22,7 @@ private object AnimeLVGContainerConstants {
 @Composable
 fun PagingAnimeItemsLazyVerticalGrid(
     onItemClick: (Int) -> Unit,
-    anime: LazyPagingItems<UiAnimeItem>,
+    anime: LazyPagingItems<AnimeItem>,
     extraContent: LazyGridScope.() -> Unit = {}
 ) {
     // Paging grid — items loaded on-demand

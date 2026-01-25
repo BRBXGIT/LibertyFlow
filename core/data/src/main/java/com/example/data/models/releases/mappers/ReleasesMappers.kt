@@ -1,46 +1,46 @@
 package com.example.data.models.releases.mappers
 
-import com.example.data.models.common.mappers.toUiGenre
-import com.example.data.models.common.mappers.toUiName
-import com.example.data.models.common.mappers.toUiPoster
-import com.example.data.models.releases.anime_details.UiAnimeDetails
-import com.example.data.models.releases.anime_details.UiEnding
-import com.example.data.models.releases.anime_details.UiEpisode
-import com.example.data.models.releases.anime_details.UiMember
-import com.example.data.models.releases.anime_details.UiOpening
-import com.example.data.models.releases.anime_details.UiTorrent
-import com.example.data.models.releases.anime_id.UiAnimeId
-import com.example.network.releases.models.anime_details_item_response.AnimeDetailsItem
-import com.example.network.releases.models.anime_details_item_response.Ending
-import com.example.network.releases.models.anime_details_item_response.Episode
-import com.example.network.releases.models.anime_details_item_response.Member
-import com.example.network.releases.models.anime_details_item_response.Opening
-import com.example.network.releases.models.anime_details_item_response.Torrent
-import com.example.network.releases.models.anime_id_item_response.AnimeIdItem
+import com.example.data.models.common.mappers.toGenre
+import com.example.data.models.common.mappers.toName
+import com.example.data.models.common.mappers.toPoster
+import com.example.data.models.releases.anime_details.AnimeDetails
+import com.example.data.models.releases.anime_details.Ending
+import com.example.data.models.releases.anime_details.Episode
+import com.example.data.models.releases.anime_details.Member
+import com.example.data.models.releases.anime_details.Opening
+import com.example.data.models.releases.anime_details.Torrent
+import com.example.data.models.releases.anime_id.AnimeId
+import com.example.network.releases.models.anime_details_item_response.AnimeDetailsItemDto
+import com.example.network.releases.models.anime_details_item_response.EndingDto
+import com.example.network.releases.models.anime_details_item_response.EpisodeDto
+import com.example.network.releases.models.anime_details_item_response.MemberDto
+import com.example.network.releases.models.anime_details_item_response.OpeningDto
+import com.example.network.releases.models.anime_details_item_response.TorrentDto
+import com.example.network.releases.models.anime_id_item_response.AnimeIdItemDto
 
-internal fun AnimeIdItem.toUiAnimeId() = UiAnimeId(id)
+internal fun AnimeIdItemDto.toAnimeId() = AnimeId(id)
 
-internal fun AnimeDetailsItem.toUiAnimeDetails(): UiAnimeDetails {
-    return UiAnimeDetails(
+internal fun AnimeDetailsItemDto.toAnimeDetails(): AnimeDetails {
+    return AnimeDetails(
         id = id,
         description = description,
-        episodes = episodes.map { it.toUiEpisode() },
-        genres = genres.map { it.toUiGenre() },
+        episodes = episodes.map { it.toEpisode() },
+        genres = genres.map { it.toGenre() },
         isOngoing = isOngoing,
-        members = members.map { it.toUiMember() },
-        name = name.toUiName(),
-        poster = poster.toUiPoster(),
-        season = season.description,
-        torrents = torrents.map { it.toUiTorrent() },
-        type = type.description,
+        members = members.map { it.toMember() },
+        name = nameDto.toName(),
+        poster = posterDto.toPoster(),
+        season = seasonDto.description,
+        torrents = torrents.map { it.toTorrent() },
+        type = typeDto.description,
         year = year
     )
 }
 
-internal fun Episode.toUiEpisode(): UiEpisode {
-    return UiEpisode(
-        opening = opening.toUiOpening(),
-        ending = ending.toUiEnding(),
+internal fun EpisodeDto.toEpisode(): Episode {
+    return Episode(
+        opening = openingDto.toOpening(),
+        ending = endingDto.toEnding(),
         hls1080 = hls1080,
         hls480 = hls480,
         hls720 = hls720,
@@ -48,29 +48,29 @@ internal fun Episode.toUiEpisode(): UiEpisode {
     )
 }
 
-internal fun Opening.toUiOpening(): UiOpening {
-    return UiOpening(
+internal fun OpeningDto.toOpening(): Opening {
+    return Opening(
         start = start,
         end = stop
     )
 }
 
-internal fun Ending.toUiEnding(): UiEnding {
-    return UiEnding(
+internal fun EndingDto.toEnding(): Ending {
+    return Ending(
         start = start,
         end = stop
     )
 }
 
-internal fun Member.toUiMember(): UiMember {
-    return UiMember(
+internal fun MemberDto.toMember(): Member {
+    return Member(
         name = nickname,
-        role = role.description
+        role = roleDto.description
     )
 }
 
-internal fun Torrent.toUiTorrent(): UiTorrent {
-    return UiTorrent(
+internal fun TorrentDto.toTorrent(): Torrent {
+    return Torrent(
         filename = filename,
         leechers = leechers,
         seeders = seeders,

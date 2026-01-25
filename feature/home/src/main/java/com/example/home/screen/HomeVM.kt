@@ -13,7 +13,7 @@ import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
-import com.example.data.models.common.request.common_request.UiCommonRequest
+import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
@@ -146,7 +146,7 @@ class HomeVM @Inject constructor(
     // Paged anime list driven by requestFlow
     val anime = requestFlow
         .flatMapLatest { request ->
-            catalogRepo.getAnimeByQuery(UiCommonRequest(request))
+            catalogRepo.getAnimeByQuery(CommonRequest(request))
         }
         .cachedIn(viewModelScope)
 

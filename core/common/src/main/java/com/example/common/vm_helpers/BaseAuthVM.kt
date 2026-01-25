@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.domain.AuthRepo
 import com.example.data.models.auth.AuthState
-import com.example.data.models.auth.UiTokenRequest
+import com.example.data.models.auth.TokenRequest
 import com.example.data.utils.remote.network_request.NetworkErrors
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
@@ -36,7 +36,7 @@ abstract class BaseAuthVM(
         onSuccess: () -> Unit = {},
         onIncorrectData: () -> Unit,
         onAnyError: suspend (Int, onRetry: () -> Unit) -> Unit,
-        request: UiTokenRequest
+        request: TokenRequest
     ) {
         viewModelScope.launch(dispatcherIo) {
             onStart()

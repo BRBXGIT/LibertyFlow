@@ -12,11 +12,11 @@ import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
-import com.example.data.models.auth.UiTokenRequest
-import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
+import com.example.data.models.auth.TokenRequest
+import com.example.data.models.common.request.common_request.CommonRequestWithCollectionType
 import com.example.data.models.common.request.request_parameters.Collection
-import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.common.request.request_parameters.ShortRequestParameters
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -61,10 +61,10 @@ class CollectionsVM @Inject constructor(
      * This keeps the flows independent (allowing simultaneous data in the Pager)
      * but removes code duplication.
      */
-    val pagingFlows: Map<Collection, Flow<PagingData<UiAnimeItem>>> = Collection.entries.associateWith { collection ->
+    val pagingFlows: Map<Collection, Flow<PagingData<AnimeItem>>> = Collection.entries.associateWith { collection ->
         queryFlow.flatMapLatest { query ->
-            val request = UiCommonRequestWithCollectionType(
-                requestParameters = UiShortRequestParameters(search = query),
+            val request = CommonRequestWithCollectionType(
+                requestParameters = ShortRequestParameters(search = query),
                 collection = collection
             )
             collectionsRepo.getAnimeInCollection(request)
@@ -103,7 +103,7 @@ class CollectionsVM @Inject constructor(
     private fun performLogin() {
         val currentState = _state.value.authForm
         getAuthToken(
-            request = UiTokenRequest(currentState.email, currentState.password),
+            request = TokenRequest(currentState.email, currentState.password),
             onStart = { _state.update { it.updateAuthForm { f -> f.copy(isError = false) } } },
             onIncorrectData = { _state.update { it.updateAuthForm { f -> f.copy(isError = true) } } },
             onAnyError = { messageRes, retryAction ->

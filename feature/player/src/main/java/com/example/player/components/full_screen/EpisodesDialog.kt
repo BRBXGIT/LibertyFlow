@@ -36,7 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.data.models.releases.anime_details.UiEpisode
+import com.example.data.models.releases.anime_details.Episode
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
@@ -109,7 +109,7 @@ private val NoTitleLabel = R.string.no_title_provided_label
 
 @Composable
 private fun ColumnScope.EpisodesList(
-    episodes: List<UiEpisode>,
+    episodes: List<Episode>,
     selectedId: Int,
     onSelect: (Int) -> Unit,
 ) {

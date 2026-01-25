@@ -2,14 +2,13 @@ package com.example.player.player
 
 import androidx.compose.runtime.Immutable
 import com.example.data.models.player.PlayerSettings
-import com.example.data.models.player.VideoQuality
-import com.example.data.models.releases.anime_details.UiEpisode
+import com.example.data.models.releases.anime_details.Episode
 
 @Immutable
 data class PlayerState(
     // Player states
     val uiPlayerState: UiPlayerState = UiPlayerState.Closed,
-    val episodes: List<UiEpisode> = emptyList(),
+    val episodes: List<Episode> = emptyList(),
     val currentEpisodeIndex: Int = 0,
     val playerSettings: PlayerSettings = PlayerSettings(),
 

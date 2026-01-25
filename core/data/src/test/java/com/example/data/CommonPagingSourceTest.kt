@@ -2,12 +2,12 @@ package com.example.data
 
 import androidx.paging.PagingSource
 import com.example.data.utils.remote.paging.CommonPagingSource
-import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPagination
-import com.example.network.common.common_pagination.meta.Links
-import com.example.network.common.common_pagination.meta.Meta
-import com.example.network.common.common_pagination.meta.Pagination
-import com.example.network.common.common_request_models.common_request.CommonRequest
-import com.example.network.common.common_response_models.AnimeResponseItem
+import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPaginationDto
+import com.example.network.common.common_pagination.meta.LinksDto
+import com.example.network.common.common_pagination.meta.MetaDto
+import com.example.network.common.common_pagination.meta.PaginationDto
+import com.example.network.common.common_request_models.common_request.CommonRequestDto
+import com.example.network.common.common_response_models.AnimeResponseItemDto
 import com.example.network.favorites.api.FavoritesApi
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -21,7 +21,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Before
@@ -48,17 +47,17 @@ class CommonPagingSourceTest {
     @Test
     fun `load returns Page on success`() = runTest {
         val fakeItems = listOf(
-            mockk<AnimeResponseItem>(),
-            mockk<AnimeResponseItem>()
+            mockk<AnimeResponseItemDto>(),
+            mockk<AnimeResponseItemDto>()
         )
         val fakeResponse = Response.success(
-            AnimeItemsPagination(
+            AnimeItemsPaginationDto(
                 data = fakeItems,
-                meta = Meta(
-                    pagination = Pagination(
+                metaDto = MetaDto(
+                    paginationDto = PaginationDto(
                         count = 2,
                         currentPage = 1,
-                        links = Links(""),
+                        linksDto = LinksDto(""),
                         perPage = 20,
                         totalPages = 15,
                         total = 300,
@@ -67,7 +66,7 @@ class CommonPagingSourceTest {
             )
         )
 
-        val fakeRequest = CommonRequest(requestParameters = mockk())
+        val fakeRequest = CommonRequestDto(requestParameters = mockk())
         coEvery { api.getFavorites("", fakeRequest) } returns fakeResponse
 
         pagingSource = CommonPagingSource(
@@ -92,7 +91,7 @@ class CommonPagingSourceTest {
 
     @Test
     fun `load returns Error on failure`() = runTest {
-        val fakeRequest = CommonRequest(requestParameters = mockk())
+        val fakeRequest = CommonRequestDto(requestParameters = mockk())
 
         val body = "".toResponseBody("application/json".toMediaType())
         coEvery { api.getFavorites("", fakeRequest) } returns Response.error(600, body)

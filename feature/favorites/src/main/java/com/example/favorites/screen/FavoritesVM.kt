@@ -11,9 +11,9 @@ import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.FavoritesRepo
-import com.example.data.models.auth.UiTokenRequest
-import com.example.data.models.common.request.common_request.UiCommonRequest
-import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
+import com.example.data.models.auth.TokenRequest
+import com.example.data.models.common.request.common_request.CommonRequest
+import com.example.data.models.common.request.request_parameters.ShortRequestParameters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -94,12 +94,12 @@ class FavoritesVM @Inject constructor(
 
     // Paging request driven by search query
     private val requestFlow = _state
-        .map { UiShortRequestParameters(search = it.searchForm.query) }
+        .map { ShortRequestParameters(search = it.searchForm.query) }
         .distinctUntilChanged()
 
     val favorites = requestFlow
         .flatMapLatest { request ->
-            favoritesRepo.getFavorites(UiCommonRequest(request))
+            favoritesRepo.getFavorites(CommonRequest(request))
         }
         .cachedIn(viewModelScope)
 
@@ -109,7 +109,7 @@ class FavoritesVM @Inject constructor(
         val currentState = _state.value.authForm
 
         getAuthToken(
-            request = UiTokenRequest(currentState.email, currentState.password),
+            request = TokenRequest(currentState.email, currentState.password),
             onStart = {
                 _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
             },

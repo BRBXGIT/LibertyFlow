@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.buttons.BasicFAB
@@ -39,7 +39,7 @@ private val TopBarLabel = R.string.home_top_bar_label
 @Composable
 internal fun Home(
     state: HomeState,
-    anime: LazyPagingItems<UiAnimeItem>,
+    anime: LazyPagingItems<AnimeItem>,
     snackbarHostState: SnackbarHostState,
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
@@ -121,7 +121,7 @@ internal fun Home(
 private fun MainContent(
     isError: Boolean,
     isRandomAnimeLoading: Boolean,
-    anime: LazyPagingItems<UiAnimeItem>,
+    anime: LazyPagingItems<AnimeItem>,
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {

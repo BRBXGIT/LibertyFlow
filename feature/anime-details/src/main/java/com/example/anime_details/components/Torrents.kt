@@ -19,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.releases.anime_details.UiTorrent
+import com.example.data.models.releases.anime_details.Torrent
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mTypography
@@ -34,7 +34,7 @@ private const val BASE_TORRENTS_URL = "https://static.wwnd.space"
  */
 @Composable
 internal fun LazyItemScope.Torrent(
-    torrent: UiTorrent,
+    torrent: Torrent,
     onEffect: (UiEffect) -> Unit
 ) {
     Row(

@@ -11,7 +11,7 @@ import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.models.player.VideoQuality
-import com.example.data.models.releases.anime_details.UiEpisode
+import com.example.data.models.releases.anime_details.Episode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -90,7 +90,7 @@ class PlayerVM @Inject constructor(
         }
     }
 
-    private fun setUpPlayer(episodes: List<UiEpisode>, startIndex: Int) {
+    private fun setUpPlayer(episodes: List<Episode>, startIndex: Int) {
         viewModelScope.launch(dispatcherIo) {
             val initialSettings = playerSettingsRepo.playerSettings.first()
 
@@ -252,7 +252,7 @@ class PlayerVM @Inject constructor(
     }
 }
 
-private fun UiEpisode.toMediaItem(quality: VideoQuality) =
+private fun Episode.toMediaItem(quality: VideoQuality) =
     MediaItem.fromUri(
         when(quality) {
             VideoQuality.SD -> hls480

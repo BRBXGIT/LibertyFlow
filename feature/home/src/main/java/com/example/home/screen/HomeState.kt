@@ -2,11 +2,8 @@ package com.example.home.screen
 
 import androidx.compose.runtime.Immutable
 import com.example.common.ui_helpers.loading_state.LoadingState
-import com.example.data.models.common.common.UiGenre
-import com.example.data.models.common.request.request_parameters.PublishStatus
-import com.example.data.models.common.request.request_parameters.Season
-import com.example.data.models.common.request.request_parameters.Sorting
-import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
+import com.example.data.models.common.common.Genre
+import com.example.data.models.common.request.request_parameters.FullRequestParameters
 
 @Immutable
 data class HomeState(
@@ -16,9 +13,9 @@ data class HomeState(
     val isSearching: Boolean = false,
     val isFiltersVisible: Boolean = false,
 
-    val request: UiFullRequestParameters = UiFullRequestParameters(),
+    val request: FullRequestParameters = FullRequestParameters(),
 
-    val genres: List<UiGenre> = emptyList(),
+    val genres: List<Genre> = emptyList(),
     val isGenresLoading: Boolean = false
 ) {
 
@@ -38,9 +35,9 @@ data class HomeState(
 
     /* --- Request mutations --- */
 
-    fun updateRequest(block: UiFullRequestParameters.() -> UiFullRequestParameters) =
+    fun updateRequest(block: FullRequestParameters.() -> FullRequestParameters) =
         copy(request = request.block())
 
-    fun updateGenres(genres: List<UiGenre>) =
+    fun updateGenres(genres: List<Genre>) =
         copy(genres = genres)
 }

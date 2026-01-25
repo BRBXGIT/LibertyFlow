@@ -1,16 +1,16 @@
 package com.example.data.models.favorites
 
-import com.example.network.favorites.models.FavoriteAnimeIdItem
-import com.example.network.favorites.models.FavoriteIdsResponse
-import com.example.network.favorites.models.FavoriteRequest
+import com.example.network.favorites.models.FavoriteAnimeIdItemDto
+import com.example.network.favorites.models.FavoriteIdsResponseDto
+import com.example.network.favorites.models.FavoriteRequestDto
 
-internal fun UiFavoriteItem.toFavoriteAnimeIdItem() = FavoriteAnimeIdItem(id)
+internal fun FavoriteItem.toFavoriteAnimeIdItemDto() = FavoriteAnimeIdItemDto(id)
 
-internal fun UiFavoriteRequest.toFavoriteRequest(): FavoriteRequest {
-    val favoriteRequest = FavoriteRequest()
-    favoriteRequest.addAll(this.map { it.toFavoriteAnimeIdItem() })
-    return favoriteRequest
+internal fun FavoriteRequest.toFavoriteRequestDto(): FavoriteRequestDto {
+    val favoriteRequestDto = FavoriteRequestDto()
+    favoriteRequestDto.addAll(this.map { it.toFavoriteAnimeIdItemDto() })
+    return favoriteRequestDto
 }
 
-internal fun FavoriteIdsResponse.toUiFavoritesIds() =
-    UiFavoritesIds().also { it.addAll(this) }
+internal fun FavoriteIdsResponseDto.toFavoritesIds() =
+    FavoritesIds().also { it.addAll(this) }

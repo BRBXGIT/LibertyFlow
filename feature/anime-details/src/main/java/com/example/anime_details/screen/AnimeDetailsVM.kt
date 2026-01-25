@@ -12,9 +12,9 @@ import com.example.data.domain.FavoritesRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.domain.WatchedEpsRepo
 import com.example.data.models.auth.AuthState
-import com.example.data.models.auth.UiTokenRequest
-import com.example.data.models.favorites.UiFavoriteItem
-import com.example.data.models.favorites.UiFavoriteRequest
+import com.example.data.models.auth.TokenRequest
+import com.example.data.models.favorites.FavoriteItem
+import com.example.data.models.favorites.FavoriteRequest
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -150,7 +150,7 @@ class AnimeDetailsVM @Inject constructor(
             _state.update { it.updateFavorites { f -> f.copy(isLoading = true, isError = false) } }
 
             // Construct request
-            val request = UiFavoriteRequest().apply { add(UiFavoriteItem(animeId)) }
+            val request = FavoriteRequest().apply { add(FavoriteItem(animeId)) }
 
             // Just cause i want to show animation :)
             delay(2000)
@@ -178,7 +178,7 @@ class AnimeDetailsVM @Inject constructor(
         val currentState = _state.value.authForm
 
         getAuthToken(
-            request = UiTokenRequest(currentState.email, currentState.password),
+            request = TokenRequest(currentState.email, currentState.password),
             onStart = {
                 _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
             },

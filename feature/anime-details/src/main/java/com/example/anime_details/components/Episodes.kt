@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
-import com.example.data.models.releases.anime_details.UiEpisode
+import com.example.data.models.releases.anime_details.Episode
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mShapes
@@ -45,7 +45,7 @@ private const val COLUMN_VERTICAL_PADDING = 16
 
 @Composable
 internal fun LazyItemScope.Episodes(
-    episodes: List<UiEpisode>,
+    episodes: List<Episode>,
     watchedEps: List<Int>,
     onIntent: (AnimeDetailsIntent) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
@@ -101,7 +101,7 @@ private const val WATCHED_ALPHA = 0.5f
 @Composable
 private fun Episode(
     index: Int,
-    episode: UiEpisode,
+    episode: Episode,
     watchedEps: List<Int>,
     onClick: () -> Unit
 ) {

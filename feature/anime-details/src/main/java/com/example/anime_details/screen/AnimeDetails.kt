@@ -29,7 +29,7 @@ import com.example.anime_details.components.Header
 import com.example.anime_details.components.HeaderData
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.common.common.PosterType
-import com.example.data.models.releases.anime_details.UiAnimeDetails
+import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.anime_details.R
 import com.example.anime_details.components.EPISODES_KEY
 import com.example.anime_details.components.Episodes
@@ -37,11 +37,10 @@ import com.example.anime_details.components.Torrent
 import com.example.anime_details.screen.AnimeDetailsIntent.UpdateAuthForm.AuthField
 import com.example.common.refresh.RefreshEffect
 import com.example.data.models.auth.AuthState
-import com.example.data.models.releases.anime_details.UiEpisode
-import com.example.data.models.releases.anime_details.UiTorrent
+import com.example.data.models.releases.anime_details.Episode
+import com.example.data.models.releases.anime_details.Torrent
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.dividers.dividerWithLabel
-import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 
 // Vertical spacing between LazyColumn items
@@ -139,7 +138,7 @@ internal fun AnimeDetails(
 }
 
 private fun LazyListScope.header(
-    animeDetails: UiAnimeDetails,
+    animeDetails: AnimeDetails,
     topInnerPadding: Dp
 ) {
     // Maps UI model to header UI data
@@ -188,7 +187,7 @@ private fun LazyListScope.description(
 }
 
 private fun LazyListScope.torrents(
-    torrents: List<UiTorrent>,
+    torrents: List<Torrent>,
     onEffect: (UiEffect) -> Unit
 ) {
     items(
@@ -200,7 +199,7 @@ private fun LazyListScope.torrents(
 }
 
 private fun LazyListScope.episodes(
-    episodes: List<UiEpisode>,
+    episodes: List<Episode>,
     watchedEps: List<Int>,
     onIntent: (AnimeDetailsIntent) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit

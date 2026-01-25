@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 
@@ -25,7 +25,7 @@ private const val ZERO_ELEMENTS = 0
 @Composable
 internal fun CollectionPage(
     query: String,
-    items: LazyPagingItems<UiAnimeItem>,
+    items: LazyPagingItems<AnimeItem>,
     onItemClick: (Int) -> Unit,
 ) {
     val loadState = items.loadState.refresh

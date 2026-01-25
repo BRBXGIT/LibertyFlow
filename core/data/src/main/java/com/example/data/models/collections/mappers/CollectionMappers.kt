@@ -1,32 +1,32 @@
 package com.example.data.models.collections.mappers
 
-import com.example.data.models.collections.collection_ids.UiCollectionIds
-import com.example.data.models.collections.collection_ids.UiCollectionIdsItem
-import com.example.data.models.collections.request.UiCollectionItem
-import com.example.data.models.collections.request.UiCollectionRequest
-import com.example.network.collections.models.ids.CollectionsIds
-import com.example.network.collections.models.ids.CollectionsIdsSubList
-import com.example.network.collections.models.request.CollectionItem
-import com.example.network.collections.models.request.CollectionRequest
+import com.example.data.models.collections.collection_ids.CollectionIds
+import com.example.data.models.collections.collection_ids.CollectionIdsItem
+import com.example.data.models.collections.request.CollectionItem
+import com.example.data.models.collections.request.CollectionRequest
+import com.example.network.collections.models.ids.CollectionsIdsDto
+import com.example.network.collections.models.ids.CollectionsIdsSubListDto
+import com.example.network.collections.models.request.CollectionItemDto
+import com.example.network.collections.models.request.CollectionRequestDto
 
-internal fun UiCollectionItem.toCollectionItem(): CollectionItem {
-    return CollectionItem(
+internal fun CollectionItem.toCollectionItemDto(): CollectionItemDto {
+    return CollectionItemDto(
         releaseId = id,
         collectionType = collection.name
     )
 }
 
-internal fun UiCollectionRequest.toCollectionRequest(): CollectionRequest {
-    val collectionRequest = CollectionRequest()
-    collectionRequest.addAll(this.map { it.toCollectionItem() })
-    return collectionRequest
+internal fun CollectionRequest.toCollectionRequestDto(): CollectionRequestDto {
+    val collectionRequestDto = CollectionRequestDto()
+    collectionRequestDto.addAll(this.map { it.toCollectionItemDto() })
+    return collectionRequestDto
 }
 
-internal fun CollectionsIds.toUiCollectionIds(): UiCollectionIds {
-    val collections = UiCollectionIds()
-    collections.addAll(this.map { it.toUiCollectionIdItem() })
+internal fun CollectionsIdsDto.toCollectionIds(): CollectionIds {
+    val collections = CollectionIds()
+    collections.addAll(this.map { it.toCollectionIdItem() })
     return collections
 }
 
-internal fun CollectionsIdsSubList.toUiCollectionIdItem() =
-    UiCollectionIdsItem().also { it.addAll(this) }
+internal fun CollectionsIdsSubListDto.toCollectionIdItem() =
+    CollectionIdsItem().also { it.addAll(this) }

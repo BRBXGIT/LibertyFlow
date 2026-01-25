@@ -1,11 +1,11 @@
 package com.example.player.player
 
 import com.example.data.models.player.VideoQuality
-import com.example.data.models.releases.anime_details.UiEpisode
+import com.example.data.models.releases.anime_details.Episode
 
 sealed interface PlayerIntent {
     // --- Player ---
-    data class SetUpPlayer(val episodes: List<UiEpisode>, val startIndex: Int): PlayerIntent
+    data class SetUpPlayer(val episodes: List<Episode>, val startIndex: Int): PlayerIntent
     data class SetIsScrubbing(val value: Boolean): PlayerIntent
     data object TogglePlayPause: PlayerIntent
     data object StopPlayer: PlayerIntent
