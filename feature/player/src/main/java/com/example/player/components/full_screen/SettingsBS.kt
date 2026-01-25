@@ -2,58 +2,52 @@
 
 package com.example.player.components.full_screen
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.data.models.player.PlayerSettings
+import com.example.design_system.components.bottom_sheets.bs_list_item.BSListItem
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
 import com.example.player.R
 import com.example.player.player.PlayerIntent
 
-private val ICON_LABEL_GAP = 16.dp
-private val ITEM_PADDING = 12.dp
 private val SHEET_CONTENT_PADDING = 16.dp
 private val LIST_SPACING = 8.dp
-private const val LABEL_MAX_LINES = 1
-private const val WEIGHT_FILL = 1f
-
-private val QualityLabel = R.string.quality_label
-private val SkipOpeningButtonsLabel = R.string.skip_opening_buttons_label
-private val AutoSkipOpeningLabel = R.string.auto_skip_opening_label
-private val AutoplayLabel = R.string.autoplay_label
 
 private sealed interface TrailingType {
-    data object Navigation: TrailingType
-    data class Toggle(val isEnabled: Boolean): TrailingType
+    data object Navigation : TrailingType
+    data class Toggle(val isEnabled: Boolean) : TrailingType
+
+    @Composable
+    fun getIcon() = when (this) {
+        is Navigation -> LibertyFlowIcons.ArrowRightCircle
+        is Toggle -> if (isEnabled) LibertyFlowIcons.CheckCircle else LibertyFlowIcons.CrossCircle
+    }
+
+    @Composable
+    fun getColor() = when (this) {
+        is Navigation -> mColors.onSurface
+        is Toggle -> if (isEnabled) mColors.primary else mColors.error
+    }
 }
 
 private data class SettingItemModel(
-    val icon: Int,
+    val leadingIcon: Int,
     val label: Int,
     val intent: PlayerIntent,
-    val trailing: TrailingType
+    val trailingType: TrailingType
 )
 
 @Composable
@@ -64,28 +58,28 @@ internal fun SettingsBS(
     val settings = remember(playerSettings) {
         listOf(
             SettingItemModel(
-                icon = LibertyFlowIcons.HighQuality,
-                label = QualityLabel,
-                intent = PlayerIntent.ToggleSettingsBS,
-                trailing = TrailingType.Navigation
+                leadingIcon = LibertyFlowIcons.HighQuality,
+                label = R.string.quality_label,
+                intent = PlayerIntent.ToggleQualityBS,
+                trailingType = TrailingType.Navigation
             ),
             SettingItemModel(
-                icon = LibertyFlowIcons.RewindForwardCircle,
-                label = SkipOpeningButtonsLabel,
+                leadingIcon = LibertyFlowIcons.RewindForwardCircle,
+                label = R.string.skip_opening_buttons_label,
                 intent = PlayerIntent.ToggleShowSkipOpeningButton,
-                trailing = TrailingType.Toggle(playerSettings.showSkipOpeningButton)
+                trailingType = TrailingType.Toggle(playerSettings.showSkipOpeningButton)
             ),
             SettingItemModel(
-                icon = LibertyFlowIcons.Rocket,
-                label = AutoSkipOpeningLabel,
+                leadingIcon = LibertyFlowIcons.Rocket,
+                label = R.string.auto_skip_opening_label,
                 intent = PlayerIntent.ToggleAutoSkipOpening,
-                trailing = TrailingType.Toggle(playerSettings.autoSkipOpening)
+                trailingType = TrailingType.Toggle(playerSettings.autoSkipOpening)
             ),
             SettingItemModel(
-                icon = LibertyFlowIcons.PlayCircle,
-                label = AutoplayLabel,
+                leadingIcon = LibertyFlowIcons.PlayCircle,
+                label = R.string.autoplay_label,
                 intent = PlayerIntent.ToggleAutoPlay,
-                trailing = TrailingType.Toggle(playerSettings.autoPlay)
+                trailingType = TrailingType.Toggle(playerSettings.autoPlay)
             )
         )
     }
@@ -104,74 +98,17 @@ internal fun SettingsBS(
                 items = settings,
                 key = { it.label }
             ) { setting ->
-                SettingsRow(
-                    setting = setting,
+                BSListItem(
+                    leadingIcon = setting.leadingIcon,
+                    label = stringResource(setting.label),
+                    trailingIcon = setting.trailingType.getIcon(),
+                    trailingIconColor = setting.trailingType.getColor(),
                     onClick = {
                         onPlayerIntent(setting.intent)
                         onPlayerIntent(PlayerIntent.ToggleSettingsBS)
                     }
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun SettingsRow(
-    setting: SettingItemModel,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(mShapes.small)
-            .clickable(onClick = onClick)
-            .padding(ITEM_PADDING),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(ICON_LABEL_GAP)
-    ) {
-        Icon(
-            painter = painterResource(setting.icon),
-            contentDescription = null,
-            tint = mColors.onSurface
-        )
-
-        Text(
-            modifier = Modifier.weight(WEIGHT_FILL),
-            text = stringResource(setting.label),
-            overflow = TextOverflow.Ellipsis,
-            maxLines = LABEL_MAX_LINES,
-            style = mTypography.bodyLarge
-        )
-
-        SettingsTrailingIcon(setting.trailing)
-    }
-}
-
-@Composable
-private fun SettingsTrailingIcon(type: TrailingType) {
-    when (type) {
-        is TrailingType.Navigation -> {
-            Icon(
-                painter = painterResource(LibertyFlowIcons.ArrowRightCircle),
-                contentDescription = null,
-                tint = mColors.onSurfaceVariant
-            )
-        }
-        is TrailingType.Toggle -> {
-            val iconRes = if (type.isEnabled) {
-                LibertyFlowIcons.CheckCircle
-            } else {
-                LibertyFlowIcons.CrossCircle
-            }
-
-            val iconColor = if (type.isEnabled) mColors.primary else mColors.error
-
-            Icon(
-                painter = painterResource(iconRes),
-                contentDescription = null,
-                tint = iconColor
-            )
         }
     }
 }

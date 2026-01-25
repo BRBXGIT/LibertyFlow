@@ -35,8 +35,6 @@ internal fun FullScreenPlayerContainer(
     ) {
         Player(player, playerState)
 
-        if (playerState.isSettingsBSVisible) SettingsBS(playerState.playerSettings, onPlayerIntent)
-
         FullScreenPlayerController(playerState, onPlayerEffect, onPlayerIntent)
     }
 }

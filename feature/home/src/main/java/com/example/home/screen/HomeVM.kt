@@ -36,8 +36,7 @@ class HomeVM @Inject constructor(
     private val releasesRepo: ReleasesRepo,
     private val catalogRepo: CatalogRepo,
     private val genresRepo: GenresRepo,
-    @param:Dispatcher(LibertyFlowDispatcher.IO)
-    private val dispatcherIo: CoroutineDispatcher,
+    @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())

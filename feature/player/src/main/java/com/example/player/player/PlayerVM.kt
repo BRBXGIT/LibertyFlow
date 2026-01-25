@@ -61,6 +61,7 @@ class PlayerVM @Inject constructor(
             PlayerIntent.ToggleIsLocked -> _playerState.update { it.toggleIsLocked() }
             PlayerIntent.ToggleEpisodesDialog -> _playerState.update { it.toggleEpisodesDialog() }
             PlayerIntent.ToggleSettingsBS -> _playerState.update { it.toggleSettingsBS() }
+            PlayerIntent.ToggleQualityBS -> _playerState.update { it.toggleQualityBS() }
         }
     }
 

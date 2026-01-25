@@ -25,7 +25,6 @@ import com.example.network.common.common_response_models.Genre
 import com.example.network.common.common_response_models.Name
 import com.example.network.common.common_response_models.Poster
 
-// TODO: remove all mappers files and add mappers to repositories
 fun Season.toName(): Int {
     return when(this) {
         Season.WINTER -> R.string.winter
