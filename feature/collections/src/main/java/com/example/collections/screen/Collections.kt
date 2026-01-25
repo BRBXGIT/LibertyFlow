@@ -41,6 +41,8 @@ import kotlinx.coroutines.launch
 
 private val TopBarLabel = R.string.collections_top_bar_label
 
+private const val RETRY = "Retry"
+
 @Composable
 internal fun Collections(
     state: CollectionsState,
@@ -116,7 +118,7 @@ private fun LoggedInContent(
         items = currentItems,
         onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
         onRetryRequest = { messageRes, retry ->
-            onEffect(UiEffect.ShowSnackbar(messageRes.toInt(), "Retry", retry))
+            onEffect(UiEffect.ShowSnackbar(messageRes.toInt(), RETRY, retry))
         }
     )
 

@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.collections.R
 import com.example.design_system.theme.mTypography
@@ -19,7 +20,7 @@ val EmptyCollectionLabel = R.string.empty_collection_label
 val EmptyCollectionWithQueryLabel = R.string.empty_collection_with_query_label
 
 @Composable
-internal fun EmptyCollectionSection(emptyQuery: Boolean) {
+internal fun EmptyCollection(emptyQuery: Boolean) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -32,4 +33,10 @@ internal fun EmptyCollectionSection(emptyQuery: Boolean) {
             textAlign = TextAlign.Center
         )
     }
+}
+
+@Preview
+@Composable
+private fun EmptyCollectionPreview() {
+    EmptyCollection(true)
 }

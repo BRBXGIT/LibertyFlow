@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val RETRY = "Retry"
+
 @HiltViewModel
 class FavoritesVM @Inject constructor(
     authRepo: AuthRepo,
@@ -35,7 +37,6 @@ class FavoritesVM @Inject constructor(
     private val dispatcherIo: CoroutineDispatcher
 ) : BaseAuthVM(authRepo, dispatcherIo) {
 
-    // UI state
     private val _state = MutableStateFlow(FavoritesState())
     val state = _state.toLazily(FavoritesState())
 
@@ -59,35 +60,24 @@ class FavoritesVM @Inject constructor(
     // Intents
     fun sendIntent(intent: FavoritesIntent) {
         when (intent) {
-
-            /* --- UI toggles --- */
-
+            // Toggles
             FavoritesIntent.ToggleIsAuthBSVisible ->
                 _state.update { it.copy(authForm = it.authForm.toggleIsAuthBSVisible()) }
-
             FavoritesIntent.ToggleIsSearching ->
                 _state.update { it.copy(searchForm = it.searchForm.toggleSearching()) }
 
-            /* --- Flags --- */
-
+            // Toggles
             is FavoritesIntent.SetIsLoading ->
                 _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
-
             is FavoritesIntent.SetIsError ->
                 _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
 
-            /* --- Search --- */
-
+            // Search
             is FavoritesIntent.UpdateQuery ->
                 _state.update { it.copy(searchForm = it.searchForm.updateQuery(intent.query)) }
 
-            /* --- Auth input --- */
-
+            // Auth
             is FavoritesIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)
-
-
-            /* --- Auth action --- */
-
             FavoritesIntent.GetTokens -> performLogin()
         }
     }
@@ -103,8 +93,7 @@ class FavoritesVM @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
-    /* --- Auth flow --- */
-
+    // Auth
     private fun performLogin() {
         val currentState = _state.value.authForm
 
@@ -120,7 +109,7 @@ class FavoritesVM @Inject constructor(
                 sendEffect(
                     UiEffect.ShowSnackbar(
                         messageRes = messageRes,
-                        actionLabel = "Retry",
+                        actionLabel = RETRY,
                         action = retryAction
                     )
                 )

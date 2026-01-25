@@ -133,13 +133,7 @@ class HomeVM @Inject constructor(
                 }
                 .onError { _, messageRes ->
                     _state.update { it.copy(randomAnimeState = it.randomAnimeState.withError(true)) }
-                    sendEffect(
-                        UiEffect.ShowSnackbar(
-                            messageRes = messageRes,
-                            actionLabel = RETRY,
-                            action = ::getRandomAnime
-                        )
-                    )
+                    sendSnackbar(messageRes) { getRandomAnime() }
                 }
 
             _state.update { it.copy(randomAnimeState = it.randomAnimeState.withLoading(false)) }
@@ -151,20 +145,23 @@ class HomeVM @Inject constructor(
             _state.update { it.withGenresLoading(true) }
 
             genresRepo.getGenres()
-                .onSuccess { genres ->
-                    _state.update { it.updateGenres(genres) }
-                }
-                .onError { _, messageRes ->
-                    sendEffect(
-                        UiEffect.ShowSnackbar(
-                            messageRes = messageRes,
-                            actionLabel = RETRY,
-                            action = ::getGenres
-                        )
-                    )
-                }
+                .onSuccess { genres -> _state.update { it.updateGenres(genres) } }
+                .onError { _, messageRes -> sendSnackbar(messageRes) { getGenres() } }
 
             _state.update { it.withGenresLoading(false) }
+        }
+    }
+
+    // Helper to reduce boilerplate for effects
+    private fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
+        viewModelScope.launch(dispatcherIo) {
+            _effects.send(
+                UiEffect.ShowSnackbar(
+                    messageRes = messageRes,
+                    actionLabel = action?.let { RETRY },
+                    action = action
+                )
+            )
         }
     }
 }

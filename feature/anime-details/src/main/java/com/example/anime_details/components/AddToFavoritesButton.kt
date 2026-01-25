@@ -3,6 +3,7 @@
 package com.example.anime_details.components
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
@@ -96,6 +98,23 @@ private fun CheckIsFavoritesNeedRefresh(
             isFirstLaunch = false
         } else {
             onRefreshEffect(RefreshEffect.RefreshFavorites)
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun AddToFavoritesButtonPreview() {
+    LazyColumn {
+        item {
+            AddToFavoritesButton(
+                animeId = 1,
+                favoritesState = AnimeDetailsState.FavoritesState(),
+                authState = AuthState.LoggedIn,
+                showAnimation = true,
+                onIntent = {},
+                onRefreshEffect = {}
+            )
         }
     }
 }

@@ -48,10 +48,8 @@ fun Favorites(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
-
         topBar = {
             SearchingTopBar(
                 isLoading = state.loadingState.isLoading,
@@ -63,24 +61,15 @@ fun Favorites(
             )
         }
     ) { innerPadding ->
-
         if (state.authForm.isAuthBSVisible) {
             AuthBS(
                 email = state.authForm.email,
                 password = state.authForm.password,
                 incorrectEmailOrPassword = state.authForm.isError,
-                onDismissRequest = {
-                    onIntent(FavoritesIntent.ToggleIsAuthBSVisible)
-                },
-                onAuthClick = {
-                    onIntent(FavoritesIntent.GetTokens)
-                },
-                onPasswordChange = {
-                    onIntent(FavoritesIntent.UpdateAuthForm(AuthField.Password(it)))
-                },
-                onEmailChange = {
-                    onIntent(FavoritesIntent.UpdateAuthForm(AuthField.Email(it)))
-                }
+                onDismissRequest = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) },
+                onAuthClick = { onIntent(FavoritesIntent.GetTokens) },
+                onPasswordChange = { onIntent(FavoritesIntent.UpdateAuthForm(AuthField.Password(it))) },
+                onEmailChange = { onIntent(FavoritesIntent.UpdateAuthForm(AuthField.Email(it))) }
             )
         }
 
@@ -123,7 +112,6 @@ private fun MainContent(
                 onIntent = onIntent,
                 onEffect = onEffect
             )
-
         AuthState.LoggedOut ->
             LoggedOutSection(
                 onAuthClick = {
@@ -133,6 +121,7 @@ private fun MainContent(
     }
 }
 
+private const val RETRY = "Retry"
 
 @Composable
 private fun LoggedInContent(
@@ -150,7 +139,7 @@ private fun LoggedInContent(
             onEffect(
                 UiEffect.ShowSnackbar(
                     messageRes = messageRes.toInt(),
-                    actionLabel = "Retry",
+                    actionLabel = RETRY,
                     action = retry
                 )
             )

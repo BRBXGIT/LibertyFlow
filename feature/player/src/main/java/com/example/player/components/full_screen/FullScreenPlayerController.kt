@@ -46,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.design_system.components.bottom_sheets.player_settings.VideoQualityBS
 import com.example.design_system.components.buttons.ButtonWithIcon
 import com.example.design_system.components.buttons.ButtonWithIconType
 import com.example.design_system.theme.LibertyFlowIcons
@@ -81,18 +80,6 @@ internal fun FullScreenPlayerController(
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
-    if (playerState.isEpisodesDialogVisible) EpisodeDialog(onPlayerIntent, onPlayerEffect, playerState)
-
-    if (playerState.isSettingsBSVisible) SettingsBS(playerState.playerSettings, onPlayerIntent)
-
-    if (playerState.isQualityBSVisible) {
-        VideoQualityBS(
-            onItemClick = { quality -> onPlayerIntent(PlayerIntent.SaveQuality(quality)) },
-            selectedQuality = playerState.playerSettings.quality,
-            onDismissRequest = { onPlayerIntent(PlayerIntent.ToggleQualityBS) }
-        )
-    }
-
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
     val visibility = rememberControllerVisibility(playerState.isControllerVisible, playerState.episodeTime.isScrubbing)
 

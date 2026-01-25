@@ -67,7 +67,7 @@ private val ChooseEpisodeLabel = R.string.choose_episode_label
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EpisodeDialog(
+internal fun EpisodeDialog(
     onPlayerIntent: (PlayerIntent) -> Unit,
     onPlayerEffect: (PlayerEffect) -> Unit,
     playerState: PlayerState

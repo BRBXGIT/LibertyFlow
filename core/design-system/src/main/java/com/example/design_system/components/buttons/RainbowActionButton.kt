@@ -57,6 +57,7 @@ data class ActionButtonState(
     val onClick: () -> Unit
 )
 
+// Reusable button component which shows rainbow animation, for e.x. if something loading
 @Composable
 fun RainbowActionButton(
     state: ActionButtonState,

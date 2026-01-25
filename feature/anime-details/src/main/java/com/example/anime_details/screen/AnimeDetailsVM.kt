@@ -27,6 +27,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val ANIMATION_DELAY = 2_000L
+private const val RETRY = "Retry"
+
 @HiltViewModel
 class AnimeDetailsVM @Inject constructor(
     authRepo: AuthRepo,
@@ -54,7 +57,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
-    // --- Effects and intents ---
+    // --- Effects ---
     fun sendIntent(intent: AnimeDetailsIntent) {
         when (intent) {
             is AnimeDetailsIntent.FetchAnime -> fetchAnime(intent.id)
@@ -79,6 +82,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
+    // --- Intents ---
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
             _effects.send(effect)
@@ -153,7 +157,7 @@ class AnimeDetailsVM @Inject constructor(
             val request = FavoriteRequest().apply { add(FavoriteItem(animeId)) }
 
             // Just cause i want to show animation :)
-            delay(2000)
+            delay(ANIMATION_DELAY)
 
             val result = if (shouldAdd) favoritesRepo.addFavorite(request) else favoritesRepo.deleteFavorite(request)
 
@@ -208,7 +212,7 @@ class AnimeDetailsVM @Inject constructor(
             _effects.send(
                 UiEffect.ShowSnackbar(
                     messageRes = messageRes,
-                    actionLabel = action?.let { "Retry" },
+                    actionLabel = action?.let { RETRY },
                     action = action
                 )
             )

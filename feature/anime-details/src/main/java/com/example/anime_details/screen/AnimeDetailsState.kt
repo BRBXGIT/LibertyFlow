@@ -35,7 +35,7 @@ data class AnimeDetailsState(
         val ids: List<Int> = emptyList()
     )
 
-    // Using `copy` on nested objects keeps the main `copy` clean
+    // Auth
     fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): AnimeDetailsState {
         return copy(authForm = transformer(authForm))
     }

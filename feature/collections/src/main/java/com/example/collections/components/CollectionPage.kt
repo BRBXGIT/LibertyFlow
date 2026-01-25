@@ -44,9 +44,9 @@ internal fun CollectionPage(
         when {
             isError -> ErrorSection()
 
-            isEmptyWithQuery -> EmptyCollectionSection(false)
+            isEmptyWithQuery -> EmptyCollection(false)
 
-            isEmptyWithoutQuery -> EmptyCollectionSection(true)
+            isEmptyWithoutQuery -> EmptyCollection(true)
 
             else -> {
                 if (isLoading && items.itemCount == ZERO_ELEMENTS) {

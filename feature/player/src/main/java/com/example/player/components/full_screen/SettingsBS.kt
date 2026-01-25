@@ -27,8 +27,8 @@ private val SHEET_CONTENT_PADDING = 16.dp
 private val LIST_SPACING = 8.dp
 
 private sealed interface TrailingType {
-    data object Navigation : TrailingType
-    data class Toggle(val isEnabled: Boolean) : TrailingType
+    data object Navigation: TrailingType
+    data class Toggle(val isEnabled: Boolean): TrailingType
 
     @Composable
     fun getIcon() = when (this) {

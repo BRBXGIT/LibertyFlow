@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -22,6 +23,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
@@ -134,5 +136,20 @@ private fun Episode(
                 vertical = EPISODE_TEXT_VERTICAL_PADDING.dp
             )
         )
+    }
+}
+
+@Preview
+@Composable
+private fun EpisodePreview() {
+    LazyColumn {
+        item {
+            Episodes(
+                episodes = emptyList(),
+                watchedEps = emptyList(),
+                onIntent = {},
+                onPlayerIntent = {}
+            )
+        }
     }
 }
