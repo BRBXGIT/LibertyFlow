@@ -52,7 +52,6 @@ internal fun LazyItemScope.Episodes(
     onIntent: (AnimeDetailsIntent) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
-    // TODO: Fix bug with cropped column if a few items
     Column(
         verticalArrangement = Arrangement.spacedBy(COLUMN_ARRANGEMENT.dp),
         modifier = Modifier

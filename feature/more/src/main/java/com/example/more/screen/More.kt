@@ -19,13 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import com.example.common.navigation.InfoRoute
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.dividers.dividerWithLabel
+import com.example.design_system.containers.M3Container
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
 import com.example.more.R
-import com.example.more.components.MoreItemsContainer
 import com.example.more.components.MoreItem
 import com.example.more.components.TopBar
 
@@ -85,7 +86,7 @@ private val appItems = listOf(
         icon = LibertyFlowIcons.Info,
         labelRes = InfoLabel,
         originalColor = false,
-        effect = UiEffect.NavigateBack // TODO: Add screen
+        effect = UiEffect.Navigate(InfoRoute)
     )
 )
 
@@ -95,7 +96,7 @@ private fun LazyListScope.appItems(onEffect: (UiEffect) -> Unit) {
     item(
         key = APP_ITEMS_KEY
     ) {
-        MoreItemsContainer {
+        M3Container(Modifier.animateItem()) {
             appItems.forEach { item ->
                 MoreItem(item, onEffect)
             }
@@ -186,7 +187,7 @@ private fun LazyListScope.linkItems(onEffect: (UiEffect) -> Unit) {
     item(
         key = LINK_ITEMS_KEY
     ) {
-        MoreItemsContainer {
+        M3Container(Modifier.animateItem()) {
             linkItems.forEach { item ->
                 MoreItem(item, onEffect)
             }

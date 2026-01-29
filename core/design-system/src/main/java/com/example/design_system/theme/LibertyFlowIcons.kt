@@ -56,6 +56,7 @@ object LibertyFlowIcons {
 
     // Multicolored
     val AniLiberty = R.drawable.ic_aniliberty_multicolored
+    val LibertyFlow = R.drawable.ic_liberty_flow_multicolored
     val VK = R.drawable.ic_vk_multicolored
     val YouTube = R.drawable.ic_youtube_multicolored
     val Patreon = R.drawable.ic_patreon_multicolored

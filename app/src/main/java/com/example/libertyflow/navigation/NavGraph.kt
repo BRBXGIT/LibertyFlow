@@ -31,6 +31,7 @@ import com.example.favorites.navigation.favorites
 import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home
 import com.example.home.screen.HomeVM
+import com.example.info.navigation.info
 import com.example.more.navigation.more
 import com.example.player.player.PlayerContainer
 import com.example.player.player.PlayerVM
@@ -66,6 +67,7 @@ fun NavGraph() {
                 collections(collectionsVM, refreshVM, navController)
                 animeDetails(refreshVM, playerVM, navController)
                 more(navController)
+                info(navController)
             }
 
             val navBarVisible = selectedRoute is NavBarItem

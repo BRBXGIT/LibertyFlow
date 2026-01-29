@@ -15,9 +15,8 @@ import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.components.cards.AnimeCard
 import com.example.design_system.components.cards.AnimeCardUtils
 
-private object AnimeLVGContainerConstants {
-    const val ARRANGEMENT_ALIGNMENT_PADDING = 16
-}
+
+private val ArrangementAlignmentPadding = 16.dp
 
 @Composable
 fun PagingAnimeItemsLazyVerticalGrid(
@@ -56,9 +55,9 @@ private fun AnimeLazyVerticalGridContainer(
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Adaptive(AnimeCardUtils.CARD_WIDTH.dp),
-        verticalArrangement = Arrangement.spacedBy(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
-        horizontalArrangement = Arrangement.spacedBy(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
-        contentPadding = PaddingValues(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
+        verticalArrangement = Arrangement.spacedBy(ArrangementAlignmentPadding),
+        horizontalArrangement = Arrangement.spacedBy(ArrangementAlignmentPadding),
+        contentPadding = PaddingValues(ArrangementAlignmentPadding),
         content = content
     )
 }

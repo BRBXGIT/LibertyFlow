@@ -63,6 +63,7 @@ dependencies {
     implementation(project(":feature:anime-details"))
     implementation(project(":feature:more"))
     implementation(project(":feature:player"))
+    implementation(project(":feature:info"))
 
     // Media 3 only for arguments
     implementation(libs.androidx.media3.exoplayer)

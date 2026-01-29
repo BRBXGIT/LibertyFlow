@@ -15,7 +15,6 @@ private const val OFFSET_DIVIDER = 2
 
 @Composable
 fun VerticalSlideAnimatedContainer(
-    modifier: Modifier = Modifier,
     visible: Boolean,
     content: @Composable () -> Unit
 ) {

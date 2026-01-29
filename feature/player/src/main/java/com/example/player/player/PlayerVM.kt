@@ -26,6 +26,7 @@ import javax.inject.Inject
 
 private const val START_POSITION = 0L
 
+// TODO: Add logic for player settings
 @HiltViewModel
 class PlayerVM @Inject constructor(
     val player: ExoPlayer,
@@ -111,7 +112,7 @@ class PlayerVM @Inject constructor(
                 player.setMediaItems(mediaItems, startIndex, START_POSITION)
 
                 player.prepare()
-                player.playWhenReady = true
+                player.playWhenReady = initialSettings.autoPlay
                 startTrackingProgress()
             }
         }
