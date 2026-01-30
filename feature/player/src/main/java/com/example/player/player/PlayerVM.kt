@@ -42,11 +42,6 @@ class PlayerVM @Inject constructor(
     private var settingsJob: Job? = null
     private var controllerJob: Job? = null
 
-    init {
-        setupPlayerListeners()
-        observeSettings()
-    }
-
     // --- Intents ---
     fun sendIntent(intent: PlayerIntent) {
         when(intent) {
@@ -101,8 +96,6 @@ class PlayerVM @Inject constructor(
         }
     }
 
-    private fun setupPlayerListeners() = player.addListener(playerListener)
-
     private fun setUpPlayer(episodes: List<Episode>, startIndex: Int) {
         viewModelScope.launch(dispatcherIo) {
             // 1. Fetch initial settings before touching the player
@@ -130,6 +123,12 @@ class PlayerVM @Inject constructor(
                 startTrackingProgress()
             }
         }
+    }
+
+    // --- Init ---
+    init {
+        player.addListener(playerListener)
+        observeSettings()
     }
 
     // --- Progress tracking ---
@@ -218,11 +217,15 @@ class PlayerVM @Inject constructor(
     // --- Controller ---
     private fun changeEpisode(index: Int) = player.seekTo(index, START_POSITION)
 
-    private fun togglePlayPause() =
-        when(player.isPlaying) {
-            true -> player.pause()
-            false -> player.play()
+    private fun togglePlayPause() {
+        if (player.isPlaying) {
+            player.pause()
+            _playerState.update { it.copy(episodeState = PlayerState.EpisodeState.Paused) }
+        } else {
+            player.play()
+            _playerState.update { it.copy(episodeState = PlayerState.EpisodeState.Playing) }
         }
+    }
 
     private fun skipEpisode(forward: Boolean) =
         if (forward) player.seekToNextMediaItem() else player.seekToPreviousMediaItem()
