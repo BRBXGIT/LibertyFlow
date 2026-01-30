@@ -90,7 +90,7 @@ internal fun BoxScope.MiniPlayerController(
                 playerState = playerState,
                 onPlayerIntent = onPlayerIntent,
                 iconSize = ICON_SIZE.dp,
-                buttonSize = PLAY_PAUSE_BUTTON_SIZE
+                buttonSize = PLAY_PAUSE_BUTTON_SIZE,
             )
 
             ControllerButton(

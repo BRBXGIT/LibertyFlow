@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.example.player.components.common
 
 import androidx.compose.animation.graphics.res.animatedVectorResource
@@ -5,6 +7,8 @@ import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularWavyProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,16 +35,20 @@ internal fun AnimatedPlayPauseButton(
         atEnd = !isPaused
     )
 
-    IconButton(
-        modifier = Modifier.size(buttonSize),
-        onClick = { if (playerState.isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause) },
-        enabled = isEnabled
-    ) {
-        Image(
-            contentDescription = null,
-            painter = painter,
-            colorFilter = ColorFilter.tint(Color.White),
-            modifier = Modifier.size(iconSize)
-        )
+    if (playerState.episodeState == PlayerState.EpisodeState.Loading) {
+        CircularWavyProgressIndicator(modifier = Modifier.size(buttonSize))
+    } else {
+        IconButton(
+            modifier = Modifier.size(buttonSize),
+            onClick = { if (playerState.isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause) },
+            enabled = isEnabled
+        ) {
+            Image(
+                contentDescription = null,
+                painter = painter,
+                colorFilter = ColorFilter.tint(Color.White),
+                modifier = Modifier.size(iconSize)
+            )
+        }
     }
 }
