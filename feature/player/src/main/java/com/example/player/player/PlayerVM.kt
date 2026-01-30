@@ -1,6 +1,5 @@
 package com.example.player.player
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
@@ -26,7 +25,6 @@ import javax.inject.Inject
 
 private const val START_POSITION = 0L
 
-// TODO: Add logic for player settings
 @HiltViewModel
 class PlayerVM @Inject constructor(
     val player: ExoPlayer,
@@ -35,28 +33,37 @@ class PlayerVM @Inject constructor(
     @param:Dispatcher(LibertyFlowDispatcher.Main) private val dispatcherMain: CoroutineDispatcher
 ): ViewModel() {
 
+    // --- State ---
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.toLazily(PlayerState())
+
+    // Coroutine jobs management to prevent leaks and overlaps
+    private var progressJob: Job? = null
+    private var settingsJob: Job? = null
+    private var controllerJob: Job? = null
+
+    init {
+        setupPlayerListeners()
+        observeSettings()
+    }
 
     // --- Intents ---
     fun sendIntent(intent: PlayerIntent) {
         when(intent) {
-            // --- Player ---
+            // Player Lifecycle & Controls
             is PlayerIntent.SetUpPlayer -> setUpPlayer(intent.episodes, intent.startIndex)
-            is PlayerIntent.SetIsScrubbing -> _playerState.update { it.setIsScrabbing(intent.value) }
+            is PlayerIntent.SetIsScrubbing -> _playerState.update { it.setIsScrubbing(intent.value) }
             PlayerIntent.TogglePlayPause -> togglePlayPause()
             PlayerIntent.StopPlayer -> stopPlayer()
 
-            // --- Player settings ---
+            // Settings & Preferences
             is PlayerIntent.SaveQuality -> saveQuality(intent.quality)
             PlayerIntent.ToggleAutoPlay -> toggleAutoPlay()
             PlayerIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening()
             PlayerIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton()
 
-            // --- Controller ---
+            // UI Visibility Toggles
             PlayerIntent.ToggleControllerVisible -> toggleControllerVisible()
-
-            // --- Ui ---
             PlayerIntent.ToggleFullScreen -> toggleFullScreen()
             PlayerIntent.ToggleCropped -> _playerState.update { it.toggleIsCropped() }
             PlayerIntent.ToggleIsLocked -> _playerState.update { it.toggleIsLocked() }
@@ -69,105 +76,99 @@ class PlayerVM @Inject constructor(
     // --- Effects ---
     fun sendEffect(effect: PlayerEffect) {
         when(effect) {
-            // --- Player ---
-            is PlayerEffect.SeekForFiveSeconds -> seekEpisodeForFiveSeconds(effect.forward)
+            is PlayerEffect.SeekForFiveSeconds -> seekFiveSeconds(effect.forward)
             is PlayerEffect.SkipEpisode -> skipEpisode(effect.forward)
             is PlayerEffect.ChangeEpisode -> changeEpisode(effect.index)
-            is PlayerEffect.SeekTo -> seekEpisode(effect.position)
+            is PlayerEffect.SeekTo -> player.seekTo(effect.position)
         }
     }
 
     // --- Player ---
-    @VisibleForTesting
-    internal val listener = object : Player.Listener {
+    internal val playerListener = object : Player.Listener {
+        // Sync internal state when ExoPlayer changes tracks (Auto-play next episode)
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-            val currentIndex = player.currentMediaItemIndex
-            val previousIndex = playerState.value.currentEpisodeIndex
+            _playerState.update { it.copy(currentEpisodeIndex = player.currentMediaItemIndex) }
+        }
 
-            when {
-                currentIndex > previousIndex -> { _playerState.update { it.nextEpisode() } }
-                currentIndex < previousIndex -> { _playerState.update { it.previousEpisode() } }
+        // Map ExoPlayer states (Buffering/Ready) to UI states (Loading/Playing)
+        override fun onPlaybackStateChanged(state: Int) {
+            val episodeState = when(state) {
+                Player.STATE_BUFFERING -> PlayerState.EpisodeState.Loading
+                Player.STATE_READY -> if (player.isPlaying) PlayerState.EpisodeState.Playing else PlayerState.EpisodeState.Paused
+                else -> PlayerState.EpisodeState.Paused
             }
+            _playerState.update { it.copy(episodeState = episodeState) }
         }
     }
 
+    private fun setupPlayerListeners() = player.addListener(playerListener)
+
     private fun setUpPlayer(episodes: List<Episode>, startIndex: Int) {
         viewModelScope.launch(dispatcherIo) {
-            val initialSettings = playerSettingsRepo.playerSettings.first()
+            // 1. Fetch initial settings before touching the player
+            val settings = playerSettingsRepo.playerSettings.first()
 
+            // 2. Initialize UI state
             _playerState.update {
                 it.copy(
                     uiPlayerState = PlayerState.UiPlayerState.Mini,
                     episodes = episodes,
                     currentEpisodeIndex = startIndex,
-                    playerSettings = initialSettings
+                    playerSettings = settings
                 )
             }
 
+            // 3. Prepare the Player on the Main Thread
             withContext(dispatcherMain) {
-                player.clearMediaItems()
-                player.addListener(listener)
-
-                val mediaItems = episodes.map { it.toMediaItem(initialSettings.quality) }
-                player.setMediaItems(mediaItems, startIndex, START_POSITION)
-
+                player.setMediaItems(
+                    episodes.map { it.toMediaItem(settings.quality) },
+                    startIndex,
+                    START_POSITION
+                )
                 player.prepare()
-                player.playWhenReady = initialSettings.autoPlay
+                player.playWhenReady = settings.autoPlay // Starts immediately if AutoPlay is ON
                 startTrackingProgress()
             }
         }
-
-        observeSettings()
     }
 
-    private fun stopPlayer() {
-        player.clearMediaItems()
-        stopTrackingProgress()
-        player.stop()
-
-        _playerState.value = PlayerState()
-    }
-
-    private fun skipEpisode(forward: Boolean) {
-        when(forward) {
-            true -> if (player.hasNextMediaItem()) player.seekToNextMediaItem()
-            false -> if (player.hasPreviousMediaItem()) player.seekToPreviousMediaItem()
-        }
-    }
-
-    private fun togglePlayPause() {
-        when(player.isPlaying) {
-            true -> {
-                player.pause()
-                _playerState.update { it.setEpisodeState(PlayerState.EpisodeState.Paused) }
-            }
-            false -> {
-                player.play()
-                _playerState.update { it.setEpisodeState(PlayerState.EpisodeState.Playing) }
-            }
-        }
-    }
-
-    private fun seekEpisodeForFiveSeconds(forward: Boolean) =
-        when(forward) {
-            true -> player.seekForward()
-            false -> player.seekBack()
-        }
-
-    private fun seekEpisode(position: Long) = player.seekTo(position)
-
-    private fun changeEpisode(index: Int) = player.seekTo(index, START_POSITION)
-
-    private var progressJob: Job? = null
+    // --- Progress tracking ---
+    /**
+     * Runs a loop every 500ms to update the UI progress bar.
+     * Also handles "Auto Skip Opening" logic reactively.
+     */
     private fun startTrackingProgress() {
         progressJob?.cancel()
         progressJob = viewModelScope.launch(dispatcherMain) {
             while (isActive) {
-                val current = player.currentPosition
+                val currentPos = player.currentPosition
                 val duration = player.duration.coerceAtLeast(0L)
+                val state = _playerState.value
+                val settings = state.playerSettings
 
-                _playerState.update { it.updateDuration(current, duration) }
+                // 1. Update UI Time
+                _playerState.update { it.updateDuration(currentPos, duration) }
 
+                // 2. Check Opening Logic (Auto-Skip or Show Button)
+                state.currentEpisode?.opening?.let { opening ->
+                    // Convert seconds (API) to milliseconds (ExoPlayer)
+                    val start = (opening.start ?: -1).toLong() * 1000L
+                    val end = (opening.end ?: -1).toLong() * 1000L
+
+                    // Check if we are currently inside the opening window
+                    if (currentPos in start..end) {
+                        if (settings.autoSkipOpening) {
+                            // OPTION A: Automatically jump over the opening
+                            player.seekTo(end)
+                        } else {
+                            // OPTION B: Show the "Skip" button to the user
+                            _playerState.update { it.copy(isSkipOpeningButtonVisible = settings.showSkipOpeningButton) }
+                        }
+                    } else if (state.isSkipOpeningButtonVisible) {
+                        // We left the opening window, hide the button
+                        _playerState.update { it.copy(isSkipOpeningButtonVisible = false) }
+                    }
+                }
                 delay(500)
             }
         }
@@ -178,17 +179,17 @@ class PlayerVM @Inject constructor(
         progressJob = null
     }
 
-    // --- Player settings ---
-    private var settingsJob: Job? = null
-
+    // --- Settings observer ---
     private fun observeSettings() {
         settingsJob?.cancel()
         settingsJob = viewModelScope.launch(dispatcherIo) {
             playerSettingsRepo.playerSettings.collect { newSettings ->
                 val oldSettings = _playerState.value.playerSettings
 
+                // Update local state
                 _playerState.update { it.copy(playerSettings = newSettings) }
 
+                // React to Quality Change (requires reloading media)
                 if (oldSettings.quality != newSettings.quality) {
                     updatePlayerQuality(newSettings.quality)
                 }
@@ -196,63 +197,90 @@ class PlayerVM @Inject constructor(
         }
     }
 
-    private suspend fun updatePlayerQuality(newQuality: VideoQuality) {
-        withContext(dispatcherMain) {
-            val currentPos = player.currentPosition
-            val currentIndex = player.currentMediaItemIndex
-            val isPlaying = player.isPlaying
+    /**
+     * Hot-swaps the media items to the new quality without resetting position.
+     */
+    private suspend fun updatePlayerQuality(quality: VideoQuality) = withContext(dispatcherMain) {
+        val currentPos = player.currentPosition
+        val currentIndex = player.currentMediaItemIndex
+        val wasPlaying = player.isPlaying
 
-            val newItems = _playerState.value.episodes.map { it.toMediaItem(newQuality) }
+        // Re-map episodes to the new quality URLs
+        val items = _playerState.value.episodes.map { it.toMediaItem(quality) }
 
-            player.setMediaItems(newItems, currentIndex, currentPos)
+        player.setMediaItems(items, currentIndex, currentPos)
+        player.prepare()
 
-            player.prepare()
-            if (isPlaying) player.play()
+        // Restore playback state
+        if (wasPlaying) player.play()
+    }
+
+    // --- Controller ---
+    private fun changeEpisode(index: Int) = player.seekTo(index, START_POSITION)
+
+    private fun togglePlayPause() =
+        when(player.isPlaying) {
+            true -> player.pause()
+            false -> player.play()
         }
+
+    private fun skipEpisode(forward: Boolean) =
+        if (forward) player.seekToNextMediaItem() else player.seekToPreviousMediaItem()
+
+    private fun seekFiveSeconds(forward: Boolean) {
+        val offset = if (forward) 5000L else -5000L
+        player.seekTo(player.currentPosition + offset)
     }
 
-    private fun saveQuality(quality: VideoQuality) = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveQuality(quality)
+    private fun stopPlayer() {
+        stopTrackingProgress()
+        player.stop()
+        player.clearMediaItems()
+        _playerState.value = PlayerState()
     }
 
-    private fun toggleShowSkipOpeningButton() = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveShowSkipOpeningButton(!_playerState.value.playerSettings.showSkipOpeningButton)
-    }
-
-    private fun toggleAutoSkipOpening() = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveAutoSkipOpening(!_playerState.value.playerSettings.autoSkipOpening)
+    // --- Repository updates (Data persistence) ---
+    private fun saveQuality(q: VideoQuality) = viewModelScope.launch(dispatcherIo) {
+        playerSettingsRepo.saveQuality(q)
     }
 
     private fun toggleAutoPlay() = viewModelScope.launch(dispatcherIo) {
         playerSettingsRepo.saveAutoPlay(!_playerState.value.playerSettings.autoPlay)
     }
 
-    // --- Controller ---
-    private var controllerJob: Job? = null
+    private fun toggleAutoSkipOpening() = viewModelScope.launch(dispatcherIo) {
+        playerSettingsRepo.saveAutoSkipOpening(!_playerState.value.playerSettings.autoSkipOpening)
+    }
+
+    private fun toggleShowSkipOpeningButton() = viewModelScope.launch(dispatcherIo) {
+        playerSettingsRepo.saveShowSkipOpeningButton(!_playerState.value.playerSettings.showSkipOpeningButton)
+    }
+
+    // --- Ui visibility helpers ---
     private fun toggleControllerVisible() {
         controllerJob?.cancel()
+        val isNowVisible = !_playerState.value.isControllerVisible
+        _playerState.update { it.setControllerVisible(isNowVisible) }
 
-        if (_playerState.value.isControllerVisible) {
-            _playerState.update { it.setControllerVisible(false) }
-        } else {
+        // Auto-hide controller after 4 seconds if not locked
+        if (isNowVisible && !_playerState.value.isLocked) {
             controllerJob = viewModelScope.launch {
-                _playerState.update { it.setControllerVisible(true) }
                 delay(4000)
                 _playerState.update { it.setControllerVisible(false) }
             }
         }
     }
 
-    // --- Ui ---
     private fun toggleFullScreen() {
         _playerState.update {
-            val newState = if (it.uiPlayerState == PlayerState.UiPlayerState.Full)
+            val next = if (it.uiPlayerState == PlayerState.UiPlayerState.Full)
                 PlayerState.UiPlayerState.Mini else PlayerState.UiPlayerState.Full
-            it.setUiPlayerState(newState)
+            it.copy(uiPlayerState = next)
         }
     }
 }
 
+// --- Mappers ---
 private fun Episode.toMediaItem(quality: VideoQuality) =
     MediaItem.fromUri(
         when(quality) {
