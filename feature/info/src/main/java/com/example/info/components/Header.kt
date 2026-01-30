@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -20,9 +21,10 @@ private val MAIN_PADDING = 16.dp
 private val ICON_SIZE = 84.dp
 
 @Composable
-internal fun Header() {
+internal fun LazyItemScope.Header() {
     Box(
         modifier = Modifier
+            .animateItem()
             .fillMaxWidth()
             .height(MAIN_BOX_HEIGHT)
             .padding(horizontal = MAIN_PADDING)

@@ -17,10 +17,20 @@ class InfoVM @Inject constructor(
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
 ): ViewModel() {
 
-    private val _effects = Channel<UiEffect>(Channel.BUFFERED)
+    private val _commonEffects = Channel<UiEffect>(Channel.BUFFERED)
+    val commonEffects = _commonEffects.receiveAsFlow()
+
+    private val _effects = Channel<InfoEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    fun sendEffect(effect: UiEffect) {
+    // --- Effects ---
+    fun sendCommonEffect(effect: UiEffect) {
+        viewModelScope.launch(dispatcherIo) {
+            _commonEffects.send(effect)
+        }
+    }
+
+    fun sendEffect(effect: InfoEffect) {
         viewModelScope.launch(dispatcherIo) {
             _effects.send(effect)
         }
