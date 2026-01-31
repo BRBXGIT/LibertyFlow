@@ -2,6 +2,7 @@
 
 package com.example.player.components.full_screen
 
+import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -79,6 +81,7 @@ private const val ONE = 1
 @Composable
 internal fun FullScreenPlayerController(
     playerState: PlayerState,
+    pipManager: PipManager,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
@@ -110,6 +113,7 @@ internal fun FullScreenPlayerController(
             onPlayerEffect = onPlayerEffect,
             visibility = visibility,
             contentPadding = systemBarsPadding,
+            pipManager = pipManager,
             onPlayerIntent = onPlayerIntent
         )
     }
@@ -129,6 +133,7 @@ private fun MainControlsOverlay(
     episodeNumber: Int,
     playerState: PlayerState,
     visibility: ControllerVisibility,
+    pipManager: PipManager,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit,
     contentPadding: PaddingValues
@@ -147,7 +152,7 @@ private fun MainControlsOverlay(
     ) {
         Header(title, episodeNumber, playerState, onPlayerIntent)
         CenterControls(playerState, onPlayerEffect, onPlayerIntent)
-        Footer(playerState, onPlayerEffect, onPlayerIntent)
+        Footer(playerState, pipManager, onPlayerEffect, onPlayerIntent)
         SkipOpeningButton(playerState.isSkipOpeningButtonVisible, onPlayerIntent)
     }
 }
@@ -249,6 +254,7 @@ private const val SLASH = "/"
 @Composable
 private fun BoxScope.Footer(
     playerState: PlayerState,
+    pipManager: PipManager,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
@@ -289,9 +295,17 @@ private fun BoxScope.Footer(
                     Image(painter = painter, contentDescription = null, colorFilter = ColorFilter.tint(Color.White))
                 }
 
+                val pipContext = LocalContext.current
                 PlayerIconButton(
                     icon = LibertyFlowIcons.Pip,
-                    onClick = { /* Handle PiP */ },
+                    onClick = {
+                        onPlayerIntent(PlayerIntent.TurnOffController)
+                        if (pipManager.isPipSupported(pipContext)) {
+                            pipManager.updatedPipParams()?.let { params ->
+                                (pipContext as Activity).enterPictureInPictureMode(params)
+                            }
+                        }
+                    },
                     isEnabled = playerState.isControllerVisible
                 )
                 PlayerIconButton(

@@ -13,6 +13,7 @@ sealed interface PlayerIntent {
 
     // --- Controller ---
     data object ToggleControllerVisible: PlayerIntent
+    data object TurnOffController: PlayerIntent
 
     // --- Player settings ---
     data class SaveQuality(val quality: VideoQuality): PlayerIntent

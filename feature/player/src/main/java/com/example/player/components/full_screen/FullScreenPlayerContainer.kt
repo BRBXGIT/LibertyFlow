@@ -41,13 +41,14 @@ internal fun FullScreenPlayerContainer(
         )
     }
 
+    val pipManager = PipManager()
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        Player(player, playerState)
+        Player(player, playerState, pipManager)
 
-        FullScreenPlayerController(playerState, onPlayerEffect, onPlayerIntent)
+        FullScreenPlayerController(playerState, pipManager, onPlayerEffect, onPlayerIntent)
     }
 }

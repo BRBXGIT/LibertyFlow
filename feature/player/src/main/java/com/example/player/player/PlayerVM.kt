@@ -60,6 +60,7 @@ class PlayerVM @Inject constructor(
 
             // UI Visibility Toggles
             PlayerIntent.ToggleControllerVisible -> toggleControllerVisible()
+            PlayerIntent.TurnOffController -> _playerState.update { it.setControllerVisible(false) }
             PlayerIntent.ToggleFullScreen -> toggleFullScreen()
             PlayerIntent.ToggleCropped -> _playerState.update { it.toggleIsCropped() }
             PlayerIntent.ToggleIsLocked -> _playerState.update { it.toggleIsLocked() }
