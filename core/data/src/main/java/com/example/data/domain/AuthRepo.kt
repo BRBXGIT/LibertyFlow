@@ -14,6 +14,8 @@ interface AuthRepo {
 
     suspend fun getToken(request: TokenRequest): NetworkResult<Token>
 
+    suspend fun logout(): NetworkResult<Unit>
+
     suspend fun saveToken(token: String)
 
     suspend fun clearToken()

@@ -137,7 +137,7 @@ private fun LoggedInContent(
         onErrorChange = { onIntent(FavoritesIntent.SetIsError(it)) },
         onRetryRequest = { messageRes, retry ->
             onEffect(
-                UiEffect.ShowSnackbar(
+                UiEffect.ShowSnackbarWithAction(
                     messageRes = messageRes.toInt(),
                     actionLabel = RETRY,
                     action = retry

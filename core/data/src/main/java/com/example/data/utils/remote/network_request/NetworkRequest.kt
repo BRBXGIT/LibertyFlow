@@ -1,6 +1,5 @@
 package com.example.data.utils.remote.network_request
 
-import android.util.Log
 import com.example.data.R
 import retrofit2.Response
 import java.net.SocketException
@@ -49,6 +48,7 @@ internal object NetworkRequest {
 private fun getErrorByCode(statusCode: Int): NetworkError {
     return when (statusCode) {
         401 -> NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD
+        403 -> NetworkErrors.UNAUTHORIZED
         422 -> NetworkErrors.NO_EMAIL_OR_PASSWORD
         408 -> NetworkErrors.REQUEST_TIMEOUT
         409 -> NetworkErrors.CONFLICT
@@ -61,6 +61,7 @@ private fun getErrorByCode(statusCode: Int): NetworkError {
 
 private fun getMessageByError(error: NetworkError): Int {
     return when (error) {
+        NetworkErrors.UNAUTHORIZED -> R.string.unauthoried_message
         NetworkErrors.REQUEST_TIMEOUT -> R.string.request_timeout_message
         NetworkErrors.CONFLICT -> R.string.conflict_message
         NetworkErrors.PAYLOAD_TOO_LARGE -> R.string.payload_too_large_message

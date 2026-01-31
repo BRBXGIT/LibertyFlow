@@ -118,7 +118,7 @@ private fun LoggedInContent(
         items = currentItems,
         onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
         onRetryRequest = { messageRes, retry ->
-            onEffect(UiEffect.ShowSnackbar(messageRes.toInt(), RETRY, retry))
+            onEffect(UiEffect.ShowSnackbarWithAction(messageRes.toInt(), RETRY, retry))
         }
     )
 

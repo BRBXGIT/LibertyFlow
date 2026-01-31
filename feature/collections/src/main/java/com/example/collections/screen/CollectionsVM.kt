@@ -31,6 +31,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val RETRY = "Retry"
+
 @HiltViewModel
 class CollectionsVM @Inject constructor(
     authRepo: AuthRepo,
@@ -71,8 +73,7 @@ class CollectionsVM @Inject constructor(
         }.cachedIn(viewModelScope)
     }
 
-    // --- Intent Handling ---
-
+    // --- Intents ---
     fun sendIntent(intent: CollectionsIntent) {
         when (intent) {
             // Ui toggles
@@ -92,6 +93,7 @@ class CollectionsVM @Inject constructor(
         }
     }
 
+    // --- Effects ---
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
             _effects.send(effect)
@@ -99,7 +101,6 @@ class CollectionsVM @Inject constructor(
     }
 
     // --- Auth Logic (Untouched as requested) ---
-
     private fun performLogin() {
         val currentState = _state.value.authForm
         getAuthToken(
@@ -107,7 +108,7 @@ class CollectionsVM @Inject constructor(
             onStart = { _state.update { it.updateAuthForm { f -> f.copy(isError = false) } } },
             onIncorrectData = { _state.update { it.updateAuthForm { f -> f.copy(isError = true) } } },
             onAnyError = { messageRes, retryAction ->
-                sendEffect(UiEffect.ShowSnackbar(messageRes, "Retry", retryAction))
+                sendEffect(UiEffect.ShowSnackbarWithAction(messageRes, RETRY, retryAction))
             }
         )
     }

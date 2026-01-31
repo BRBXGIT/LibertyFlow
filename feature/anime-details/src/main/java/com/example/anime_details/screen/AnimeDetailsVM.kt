@@ -210,7 +210,7 @@ class AnimeDetailsVM @Inject constructor(
     private fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
         viewModelScope.launch(dispatcherIo) {
             _effects.send(
-                UiEffect.ShowSnackbar(
+                UiEffect.ShowSnackbarWithAction(
                     messageRes = messageRes,
                     actionLabel = action?.let { RETRY },
                     action = action

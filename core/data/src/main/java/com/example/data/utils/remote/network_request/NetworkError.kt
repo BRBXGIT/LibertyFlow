@@ -9,6 +9,7 @@ enum class NetworkErrors: NetworkError {
     PAYLOAD_TOO_LARGE,
     SERVER_ERROR,
     INCORRECT_EMAIL_OR_PASSWORD,
+    UNAUTHORIZED,
     NO_EMAIL_OR_PASSWORD,
     // Local errors
     REQUEST_TIMEOUT,

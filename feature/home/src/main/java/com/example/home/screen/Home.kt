@@ -54,7 +54,7 @@ internal fun Home(
         onErrorChange = { onIntent(HomeIntent.SetError(it)) },
         onRetryRequest = { messageRes, retry ->
             onEffect(
-                UiEffect.ShowSnackbar(
+                UiEffect.ShowSnackbarWithAction(
                     messageRes = messageRes.toInt(),
                     actionLabel = RETRY_LABEL,
                     action = retry

@@ -11,6 +11,7 @@ import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.local.auth.AuthConstants
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.auth.api.AuthApi
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -29,6 +30,13 @@ class AuthRepoImpl @Inject constructor(
         return NetworkRequest.safeApiCall(
             call = { authApi.getSessionToken(request.toSessionTokenRequestDto()) },
             map = { it.toToken() }
+        )
+    }
+
+    override suspend fun logout(): NetworkResult<Unit> {
+        return NetworkRequest.safeApiCall(
+            call = { authApi.logout(token.firstOrNull()) },
+            map = {}
         )
     }
 

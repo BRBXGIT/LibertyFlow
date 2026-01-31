@@ -19,7 +19,8 @@ fun HandleCommonEffects(
     LaunchedEffect(Unit) {
         effects.collect { effect ->
             when (effect) {
-                is UiEffect.ShowSnackbar -> {
+                // Snackbars
+                is UiEffect.ShowSnackbarWithAction -> {
                     val result = snackbarHostState!!.showSnackbar(
                         message = context.getString(effect.messageRes),
                         actionLabel = effect.actionLabel
@@ -29,11 +30,18 @@ fun HandleCommonEffects(
                         effect.action?.invoke()
                     }
                 }
+                is UiEffect.ShowSimpleSnackbar -> {
+                    snackbarHostState!!.showSnackbar(
+                        withDismissAction = true,
+                        message = context.getString(effect.messageRes)
+                    )
+                }
 
+                // Navigation
                 is UiEffect.Navigate -> navController.navigate(effect.route)
-
                 is UiEffect.NavigateBack -> navController.navigateUp()
 
+                // Intents
                 is UiEffect.IntentTo -> context.startActivity(effect.intent)
             }
         }

@@ -1,6 +1,10 @@
 package com.example.more.navigation
 
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -14,9 +18,16 @@ fun NavGraphBuilder.more(
 ) = composable<MoreRoute> {
     val moreVM = hiltViewModel<MoreVM>()
 
-    val moreEffects = moreVM.moreEffects
+    val state by moreVM.state.collectAsStateWithLifecycle()
 
-    HandleCommonEffects(moreEffects, navController)
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    More(moreVM::sendEffect)
+    HandleCommonEffects(moreVM.effects, navController, snackbarHostState)
+
+    More(
+        snackbarHostState = snackbarHostState,
+        onEffect = moreVM::sendEffect,
+        onIntent = moreVM::sendIntent,
+        state = state
+    )
 }

@@ -107,7 +107,7 @@ class FavoritesVM @Inject constructor(
             },
             onAnyError = { messageRes, retryAction ->
                 sendEffect(
-                    UiEffect.ShowSnackbar(
+                    UiEffect.ShowSnackbarWithAction(
                         messageRes = messageRes,
                         actionLabel = RETRY,
                         action = retryAction

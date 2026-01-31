@@ -11,4 +11,10 @@
     <string name="telegram_label">Telegram channel</string>
     <string name="discord_label">Discord chat</string>
     <string name="aniliberty_label">AniLiberty site</string>
+
+    <string name="logout_label">Logout</string>
+    <string name="sure_want_logout_label">Are you sure you want to logout?</string>
+    <string name="cancel_label">Cancel</string>
+
+    <string name="success_logout_label">You successfully logout</string>
 </resources>

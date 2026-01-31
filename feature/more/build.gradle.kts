@@ -41,6 +41,7 @@ dependencies {
     // Core modules
     implementation(project(":core:design-system"))
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
 
     // Hilt
     implementation(libs.hilt.android)

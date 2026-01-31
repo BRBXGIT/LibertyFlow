@@ -19,19 +19,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mTypography
+import com.example.more.screen.MoreIntent
 
 private const val ICON_SIZE = 22
 
 @Composable
 internal fun TopBar(
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    onIntent: (MoreIntent) -> Unit
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = { Title() },
         actions = {
             IconButton(
-                onClick = { /* TODO: handle click */ }
+                onClick = { onIntent(MoreIntent.ToggleLogoutDialog) }
             ) {
                 Icon(
                     painter = painterResource(LibertyFlowIcons.Logout),

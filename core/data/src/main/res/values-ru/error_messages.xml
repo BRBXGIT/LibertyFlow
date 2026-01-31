@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="unauthoried_message">Похоже вы не авторизованы 😼</string>
     <string name="request_timeout_message">Время ожидания истекло, пожалуйста перезагрузите</string>
     <string name="conflict_message">Конфликт, пожалуйста перезагрузите</string>
     <string name="payload_too_large_message">Слишком большая отправка, пожалуйста перезагрузите</string>
