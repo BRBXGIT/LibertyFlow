@@ -32,7 +32,8 @@ class ThemeVM @Inject constructor(themeRepo: ThemeRepo): ViewModel() {
         ThemeState(
             useExpressive = theme.useExpressive,
             userThemePreference = theme.userThemePreference,
-            activeColorScheme = finalColorScheme
+            activeColorScheme = finalColorScheme,
+            tabType = theme.tabType
         )
     }.toEagerly(ThemeState())
 

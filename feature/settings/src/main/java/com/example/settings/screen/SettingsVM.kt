@@ -9,6 +9,7 @@ import com.example.common.vm_helpers.toWhileSubscribed
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.domain.ThemeRepo
 import com.example.data.models.theme.ColorSchemeValue
+import com.example.data.models.theme.TabType
 import com.example.data.models.theme.ThemeValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -42,6 +43,7 @@ class SettingsVM @Inject constructor(
             is SettingsIntent.SetColorScheme -> setColorScheme(intent.colorSchemeValue)
             is SettingsIntent.SetTheme -> setTheme(intent.theme)
             SettingsIntent.ToggleUseExpressive -> toggleUseExpressive()
+            SettingsIntent.ToggleTabType -> toggleTabType()
 
             // Player
             is SettingsIntent.SetQuality -> saveVideoQuality(intent.quality)
@@ -70,6 +72,14 @@ class SettingsVM @Inject constructor(
 
     private fun setColorScheme(colorScheme: ColorSchemeValue) = viewModelScope.launch(dispatcherIo) {
         themeRepo.saveColorSystem(colorScheme)
+    }
+
+    private fun toggleTabType() = viewModelScope.launch(dispatcherIo) {
+        val type = _state.value.themeSettings.tabType
+        when(type) {
+            TabType.M3 -> themeRepo.saveTab(TabType.Tablet)
+            TabType.Tablet -> themeRepo.saveTab(TabType.M3)
+        }
     }
 
     // --- Observe prefs ---

@@ -15,10 +15,9 @@ object PlayerModule {
 
     @Provides
     @ViewModelScoped
-    fun provideExoPlayer(
-        @ApplicationContext context: Context
-    ) = ExoPlayer.Builder(context)
-        .setSeekForwardIncrementMs(5000L)
-        .setSeekBackIncrementMs(5000L)
-        .build()
+    fun provideExoPlayer(@ApplicationContext context: Context) =
+        ExoPlayer.Builder(context)
+            .setSeekForwardIncrementMs(5000L)
+            .setSeekBackIncrementMs(5000L)
+            .build()
 }

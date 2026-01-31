@@ -24,6 +24,7 @@ class ThemePrefsManagerImpl @Inject constructor(
         val THEME_KEY = stringPreferencesKey("theme")
         val COLOR_SYSTEM_KEY = stringPreferencesKey("color_system")
         val USE_EXPRESSIVE_KEY = booleanPreferencesKey("use_expressive")
+        val TABLET_TYPE = stringPreferencesKey("tablet_type")
     }
 
     override val theme: Flow<String?> = context.dataStore.data
@@ -35,6 +36,9 @@ class ThemePrefsManagerImpl @Inject constructor(
     override val useExpressive: Flow<Boolean?> = context.dataStore.data
         .map { it[USE_EXPRESSIVE_KEY] }
 
+    override val tabType: Flow<String?> = context.dataStore.data
+        .map { it[TABLET_TYPE] }
+
     override suspend fun saveTheme(theme: String) {
         context.dataStore.edit { it[THEME_KEY] = theme }
     }
@@ -45,5 +49,9 @@ class ThemePrefsManagerImpl @Inject constructor(
 
     override suspend fun saveUseExpressive(use: Boolean) {
         context.dataStore.edit { it[USE_EXPRESSIVE_KEY] = use }
+    }
+
+    override suspend fun saveTabletType(type: String) {
+        context.dataStore.edit { it[TABLET_TYPE] = type }
     }
 }

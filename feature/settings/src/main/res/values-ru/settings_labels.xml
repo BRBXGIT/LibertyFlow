@@ -4,7 +4,7 @@
 
     <string name="theme_label">Тема</string>
     <string name="player_label">Плеер</string>
-    <string name="common_label">Общие</string>
+    <string name="other_label">Остальное</string>
 
     <string name="light_theme_label">Светлая</string>
     <string name="dark_theme_label">Темная</string>
@@ -22,5 +22,9 @@
     <string name="show_skip_opening_button_label">Кнопка пропуска опенинга</string>
     <string name="auto_skip_opening_label">Автоматически пропускать опенинг</string>
     <string name="auto_play_label">Автовоспроизведение</string>
+
     <string name="use_expressive_label">Использовать M3 Expressive</string>
+    <string name="tab_type_label">Стиль папки</string>
+    <string name="tablet_style_label">Tablet</string>
+    <string name="m3_style_label">M3 Style</string>
 </resources>

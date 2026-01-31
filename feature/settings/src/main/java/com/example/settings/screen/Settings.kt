@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.player.VideoQuality
 import com.example.data.models.theme.LibertyFlowTheme
+import com.example.data.models.theme.TabType
 import com.example.data.models.theme.ThemeValue
 import com.example.design_system.components.bars.basic_top_bar.BasicTopBar
 import com.example.design_system.components.bottom_sheets.player_settings.VideoQualityBS
@@ -38,7 +39,7 @@ private val SettingsLabel = R.string.settings_label
 
 private val ThemeLabel = R.string.theme_label
 private val PlayerLabel = R.string.player_label
-private val CommonLabel = R.string.common_label
+private val OtherLabel = R.string.other_label
 
 private data class Setting(
     val icon: Int,
@@ -53,7 +54,11 @@ private val QualityLabel = R.string.quality_label
 private val ShowSkipOpeningButtonLabel = R.string.show_skip_opening_button_label
 private val AutoSkipOpeningLabel = R.string.auto_skip_opening_label
 private val AutoPlayLabel = R.string.auto_play_label
-private val UseExprssiveLabel = R.string.use_expressive_label
+
+private val UseExpressiveLabel = R.string.use_expressive_label
+private val TabStyleLabel = R.string.tab_type_label
+private val TabletStyleLabel = R.string.tablet_style_label
+private val M3StyleLabel = R.string.m3_style_label
 
 @Composable
 fun Settings(
@@ -115,11 +120,20 @@ fun Settings(
             )
         }
 
-        val commonSettings = remember(state.themeSettings.useExpressive) {
+        val commonSettings = remember(
+            key1 = state.themeSettings.useExpressive,
+            key2 = state.themeSettings.tabType
+        ) {
             listOf(
                 Setting(
+                    icon = LibertyFlowIcons.Tablet,
+                    labelRes = TabStyleLabel,
+                    descriptionRes = if (state.themeSettings.tabType == TabType.Tablet) TabletStyleLabel else M3StyleLabel,
+                    intent = SettingsIntent.ToggleTabType
+                ),
+                Setting(
                     icon = LibertyFlowIcons.Colour,
-                    labelRes = UseExprssiveLabel,
+                    labelRes = UseExpressiveLabel,
                     isEnabled = state.themeSettings.useExpressive,
                     intent = SettingsIntent.ToggleUseExpressive
                 )
@@ -144,7 +158,7 @@ fun Settings(
 
             settingsList(playerSettings, onIntent)
 
-            dividerWithLabel(CommonLabel)
+            dividerWithLabel(OtherLabel)
 
             settingsList(commonSettings, onIntent)
         }
@@ -191,6 +205,7 @@ private fun LazyListScope.settingsList(
 ) {
     items(settings) { setting ->
         M3ListItem(
+            description = if (setting.descriptionRes == null) null else stringResource(setting.descriptionRes),
             title = stringResource(setting.labelRes),
             onClick = { onIntent(setting.intent) },
             modifier = Modifier.animateItem(),

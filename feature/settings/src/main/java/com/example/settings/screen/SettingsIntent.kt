@@ -15,6 +15,7 @@ sealed interface SettingsIntent {
     data object ToggleUseExpressive: SettingsIntent
     data class SetTheme(val theme: ThemeValue): SettingsIntent
     data class SetColorScheme(val colorSchemeValue: ColorSchemeValue): SettingsIntent
+    data object ToggleTabType: SettingsIntent
 
     // Screen ui
     data object ToggleIsQualityBSVisible: SettingsIntent

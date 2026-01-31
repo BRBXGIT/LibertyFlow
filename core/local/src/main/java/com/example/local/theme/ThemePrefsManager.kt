@@ -6,8 +6,10 @@ interface ThemePrefsManager {
     val theme: Flow<String?>
     val colorSystem: Flow<String?>
     val useExpressive: Flow<Boolean?>
+    val tabType: Flow<String?>
 
     suspend fun saveTheme(theme: String)
     suspend fun saveColorSystem(system: String)
     suspend fun saveUseExpressive(use: Boolean)
+    suspend fun saveTabletType(type: String)
 }

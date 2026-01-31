@@ -4,7 +4,7 @@
 
     <string name="theme_label">Theme</string>
     <string name="player_label">Player</string>
-    <string name="common_label">Common</string>
+    <string name="other_label">Other</string>
 
     <string name="light_theme_label">Light</string>
     <string name="dark_theme_label">Dark</string>
@@ -22,5 +22,9 @@
     <string name="show_skip_opening_button_label">Show skip opening button</string>
     <string name="auto_skip_opening_label">Skip opening automatically</string>
     <string name="auto_play_label">Autoplay</string>
+
     <string name="use_expressive_label">Enable M3 Expressive</string>
+    <string name="tab_type_label">Tab style</string>
+    <string name="tablet_style_label">Tablet style</string>
+    <string name="m3_style_label">M3 Style</string>
 </resources>

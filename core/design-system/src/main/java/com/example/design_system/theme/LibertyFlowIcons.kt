@@ -49,6 +49,7 @@ object LibertyFlowIcons {
     val Layers = R.drawable.ic_layers
     val PieChart = R.drawable.ic_pie_chart
     val Colour = R.drawable.ic_colour
+    val Tablet = R.drawable.ic_tablet
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled

@@ -2,6 +2,7 @@ package com.example.data.domain
 
 import com.example.data.models.theme.ColorSchemeValue
 import com.example.data.models.theme.LibertyFlowTheme
+import com.example.data.models.theme.TabType
 import com.example.data.models.theme.ThemeValue
 import kotlinx.coroutines.flow.Flow
 
@@ -12,4 +13,5 @@ interface ThemeRepo {
     suspend fun saveTheme(themeValue: ThemeValue)
     suspend fun saveColorSystem(colorSchemeValue: ColorSchemeValue)
     suspend fun saveUseExpressive(use: Boolean)
+    suspend fun saveTab(tabType: TabType)
 }
