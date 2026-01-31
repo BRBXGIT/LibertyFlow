@@ -2,6 +2,7 @@
 
 package com.example.player.components.full_screen
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import com.example.design_system.components.buttons.ButtonWithIcon
 import com.example.design_system.components.buttons.ButtonWithIconType
 import com.example.design_system.theme.LibertyFlowIcons
+import com.example.design_system.theme.mMotionScheme
 import com.example.design_system.theme.mTypography
 import com.example.player.R
 import com.example.player.components.common.AnimatedPlayPauseButton
@@ -146,6 +148,7 @@ private fun MainControlsOverlay(
         Header(title, episodeNumber, playerState, onPlayerIntent)
         CenterControls(playerState, onPlayerEffect, onPlayerIntent)
         Footer(playerState, onPlayerEffect, onPlayerIntent)
+        SkipOpeningButton(playerState.isSkipOpeningButtonVisible, onPlayerIntent)
     }
 }
 
@@ -159,7 +162,9 @@ private fun BoxScope.Header(
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter),
+        modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.TopCenter),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -253,7 +258,9 @@ private fun BoxScope.Footer(
     val totalTime = playerState.episodeTime.total
 
     Column(
-        modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+        modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.BottomCenter),
         verticalArrangement = Arrangement.spacedBy(HeaderSpacing)
     ) {
         Row(
@@ -342,7 +349,9 @@ private fun PlayerSlider(
         Slider(
             value = displayPosition,
             valueRange = SAFE_RANGE_START..safeTotalDuration,
-            modifier = Modifier.fillMaxWidth().height(SliderHeight),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(SliderHeight),
             onValueChange = { newValue -> onScrubbing(newValue.toLong()) },
             onValueChangeFinished = { onSeekFinished(displayPosition.toLong()) },
             colors = SliderDefaults.colors(
@@ -363,6 +372,28 @@ private fun Long.formatMinSec(): String {
     val minutes = totalSeconds / SECONDS_MINUTES_DIVIDER
     val seconds = totalSeconds % SECONDS_MINUTES_DIVIDER
     return FORMAT.format(minutes, seconds)
+}
+
+private val SkipOpeningLabel = R.string.skip_opening_label
+private const val BUTTON_ANIMATION_LABEL = "Skip opening button animation label"
+
+@Composable
+private fun BoxScope.SkipOpeningButton(visible: Boolean, onPlayerIntent: (PlayerIntent) -> Unit) {
+    val animatedAlpha by animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        animationSpec = mMotionScheme.slowEffectsSpec(),
+        label = BUTTON_ANIMATION_LABEL
+    )
+
+    ButtonWithIcon(
+        text = stringResource(SkipOpeningLabel),
+        icon = LibertyFlowIcons.RewindForwardCircle,
+        type = ButtonWithIconType.Outlined,
+        onClick = { onPlayerIntent(PlayerIntent.SkipOpening) },
+        modifier = Modifier
+            .align(Alignment.CenterEnd)
+            .graphicsLayer { alpha = animatedAlpha },
+    )
 }
 
 private val UnlockLabel = R.string.unlock_label

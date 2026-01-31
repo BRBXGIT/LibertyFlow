@@ -13,4 +13,6 @@
     <string name="skip_opening_buttons_label">Skip opening buttons</string>
     <string name="auto_skip_opening_label">Auto skip opening</string>
     <string name="autoplay_label">Autoplay</string>
+
+    <string name="skip_opening_label">Skip</string>
 </resources>

@@ -9,6 +9,7 @@ sealed interface PlayerIntent {
     data class SetIsScrubbing(val value: Boolean): PlayerIntent
     data object TogglePlayPause: PlayerIntent
     data object StopPlayer: PlayerIntent
+    data object SkipOpening: PlayerIntent
 
     // --- Controller ---
     data object ToggleControllerVisible: PlayerIntent

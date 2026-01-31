@@ -50,6 +50,7 @@ class PlayerVM @Inject constructor(
             is PlayerIntent.SetIsScrubbing -> _playerState.update { it.setIsScrubbing(intent.value) }
             PlayerIntent.TogglePlayPause -> togglePlayPause()
             PlayerIntent.StopPlayer -> stopPlayer()
+            PlayerIntent.SkipOpening -> skipOpening()
 
             // Settings & Preferences
             is PlayerIntent.SaveQuality -> saveQuality(intent.quality)
@@ -240,6 +241,11 @@ class PlayerVM @Inject constructor(
         player.stop()
         player.clearMediaItems()
         _playerState.value = PlayerState()
+    }
+
+    private fun skipOpening() {
+        val endPosition = _playerState.value.currentEpisode?.opening?.end?.toLong() ?: 0L
+        player.seekTo(endPosition * 1000)
     }
 
     // --- Repository updates (Data persistence) ---
