@@ -1,28 +1,30 @@
 package com.example.data.di
 
-import android.content.Context
 import com.example.local.auth.AuthPrefsManager
 import com.example.local.auth.AuthPrefsManagerImpl
+import com.example.local.player_settings.PlayerPrefsManager
+import com.example.local.player_settings.PlayerPrefsManagerImpl
 import com.example.local.theme.ThemePrefsManager
 import com.example.local.theme.ThemePrefsManagerImpl
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataStoreModule {
+interface DataStoreModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideAuthPrefsManager(@ApplicationContext context: Context): AuthPrefsManager =
-        AuthPrefsManagerImpl(context)
+    fun bindAuthPrefsManager(impl: AuthPrefsManagerImpl): AuthPrefsManager
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideThemePrefsManager(@ApplicationContext context: Context): ThemePrefsManager =
-        ThemePrefsManagerImpl(context)
+    fun bindThemePrefsManager(impl: ThemePrefsManagerImpl): ThemePrefsManager
+
+    @Binds
+    @Singleton
+    fun bindPlayerPrefsManager(impl: PlayerPrefsManagerImpl): PlayerPrefsManager
 }

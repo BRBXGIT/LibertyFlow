@@ -5,14 +5,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.data.domain.CollectionsRepo
-import com.example.data.models.collections.collection_ids.UiCollectionIds
-import com.example.data.models.collections.request.UiCollectionRequest
-import com.example.data.models.collections.mappers.toCollectionRequest
-import com.example.data.models.collections.mappers.toUiCollectionIds
-import com.example.data.models.common.mappers.toCommonRequestWithCollectionType
-import com.example.data.models.common.mappers.toUiAnimeItem
-import com.example.data.models.common.request.common_request.UiCommonRequestWithCollectionType
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.collections.collection_ids.CollectionIds
+import com.example.data.models.collections.request.CollectionRequest
+import com.example.data.models.collections.mappers.toCollectionRequestDto
+import com.example.data.models.collections.mappers.toCollectionIds
+import com.example.data.models.common.mappers.toCommonRequestWithCollectionTypeDto
+import com.example.data.models.common.mappers.toAnimeItem
+import com.example.data.models.common.request.common_request.CommonRequestWithCollectionType
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.data.utils.remote.network_request.NetworkRequest
 import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.data.utils.remote.paging.CommonPagingSource
@@ -25,12 +25,12 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-internal class CollectionsRepoImpl @Inject constructor(
+class CollectionsRepoImpl @Inject constructor(
     private val collectionsApi: CollectionsApi,
     private val authPrefsManager: AuthPrefsManager
 ): CollectionsRepo {
 
-    override fun getAnimeInCollection(request: UiCommonRequestWithCollectionType): Flow<PagingData<UiAnimeItem>> {
+    override fun getAnimeInCollection(request: CommonRequestWithCollectionType): Flow<PagingData<AnimeItem>> {
         return Pager(
             config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
             pagingSourceFactory = {
@@ -38,46 +38,46 @@ internal class CollectionsRepoImpl @Inject constructor(
                     apiCall = {
                         collectionsApi.getAnimeInCollection(
                             sessionToken = authPrefsManager.token.firstOrNull()!!,
-                            request = request.toCommonRequestWithCollectionType()
+                            request = request.toCommonRequestWithCollectionTypeDto()
                         )
                     },
-                    baseRequest = request.toCommonRequestWithCollectionType()
+                    baseRequest = request.toCommonRequestWithCollectionTypeDto()
                 )
             }
-        ).flow.map { pagingData -> pagingData.map { it.toUiAnimeItem() } }
+        ).flow.map { pagingData -> pagingData.map { it.toAnimeItem() } }
     }
 
-    override suspend fun getCollectionsIds(): NetworkResult<UiCollectionIds> {
+    override suspend fun getCollectionsIds(): NetworkResult<CollectionIds> {
         val token = authPrefsManager.token.first()!!
 
         return NetworkRequest.safeApiCall(
             call = { collectionsApi.getCollectionsIds(token) },
-            map = { it.toUiCollectionIds() }
+            map = { it.toCollectionIds() }
         )
     }
 
-    override suspend fun addToCollection(request: UiCollectionRequest): NetworkResult<Unit> {
+    override suspend fun addToCollection(request: CollectionRequest): NetworkResult<Unit> {
         val token = authPrefsManager.token.first()!!
 
         return NetworkRequest.safeApiCall(
             call = {
                 collectionsApi.addToCollection(
                     sessionToken = token,
-                    request = request.toCollectionRequest()
+                    request = request.toCollectionRequestDto()
                 )
             },
             map = {}
         )
     }
 
-    override suspend fun deleteFromCollection(request: UiCollectionRequest): NetworkResult<Unit> {
+    override suspend fun deleteFromCollection(request: CollectionRequest): NetworkResult<Unit> {
         val token = authPrefsManager.token.first()!!
 
         return NetworkRequest.safeApiCall(
             call = {
                 collectionsApi.deleteFromCollection(
                     sessionToken = token,
-                    request = request.toCollectionRequest()
+                    request = request.toCollectionRequestDto()
                 )
             },
             map = {}

@@ -19,9 +19,11 @@ import com.example.common.refresh.RefreshVM
 import com.example.common.ui_helpers.effects.HandleCommonEffects
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
+import com.example.player.player.PlayerVM
 
 fun NavGraphBuilder.animeDetails(
     refreshVM: RefreshVM,
+    playerVM: PlayerVM,
     navController: NavController
 ) = composable<AnimeDetailsRoute>(
     enterTransition = { standardScreenEnterTransition() },
@@ -50,7 +52,8 @@ fun NavGraphBuilder.animeDetails(
         snackbarHostState = snackbarHostState,
         onEffect = animeDetailsVM::sendEffect,
         onIntent = animeDetailsVM::sendIntent,
-        onRefreshEffect = refreshVM::sendEffect
+        onRefreshEffect = refreshVM::sendEffect,
+        onPlayerIntent = playerVM::sendIntent
     )
 }
 

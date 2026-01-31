@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="info_label">Information</string>
+    
+    <string name="version_label">Version</string>
+    <string name="version_description_label">Stable 1.0.0 (30.01.2026)</string>
+    <string name="api_label">Api</string>
+    <string name="api_description_label">Api documentation</string>
+    <string name="ani_liberty_label">AniLiberty</string>
+    <string name="ani_liberty_description_label">Original site</string>
+    <string name="git_label">Git</string>
+    <string name="git_description_label">My GitHub</string>
+</resources>

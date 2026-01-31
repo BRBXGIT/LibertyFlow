@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.compose.compiler)
     // Android
     alias(libs.plugins.android.library)
+    // Ksp
+    alias(libs.plugins.ksp)
+    // Hilt
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -21,12 +25,36 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions { jvmTarget = "11" }
+
     buildFeatures { compose = true }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+            freeCompilerArgs.add("-Xcontext-parameters")
+        }
+    }
 }
 
 dependencies {
 
+    // Core modules
+    implementation(project(":core:design-system"))
+    implementation(project(":core:common"))
+    implementation(project(":core:data"))
+
+    // Media 3
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
+    implementation(libs.media3.ui)
+    // Material 3
+    implementation(libs.androidx.material3.android)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    // Compose animation graphics
+    implementation(libs.androidx.animation.graphics)
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime

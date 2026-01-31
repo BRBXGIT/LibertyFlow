@@ -19,7 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.common.ui_helpers.search.SearchForm
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.buttons.BasicFAB
@@ -36,10 +37,12 @@ import com.example.home.components.RandomAnimeButton
 
 private val TopBarLabel = R.string.home_top_bar_label
 
+private const val RETRY_LABEL = "Retry"
+
 @Composable
 internal fun Home(
     state: HomeState,
-    anime: LazyPagingItems<UiAnimeItem>,
+    anime: LazyPagingItems<AnimeItem>,
     snackbarHostState: SnackbarHostState,
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
@@ -53,7 +56,7 @@ internal fun Home(
             onEffect(
                 UiEffect.ShowSnackbar(
                     messageRes = messageRes.toInt(),
-                    actionLabel = "Retry",
+                    actionLabel = RETRY_LABEL,
                     action = retry
                 )
             )
@@ -66,22 +69,18 @@ internal fun Home(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-
         snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
-
         topBar = {
             SearchingTopBar(
-                query = state.request.search,
+                searchForm = SearchForm(state.request.search, state.isSearching),
                 label = stringResource(TopBarLabel),
-                isSearching = state.isSearching,
                 isLoading = state.loadingState.isLoading,
                 scrollBehavior = scrollBehavior,
-                onSearchChange = { onIntent(HomeIntent.ToggleSearching) },
+                onToggleSearch = { onIntent(HomeIntent.ToggleSearching) },
                 onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
             )
         },
-
         floatingActionButton = {
             BasicFAB(
                 icon = LibertyFlowIcons.Filters,
@@ -89,10 +88,7 @@ internal fun Home(
             )
         }
     ) { innerPadding ->
-
-        if (state.isFiltersVisible) {
-            FiltersBS(state, onIntent)
-        }
+        if (state.isFiltersVisible) FiltersBS(state, onIntent)
 
         // Pull-to-refresh container
         VibratingContainer(
@@ -108,9 +104,9 @@ internal fun Home(
         ) {
             MainContent(
                 isError = state.loadingState.isError,
-                isRandomAnimeLoading = state.isRandomAnimeLoading,
                 anime = anime,
                 onIntent = onIntent,
+                state = state,
                 onEffect = onEffect
             )
         }
@@ -120,8 +116,8 @@ internal fun Home(
 @Composable
 private fun MainContent(
     isError: Boolean,
-    isRandomAnimeLoading: Boolean,
-    anime: LazyPagingItems<UiAnimeItem>,
+    state: HomeState,
+    anime: LazyPagingItems<AnimeItem>,
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
@@ -138,7 +134,7 @@ private fun MainContent(
             key = RANDOM_BUTTON_KEY,
             span = { GridItemSpan(maxLineSpan) }
         ) {
-            RandomAnimeButton(onIntent, isRandomAnimeLoading)
+            RandomAnimeButton(state, onIntent)
         }
     }
 }

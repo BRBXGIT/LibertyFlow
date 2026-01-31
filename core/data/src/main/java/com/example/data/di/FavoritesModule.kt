@@ -2,8 +2,8 @@ package com.example.data.di
 
 import com.example.data.data.FavoritesRepoImpl
 import com.example.data.domain.FavoritesRepo
-import com.example.local.auth.AuthPrefsManager
 import com.example.network.favorites.api.FavoritesApi
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,15 +13,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object FavoritesModule {
+interface FavoritesModule {
 
-    @Provides
-    @Singleton
-    fun provideFavoritesApi(retrofit: Retrofit): FavoritesApi =
-        retrofit.create(FavoritesApi::class.java)
+    companion object {
+        @Provides
+        @Singleton
+        fun provideFavoritesApi(retrofit: Retrofit): FavoritesApi =
+            retrofit.create(FavoritesApi::class.java)
+    }
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideFavoritesRepo(favoritesApi: FavoritesApi, authPrefsManager: AuthPrefsManager): FavoritesRepo =
-        FavoritesRepoImpl(favoritesApi, authPrefsManager)
+    fun bindFavoritesRepo(impl: FavoritesRepoImpl): FavoritesRepo
 }

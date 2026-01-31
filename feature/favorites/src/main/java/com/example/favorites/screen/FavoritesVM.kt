@@ -11,9 +11,9 @@ import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.FavoritesRepo
-import com.example.data.models.auth.UiTokenRequest
-import com.example.data.models.common.request.common_request.UiCommonRequest
-import com.example.data.models.common.request.request_parameters.UiShortRequestParameters
+import com.example.data.models.auth.TokenRequest
+import com.example.data.models.common.request.common_request.CommonRequest
+import com.example.data.models.common.request.request_parameters.ShortRequestParameters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val RETRY = "Retry"
+
 @HiltViewModel
 class FavoritesVM @Inject constructor(
     authRepo: AuthRepo,
@@ -35,7 +37,6 @@ class FavoritesVM @Inject constructor(
     private val dispatcherIo: CoroutineDispatcher
 ) : BaseAuthVM(authRepo, dispatcherIo) {
 
-    // UI state
     private val _state = MutableStateFlow(FavoritesState())
     val state = _state.toLazily(FavoritesState())
 
@@ -59,57 +60,45 @@ class FavoritesVM @Inject constructor(
     // Intents
     fun sendIntent(intent: FavoritesIntent) {
         when (intent) {
-
-            /* --- UI toggles --- */
-
+            // Toggles
             FavoritesIntent.ToggleIsAuthBSVisible ->
                 _state.update { it.copy(authForm = it.authForm.toggleIsAuthBSVisible()) }
-
             FavoritesIntent.ToggleIsSearching ->
                 _state.update { it.copy(searchForm = it.searchForm.toggleSearching()) }
 
-            /* --- Flags --- */
-
+            // Toggles
             is FavoritesIntent.SetIsLoading ->
                 _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
-
             is FavoritesIntent.SetIsError ->
                 _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
 
-            /* --- Search --- */
-
+            // Search
             is FavoritesIntent.UpdateQuery ->
                 _state.update { it.copy(searchForm = it.searchForm.updateQuery(intent.query)) }
 
-            /* --- Auth input --- */
-
+            // Auth
             is FavoritesIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)
-
-
-            /* --- Auth action --- */
-
             FavoritesIntent.GetTokens -> performLogin()
         }
     }
 
     // Paging request driven by search query
     private val requestFlow = _state
-        .map { UiShortRequestParameters(search = it.searchForm.query) }
+        .map { ShortRequestParameters(search = it.searchForm.query) }
         .distinctUntilChanged()
 
     val favorites = requestFlow
         .flatMapLatest { request ->
-            favoritesRepo.getFavorites(UiCommonRequest(request))
+            favoritesRepo.getFavorites(CommonRequest(request))
         }
         .cachedIn(viewModelScope)
 
-    /* --- Auth flow --- */
-
+    // Auth
     private fun performLogin() {
         val currentState = _state.value.authForm
 
         getAuthToken(
-            request = UiTokenRequest(currentState.email, currentState.password),
+            request = TokenRequest(currentState.email, currentState.password),
             onStart = {
                 _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
             },
@@ -120,7 +109,7 @@ class FavoritesVM @Inject constructor(
                 sendEffect(
                     UiEffect.ShowSnackbar(
                         messageRes = messageRes,
-                        actionLabel = "Retry",
+                        actionLabel = RETRY,
                         action = retryAction
                     )
                 )

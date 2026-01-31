@@ -4,22 +4,24 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
+
+// Singleton DataStore instance to prevent multiple open files
+private const val DATASTORE_NAME = "liberty_fow_auth_prefs"
+private val Context.dataStore by preferencesDataStore(DATASTORE_NAME)
 
 // TODO rewrite to encrypted
-class AuthPrefsManagerImpl(
-    private val context: Context
+@Singleton
+class AuthPrefsManagerImpl @Inject constructor(
+    @param:ApplicationContext private val context: Context
 ): AuthPrefsManager {
 
     private companion object {
-        private const val DATASTORE_NAME = "liberty_fow_auth_prefs"
-
-        private const val USER_SESSION_TOKEN_KEY_NAME = "user_session_token"
-
-        private val USER_SESSION_TOKEN_KEY = stringPreferencesKey(USER_SESSION_TOKEN_KEY_NAME)
+        private val USER_SESSION_TOKEN_KEY = stringPreferencesKey("user_session_token")
     }
-
-    private val Context.dataStore by preferencesDataStore(DATASTORE_NAME)
 
     override val token = context.dataStore.data
         .map { preferences -> preferences[USER_SESSION_TOKEN_KEY] }

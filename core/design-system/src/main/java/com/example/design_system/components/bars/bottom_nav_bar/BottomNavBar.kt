@@ -79,10 +79,10 @@ private val navItems = listOf(
 
 @Composable
 fun BoxScope.BottomNavBar(
+    visible: Boolean,
     onNavItemClick: (NavigationBase) -> Unit,
     selectedRoute: NavigationBase?
 ) {
-    val visible = selectedRoute is NavBarItem
     val targetOffset = if (visible) VISIBLE_OFFSET.dp else calculateNavBarSize()
     val animatedOffset by animateDpAsState(
         targetValue = targetOffset,
@@ -150,7 +150,8 @@ private fun BottomNavBarPreview() {
         Box {
             BottomNavBar(
                 onNavItemClick = {},
-                selectedRoute = HomeRoute
+                selectedRoute = HomeRoute,
+                visible = true
             )
         }
     }

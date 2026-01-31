@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -20,9 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import com.example.common.navigation.InfoRoute
+import com.example.common.navigation.SettingsRoute
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.dividers.dividerWithLabel
+import com.example.design_system.containers.M3Container
 import com.example.design_system.theme.LibertyFlowIcons
 import com.example.design_system.theme.mColors
 import com.example.more.R
@@ -33,6 +35,7 @@ private const val LC_SPACED_BY = 16
 private const val LC_VERTICAL_PADDING = 16
 
 private val LINKS_LABEL = R.string.links_label
+private val APP_LABEL = R.string.app_label
 
 @Composable
 internal fun More(
@@ -58,6 +61,8 @@ internal fun More(
                 verticalArrangement = Arrangement.spacedBy(LC_SPACED_BY.dp),
                 contentPadding = PaddingValues(vertical = LC_VERTICAL_PADDING.dp)
             ) {
+                dividerWithLabel(APP_LABEL)
+
                 appItems(onEffect)
 
                 dividerWithLabel(LINKS_LABEL)
@@ -76,22 +81,27 @@ private val appItems = listOf(
         icon = LibertyFlowIcons.Settings,
         labelRes = SettingsLabel,
         originalColor = false,
-        effect = UiEffect.NavigateBack // TODO: Add screen
+        effect = UiEffect.Navigate(SettingsRoute)
     ),
     MoreItem(
         icon = LibertyFlowIcons.Info,
         labelRes = InfoLabel,
         originalColor = false,
-        effect = UiEffect.NavigateBack // TODO: Add screen
+        effect = UiEffect.Navigate(InfoRoute)
     )
 )
 
+private const val APP_ITEMS_KEY = "AppItemsKey"
+
 private fun LazyListScope.appItems(onEffect: (UiEffect) -> Unit) {
-    items(
-        items = appItems,
-        key = { item -> item.labelRes }
-    ) { item ->
-        MoreItem(item, onEffect)
+    item(
+        key = APP_ITEMS_KEY
+    ) {
+        M3Container(Modifier.animateItem()) {
+            appItems.forEach { item ->
+                MoreItem(item, onEffect)
+            }
+        }
     }
 }
 
@@ -172,11 +182,16 @@ private val linkItems = listOf(
     )
 )
 
+private const val LINK_ITEMS_KEY = "LinksItemsKey"
+
 private fun LazyListScope.linkItems(onEffect: (UiEffect) -> Unit) {
-    items(
-        items = linkItems,
-        key = { item -> item.labelRes }
-    ) { item ->
-        MoreItem(item, onEffect)
+    item(
+        key = LINK_ITEMS_KEY
+    ) {
+        M3Container(Modifier.animateItem()) {
+            linkItems.forEach { item ->
+                MoreItem(item, onEffect)
+            }
+        }
     }
 }

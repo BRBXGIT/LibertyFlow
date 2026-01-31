@@ -16,12 +16,9 @@ data class FavoritesState(
 
     val searchForm: SearchForm = SearchForm()
 ) {
+    // Auth
     fun withAuthState(state: AuthState) =
         copy(authState = state)
-
-    /* --- Auth input --- */
-
-    // Using `copy` on nested objects keeps the main `copy` clean
     fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): FavoritesState {
         return copy(authForm = transformer(authForm))
     }

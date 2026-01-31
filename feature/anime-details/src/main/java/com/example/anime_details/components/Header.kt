@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.design_system.components.liberty_flow_async_image.LibertyFlowAsyncImage
@@ -122,7 +124,8 @@ internal fun LazyItemScope.Header(
                 .matchParentSize()
                 .hazeSource(hazeState),
             imagePath = headerData.posterPath,
-            showError = false
+            showError = false,
+            showShimmer = false
         )
 
         // Blur + gradient overlay
@@ -196,5 +199,18 @@ private fun PosterImage(
             .clip(mShapes.small)
     ) {
         LibertyFlowAsyncImage(imagePath = path)
+    }
+}
+
+@Preview
+@Composable
+private fun HeaderPreview() {
+    LazyColumn {
+        item {
+            Header(
+                headerData = HeaderData(),
+                topInnerPadding = 16.dp
+            )
+        }
     }
 }

@@ -2,45 +2,36 @@ package com.example.home.screen
 
 import androidx.compose.runtime.Immutable
 import com.example.common.ui_helpers.loading_state.LoadingState
-import com.example.data.models.common.common.UiGenre
-import com.example.data.models.common.request.request_parameters.PublishStatus
-import com.example.data.models.common.request.request_parameters.Season
-import com.example.data.models.common.request.request_parameters.Sorting
-import com.example.data.models.common.request.request_parameters.UiFullRequestParameters
+import com.example.data.models.common.common.Genre
+import com.example.data.models.common.request.request_parameters.FullRequestParameters
 
 @Immutable
 data class HomeState(
+    // Loading
     val loadingState: LoadingState = LoadingState(),
-    val isRandomAnimeLoading: Boolean = false,
 
+    // Random anime
+    val randomAnimeState: LoadingState = LoadingState(),
+
+    // Search
     val isSearching: Boolean = false,
     val isFiltersVisible: Boolean = false,
 
-    val request: UiFullRequestParameters = UiFullRequestParameters(),
+    // Filters
+    val request: FullRequestParameters = FullRequestParameters(),
 
-    val genres: List<UiGenre> = emptyList(),
+    // Genres
+    val genres: List<Genre> = emptyList(),
     val isGenresLoading: Boolean = false
 ) {
+    // Toggles
+    fun toggleSearching() = copy(isSearching = !isSearching)
+    fun toggleFilters() = copy(isFiltersVisible = !isFiltersVisible)
+    fun withGenresLoading(value: Boolean) = copy(isGenresLoading = value)
 
-    /* --- UI toggles --- */
-
-    fun toggleSearching() =
-        copy(isSearching = !isSearching)
-
-    fun toggleFilters() =
-        copy(isFiltersVisible = !isFiltersVisible)
-
-    fun withRandomAnimeLoading(value: Boolean) =
-        copy(isRandomAnimeLoading = value)
-
-    fun withGenresLoading(value: Boolean) =
-        copy(isGenresLoading = value)
-
-    /* --- Request mutations --- */
-
-    fun updateRequest(block: UiFullRequestParameters.() -> UiFullRequestParameters) =
+    // Request mutations
+    fun updateRequest(block: FullRequestParameters.() -> FullRequestParameters) =
         copy(request = request.block())
-
-    fun updateGenres(genres: List<UiGenre>) =
+    fun updateGenres(genres: List<Genre>) =
         copy(genres = genres)
 }

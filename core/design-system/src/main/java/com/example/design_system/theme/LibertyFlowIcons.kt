@@ -10,6 +10,8 @@ object LibertyFlowIcons {
     val BookAnimated = R.drawable.ic_book_animated
     val DotsAnimated = R.drawable.ic_dots_animated
     val EyeAnimated = R.drawable.ic_eye_animated
+    val PlayPauseAnimated = R.drawable.ic_play_pause_animated
+    val CropAnimated = R.drawable.ic_crop_animated
 
     // Outlined
     val Magnifier = R.drawable.ic_magnifier
@@ -26,6 +28,27 @@ object LibertyFlowIcons {
     val Info = R.drawable.ic_info
     val Settings = R.drawable.ic_settings
     val List = R.drawable.ic_list
+    val Rewind = R.drawable.ic_rewind
+    val RewindBack = R.drawable.ic_rewind_back
+    val FullScreen = R.drawable.ic_full_screen
+    val Next = R.drawable.ic_next
+    val Previous = R.drawable.ic_previous
+    val QuitFullScreen = R.drawable.quit_full_screen
+    val Pip = R.drawable.ic_pip
+    val Lock = R.drawable.ic_lock
+    val Unlock = R.drawable.ic_unlock
+    val Checklist = R.drawable.ic_checklist
+    val ArrowDown = R.drawable.ic_arrow_down
+    val ArrowRightCircle = R.drawable.ic_arrow_right_circle
+    val HighQuality = R.drawable.ic_high_quality
+    val RewindForwardCircle = R.drawable.ic_rewind_forward_circle
+    val PlayCircle = R.drawable.ic_play_circle
+    val CheckCircle = R.drawable.ic_check_circle
+    val Rocket = R.drawable.ic_rocket
+    val GitHub = R.drawable.ic_github
+    val Branch = R.drawable.ic_branch
+    val PieChart = R.drawable.ic_pie_chart
+    val Colour = R.drawable.ic_colour
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled
@@ -33,9 +56,11 @@ object LibertyFlowIcons {
     val DoubleArrowUp = R.drawable.ic_double_arrow_up_filled
     val DoubleArrowDown = R.drawable.ic_double_arrow_down_filled
     val Download = R.drawable.ic_download_filled
+    val DoubleCheckFilled = R.drawable.ic_double_check_filled
 
     // Multicolored
     val AniLiberty = R.drawable.ic_aniliberty_multicolored
+    val LibertyFlow = R.drawable.ic_liberty_flow_multicolored
     val VK = R.drawable.ic_vk_multicolored
     val YouTube = R.drawable.ic_youtube_multicolored
     val Patreon = R.drawable.ic_patreon_multicolored

@@ -11,18 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.common.common.PosterType
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
-import com.example.design_system.components.cards.AnimeCard
-import com.example.design_system.components.cards.AnimeCardUtils
+import com.example.data.models.common.ui_anime_item.AnimeItem
+import com.example.design_system.components.list_tems.AnimeCard
+import com.example.design_system.components.list_tems.AnimeCardUtils
 
-private object AnimeLVGContainerConstants {
-    const val ARRANGEMENT_ALIGNMENT_PADDING = 16
-}
+
+private val ArrangementAlignmentPadding = 16.dp
 
 @Composable
 fun PagingAnimeItemsLazyVerticalGrid(
     onItemClick: (Int) -> Unit,
-    anime: LazyPagingItems<UiAnimeItem>,
+    anime: LazyPagingItems<AnimeItem>,
     extraContent: LazyGridScope.() -> Unit = {}
 ) {
     // Paging grid — items loaded on-demand
@@ -56,9 +55,9 @@ private fun AnimeLazyVerticalGridContainer(
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Adaptive(AnimeCardUtils.CARD_WIDTH.dp),
-        verticalArrangement = Arrangement.spacedBy(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
-        horizontalArrangement = Arrangement.spacedBy(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
-        contentPadding = PaddingValues(AnimeLVGContainerConstants.ARRANGEMENT_ALIGNMENT_PADDING.dp),
+        verticalArrangement = Arrangement.spacedBy(ArrangementAlignmentPadding),
+        horizontalArrangement = Arrangement.spacedBy(ArrangementAlignmentPadding),
+        contentPadding = PaddingValues(ArrangementAlignmentPadding),
         content = content
     )
 }

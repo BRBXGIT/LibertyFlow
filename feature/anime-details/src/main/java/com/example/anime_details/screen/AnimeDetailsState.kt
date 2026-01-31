@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.example.common.ui_helpers.auth.AuthFormState
 import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.data.models.auth.AuthState
-import com.example.data.models.releases.anime_details.UiAnimeDetails
+import com.example.data.models.releases.anime_details.AnimeDetails
 
 @Immutable
 data class AnimeDetailsState(
@@ -15,7 +15,7 @@ data class AnimeDetailsState(
     val loadingState: LoadingState = LoadingState(),
 
     // Domain Data
-    val anime: UiAnimeDetails? = null,
+    val anime: AnimeDetails? = null,
     val watchedEps: List<Int> = emptyList(),
 
     // Favorites Logic (Grouped for clarity)
@@ -35,7 +35,7 @@ data class AnimeDetailsState(
         val ids: List<Int> = emptyList()
     )
 
-    // Using `copy` on nested objects keeps the main `copy` clean
+    // Auth
     fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): AnimeDetailsState {
         return copy(authForm = transformer(authForm))
     }

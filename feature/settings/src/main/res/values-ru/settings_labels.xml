@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_label">Настройки</string>
+
+    <string name="theme_label">Тема</string>
+    <string name="player_label">Плеер</string>
+    <string name="common_label">Общие</string>
+
+    <string name="light_theme_label">Светлая</string>
+    <string name="dark_theme_label">Темная</string>
+    <string name="system_theme_label">Система</string>
+    <string name="dynamic_theme_label">Динамическая</string>
+
+    <string name="cherry_label">Вишня</string>
+    <string name="tacos_label">Такос</string>
+    <string name="lavender_label">Лаванда</string>
+    <string name="green_apple_label">Яблоко</string>
+    <string name="sakura_label">Сакура</string>
+    <string name="sea_label">Море</string>
+
+    <string name="quality_label">Качество</string>
+    <string name="show_skip_opening_button_label">Кнопка пропуска опенинга</string>
+    <string name="auto_skip_opening_label">Автоматически пропускать опенинг</string>
+    <string name="auto_play_label">Автовоспроизведение</string>
+    <string name="use_expressive_label">Использовать M3 Expressive</string>
+</resources>

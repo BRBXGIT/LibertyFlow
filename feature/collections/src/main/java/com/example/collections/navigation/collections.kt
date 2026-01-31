@@ -17,7 +17,7 @@ import com.example.common.navigation.CollectionsRoute
 import com.example.common.refresh.RefreshEffect
 import com.example.common.refresh.RefreshVM
 import com.example.common.ui_helpers.effects.HandleCommonEffects
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
+import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
 import com.example.data.models.common.request.request_parameters.Collection
@@ -36,7 +36,7 @@ fun NavGraphBuilder.collections(
     // UI Logic: Collect all flows into a Map of LazyPagingItems.
     // This must be done in the Composable scope.
     // The key is the Collection Enum, ensuring O(1) access in the Pager.
-    val pagingItemsMap: Map<Collection, LazyPagingItems<UiAnimeItem>> =
+    val pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>> =
         Collection.entries.associateWith { collection ->
             collectionsVM.pagingFlows.getValue(collection).collectAsLazyPagingItems()
         }
@@ -64,7 +64,7 @@ fun NavGraphBuilder.collections(
 @Composable
 private fun RefreshCollection(
     effects: Flow<RefreshEffect>,
-    collections: Map<Collection, LazyPagingItems<UiAnimeItem>>
+    collections: Map<Collection, LazyPagingItems<AnimeItem>>
 ) {
     LaunchedEffect(Unit) {
         effects.collect { effect ->

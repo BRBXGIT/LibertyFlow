@@ -12,9 +12,9 @@ import com.example.data.domain.FavoritesRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.domain.WatchedEpsRepo
 import com.example.data.models.auth.AuthState
-import com.example.data.models.auth.UiTokenRequest
-import com.example.data.models.favorites.UiFavoriteItem
-import com.example.data.models.favorites.UiFavoriteRequest
+import com.example.data.models.auth.TokenRequest
+import com.example.data.models.favorites.FavoriteItem
+import com.example.data.models.favorites.FavoriteRequest
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +26,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val ANIMATION_DELAY = 2_000L
+private const val RETRY = "Retry"
 
 @HiltViewModel
 class AnimeDetailsVM @Inject constructor(
@@ -54,7 +57,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
-    // --- Effects and intents ---
+    // --- Effects ---
     fun sendIntent(intent: AnimeDetailsIntent) {
         when (intent) {
             is AnimeDetailsIntent.FetchAnime -> fetchAnime(intent.id)
@@ -79,6 +82,7 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
+    // --- Intents ---
     fun sendEffect(effect: UiEffect) {
         viewModelScope.launch(dispatcherIo) {
             _effects.send(effect)
@@ -150,10 +154,10 @@ class AnimeDetailsVM @Inject constructor(
             _state.update { it.updateFavorites { f -> f.copy(isLoading = true, isError = false) } }
 
             // Construct request
-            val request = UiFavoriteRequest().apply { add(UiFavoriteItem(animeId)) }
+            val request = FavoriteRequest().apply { add(FavoriteItem(animeId)) }
 
             // Just cause i want to show animation :)
-            delay(2000)
+            delay(ANIMATION_DELAY)
 
             val result = if (shouldAdd) favoritesRepo.addFavorite(request) else favoritesRepo.deleteFavorite(request)
 
@@ -178,7 +182,7 @@ class AnimeDetailsVM @Inject constructor(
         val currentState = _state.value.authForm
 
         getAuthToken(
-            request = UiTokenRequest(currentState.email, currentState.password),
+            request = TokenRequest(currentState.email, currentState.password),
             onStart = {
                 _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
             },
@@ -208,7 +212,7 @@ class AnimeDetailsVM @Inject constructor(
             _effects.send(
                 UiEffect.ShowSnackbar(
                     messageRes = messageRes,
-                    actionLabel = action?.let { "Retry" },
+                    actionLabel = action?.let { RETRY },
                     action = action
                 )
             )

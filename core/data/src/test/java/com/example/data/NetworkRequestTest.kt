@@ -1,16 +1,15 @@
 package com.example.data
 
-import com.example.data.models.releases.mappers.toUiAnimeId
+import com.example.data.models.releases.mappers.toAnimeId
 import com.example.data.utils.remote.network_request.NetworkRequest
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import com.example.network.releases.api.ReleasesApi
-import com.example.network.releases.models.anime_id_item_response.AnimeIdItem
+import com.example.network.releases.models.anime_id_item_response.AnimeIdItemDto
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -26,11 +25,11 @@ class NetworkRequestTest {
 
     @Test
     fun `saveApiCall returns success when call successful`() = runTest {
-        coEvery { api.getRandomAnime() } returns Response.success(AnimeIdItem(1))
+        coEvery { api.getRandomAnime() } returns Response.success(AnimeIdItemDto(1))
 
         NetworkRequest.safeApiCall(
             call = { api.getRandomAnime() },
-            map = { it.toUiAnimeId() }
+            map = { it.toAnimeId() }
         ).onSuccess { result ->
             assertEquals(1, result.id)
         }
@@ -43,7 +42,7 @@ class NetworkRequestTest {
 
         NetworkRequest.safeApiCall(
             call = { api.getRandomAnime() },
-            map = { it.toUiAnimeId() }
+            map = { it.toAnimeId() }
         ).onError { _, message ->
             assertEquals(R.string.unknown_message.toString(), message)
         }
@@ -55,7 +54,7 @@ class NetworkRequestTest {
 
         NetworkRequest.safeApiCall(
             call = { api.getRandomAnime() },
-            map = { it.toUiAnimeId() }
+            map = { it.toAnimeId() }
         ).onError { _, message ->
             assertEquals(R.string.internet_message.toString(), message)
         }
@@ -68,7 +67,7 @@ class NetworkRequestTest {
 
         NetworkRequest.safeApiCall(
             call = { api.getRandomAnime() },
-            map = { it.toUiAnimeId() }
+            map = { it.toAnimeId() }
         ).onError { _, message ->
             assertEquals(expected, message)
         }
@@ -114,7 +113,7 @@ class NetworkRequestTest {
 
         NetworkRequest.safeApiCall(
             call = { api.getRandomAnime() },
-            map = { it.toUiAnimeId() }
+            map = { it.toAnimeId() }
         ).onError { _, message ->
             assertEquals(expected, message)
         }

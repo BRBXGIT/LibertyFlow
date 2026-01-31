@@ -54,7 +54,7 @@ private fun Title() {
         horizontalArrangement = Arrangement.spacedBy(TITLE_SPACED_BY.dp)
     ) {
         Icon(
-            painter = painterResource(LibertyFlowIcons.AniLiberty),
+            painter = painterResource(LibertyFlowIcons.LibertyFlow),
             contentDescription = null,
             modifier = Modifier.size(ICON_SIZE.dp),
             tint = Color.Unspecified

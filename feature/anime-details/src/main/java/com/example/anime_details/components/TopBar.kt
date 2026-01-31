@@ -46,7 +46,7 @@ private const val TOP_BAR_ALPHA = 0f
 private const val TEXT_MAX_LINES = 1
 
 @Composable
-fun TopBar(
+internal fun TopBar(
     isError: Boolean,
     englishTitle: String?,
     isLoading: Boolean,

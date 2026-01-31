@@ -3,6 +3,7 @@
     <string name="settings_label">Settings</string>
     <string name="info_label">Information</string>
     <string name="links_label">Links</string>
+    <string name="app_label">App</string>
 
     <string name="vk_label">VK group</string>
     <string name="youtube_label">YouTube channel</string>

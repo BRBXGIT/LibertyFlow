@@ -1,32 +1,32 @@
 package com.example.data.data
 
 import com.example.data.domain.ReleasesRepo
-import com.example.data.models.common.mappers.toUiAnimeItem
-import com.example.data.models.common.ui_anime_item.UiAnimeItem
-import com.example.data.models.releases.anime_details.UiAnimeDetails
-import com.example.data.models.releases.anime_id.UiAnimeId
-import com.example.data.models.releases.mappers.toUiAnimeDetails
-import com.example.data.models.releases.mappers.toUiAnimeId
+import com.example.data.models.releases.anime_details.AnimeDetails
+import com.example.data.models.releases.anime_id.AnimeId
+import com.example.data.models.releases.mappers.toAnimeDetails
+import com.example.data.models.releases.mappers.toAnimeId
 import com.example.data.utils.remote.network_request.NetworkRequest
 import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.network.releases.api.ReleasesApi
 import javax.inject.Inject
 
-internal class ReleasesRepoImpl @Inject constructor(
+private const val ZERO = 0
+
+class ReleasesRepoImpl @Inject constructor(
     private val releasesApi: ReleasesApi
 ): ReleasesRepo {
 
-    override suspend fun getAnime(id: Int): NetworkResult<UiAnimeDetails> {
+    override suspend fun getAnime(id: Int): NetworkResult<AnimeDetails> {
         return NetworkRequest.safeApiCall(
             call = { releasesApi.getAnime(id) },
-            map = { it.toUiAnimeDetails() }
+            map = { it.toAnimeDetails() }
         )
     }
 
-    override suspend fun getRandomAnime(): NetworkResult<UiAnimeId> {
+    override suspend fun getRandomAnime(): NetworkResult<AnimeId> {
         return NetworkRequest.safeApiCall(
             call = { releasesApi.getRandomAnime() },
-            map = { it[0].toUiAnimeId() } // First and the only item
+            map = { it[ZERO].toAnimeId() } // First and the only item
         )
     }
 }

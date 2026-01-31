@@ -3,6 +3,7 @@ package com.example.data.di
 import com.example.data.data.GenresRepoImpl
 import com.example.data.domain.GenresRepo
 import com.example.network.genres.api.GenresApi
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,15 +13,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object GenresModule {
+interface GenresModule {
 
-    @Provides
-    @Singleton
-    fun provideGenresApi(retrofit: Retrofit): GenresApi =
-        retrofit.create(GenresApi::class.java)
+    companion object {
+        @Provides
+        @Singleton
+        fun provideGenresApi(retrofit: Retrofit): GenresApi =
+            retrofit.create(GenresApi::class.java)
+    }
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideGenresRepo(genresApi: GenresApi): GenresRepo =
-        GenresRepoImpl(genresApi)
+    fun bindGenresRepo(impl: GenresRepoImpl): GenresRepo
 }

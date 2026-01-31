@@ -4,6 +4,7 @@ import com.example.data.data.CollectionsRepoImpl
 import com.example.data.domain.CollectionsRepo
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.collections.api.CollectionsApi
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,18 +14,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CollectionsModule {
+interface CollectionsModule {
 
-    @Provides
-    @Singleton
-    fun provideCollectionsApi(retrofit: Retrofit): CollectionsApi =
-        retrofit.create(CollectionsApi::class.java)
+    companion object {
+        @Provides
+        @Singleton
+        fun provideCollectionsApi(retrofit: Retrofit): CollectionsApi =
+            retrofit.create(CollectionsApi::class.java)
+    }
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideCollectionsRepo(
-        collectionsApi: CollectionsApi,
-        authPrefsManager: AuthPrefsManager
-    ): CollectionsRepo =
-        CollectionsRepoImpl(collectionsApi, authPrefsManager)
+    fun bindCollectionsRepo(impl: CollectionsRepoImpl): CollectionsRepo
 }

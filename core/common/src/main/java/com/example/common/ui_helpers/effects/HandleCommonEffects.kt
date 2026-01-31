@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import androidx.paging.compose.LazyPagingItems
 import kotlinx.coroutines.flow.Flow
 
 @Composable

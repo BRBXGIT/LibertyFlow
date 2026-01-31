@@ -40,12 +40,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions { jvmTarget = "11" }
-
     buildFeatures { compose = true }
 
     kotlin {
         compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
             freeCompilerArgs.add("-Xcontext-parameters")
         }
     }
@@ -63,7 +62,12 @@ dependencies {
     implementation(project(":feature:collections"))
     implementation(project(":feature:anime-details"))
     implementation(project(":feature:more"))
+    implementation(project(":feature:player"))
+    implementation(project(":feature:info"))
+    implementation(project(":feature:settings"))
 
+    // Media 3 only for arguments
+    implementation(libs.androidx.media3.exoplayer)
     // Core
     implementation(libs.androidx.core.ktx)
     // Activity

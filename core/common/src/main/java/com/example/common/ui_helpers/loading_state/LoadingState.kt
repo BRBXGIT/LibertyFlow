@@ -9,4 +9,5 @@ data class LoadingState(
 ) {
     fun withLoading(value: Boolean) = copy(isLoading = value)
     fun withError(value: Boolean) = copy(isError = value)
+    fun withBoth(loading: Boolean, error: Boolean) = copy(isLoading = loading, isError = error)
 }

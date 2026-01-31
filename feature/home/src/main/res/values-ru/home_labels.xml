@@ -2,4 +2,7 @@
 <resources>
     <string name="home_top_bar_label">Последние обновления</string>
     <string name="random_button_label">Случайное аниме</string>
+    <string name="random_anime_button_error_label">Ошибка</string>
+    <string name="random_anime_button_loading_label">Загрузка…</string>
+
 </resources>

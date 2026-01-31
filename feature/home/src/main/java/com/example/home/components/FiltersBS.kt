@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.data.models.common.common.UiGenre
+import com.example.data.models.common.common.Genre
 import com.example.data.models.common.mappers.toName
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
@@ -343,9 +343,9 @@ private fun FiltersBSPreview() {
     LibertyFlowTheme {
         if (true) {
             val genres = listOf(
-                UiGenre(1, "Genre"),
-                UiGenre(2, "Naruto"),
-                UiGenre(3, "Naruto again")
+                Genre(1, "Genre"),
+                Genre(2, "Naruto"),
+                Genre(3, "Naruto again")
             )
 
             FiltersBS(

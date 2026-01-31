@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     // Ksp
     alias(libs.plugins.ksp)
+    // Hilt
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -17,7 +19,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions { jvmTarget = "11" }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+            freeCompilerArgs.add("-Xcontext-parameters")
+        }
+    }
 }
 
 dependencies {
@@ -27,4 +35,7 @@ dependencies {
     // Room
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 }

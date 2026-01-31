@@ -3,6 +3,7 @@ package com.example.data.di
 import com.example.data.data.CatalogRepoImpl
 import com.example.data.domain.CatalogRepo
 import com.example.network.catalog.api.CatalogApi
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,15 +13,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CatalogModule {
+interface CatalogModule {
 
-    @Provides
-    @Singleton
-    fun provideCatalogApi(retrofit: Retrofit): CatalogApi =
-        retrofit.create(CatalogApi::class.java)
+    companion object {
+        @Provides
+        @Singleton
+        fun provideCatalogApi(retrofit: Retrofit): CatalogApi =
+            retrofit.create(CatalogApi::class.java)
+    }
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideCatalogRepo(catalogApi: CatalogApi): CatalogRepo =
-        CatalogRepoImpl(catalogApi)
+    fun bindCatalogRepo(impl: CatalogRepoImpl): CatalogRepo
 }

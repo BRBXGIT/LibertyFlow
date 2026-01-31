@@ -12,7 +12,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
-    @Provides @Singleton fun provideGsonConverterFactory(): GsonConverterFactory =
+    @Provides
+    @Singleton
+    fun provideGsonConverterFactory(): GsonConverterFactory =
         GsonConverterFactory.create()
 
     @Provides

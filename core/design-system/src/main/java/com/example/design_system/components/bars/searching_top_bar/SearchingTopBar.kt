@@ -9,7 +9,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,98 +19,118 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.common.ui_helpers.search.SearchForm
 import com.example.design_system.R
 import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
 import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mTypography
 
-private const val EMPTY_STRING = ""
-private val PlaceholderText = R.string.placeholder_label
 private const val ANIMATION_DURATION = 300
+private val TOP_BAR_ICON_SIZE = 22.dp
 
-private const val TOP_BAR_ICON_SIZE = 22
+private const val EMPTY_STRING = ""
 
 @Composable
 fun SearchingTopBar(
-    showIndicator: Boolean = true,
-    isLoading: Boolean = false,
+    searchForm: SearchForm,
     label: String,
     scrollBehavior: TopAppBarScrollBehavior,
-    query: String,
     onQueryChange: (String) -> Unit,
-    isSearching: Boolean,
-    onSearchChange: () -> Unit,
+    onToggleSearch: () -> Unit,
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    showIndicator: Boolean = true,
 ) {
-    Column {
+    Column(modifier = modifier) {
         TopAppBar(
             scrollBehavior = scrollBehavior,
             title = {
-                // Switch between title text and search text field
-                if (isSearching) {
-                    SearchingTextField(
-                        value = query,
-                        onValueChange = onQueryChange
-                    )
-                } else {
-                    Text(
-                        text = label,
-                        style = mTypography.titleLarge
-                    )
-                }
+                TopBarTitle(
+                    isSearching = searchForm.isSearching,
+                    query = searchForm.query,
+                    label = label,
+                    onQueryChange = onQueryChange
+                )
             },
             navigationIcon = {
-                // Show back arrow only in search mode
-                if (isSearching) {
+                if (searchForm.isSearching) {
                     TopBarIconButton(
+                        icon = LibertyFlowIcons.ArrowLeftFilled,
                         onClick = {
                             onQueryChange(EMPTY_STRING)
-                            onSearchChange()
-                        },
-                        icon = LibertyFlowIcons.ArrowLeftFilled
+                            onToggleSearch()
+                        }
                     )
                 }
             },
             actions = {
-                // Right side icons depending on search state
-                when {
-                    // When searching & query has text → show clear button
-                    isSearching && query.isNotBlank() -> {
-                        TopBarIconButton(
-                            onClick = { onQueryChange(EMPTY_STRING) },
-                            icon = LibertyFlowIcons.CrossCircle
-                        )
-                    }
-                    // When NOT searching → show search button
-                    !isSearching -> {
-                        TopBarIconButton(
-                            onClick = onSearchChange,
-                            icon = LibertyFlowIcons.Magnifier
-                        )
-                    }
-                }
+                TopBarActions(
+                    isSearching = searchForm.isSearching,
+                    query = searchForm.query,
+                    onClearQuery = { onQueryChange(EMPTY_STRING) },
+                    onToggleSearch = onToggleSearch
+                )
             }
         )
 
-        // Loading indicator appears/disappears with animation
-        AnimatedVisibility(
-            visible = showIndicator && isLoading,
-            enter = fadeIn(tween(ANIMATION_DURATION))
-                    + slideInVertically(tween(ANIMATION_DURATION)),
-            exit = fadeOut(tween(ANIMATION_DURATION))
-                    + slideOutVertically(tween(ANIMATION_DURATION))
-        ) {
-            LibertyFlowLinearIndicator()
+        SearchLoadingIndicator(
+            isVisible = showIndicator && isLoading
+        )
+    }
+}
+
+@Composable
+private fun TopBarTitle(
+    isSearching: Boolean,
+    query: String,
+    label: String,
+    onQueryChange: (String) -> Unit
+) {
+    if (isSearching) {
+        SearchingTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+    } else {
+        Text(
+            text = label,
+            style = mTypography.titleLarge
+        )
+    }
+}
+
+@Composable
+private fun TopBarActions(
+    isSearching: Boolean,
+    query: String,
+    onClearQuery: () -> Unit,
+    onToggleSearch: () -> Unit
+) {
+    if (isSearching) {
+        if (query.isNotEmpty()) {
+            TopBarIconButton(
+                icon = LibertyFlowIcons.CrossCircle,
+                onClick = onClearQuery
+            )
         }
+    } else {
+        TopBarIconButton(
+            icon = LibertyFlowIcons.Magnifier,
+            onClick = onToggleSearch
+        )
     }
 }
 
@@ -116,13 +138,19 @@ fun SearchingTopBar(
 private fun SearchingTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String = stringResource(PlaceholderText)
+    modifier: Modifier = Modifier,
+    placeholder: String = stringResource(R.string.placeholder_label)
 ) {
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+
     TextField(
         value = value,
         onValueChange = onValueChange,
+        modifier = modifier.focusRequester(focusRequester),
         singleLine = true,
         placeholder = { Text(placeholder) },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
@@ -133,34 +161,27 @@ private fun SearchingTextField(
 }
 
 @Composable
-private fun TopBarIconButton(
-    onClick: () -> Unit,
-    icon: Int
-) {
-    // Reusable toolbar icon button
-    IconButton(onClick = onClick) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            modifier = Modifier.size(TOP_BAR_ICON_SIZE.dp)
-        )
+private fun SearchLoadingIndicator(isVisible: Boolean) {
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = fadeIn(tween(ANIMATION_DURATION)) + slideInVertically(tween(ANIMATION_DURATION)),
+        exit = fadeOut(tween(ANIMATION_DURATION)) + slideOutVertically(tween(ANIMATION_DURATION))
+    ) {
+        LibertyFlowLinearIndicator()
     }
 }
 
-@Preview
 @Composable
-private fun SearchingTopBarPreview() {
-    val scrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
-
-    LibertyFlowTheme {
-        SearchingTopBar(
-            label = "Последние обновления",
-            onQueryChange = {},
-            query = "",
-            scrollBehavior = scrollBehaviour,
-            isSearching = false,
-            onSearchChange = {},
-            isLoading = true
+private fun TopBarIconButton(
+    icon: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            modifier = Modifier.size(TOP_BAR_ICON_SIZE)
         )
     }
 }

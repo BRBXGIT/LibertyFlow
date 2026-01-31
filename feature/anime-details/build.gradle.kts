@@ -26,12 +26,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions { jvmTarget = "11" }
-
     buildFeatures { compose = true }
 
     kotlin {
         compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
             freeCompilerArgs.add("-Xcontext-parameters")
         }
     }
@@ -44,6 +43,7 @@ dependencies {
     implementation(project(":core:design-system"))
     implementation(project(":core:common"))
     // Feature modules
+    implementation(project(":feature:player"))
 
     // Compose animation graphics
     implementation(libs.androidx.animation.graphics)
@@ -61,6 +61,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime
     implementation(libs.androidx.compose.runtime)
-    // Compose debug
-    debugImplementation(libs.androidx.ui.tooling)
+    // Compose preview
+    implementation(libs.androidx.ui.tooling.preview)
 }
