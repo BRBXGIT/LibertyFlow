@@ -48,6 +48,7 @@ object LibertyFlowIcons {
     val GitHub = R.drawable.ic_github
     val Branch = R.drawable.ic_branch
     val PieChart = R.drawable.ic_pie_chart
+    val Colour = R.drawable.ic_colour
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled

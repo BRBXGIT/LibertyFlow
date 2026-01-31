@@ -32,7 +32,6 @@ private val InfoLabel = R.string.info_label
 private val LCSpacedBy = 16.dp
 
 private val LCBottomPadding = 16.dp
-private val LCTopPadding = 16.dp
 
 @Composable
 internal fun Info(
@@ -56,7 +55,7 @@ internal fun Info(
         LazyColumn(
             contentPadding = PaddingValues(
                 bottom = innerPadding.calculateBottomPadding() + LCBottomPadding,
-                top = innerPadding.calculateTopPadding() + LCTopPadding
+                top = innerPadding.calculateTopPadding()
             ),
             verticalArrangement = Arrangement.spacedBy(LCSpacedBy),
             modifier = Modifier

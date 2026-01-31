@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.data.models.theme.ColorSchemeValue
+import com.example.data.models.theme.LibertyFlowTheme
 import com.example.data.models.theme.ThemeValue
 import com.example.design_system.theme.DarkCherryColorScheme
 import com.example.design_system.theme.DarkGreenAppleScheme
@@ -44,7 +45,6 @@ import com.example.design_system.theme.LightTacosScheme
 import com.example.design_system.theme.mTypography
 import com.example.settings.R
 import com.example.settings.screen.SettingsIntent
-import com.example.settings.screen.SettingsState
 
 // --- Layout Constants ---
 private val LRArrangement = 16.dp
@@ -134,7 +134,7 @@ private val colorSchemes = listOf(
 
 @Composable
 internal fun LazyItemScope.ColorSchemesLR(
-    state: SettingsState,
+    theme: LibertyFlowTheme,
     onIntent: (SettingsIntent) -> Unit
 ) {
     LazyRow(
@@ -146,16 +146,16 @@ internal fun LazyItemScope.ColorSchemesLR(
             .fillMaxWidth()
     ) {
         items(colorSchemes) { preview ->
-            val isDarkTheme = if (state.themeSettings.userThemePreference == ThemeValue.SYSTEM) {
+            val isDarkTheme = if (theme.userThemePreference == ThemeValue.SYSTEM) {
                 isSystemInDarkTheme()
             } else {
-                state.themeSettings.userThemePreference != ThemeValue.LIGHT
+                theme.userThemePreference != ThemeValue.LIGHT
             }
             val visualColors = if (isDarkTheme) preview.darkScheme else preview.lightScheme
 
             val targetValue = preview.baseValue.forMode(isDarkTheme)
 
-            val isSelected = state.themeSettings.activeColorScheme?.name?.substringAfter("_") ==
+            val isSelected = theme.activeColorScheme?.name?.substringAfter("_") ==
                     targetValue.name.substringAfter("_")
 
             ColorSchemePreviewCard(

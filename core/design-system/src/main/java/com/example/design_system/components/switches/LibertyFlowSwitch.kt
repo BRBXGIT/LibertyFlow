@@ -17,7 +17,7 @@ fun LibertyFlowSwitch(
         onCheckedChange = { onCheckChange(it) },
         colors = SwitchDefaults.colors(
             checkedBorderColor = Color.Transparent,
-            uncheckedBorderColor = Color.Transparent
+            uncheckedBorderColor = Color.Transparent,
         )
     )
 }
