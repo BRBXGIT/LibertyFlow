@@ -46,7 +46,7 @@ object LibertyFlowIcons {
     val CheckCircle = R.drawable.ic_check_circle
     val Rocket = R.drawable.ic_rocket
     val GitHub = R.drawable.ic_github
-    val Branch = R.drawable.ic_branch
+    val Layers = R.drawable.ic_layers
     val PieChart = R.drawable.ic_pie_chart
     val Colour = R.drawable.ic_colour
 

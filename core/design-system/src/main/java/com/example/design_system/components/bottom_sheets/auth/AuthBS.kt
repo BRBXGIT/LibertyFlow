@@ -4,7 +4,6 @@ import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomSheetDefaults.DragHandle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -52,7 +51,8 @@ fun AuthBS(
             )
 
             AuthBSFooter(
-                onAuthClick = onAuthClick
+                onAuthClick = onAuthClick,
+                onDismissRequest = onDismissRequest
             )
         }
     }

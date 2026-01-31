@@ -28,6 +28,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -55,6 +56,8 @@ dependencies {
     // Core modules
     implementation(project(":core:design-system"))
     implementation(project(":core:data"))
+    implementation(project(":core:network")) // Only for obfuscation
+    implementation(project(":core:local")) // Only for obfuscation
     implementation(project(":core:common"))
     // Feature modules
     implementation(project(":feature:home"))

@@ -1,7 +1,6 @@
 package com.example.design_system.components.bottom_sheets.auth
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -9,7 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -22,33 +23,40 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.example.design_system.R
 import com.example.design_system.theme.LibertyFlowTheme
 import com.example.design_system.theme.mColors
 import com.example.design_system.theme.mShapes
 import com.example.design_system.theme.mTypography
 
-private object AuthBSFooterConstants {
-    val AuthorizeLabel = R.string.authorize_label
-    val NewUserLabel = R.string.new_user_label
-    val RegistrationLabel = R.string.registration_label
-    val AnilibriaAuthLink = R.string.anilibria_auth_link
-}
+private val AuthorizeLabel = R.string.authorize_label
+private val NewUserLabel = R.string.new_user_label
+private val RegistrationLabel = R.string.registration_label
+private val AniLibertyAuthLink = R.string.aniliberty_auth_link
+
+private val ColumnArrangement = 8.dp
+private val BoxPadding = 12.dp
+private val BottomSpacerHeight = 0.dp
 
 @Composable
 internal fun AuthBSFooter(
-    onAuthClick: () -> Unit
+    onAuthClick: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(ColumnArrangement)
     ) {
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onAuthClick,
+            onClick = {
+                onAuthClick()
+                onDismissRequest()
+            },
             shape = mShapes.small
         ) {
             Text(
-                text = stringResource(AuthBSFooterConstants.AuthorizeLabel)
+                text = stringResource(AuthorizeLabel)
             )
         }
 
@@ -60,19 +68,19 @@ internal fun AuthBSFooter(
                     color = mColors.surfaceContainerHighest,
                     shape = mShapes.small
                 )
-                .padding(vertical = 12.dp),
+                .padding(vertical = BoxPadding),
             contentAlignment = Alignment.Center
         ) {
             Row {
                 Text(
-                    text = stringResource(AuthBSFooterConstants.NewUserLabel),
+                    text = stringResource(NewUserLabel),
                     style = mTypography.labelLarge
                 )
 
                 val context = LocalContext.current
-                val authLink = stringResource(AuthBSFooterConstants.AnilibriaAuthLink)
+                val authLink = stringResource(AniLibertyAuthLink)
                 Text(
-                    text = stringResource(AuthBSFooterConstants.RegistrationLabel),
+                    text = stringResource(RegistrationLabel),
                     style = mTypography.labelLarge.copy(
                         color = mColors.primary,
                         fontWeight = FontWeight.Bold
@@ -85,13 +93,15 @@ internal fun AuthBSFooter(
                             context.startActivity(
                                 Intent(
                                     Intent.ACTION_VIEW,
-                                    Uri.parse(authLink)
+                                    authLink.toUri()
                                 )
                             )
                         }
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(BottomSpacerHeight))
     }
 }
 
@@ -100,7 +110,8 @@ internal fun AuthBSFooter(
 private fun AuthBSFooterPreview() {
     LibertyFlowTheme {
         AuthBSFooter(
-            onAuthClick = {}
+            onAuthClick = {},
+            onDismissRequest = {}
         )
     }
 }

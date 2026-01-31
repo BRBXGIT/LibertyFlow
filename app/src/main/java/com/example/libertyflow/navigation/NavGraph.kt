@@ -65,7 +65,7 @@ fun NavGraph() {
             ) {
                 home(homeVM, navController)
                 favorites(favoritesVM, refreshVM, navController)
-//                collections(collectionsVM, refreshVM, navController)
+                collections(collectionsVM, refreshVM, navController)
                 animeDetails(refreshVM, playerVM, navController)
                 more(navController)
                 info(navController)

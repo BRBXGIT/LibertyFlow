@@ -106,7 +106,7 @@ private val infoItems = listOf(
     InfoItem(
         title = VersionLabel,
         description = VersionDescription,
-        icon = LibertyFlowIcons.Branch,
+        icon = LibertyFlowIcons.Layers,
         type = InfoType.Version
     ),
     InfoItem(
@@ -117,19 +117,19 @@ private val infoItems = listOf(
         url = AniLibertyApiDocsLink
     ),
     InfoItem(
+        title = GitHubLabel,
+        description = GitHubDescription,
+        icon = LibertyFlowIcons.GitHub,
+        type = InfoType.Git,
+        url = BRBXGitHubLink
+    ),
+    InfoItem(
         title = AniLibertyLabel,
         description = AniLibertyDescription,
         icon = LibertyFlowIcons.AniLiberty,
         type = InfoType.OriginalSite,
         url = AniLibertyLink
     ),
-    InfoItem(
-        title = GitHubLabel,
-        description = GitHubDescription,
-        icon = LibertyFlowIcons.GitHub,
-        type = InfoType.Git,
-        url = BRBXGitHubLink
-    )
 )
 
 private fun LazyListScope.infoItems(
