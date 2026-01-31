@@ -30,15 +30,15 @@ internal fun TopBar(
         scrollBehavior = scrollBehavior,
         title = { Title() },
         actions = {
-            IconButton(
-                onClick = { /* TODO: handle click */ }
-            ) {
-                Icon(
-                    painter = painterResource(LibertyFlowIcons.Logout),
-                    contentDescription = null,
-                    modifier = Modifier.size(ICON_SIZE.dp)
-                )
-            }
+//            IconButton(
+//                onClick = { /* TODO: handle click */ }
+//            ) {
+//                Icon(
+//                    painter = painterResource(LibertyFlowIcons.Logout),
+//                    contentDescription = null,
+//                    modifier = Modifier.size(ICON_SIZE.dp)
+//                )
+//            }
         }
     )
 }

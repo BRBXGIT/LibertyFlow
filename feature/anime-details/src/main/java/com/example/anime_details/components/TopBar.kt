@@ -87,10 +87,10 @@ internal fun TopBar(
         },
         actions = {
             // TODO: Add lists logic
-            TopBarIconButton(
-                icon = LibertyFlowIcons.List,
-                onClick = {}
-            )
+//            TopBarIconButton(
+//                icon = LibertyFlowIcons.List,
+//                onClick = {}
+//            )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = mColors.surfaceContainer.copy(alpha = TOP_BAR_ALPHA),
