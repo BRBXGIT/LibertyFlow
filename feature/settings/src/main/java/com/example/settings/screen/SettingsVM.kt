@@ -1,14 +1,13 @@
 package com.example.settings.screen
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.common.vm_helpers.BasePlayerSettingsVM
 import com.example.common.vm_helpers.toWhileSubscribed
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.domain.ThemeRepo
-import com.example.data.models.player.VideoQuality
 import com.example.data.models.theme.ColorSchemeValue
 import com.example.data.models.theme.ThemeValue
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +25,7 @@ class SettingsVM @Inject constructor(
     private val themeRepo: ThemeRepo,
     private val playerSettingsRepo: PlayerSettingsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-): ViewModel() {
+): BasePlayerSettingsVM(playerSettingsRepo, dispatcherIo) {
 
     private val _state = MutableStateFlow(SettingsState())
     val state = _state.toWhileSubscribed(SettingsState())
@@ -45,10 +44,10 @@ class SettingsVM @Inject constructor(
             SettingsIntent.ToggleUseExpressive -> toggleUseExpressive()
 
             // Player
-            is SettingsIntent.SetQuality -> setVideoQuality(intent.quality)
-            SettingsIntent.ToggleAutoPlay -> toggleAutoPlay()
-            SettingsIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening()
-            SettingsIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton()
+            is SettingsIntent.SetQuality -> saveVideoQuality(intent.quality)
+            SettingsIntent.ToggleAutoPlay -> toggleAutoPlay(!_state.value.playerSettings.autoPlay)
+            SettingsIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening(!_state.value.playerSettings.autoSkipOpening)
+            SettingsIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton(!_state.value.playerSettings.showSkipOpeningButton)
 
             // Screen ui
             SettingsIntent.ToggleIsQualityBSVisible -> _state.update { it.toggleQualityBS() }
@@ -71,23 +70,6 @@ class SettingsVM @Inject constructor(
 
     private fun setColorScheme(colorScheme: ColorSchemeValue) = viewModelScope.launch(dispatcherIo) {
         themeRepo.saveColorSystem(colorScheme)
-    }
-
-    // --- Player settings ---
-    private fun setVideoQuality(videoQuality: VideoQuality) = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveQuality(videoQuality)
-    }
-
-    private fun toggleShowSkipOpeningButton() = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveShowSkipOpeningButton(!_state.value.playerSettings.showSkipOpeningButton)
-    }
-
-    private fun toggleAutoSkipOpening() = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveAutoSkipOpening(!_state.value.playerSettings.autoSkipOpening)
-    }
-
-    private fun toggleAutoPlay() = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveAutoPlay(!_state.value.playerSettings.autoPlay)
     }
 
     // --- Observe prefs ---

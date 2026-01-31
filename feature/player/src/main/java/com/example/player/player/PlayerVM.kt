@@ -7,6 +7,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
+import com.example.common.vm_helpers.BasePlayerSettingsVM
 import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.models.player.VideoQuality
@@ -31,7 +32,7 @@ class PlayerVM @Inject constructor(
     private val playerSettingsRepo: PlayerSettingsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
     @param:Dispatcher(LibertyFlowDispatcher.Main) private val dispatcherMain: CoroutineDispatcher
-): ViewModel() {
+): BasePlayerSettingsVM(playerSettingsRepo, dispatcherIo) {
 
     // --- State ---
     private val _playerState = MutableStateFlow(PlayerState())
@@ -53,10 +54,10 @@ class PlayerVM @Inject constructor(
             PlayerIntent.SkipOpening -> skipOpening()
 
             // Settings & Preferences
-            is PlayerIntent.SaveQuality -> saveQuality(intent.quality)
-            PlayerIntent.ToggleAutoPlay -> toggleAutoPlay()
-            PlayerIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening()
-            PlayerIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton()
+            is PlayerIntent.SaveQuality -> saveVideoQuality(intent.quality)
+            PlayerIntent.ToggleAutoPlay -> toggleAutoPlay(!_playerState.value.playerSettings.autoPlay)
+            PlayerIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening(!_playerState.value.playerSettings.autoSkipOpening)
+            PlayerIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton(!_playerState.value.playerSettings.showSkipOpeningButton)
 
             // UI Visibility Toggles
             PlayerIntent.ToggleControllerVisible -> toggleControllerVisible()
@@ -247,23 +248,6 @@ class PlayerVM @Inject constructor(
     private fun skipOpening() {
         val endPosition = _playerState.value.currentEpisode?.opening?.end?.toLong() ?: 0L
         player.seekTo(endPosition * 1000)
-    }
-
-    // --- Repository updates (Data persistence) ---
-    private fun saveQuality(q: VideoQuality) = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveQuality(q)
-    }
-
-    private fun toggleAutoPlay() = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveAutoPlay(!_playerState.value.playerSettings.autoPlay)
-    }
-
-    private fun toggleAutoSkipOpening() = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveAutoSkipOpening(!_playerState.value.playerSettings.autoSkipOpening)
-    }
-
-    private fun toggleShowSkipOpeningButton() = viewModelScope.launch(dispatcherIo) {
-        playerSettingsRepo.saveShowSkipOpeningButton(!_playerState.value.playerSettings.showSkipOpeningButton)
     }
 
     // --- Ui visibility helpers ---
