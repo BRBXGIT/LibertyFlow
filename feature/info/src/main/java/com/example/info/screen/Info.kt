@@ -5,8 +5,8 @@ package com.example.info.screen
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -31,6 +31,9 @@ private val InfoLabel = R.string.info_label
 
 private val LCSpacedBy = 16.dp
 
+private val LCBottomPadding = 16.dp
+private val LCTopPadding = 16.dp
+
 @Composable
 internal fun Info(
     onCommonEffect: (UiEffect) -> Unit,
@@ -51,11 +54,14 @@ internal fun Info(
             .nestedScroll(topBarScrollBehavior.nestedScrollConnection)
     ) { innerPadding ->
         LazyColumn(
+            contentPadding = PaddingValues(
+                bottom = innerPadding.calculateBottomPadding() + LCBottomPadding,
+                top = innerPadding.calculateTopPadding() + LCTopPadding
+            ),
             verticalArrangement = Arrangement.spacedBy(LCSpacedBy),
             modifier = Modifier
                 .fillMaxSize()
                 .background(mColors.background)
-                .padding(innerPadding)
         ) {
             header()
 

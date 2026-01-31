@@ -19,3 +19,6 @@ data class AnimeDetailsRoute(val animeId: Int): NavigationBase
 
 @Serializable
 data object InfoRoute: NavigationBase
+
+@Serializable
+data object SettingsRoute: NavigationBase

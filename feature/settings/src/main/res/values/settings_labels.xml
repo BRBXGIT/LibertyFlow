@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_label">Settings</string>
+
+    <string name="light_theme_label">Light</string>
+    <string name="dark_theme_label">Dark</string>
+    <string name="system_theme_label">System</string>
+    <string name="dynamic_theme_label">Dynamic</string>
+
+    <string name="cherry_label">Cherry</string>
+    <string name="tacos_label">Tacos</string>
+    <string name="lavender_label">Lavender</string>
+    <string name="green_apple_label">Apple</string>
+    <string name="sakura_label">Sakura</string>
+    <string name="sea_label">Sea</string>
+</resources>

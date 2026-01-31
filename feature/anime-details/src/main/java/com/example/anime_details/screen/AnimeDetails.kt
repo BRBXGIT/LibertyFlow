@@ -3,6 +3,7 @@
 package com.example.anime_details.screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -45,6 +46,7 @@ import com.example.player.player.PlayerIntent
 
 // Vertical spacing between LazyColumn items
 private const val LC_ARRANGEMENT = 16
+private const val LC_BOTTOM_PADDING = 16
 
 // Label for torrents section
 private val TORRENTS_LABEL_RES = R.string.torrents_label
@@ -97,6 +99,7 @@ internal fun AnimeDetails(
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(LC_ARRANGEMENT.dp),
+                contentPadding = PaddingValues(bottom = LC_BOTTOM_PADDING.dp)
             ) {
                 // Header section
                 header(

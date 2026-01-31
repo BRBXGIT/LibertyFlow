@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_label">Настройки</string>
+
+    <string name="light_theme_label">Светлая</string>
+    <string name="dark_theme_label">Темная</string>
+    <string name="system_theme_label">Система</string>
+    <string name="dynamic_theme_label">Динамическая</string>
+
+    <string name="cherry_label">Вишня</string>
+    <string name="tacos_label">Такос</string>
+    <string name="lavender_label">Лаванда</string>
+    <string name="green_apple_label">Яблоко</string>
+    <string name="sakura_label">Сакура</string>
+    <string name="sea_label">Море</string>
+</resources>

@@ -35,6 +35,7 @@ import com.example.info.navigation.info
 import com.example.more.navigation.more
 import com.example.player.player.PlayerContainer
 import com.example.player.player.PlayerVM
+import com.example.settings.navigation.settings
 
 @Composable
 fun NavGraph() {
@@ -68,6 +69,7 @@ fun NavGraph() {
                 animeDetails(refreshVM, playerVM, navController)
                 more(navController)
                 info(navController)
+                settings(navController)
             }
 
             val navBarVisible = selectedRoute is NavBarItem

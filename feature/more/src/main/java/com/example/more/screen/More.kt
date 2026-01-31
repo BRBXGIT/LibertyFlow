@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.example.common.navigation.InfoRoute
+import com.example.common.navigation.SettingsRoute
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.dividers.dividerWithLabel
@@ -80,7 +81,7 @@ private val appItems = listOf(
         icon = LibertyFlowIcons.Settings,
         labelRes = SettingsLabel,
         originalColor = false,
-        effect = UiEffect.NavigateBack // TODO: Add screen
+        effect = UiEffect.Navigate(SettingsRoute)
     ),
     MoreItem(
         icon = LibertyFlowIcons.Info,
