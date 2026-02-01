@@ -3,6 +3,9 @@
     <string name="loading_label">Loading</string>
     <string name="error_section_label">Error</string>
 
+    <string name="start_label">Start</string>
+    <string name="continue_label">Continue</string>
+
     <string name="favorites_loading_label">Loading…</string>
     <string name="add_to_favorites_button_label">Add to favorites</string>
     <string name="remove_from_favorites_button_label">Remove from favorites</string>

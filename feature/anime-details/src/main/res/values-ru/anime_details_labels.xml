@@ -3,6 +3,9 @@
     <string name="loading_label">Загрузка</string>
     <string name="error_section_label">Ошибка</string>
 
+    <string name="start_label">Начать</string>
+    <string name="continue_label">Продолжить</string>
+
     <string name="favorites_loading_label">Загрузка…</string>
     <string name="add_to_favorites_button_label">Добавить в избранные</string>
     <string name="remove_from_favorites_button_label">Удалить из избранных</string>

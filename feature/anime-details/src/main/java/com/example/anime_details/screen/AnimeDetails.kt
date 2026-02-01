@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -18,30 +19,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.anime_details.R
 import com.example.anime_details.components.ADD_TO_FAVORITE_BUTTON_KEY
 import com.example.anime_details.components.AddToFavoritesButton
-import com.example.anime_details.components.TopBar
+import com.example.anime_details.components.ContinueWatchFAB
 import com.example.anime_details.components.DESCRIPTION_KEY
 import com.example.anime_details.components.Description
+import com.example.anime_details.components.EPISODES_KEY
+import com.example.anime_details.components.Episodes
 import com.example.anime_details.components.GENRES_LR_KEY
 import com.example.anime_details.components.Genres
 import com.example.anime_details.components.HEADER_KEY
 import com.example.anime_details.components.Header
 import com.example.anime_details.components.HeaderData
-import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.common.common.PosterType
-import com.example.data.models.releases.anime_details.AnimeDetails
-import com.example.anime_details.R
-import com.example.anime_details.components.EPISODES_KEY
-import com.example.anime_details.components.Episodes
+import com.example.anime_details.components.TopBar
 import com.example.anime_details.components.Torrent
 import com.example.anime_details.screen.AnimeDetailsIntent.UpdateAuthForm.AuthField
 import com.example.common.refresh.RefreshEffect
+import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.AuthState
+import com.example.data.models.common.common.PosterType
+import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.data.models.releases.anime_details.Episode
 import com.example.data.models.releases.anime_details.Torrent
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.dividers.dividerWithLabel
+import com.example.design_system.components.utils.ScrollDirection
+import com.example.design_system.components.utils.rememberDirectionalLazyListState
 import com.example.player.player.PlayerIntent
 
 // Vertical spacing between LazyColumn items
@@ -66,7 +70,19 @@ internal fun AnimeDetails(
     // Pinned scroll behavior for the top bar
     val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
+    val lazyListState = rememberLazyListState()
+    val directionalLazyListState = rememberDirectionalLazyListState(lazyListState)
     Scaffold(
+        floatingActionButton = {
+            state.anime?.let {
+                ContinueWatchFAB(
+                    expanded = directionalLazyListState.scrollDirection == ScrollDirection.Up,
+                    state = state,
+                    onIntent = onIntent,
+                    onPlayerIntent = onPlayerIntent
+                )
+            }
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopBar(
@@ -99,7 +115,8 @@ internal fun AnimeDetails(
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(LC_ARRANGEMENT.dp),
-                contentPadding = PaddingValues(bottom = LC_BOTTOM_PADDING.dp)
+                contentPadding = PaddingValues(bottom = LC_BOTTOM_PADDING.dp),
+                state = lazyListState
             ) {
                 // Header section
                 header(

@@ -1,9 +1,11 @@
 package com.example.data.models.releases.anime_details
 
+import androidx.compose.runtime.Immutable
 import com.example.data.models.common.common.Genre
 import com.example.data.models.common.common.Name
 import com.example.data.models.common.common.Poster
 
+@Immutable
 data class AnimeDetails(
     val id: Int,
     val description: String?,
