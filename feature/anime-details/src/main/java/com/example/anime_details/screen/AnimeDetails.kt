@@ -44,8 +44,8 @@ import com.example.data.models.releases.anime_details.Episode
 import com.example.data.models.releases.anime_details.Torrent
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.dividers.dividerWithLabel
-import com.example.design_system.components.utils.ScrollDirection
-import com.example.design_system.components.utils.rememberDirectionalLazyListState
+import com.example.design_system.utils.ScrollDirection
+import com.example.design_system.utils.rememberDirectionalScrollState
 import com.example.player.player.PlayerIntent
 
 // Vertical spacing between LazyColumn items
@@ -71,7 +71,8 @@ internal fun AnimeDetails(
     val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val lazyListState = rememberLazyListState()
-    val directionalLazyListState = rememberDirectionalLazyListState(lazyListState)
+    val directionalLazyListState = rememberDirectionalScrollState(lazyListState)
+
     Scaffold(
         floatingActionButton = {
             state.anime?.let {

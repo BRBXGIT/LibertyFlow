@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,12 +22,13 @@ private val ArrangementAlignmentPadding = 16.dp
 
 @Composable
 fun PagingAnimeItemsLazyVerticalGrid(
+    state: LazyGridState = rememberLazyGridState(),
     onItemClick: (Int) -> Unit,
     anime: LazyPagingItems<AnimeItem>,
     extraContent: LazyGridScope.() -> Unit = {}
 ) {
     // Paging grid — items loaded on-demand
-    AnimeLazyVerticalGridContainer {
+    AnimeLazyVerticalGridContainer(state = state) {
         extraContent(this)
 
         items(
@@ -49,10 +52,12 @@ fun PagingAnimeItemsLazyVerticalGrid(
 
 @Composable
 private fun AnimeLazyVerticalGridContainer(
-    content: LazyGridScope.() -> Unit
+    state: LazyGridState,
+    content: LazyGridScope.() -> Unit,
 ) {
     // Shared grid container for both static and paging content
     LazyVerticalGrid(
+        state = state,
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Adaptive(AnimeCardUtils.CARD_WIDTH.dp),
         verticalArrangement = Arrangement.spacedBy(ArrangementAlignmentPadding),
