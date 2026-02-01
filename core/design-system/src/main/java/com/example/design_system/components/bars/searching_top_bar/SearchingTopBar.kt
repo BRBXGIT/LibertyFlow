@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import com.example.common.ui_helpers.search.SearchForm
 import com.example.design_system.R
 import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mTypography
 
 private const val ANIMATION_DURATION = 300
 private val TOP_BAR_ICON_SIZE = 22.dp

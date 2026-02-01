@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     // Compose compiler
     alias(libs.plugins.compose.compiler)
+    // Ksp
+    alias(libs.plugins.ksp)
+    // Hilt
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -50,4 +54,8 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     // Lottie
     implementation(libs.lottie)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

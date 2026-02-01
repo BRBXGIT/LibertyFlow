@@ -5,7 +5,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.design_system.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.LibertyFlowTheme
 
 @Composable
 fun LibertyFlowSwitch(

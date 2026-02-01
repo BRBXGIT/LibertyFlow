@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.design_system.components.buttons.ActionButtonState
 import com.example.design_system.components.buttons.RainbowActionButton
-import com.example.design_system.theme.LibertyFlowIcons
+import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.home.R
 import com.example.home.screen.HomeIntent
 import com.example.home.screen.HomeState

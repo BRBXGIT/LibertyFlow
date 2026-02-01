@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.LibertyFlowTheme
-import com.example.design_system.theme.mShapes
+import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mShapes
 
 private object AuthBSConstants {
     const val MAIN_COLUMN_SPACED_BY = 64

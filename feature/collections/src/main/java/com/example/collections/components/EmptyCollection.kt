@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.collections.R
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.mTypography
 
 const val HORIZONTAL_PADDING = 16
 

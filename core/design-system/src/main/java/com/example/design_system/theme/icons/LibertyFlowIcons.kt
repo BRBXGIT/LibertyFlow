@@ -1,4 +1,4 @@
-package com.example.design_system.theme
+package com.example.design_system.theme.icons
 
 import com.example.design_system.R
 

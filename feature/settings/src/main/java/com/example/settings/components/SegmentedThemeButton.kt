@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.data.models.theme.ThemeValue
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.mTypography
 import com.example.settings.R
 import com.example.settings.screen.SettingsIntent
 import com.example.settings.screen.SettingsState

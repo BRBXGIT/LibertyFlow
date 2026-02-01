@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mTypography
 import com.example.more.screen.MoreIntent
 
 private const val ICON_SIZE = 22

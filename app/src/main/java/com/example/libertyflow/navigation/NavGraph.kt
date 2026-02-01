@@ -27,6 +27,7 @@ import com.example.common.navigation.NavBarItem
 import com.example.common.navigation.NavigationBase
 import com.example.common.refresh.RefreshVM
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBar
+import com.example.design_system.theme.logic.ThemeVM
 import com.example.favorites.navigation.favorites
 import com.example.favorites.screen.FavoritesVM
 import com.example.home.navigation.home
@@ -38,7 +39,7 @@ import com.example.player.player.PlayerVM
 import com.example.settings.navigation.settings
 
 @Composable
-fun NavGraph() {
+fun NavGraph(themeVM: ThemeVM) {
     val navController = rememberNavController()
 
     // Initialize vm's here to don't refetch values
@@ -65,7 +66,7 @@ fun NavGraph() {
             ) {
                 home(homeVM, navController)
                 favorites(favoritesVM, refreshVM, navController)
-                collections(collectionsVM, refreshVM, navController)
+                collections(collectionsVM, refreshVM, themeVM, navController)
                 animeDetails(refreshVM, playerVM, navController)
                 more(navController)
                 info(navController)

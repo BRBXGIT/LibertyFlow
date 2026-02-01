@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.Dp
-import com.example.design_system.theme.LibertyFlowIcons
+import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 

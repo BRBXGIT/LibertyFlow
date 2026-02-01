@@ -23,7 +23,7 @@ import com.example.common.refresh.RefreshEffect
 import com.example.data.models.auth.AuthState
 import com.example.design_system.components.buttons.ActionButtonState
 import com.example.design_system.components.buttons.RainbowActionButton
-import com.example.design_system.theme.LibertyFlowIcons
+import com.example.design_system.theme.icons.LibertyFlowIcons
 
 // String resource used as the button label
 private val AddToFavoritesLabelRes = R.string.add_to_favorites_button_label

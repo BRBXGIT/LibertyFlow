@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.mMotionScheme
+import com.example.design_system.theme.theme.mMotionScheme
 
 @Composable
 fun VibratingContainer(

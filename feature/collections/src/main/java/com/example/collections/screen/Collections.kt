@@ -36,7 +36,8 @@ import com.example.design_system.components.bars.searching_top_bar.SearchingTopB
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.sections.LoggedOutSection
 import com.example.design_system.containers.PagingStatesContainer
-import com.example.design_system.theme.mColors
+import com.example.design_system.theme.logic.ThemeState
+import com.example.design_system.theme.theme.mColors
 import kotlinx.coroutines.launch
 
 private val TopBarLabel = R.string.collections_top_bar_label
@@ -46,6 +47,7 @@ private const val RETRY = "Retry"
 @Composable
 internal fun Collections(
     state: CollectionsState,
+    themeState: ThemeState,
     pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>>,
     snackbarHostState: SnackbarHostState,
     onIntent: (CollectionsIntent) -> Unit,
@@ -93,6 +95,7 @@ internal fun Collections(
             when (state.authState) {
                 AuthState.LoggedIn -> LoggedInContent(
                     state = state,
+                    themeState = themeState,
                     pagingItemsMap = pagingItemsMap,
                     onIntent = onIntent,
                     onEffect = onEffect
@@ -108,6 +111,7 @@ internal fun Collections(
 @Composable
 private fun LoggedInContent(
     state: CollectionsState,
+    themeState: ThemeState,
     pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
@@ -123,6 +127,7 @@ private fun LoggedInContent(
     )
 
     CollectionsPagerContent(
+        themeState = themeState,
         state = state,
         pagingItemsMap = pagingItemsMap,
         onIntent = onIntent,
@@ -132,6 +137,7 @@ private fun LoggedInContent(
 
 @Composable
 private fun CollectionsPagerContent(
+    themeState: ThemeState,
     state: CollectionsState,
     pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
@@ -150,6 +156,7 @@ private fun CollectionsPagerContent(
         }
 
         CollectionsTabRow(
+            themeState = themeState,
             selectedCollection = state.selectedCollection,
             onTabClick = { collection ->
                 onIntent(CollectionsIntent.SetCollection(collection))

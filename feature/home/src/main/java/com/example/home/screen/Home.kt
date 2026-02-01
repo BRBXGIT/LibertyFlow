@@ -28,8 +28,8 @@ import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mColors
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
 import com.example.home.R
 import com.example.home.components.FiltersBS
 import com.example.home.components.RANDOM_BUTTON_KEY

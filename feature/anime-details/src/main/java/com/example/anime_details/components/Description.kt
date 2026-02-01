@@ -29,9 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mTypography
 
 private val NO_DESCRIPTION_PROVIDED_STRING =
     R.string.no_description_provided_label

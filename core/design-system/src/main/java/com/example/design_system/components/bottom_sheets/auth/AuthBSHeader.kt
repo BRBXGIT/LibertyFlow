@@ -28,10 +28,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.design_system.R
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.LibertyFlowTheme
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mTypography
 
 private object AuthBSHeaderConstants {
     val AuthLabel = R.string.auth_title

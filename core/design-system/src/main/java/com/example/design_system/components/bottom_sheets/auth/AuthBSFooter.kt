@@ -25,10 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.example.design_system.R
-import com.example.design_system.theme.LibertyFlowTheme
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 
 private val AuthorizeLabel = R.string.authorize_label
 private val NewUserLabel = R.string.new_user_label

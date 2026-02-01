@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.design_system.R
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.mTypography
 
 private object LoggedOutSectionConstants {
     const val HORIZONTAL_PADDING = 16

@@ -10,8 +10,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mTypography
 
 @Composable
 fun BasicTopBar(

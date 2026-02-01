@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mShapes
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mShapes
 
 private val HORIZONTAL_PADDING = 16.dp
 

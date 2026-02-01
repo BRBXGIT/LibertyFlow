@@ -17,9 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.data.models.player.PlayerSettings
 import com.example.design_system.components.bottom_sheets.bs_list_item.BSListItem
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mShapes
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mShapes
 import com.example.player.R
 import com.example.player.player.PlayerIntent
 

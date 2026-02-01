@@ -9,10 +9,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.design_system.theme.LibertyFlowTheme
+import com.example.design_system.theme.logic.ThemeIntent
+import com.example.design_system.theme.logic.ThemeVM
+import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.libertyflow.navigation.NavGraph
-import com.example.libertyflow.theme.ThemeIntent
-import com.example.libertyflow.theme.ThemeVM
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
                 useExpressive = themeState.useExpressive,
                 colorScheme = themeState.activeColorScheme
             ) {
-                NavGraph()
+                NavGraph(themeVM)
             }
         }
     }

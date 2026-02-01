@@ -27,8 +27,8 @@ import com.example.common.ui_helpers.effects.UiEffect
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.dividers.dividerWithLabel
 import com.example.design_system.containers.M3Container
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mColors
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
 import com.example.more.R
 import com.example.more.components.LogoutDialog
 import com.example.more.components.MoreItem

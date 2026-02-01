@@ -20,9 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.design_system.components.liberty_flow_async_image.LibertyFlowAsyncImage
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 
 internal object AnimeCardUtils {
     const val CARD_HEIGHT = 270

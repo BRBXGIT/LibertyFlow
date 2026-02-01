@@ -22,9 +22,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.design_system.components.switches.LibertyFlowSwitch
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 
 private val HorizontalMargin = 16.dp
 private val ItemInternalPaddingHorizontal = 16.dp

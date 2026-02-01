@@ -30,9 +30,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.design_system.containers.AnimatedBorderContainer
-import com.example.design_system.theme.mMotionScheme
-import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.mMotionScheme
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 import kotlin.collections.map
 
 // Animation constants

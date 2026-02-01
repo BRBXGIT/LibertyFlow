@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
-package com.example.design_system.theme
+package com.example.design_system.theme.theme
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -8,6 +8,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
 import com.example.data.models.theme.ColorSchemeValue
+import com.example.design_system.theme.colors.DarkCherryColorScheme
+import com.example.design_system.theme.colors.DarkGreenAppleScheme
+import com.example.design_system.theme.colors.DarkLavenderScheme
+import com.example.design_system.theme.colors.DarkSakuraScheme
+import com.example.design_system.theme.colors.DarkSeaScheme
+import com.example.design_system.theme.colors.DarkTacosScheme
+import com.example.design_system.theme.colors.LightCherryColorScheme
+import com.example.design_system.theme.colors.LightGreenAppleScheme
+import com.example.design_system.theme.colors.LightLavenderScheme
+import com.example.design_system.theme.colors.LightSakuraScheme
+import com.example.design_system.theme.colors.LightSeaScheme
+import com.example.design_system.theme.colors.LightTacosScheme
 
 @Composable
 fun LibertyFlowTheme(

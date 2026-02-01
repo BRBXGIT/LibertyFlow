@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
-import com.example.design_system.theme.mMotionScheme
-import com.example.design_system.theme.mShapes
+import com.example.design_system.theme.theme.mMotionScheme
+import com.example.design_system.theme.theme.mShapes
 import com.example.player.components.player.Player
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent

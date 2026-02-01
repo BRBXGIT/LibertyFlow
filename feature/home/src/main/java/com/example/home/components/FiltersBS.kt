@@ -43,11 +43,11 @@ import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
 import com.example.design_system.components.dividers.DividerWithLabel
-import com.example.design_system.theme.LibertyFlowTheme
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mMotionScheme
-import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mMotionScheme
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 import com.example.home.R
 import com.example.home.screen.HomeIntent
 import com.example.home.screen.HomeState

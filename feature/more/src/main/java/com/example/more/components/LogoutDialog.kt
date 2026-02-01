@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 import com.example.more.R
 import com.example.more.screen.MoreIntent
 

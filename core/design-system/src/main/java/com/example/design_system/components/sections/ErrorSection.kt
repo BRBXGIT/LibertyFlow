@@ -20,7 +20,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.design_system.R
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.mTypography
 
 
 private val ErrorLabel = R.string.error_section_label

@@ -51,9 +51,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.design_system.components.buttons.ButtonWithIcon
 import com.example.design_system.components.buttons.ButtonWithIconType
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mMotionScheme
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mMotionScheme
+import com.example.design_system.theme.theme.mTypography
 import com.example.player.R
 import com.example.player.components.common.AnimatedPlayPauseButton
 import com.example.player.components.common.ControllerVisibility

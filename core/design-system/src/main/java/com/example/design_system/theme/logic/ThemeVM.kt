@@ -1,4 +1,4 @@
-package com.example.libertyflow.theme
+package com.example.design_system.theme.logic
 
 import androidx.lifecycle.ViewModel
 import com.example.common.vm_helpers.toEagerly

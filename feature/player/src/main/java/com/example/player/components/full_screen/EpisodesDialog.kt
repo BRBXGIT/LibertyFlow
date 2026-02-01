@@ -37,11 +37,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.data.models.releases.anime_details.Episode
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mMotionScheme
-import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mMotionScheme
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 import com.example.player.R
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent

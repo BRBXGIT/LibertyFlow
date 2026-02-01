@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.releases.anime_details.Torrent
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mTypography
 
 private const val HORIZONTAL_PADDING = 16
 private const val VERTICAL_SPACING = 8

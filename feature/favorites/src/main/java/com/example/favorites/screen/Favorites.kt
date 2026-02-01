@@ -29,7 +29,7 @@ import com.example.design_system.components.sections.LoggedOutSection
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
-import com.example.design_system.theme.mColors
+import com.example.design_system.theme.theme.mColors
 import com.example.favorites.R
 
 private val TopBarLabel = R.string.favorites_top_bar_label

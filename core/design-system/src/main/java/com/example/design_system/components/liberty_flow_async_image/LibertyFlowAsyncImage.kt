@@ -23,9 +23,9 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.design_system.R
-import com.example.design_system.theme.LibertyFlowTheme
-import com.example.design_system.theme.mShapes
-import com.example.design_system.theme.mTypography
+import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 
 private val ERROR_TEXT = R.string.async_image_error_label
 private const val ERROR_TEXT_PADDING = 16

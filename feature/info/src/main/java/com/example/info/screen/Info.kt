@@ -22,8 +22,8 @@ import androidx.core.net.toUri
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.design_system.components.bars.basic_top_bar.BasicTopBar
 import com.example.design_system.components.list_tems.M3ListItem
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mColors
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
 import com.example.info.R
 import com.example.info.components.Header
 

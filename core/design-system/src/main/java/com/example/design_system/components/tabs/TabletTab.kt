@@ -16,12 +16,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mMotionScheme
-import com.example.design_system.theme.mShapes
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mMotionScheme
+import com.example.design_system.theme.theme.mShapes
+import com.example.design_system.theme.theme.mTypography
 
 private val TabBoxPadding = 8.dp
-private val TabTextPadding = 4.dp
+private val TabTextPadding = 8.dp
 
 private const val ANIMATED_BG_COLOR_LABEL = "Animated tab bg color"
 private const val ANIMATED_CONTENT_COLOR_LABEL = "Animated tab bg color"
@@ -53,6 +54,7 @@ fun TabletTab(
             .clickable(onClick = onClick)
     ) {
         Text(
+            style = mTypography.bodyLarge,
             color = animatedContentColor,
             text = text,
             modifier = Modifier.padding(TabTextPadding)

@@ -33,7 +33,6 @@ import com.example.common.navigation.CollectionsRoute
 import com.example.common.navigation.FavoritesRoute
 import com.example.common.navigation.HomeRoute
 import com.example.common.navigation.MoreRoute
-import com.example.common.navigation.NavBarItem
 import com.example.common.navigation.NavigationBase
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.CollectionsLabel
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.FavoritesLabel
@@ -41,10 +40,10 @@ import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarCons
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.LABEL_MAX_LINES
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.MoreLabel
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.VISIBLE_OFFSET
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.LibertyFlowTheme
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mMotionScheme
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mMotionScheme
 
 private const val OFFSET_LABEL = "bottom_nav_bar_offset"
 

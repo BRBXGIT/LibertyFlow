@@ -6,7 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.example.design_system.theme.mMotionScheme
+import com.example.design_system.theme.theme.mMotionScheme
 import androidx.compose.runtime.getValue
 
 private const val FULL_ALPHA = 1f

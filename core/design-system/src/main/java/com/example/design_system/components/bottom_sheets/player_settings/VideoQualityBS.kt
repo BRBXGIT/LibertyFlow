@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.data.models.player.VideoQuality
 import com.example.design_system.components.bottom_sheets.bs_list_item.BSListItem
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mShapes
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mShapes
 
 private val LIST_SPACING = 8.dp
 private val SHEET_CONTENT_PADDING = 16.dp

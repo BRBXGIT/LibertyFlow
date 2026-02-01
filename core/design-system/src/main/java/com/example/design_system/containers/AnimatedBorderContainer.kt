@@ -31,10 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.LibertyFlowIcons
-import com.example.design_system.theme.LibertyFlowTheme
-import com.example.design_system.theme.mColors
-import com.example.design_system.theme.mShapes
+import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mShapes
 
 private const val rotationInitialValue = 0f
 private const val rotationTargetValue = 360f

@@ -21,16 +21,19 @@ import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.utils.standardScreenEnterTransition
 import com.example.design_system.utils.standardScreenExitTransition
 import com.example.data.models.common.request.request_parameters.Collection
+import com.example.design_system.theme.logic.ThemeVM
 import kotlinx.coroutines.flow.Flow
 
 fun NavGraphBuilder.collections(
     collectionsVM: CollectionsVM,
     refreshVM: RefreshVM,
+    themeVM: ThemeVM,
     navController: NavController
 ) = composable<CollectionsRoute>(
     enterTransition = { standardScreenEnterTransition() },
     exitTransition = { standardScreenExitTransition() }
 ) {
+    val themeState by themeVM.themeState.collectAsStateWithLifecycle()
     val state by collectionsVM.state.collectAsStateWithLifecycle()
 
     // UI Logic: Collect all flows into a Map of LazyPagingItems.
@@ -54,6 +57,7 @@ fun NavGraphBuilder.collections(
 
     Collections(
         state = state,
+        themeState = themeState,
         pagingItemsMap = pagingItemsMap,
         snackbarHostState = snackbarHostState,
         onIntent = collectionsVM::sendIntent,

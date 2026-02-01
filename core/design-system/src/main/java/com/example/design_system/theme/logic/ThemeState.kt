@@ -1,4 +1,4 @@
-package com.example.libertyflow.theme
+package com.example.design_system.theme.logic
 
 import androidx.compose.runtime.Immutable
 import com.example.data.models.theme.ColorSchemeValue

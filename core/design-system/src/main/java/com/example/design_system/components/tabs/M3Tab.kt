@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.Typography
+import com.example.design_system.theme.theme.Typography
 
 private val TabCornerRadius = 8.dp
 private val TabPadding = 12.dp
@@ -20,7 +20,7 @@ private val standardTabShape = RoundedCornerShape(
 )
 
 @Composable
-fun StandardTab(
+fun M3Tab(
     modifier: Modifier = Modifier,
     shape: Shape = standardTabShape,
     text: String,
