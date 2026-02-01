@@ -1,6 +1,7 @@
 package com.example.design_system.components.list_tems
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -33,6 +34,8 @@ private val IconTitleSpacing = 16.dp
 private val TextSpacing = 2.dp
 
 private const val COLUMN_WEIGHT = 1f
+
+private const val DESCRIPTION_ANIMATION_LABEL = "Description animation"
 
 @Composable
 fun M3ListItem(
@@ -77,12 +80,12 @@ fun M3ListItem(
 
             description?.let {
                 AnimatedContent(
+                    label = DESCRIPTION_ANIMATION_LABEL,
                     targetState = description,
                     transitionSpec = {
                         (slideInVertically { height -> height } + fadeIn())
-                            .togetherWith(
-                                slideOutVertically { height -> -height } + fadeOut()
-                            )
+                            .togetherWith(exit = slideOutVertically { height -> -height } + fadeOut())
+                            .using(SizeTransform(clip = false))
                     }
                 ) { description ->
                     Text(

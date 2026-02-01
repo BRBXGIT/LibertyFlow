@@ -27,4 +27,5 @@
     <string name="tab_type_label">Стиль папки</string>
     <string name="tablet_style_label">Tablet</string>
     <string name="m3_style_label">M3 Style</string>
+    <string name="chips_style_label">Chips</string>
 </resources>

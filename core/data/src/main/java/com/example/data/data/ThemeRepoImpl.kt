@@ -49,6 +49,7 @@ class ThemeRepoImpl @Inject constructor(
 
     private fun String?.toEnumTabType(): TabType {
         return when(this) {
+            "Chips" -> TabType.Chips
             "M3" -> TabType.M3
             null -> TabType.M3
             else -> TabType.Tablet

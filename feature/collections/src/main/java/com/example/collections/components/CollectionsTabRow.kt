@@ -1,11 +1,9 @@
 package com.example.collections.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,6 +16,7 @@ import com.example.design_system.components.tabs.M3Tab
 import com.example.design_system.components.tabs.TabletTab
 import com.example.design_system.theme.logic.ThemeState
 import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mShapes
 
 private const val EDGE_PADDING = 16
 
@@ -46,18 +45,29 @@ internal fun CollectionsTabRow(
         collections.forEach { collection ->
             val isSelected = selectedCollection == collection
 
-            if (themeState.tabType == TabType.M3) {
-                M3Tab(
-                    text = stringResource(collection.toName()),
-                    onClick = { onTabClick(collection) },
-                    selected = isSelected
-                )
-            } else {
-                TabletTab(
-                    selected = isSelected,
-                    onClick = { onTabClick(collection) },
-                    text = stringResource(collection.toName())
-                )
+            when(themeState.tabType) {
+                TabType.M3 -> {
+                    M3Tab(
+                        text = stringResource(collection.toName()),
+                        onClick = { onTabClick(collection) },
+                        selected = isSelected
+                    )
+                }
+                TabType.Tablet -> {
+                    TabletTab(
+                        selected = isSelected,
+                        onClick = { onTabClick(collection) },
+                        text = stringResource(collection.toName())
+                    )
+                }
+                TabType.Chips -> {
+                    TabletTab(
+                        shape = mShapes.small,
+                        selected = isSelected,
+                        onClick = { onTabClick(collection) },
+                        text = stringResource(collection.toName())
+                    )
+                }
             }
         }
     }

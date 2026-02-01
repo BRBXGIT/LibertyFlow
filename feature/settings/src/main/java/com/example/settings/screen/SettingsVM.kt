@@ -78,7 +78,8 @@ class SettingsVM @Inject constructor(
         val type = _state.value.themeSettings.tabType
         when(type) {
             TabType.M3 -> themeRepo.saveTab(TabType.Tablet)
-            TabType.Tablet -> themeRepo.saveTab(TabType.M3)
+            TabType.Tablet -> themeRepo.saveTab(TabType.Chips)
+            TabType.Chips -> themeRepo.saveTab(TabType.M3)
         }
     }
 

@@ -59,6 +59,7 @@ private val UseExpressiveLabel = R.string.use_expressive_label
 private val TabStyleLabel = R.string.tab_type_label
 private val TabletStyleLabel = R.string.tablet_style_label
 private val M3StyleLabel = R.string.m3_style_label
+private val ChipsStyleLabel = R.string.chips_style_label
 
 @Composable
 fun Settings(
@@ -128,7 +129,11 @@ fun Settings(
                 Setting(
                     icon = LibertyFlowIcons.Tablet,
                     labelRes = TabStyleLabel,
-                    descriptionRes = if (state.themeSettings.tabType == TabType.Tablet) TabletStyleLabel else M3StyleLabel,
+                    descriptionRes = when(state.themeSettings.tabType) {
+                        TabType.M3 -> M3StyleLabel
+                        TabType.Tablet -> TabletStyleLabel
+                        TabType.Chips -> ChipsStyleLabel
+                    },
                     intent = SettingsIntent.ToggleTabType
                 ),
                 Setting(
