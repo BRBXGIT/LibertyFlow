@@ -86,12 +86,12 @@ internal fun FiltersBS(
 ) {
     // Load genres once
     LaunchedEffect(Unit) {
-        if (state.genres.isEmpty()) {
+        if (state.genresState.genres.isEmpty()) {
             onIntent(HomeIntent.GetGenres)
         }
     }
 
-    val request = state.request
+    val request = state.filtersState.request
 
     ModalBottomSheet(
         shape = mShapes.small,
@@ -140,11 +140,11 @@ internal fun FiltersBS(
 
             filterDivider(GenresLabel)
 
-            if (state.isGenresLoading) {
+            if (state.genresState.loadingState.isLoading) {
                 centeredCircularIndicator()
             } else {
                 selectableFilterItems(
-                    items = state.genres,
+                    items = state.genresState.genres,
                     isSelected = { it in request.genres },
                     itemLabel = { it.name },
                     itemKey = { it.id },
@@ -349,7 +349,7 @@ private fun FiltersBSPreview() {
             )
 
             FiltersBS(
-                state = HomeState(genres = genres),
+                state = HomeState(genresState = HomeState.GenresState(genres = genres)),
                 onIntent = {}
             )
         }

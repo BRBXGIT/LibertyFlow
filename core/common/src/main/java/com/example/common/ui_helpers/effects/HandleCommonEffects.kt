@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.Flow
 
+// Common function to handle common effects
 @Composable
 fun HandleCommonEffects(
     effects: Flow<UiEffect>,

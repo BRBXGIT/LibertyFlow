@@ -2,33 +2,36 @@ package com.example.design_system.containers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 
+// Common function to handle paging states
 @Composable
-inline fun <T : Any> PagingStatesContainer(
+fun <T : Any> PagingStatesContainer(
     items: LazyPagingItems<T>,
-    crossinline onLoadingChange: (Boolean) -> Unit = {},
-    crossinline onErrorChange: (Boolean) -> Unit = {},
-    crossinline onRetryRequest: (label: String, retry: () -> Unit) -> Unit,
+    onLoadingChange: (Boolean) -> Unit = {},
+    onErrorChange: (Boolean) -> Unit = {},
+    onRetryRequest: (label: String, retry: () -> Unit) -> Unit,
 ) {
-    val refreshState = items.loadState.refresh
+    val currentOnLoadingChange by rememberUpdatedState(onLoadingChange)
+    val currentOnErrorChange by rememberUpdatedState(onErrorChange)
+    val currentOnRetryRequest by rememberUpdatedState(onRetryRequest)
 
-    // Single effect handles loading, error, and retry logic
-    LaunchedEffect(refreshState) {
+    // Only values that we need
+    val loadState = items.loadState.refresh
+    val isLoading = loadState is LoadState.Loading
+    val isError = loadState is LoadState.Error
+    val errorMessage = (loadState as? LoadState.Error)?.error?.message
 
-        // Report loading state
-        onLoadingChange(refreshState is LoadState.Loading)
+    // 3. LaunchedEffect observe only 3 values that we need
+    LaunchedEffect(isLoading, isError, errorMessage) {
+        currentOnLoadingChange(isLoading)
+        currentOnErrorChange(isError)
 
-        // Report error state
-        val isError = refreshState is LoadState.Error
-        onErrorChange(isError)
-
-        // Handle error retry snackbar
-        if (isError) {
-            val error = refreshState.error
-            val message = error.message ?: return@LaunchedEffect
-            onRetryRequest(message) { items.retry() }
+        if (isError && errorMessage != null) {
+            currentOnRetryRequest(errorMessage) { items.retry() }
         }
     }
 }

@@ -7,7 +7,7 @@ import com.example.data.models.common.request.request_parameters.FullRequestPara
 
 @Immutable
 data class HomeState(
-    // Loading
+    // Loading paging content
     val loadingState: LoadingState = LoadingState(),
 
     // Random anime
@@ -15,23 +15,32 @@ data class HomeState(
 
     // Search
     val isSearching: Boolean = false,
-    val isFiltersVisible: Boolean = false,
 
     // Filters
-    val request: FullRequestParameters = FullRequestParameters(),
+    val filtersState: FiltersState = FiltersState(),
 
     // Genres
-    val genres: List<Genre> = emptyList(),
-    val isGenresLoading: Boolean = false
+    val genresState: GenresState = GenresState()
 ) {
+    @Immutable
+    data class FiltersState(
+        val isFiltersBSVisible: Boolean = false,
+        val request: FullRequestParameters = FullRequestParameters()
+    ) {
+        fun toggleBS() = copy(isFiltersBSVisible = !isFiltersBSVisible)
+
+        fun updateRequest(block: FullRequestParameters.() -> FullRequestParameters) =
+            copy(request = request.block())
+    }
+
+    @Immutable
+    data class GenresState(
+        val genres: List<Genre> = emptyList(),
+        val loadingState: LoadingState = LoadingState()
+    ) {
+        fun withGenres(genres: List<Genre>) = copy(genres = genres)
+    }
+
     // Toggles
     fun toggleSearching() = copy(isSearching = !isSearching)
-    fun toggleFilters() = copy(isFiltersVisible = !isFiltersVisible)
-    fun withGenresLoading(value: Boolean) = copy(isGenresLoading = value)
-
-    // Request mutations
-    fun updateRequest(block: FullRequestParameters.() -> FullRequestParameters) =
-        copy(request = request.block())
-    fun updateGenres(genres: List<Genre>) =
-        copy(genres = genres)
 }

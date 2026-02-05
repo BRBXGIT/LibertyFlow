@@ -40,7 +40,7 @@ class HomeVM @Inject constructor(
     private val catalogRepo: CatalogRepo,
     private val genresRepo: GenresRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
-) : ViewModel() {
+): ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
     val state = _state.toLazily(HomeState())
@@ -48,88 +48,85 @@ class HomeVM @Inject constructor(
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    // --- Intents ---
+    // --- Intent Handling ---
     fun sendIntent(intent: HomeIntent) {
         when (intent) {
-            // Toggles
+            // UI Visibility state
             HomeIntent.ToggleSearching ->
                 _state.update { it.toggleSearching() }
             HomeIntent.ToggleFiltersBottomSheet ->
-                _state.update { it.toggleFilters() }
-            HomeIntent.ToggleIsOngoing ->
-                _state.update {
-                    val enabled = it.request.publishStatuses.isEmpty()
-                    it.updateRequest {
-                        toggleIsOngoing(
-                            if (enabled) listOf(PublishStatus.IS_ONGOING) else emptyList()
-                        )
-                    }
-                }
+                _state.update { it.copy(filtersState = it.filtersState.toggleBS()) }
 
-            // Sets
+            // Filter mutations
+            is HomeIntent.UpdateQuery ->
+                _state.update { it.copy(filtersState = it.filtersState.updateRequest { updateSearch(intent.query) }) }
+            is HomeIntent.UpdateSorting ->
+                _state.update { it.copy(filtersState = it.filtersState.updateRequest { updateSorting(intent.sorting) }) }
+            is HomeIntent.ToggleIsOngoing -> handleToggleOngoing()
+
+            // Genre management
+            is HomeIntent.AddGenre ->
+                _state.update { it.copy(filtersState = it.filtersState.updateRequest { addGenre(intent.genre) }) }
+            is HomeIntent.RemoveGenre ->
+                _state.update { it.copy(filtersState = it.filtersState.updateRequest { removeGenre(intent.genre) }) }
+
+            // Season & Year filters
+            is HomeIntent.AddSeason ->
+                _state.update { it.copy(filtersState = it.filtersState.updateRequest { addSeason(intent.season) }) }
+            is HomeIntent.RemoveSeason ->
+                _state.update { it.copy(filtersState = it.filtersState.updateRequest { removeSeason(intent.season) }) }
+            is HomeIntent.UpdateFromYear ->
+                _state.update { it.copy(filtersState = it.filtersState.updateRequest { updateYear(from = intent.year) }) }
+            is HomeIntent.UpdateToYear ->
+                _state.update { it.copy(filtersState = it.filtersState.updateRequest { updateYear(to = intent.year) }) }
+
+            // Global Loading/Error states
             is HomeIntent.SetLoading ->
                 _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
             is HomeIntent.SetError ->
                 _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
 
-            // Updates
-            is HomeIntent.UpdateQuery ->
-                _state.update { it.updateRequest { updateSearch(intent.query) } }
-            is HomeIntent.AddGenre ->
-                _state.update { it.updateRequest { addGenre(intent.genre) } }
-            is HomeIntent.RemoveGenre ->
-                _state.update { it.updateRequest { removeGenre(intent.genre) } }
-            is HomeIntent.AddSeason ->
-                _state.update { it.updateRequest { addSeason(intent.season) } }
-            is HomeIntent.RemoveSeason ->
-                _state.update { it.updateRequest { removeSeason(intent.season) } }
-            is HomeIntent.UpdateFromYear ->
-                _state.update { it.updateRequest { updateYear(from = intent.year) } }
-            is HomeIntent.UpdateToYear ->
-                _state.update { it.updateRequest { updateYear(to = intent.year) } }
-            is HomeIntent.UpdateSorting ->
-                _state.update { it.updateRequest { updateSorting(intent.sorting) } }
-
-            // Data
+            // Data Fetching
             HomeIntent.GetRandomAnime -> getRandomAnime()
             HomeIntent.GetGenres -> getGenres()
         }
     }
 
-    fun sendEffect(effect: UiEffect) = viewModelScope.launch(dispatcherIo) {
-        _effects.send(effect)
+    // --- Ongoing logic ---
+    private fun handleToggleOngoing() {
+        _state.update { state ->
+            val isCurrentlyEmpty = state.filtersState.request.publishStatuses.isEmpty()
+            state.copy(
+                filtersState = state.filtersState.updateRequest {
+                    toggleIsOngoing(if (isCurrentlyEmpty) listOf(PublishStatus.IS_ONGOING) else emptyList())
+                }
+            )
+        }
     }
 
-    // Emits whenever request parameters change
+    // --- Data Streams ---
+    // Observes request changes and triggers new paging data
     private val requestFlow = _state
-        .map { it.request }
+        .map { it.filtersState.request }
         .distinctUntilChanged()
 
-    // Paged anime list driven by requestFlow
     val anime = requestFlow
         .flatMapLatest { request ->
             catalogRepo.getAnimeByQuery(CommonRequest(request))
         }
         .cachedIn(viewModelScope)
 
+    // --- Private Business Logic ---
     private fun getRandomAnime() {
         viewModelScope.launch(dispatcherIo) {
-            _state.update {
-                it.copy(
-                    randomAnimeState = it.randomAnimeState.withBoth(
-                        loading = true,
-                        error = false
-                    )
-                )
-            }
-            delay(ANIMATION_DELAY) // Just cause i want to show animation
+            // Reset state and show loading
+            _state.update { it.copy(randomAnimeState = it.randomAnimeState.withBoth(loading = true, error = false)) }
+
+            delay(ANIMATION_DELAY) // Artificial delay for animation polish
+
             releasesRepo.getRandomAnime()
                 .onSuccess { anime ->
-                    sendEffect(
-                        UiEffect.Navigate(
-                            AnimeDetailsRoute(anime.id)
-                        )
-                    )
+                    sendEffect(UiEffect.Navigate(AnimeDetailsRoute(anime.id)))
                 }
                 .onError { _, messageRes ->
                     _state.update { it.copy(randomAnimeState = it.randomAnimeState.withError(true)) }
@@ -142,17 +139,21 @@ class HomeVM @Inject constructor(
 
     private fun getGenres() {
         viewModelScope.launch(dispatcherIo) {
-            _state.update { it.withGenresLoading(true) }
+            _state.update { it.copy(genresState = it.genresState.copy(loadingState = it.genresState.loadingState.withLoading(true))) }
 
             genresRepo.getGenres()
-                .onSuccess { genres -> _state.update { it.updateGenres(genres) } }
+                .onSuccess { genres -> _state.update { it.copy(genresState = it.genresState.withGenres(genres)) } }
                 .onError { _, messageRes -> sendSnackbar(messageRes) { getGenres() } }
 
-            _state.update { it.withGenresLoading(false) }
+            _state.update { it.copy(genresState = it.genresState.copy(loadingState = it.genresState.loadingState.withLoading(false))) }
         }
     }
 
-    // Helper to reduce boilerplate for effects
+    // Helper for sending UI events (snackbars, navigation)
+    fun sendEffect(effect: UiEffect) = viewModelScope.launch {
+        _effects.send(effect)
+    }
+
     private fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
         viewModelScope.launch(dispatcherIo) {
             _effects.send(

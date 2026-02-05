@@ -39,7 +39,6 @@ import com.example.home.components.RANDOM_BUTTON_KEY
 import com.example.home.components.RandomAnimeButton
 
 private val TopBarLabel = R.string.home_top_bar_label
-
 private const val RETRY_LABEL = "Retry"
 
 @Composable
@@ -50,7 +49,7 @@ internal fun Home(
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    // Sync paging state with UI flags
+    // Synchronize Paging library states with our HomeState flags
     PagingStatesContainer(
         items = anime,
         onLoadingChange = { onIntent(HomeIntent.SetLoading(it)) },
@@ -67,8 +66,7 @@ internal fun Home(
     )
 
     val lazyGridState = rememberLazyGridState()
-    val directionalLazyListState = rememberDirectionalScrollState(lazyGridState)
-
+    val directionalScroll = rememberDirectionalScrollState(lazyGridState)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -79,7 +77,7 @@ internal fun Home(
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
             SearchingTopBar(
-                searchForm = SearchForm(state.request.search, state.isSearching),
+                searchForm = SearchForm(state.filtersState.request.search, state.isSearching),
                 label = stringResource(TopBarLabel),
                 isLoading = state.loadingState.isLoading,
                 scrollBehavior = scrollBehavior,
@@ -89,14 +87,15 @@ internal fun Home(
         },
         floatingActionButton = {
             FiltersFAB(
-                visible = directionalLazyListState.scrollDirection == ScrollDirection.Up,
+                visible = directionalScroll.scrollDirection == ScrollDirection.Up,
                 onIntent = onIntent
             )
         }
     ) { innerPadding ->
-        if (state.isFiltersVisible) FiltersBS(state, onIntent)
+        // Bottom Sheet for filters
+        if (state.filtersState.isFiltersBSVisible) FiltersBS(state, onIntent)
 
-        // Pull-to-refresh container
+        // Pull-to-refresh Wrapper
         VibratingContainer(
             isRefreshing = state.loadingState.isLoading,
             onRefresh = anime::refresh,
@@ -111,9 +110,9 @@ internal fun Home(
             MainContent(
                 listState = lazyGridState,
                 isError = state.loadingState.isError,
+                state = state,
                 anime = anime,
                 onIntent = onIntent,
-                state = state,
                 onEffect = onEffect
             )
         }
@@ -129,6 +128,7 @@ private fun MainContent(
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
+    // Early return for error state to keep indentation low
     if (isError) {
         ErrorSection()
         return
@@ -139,6 +139,7 @@ private fun MainContent(
         anime = anime,
         onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) }
     ) {
+        // Randomizer button as a header/top item
         item(
             key = RANDOM_BUTTON_KEY,
             span = { GridItemSpan(maxLineSpan) }

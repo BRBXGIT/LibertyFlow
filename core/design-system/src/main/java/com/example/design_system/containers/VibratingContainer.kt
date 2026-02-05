@@ -7,24 +7,20 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.design_system.theme.theme.mMotionScheme
 
 @Composable
 fun VibratingContainer(
@@ -33,34 +29,28 @@ fun VibratingContainer(
     onRefresh: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    // Pull-to-refresh internal state
     val state = rememberPullToRefreshState()
 
     PullToRefreshBox(
         state = state,
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
-        indicator = {}, // Indicator is fully custom (Spacer + vibration)
+        indicator = {},
         modifier = modifier
     ) {
-        // Current pull distance (0f..2f)
-        val distance = state.distanceFraction
+        // Optimization: Use graphicsLayer or offset lambda to avoid
+        // recomposing the whole Column when distance changes.
+        Column(
+            modifier = Modifier.graphicsLayer {
+                // Reading state inside a lambda delays execution
+                // until the Placement/Layer phase.
+                translationY = state.distanceFraction * 8.dp.toPx()
+            }
+        ) {
+            // Trigger haptic logic - it still needs to track distance,
+            // but now it doesn't affect the UI hierarchy.
+            CreateVibration(state.distanceFraction)
 
-        Column {
-            // Animated top padding that increases as user pulls down
-            val animatedPullToRefresh by animateDpAsState(
-                targetValue = (distance * 8).dp,
-                animationSpec = mMotionScheme.fastSpatialSpec(),
-                label = "pullToRefreshOffset"
-            )
-
-            // Spacer visually pushes content down (the "stretching" effect)
-            Spacer(Modifier.height(animatedPullToRefresh))
-
-            // Trigger haptic feedback when user pulls far enough
-            CreateVibration(distance)
-
-            // Actual screen content
             content()
         }
     }
@@ -68,36 +58,34 @@ fun VibratingContainer(
 
 @Composable
 private fun CreateVibration(distance: Float) {
-    // Access to system vibrator
     val context = LocalContext.current
+    // Use remember with context to avoid re-fetching the service
     val vibrator = remember(context) { context.getVibrator() }
 
-    // Tracks whether vibration already happened for this pull
-    var didVibrate by rememberSaveable { mutableStateOf(false) }
+    // didVibrate should be a simple remember if it's strictly for
+    // the current touch gesture interaction.
+    var didVibrate by remember { mutableStateOf(false) }
 
-    // Trigger vibration only once when distance exceeds threshold
-    LaunchedEffect(distance) {
-        when {
-            // Reset vibration if user moved back down
-            distance < 1f && didVibrate -> {
-                didVibrate = false
-            }
-
-            // Trigger once when passing vibration threshold
-            distance >= 1.5f && !didVibrate -> {
-                didVibrate = true
-                vibrator?.vibrateOnce()
-            }
+    // Side effect to handle haptics without triggering UI updates
+    SideEffect {
+        if (distance < 1f && didVibrate) {
+            didVibrate = false
+        } else if (distance >= 1.5f && !didVibrate) {
+            didVibrate = true
+            vibrator?.vibrateOnce()
         }
     }
 }
 
-@Suppress("DEPRECATION")
+/**
+ * Optimized vibrator retrieval with API compatibility check.
+ */
 private fun Context.getVibrator(): Vibrator? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         val manager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
         manager?.defaultVibrator
     } else {
+        @Suppress("DEPRECATION")
         getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
     }
 }

@@ -17,6 +17,7 @@ import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.components.list_tems.AnimeCard
 import com.example.design_system.components.list_tems.AnimeCardUtils
 
+// Common LazyVerticalGrid function
 
 private val ArrangementAlignmentPadding = 16.dp
 
