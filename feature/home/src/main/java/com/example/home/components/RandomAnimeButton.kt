@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,20 +30,22 @@ internal fun LazyGridItemScope.RandomAnimeButton(
     state: HomeState,
     onIntent: (HomeIntent) -> Unit
 ) {
-    val buttonState = remember(state.randomAnimeState.isLoading, state.randomAnimeState.isError) {
-        when {
-            state.randomAnimeState.isError -> ActionButtonState(
-                LibertyFlowIcons.DangerCircle, ErrorLabel
-            ) { /* Nothing here */ }
+    val buttonState by remember(state.randomAnimeState.isLoading, state.randomAnimeState.isError) {
+        mutableStateOf(
+            when {
+                state.randomAnimeState.isError -> ActionButtonState(
+                    LibertyFlowIcons.DangerCircle, ErrorLabel
+                ) { /* Nothing here */ }
 
-            state.randomAnimeState.isLoading -> ActionButtonState(
-                LibertyFlowIcons.Cat, LoadingLabel, isLoading = true
-            ) { /* Nothing here */ }
+                state.randomAnimeState.isLoading -> ActionButtonState(
+                    LibertyFlowIcons.Cat, LoadingLabel, isLoading = true
+                ) { /* Nothing here */ }
 
-            else -> ActionButtonState(
-                LibertyFlowIcons.FunnyCube, RandomAnimeLabel
-            ) { onIntent(HomeIntent.GetRandomAnime) }
-        }
+                else -> ActionButtonState(
+                    LibertyFlowIcons.FunnyCube, RandomAnimeLabel
+                ) { onIntent(HomeIntent.GetRandomAnime) }
+            }
+        )
     }
 
     RainbowActionButton(

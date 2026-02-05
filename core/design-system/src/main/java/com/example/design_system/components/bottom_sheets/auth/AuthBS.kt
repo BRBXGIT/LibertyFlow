@@ -15,11 +15,9 @@ import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mShapes
 
-private object AuthBSConstants {
-    const val MAIN_COLUMN_SPACED_BY = 64
+private const val MAIN_COLUMN_SPACED_BY = 64
 
-    const val HORIZONTAL_PADDING = 16
-}
+private const val HORIZONTAL_PADDING = 16
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationGraphicsApi::class)
 @Composable
@@ -39,8 +37,8 @@ fun AuthBS(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(AuthBSConstants.MAIN_COLUMN_SPACED_BY.dp),
-            modifier = Modifier.padding(horizontal = AuthBSConstants.HORIZONTAL_PADDING.dp)
+            verticalArrangement = Arrangement.spacedBy(MAIN_COLUMN_SPACED_BY.dp),
+            modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING.dp)
         ) {
             AuthBSHeader(
                 email = email,

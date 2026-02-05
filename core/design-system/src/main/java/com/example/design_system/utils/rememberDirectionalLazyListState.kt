@@ -3,54 +3,76 @@ package com.example.design_system.utils
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+
 enum class ScrollDirection {
     Down, Up
 }
 
-class DirectionalLazyState(
-    private val getFirstVisibleItemIndex: () -> Int,
-    private val getFirstVisibleItemScrollOffset: () -> Int
-) {
-    private var positionY = getFirstVisibleItemScrollOffset()
-    private var visibleItem = getFirstVisibleItemIndex()
+class DirectionalScrollState {
+    var scrollDirection by mutableStateOf(ScrollDirection.Up)
+        private set
 
-    val scrollDirection by derivedStateOf {
-        val currentIndex = getFirstVisibleItemIndex()
-        val currentOffset = getFirstVisibleItemScrollOffset()
+    private var lastScrollOffset = 0
+    private var lastItemIndex = 0
 
-        val direction = when {
-            currentIndex == visibleItem -> {
-                if (currentOffset > positionY) ScrollDirection.Down else ScrollDirection.Up
-            }
-            currentIndex > visibleItem -> ScrollDirection.Down
-            else -> ScrollDirection.Up
+    private val scrollThreshold = 10
+
+    fun update(currentIndex: Int, currentOffset: Int) {
+        val isScrollingDown = when {
+            currentIndex > lastItemIndex -> true
+            currentIndex < lastItemIndex -> false
+            else -> currentOffset > lastScrollOffset + scrollThreshold
         }
 
-        positionY = currentOffset
-        visibleItem = currentIndex
-        direction
+        val isScrollingUp = when {
+            currentIndex < lastItemIndex -> true
+            currentIndex > lastItemIndex -> false
+            else -> currentOffset < lastScrollOffset - scrollThreshold
+        }
+
+        if (isScrollingDown) {
+            scrollDirection = ScrollDirection.Down
+        } else if (isScrollingUp) {
+            scrollDirection = ScrollDirection.Up
+        }
+
+        lastItemIndex = currentIndex
+        lastScrollOffset = currentOffset
     }
 }
 
 @Composable
-fun rememberDirectionalScrollState(state: LazyListState): DirectionalLazyState {
-    return remember(state) {
-        DirectionalLazyState(
-            getFirstVisibleItemIndex = { state.firstVisibleItemIndex },
-            getFirstVisibleItemScrollOffset = { state.firstVisibleItemScrollOffset }
-        )
+fun rememberDirectionalScrollState(lazyGridState: LazyGridState): DirectionalScrollState {
+    val scrollState = remember { DirectionalScrollState() }
+
+    LaunchedEffect(lazyGridState) {
+        snapshotFlow {
+            Pair(lazyGridState.firstVisibleItemIndex, lazyGridState.firstVisibleItemScrollOffset)
+        }.collect { (index, offset) ->
+                scrollState.update(index, offset)
+            }
     }
+
+    return scrollState
 }
 
 @Composable
-fun rememberDirectionalScrollState(state: LazyGridState): DirectionalLazyState {
-    return remember(state) {
-        DirectionalLazyState(
-            getFirstVisibleItemIndex = { state.firstVisibleItemIndex },
-            getFirstVisibleItemScrollOffset = { state.firstVisibleItemScrollOffset }
-        )
+fun rememberDirectionalScrollState(lazyListState: LazyListState): DirectionalScrollState {
+    val scrollState = remember { DirectionalScrollState() }
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow {
+            Pair(lazyListState.firstVisibleItemIndex, lazyListState.firstVisibleItemScrollOffset)
+        }.collect { (index, offset) ->
+                scrollState.update(index, offset)
+            }
     }
+
+    return scrollState
 }

@@ -33,13 +33,11 @@ import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mTypography
 
-private object AuthBSHeaderConstants {
-    val AuthLabel = R.string.auth_title
-    val EmailTFLabel = R.string.email_tf_label
-    val EmailTFErrorLabel = R.string.email_tf_error_label
-    val PasswordTFLabel = R.string.password_tf_label
-    val PasswordTFErrorLabel = R.string.password_tf_error_label
-}
+private val AuthLabel = R.string.auth_title
+private val EmailTFLabel = R.string.email_tf_label
+private val EmailTFErrorLabel = R.string.email_tf_error_label
+private val PasswordTFLabel = R.string.password_tf_label
+private val PasswordTFErrorLabel = R.string.password_tf_error_label
 
 @Composable
 internal fun AuthBSHeader(
@@ -56,7 +54,7 @@ internal fun AuthBSHeader(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(AuthBSHeaderConstants.AuthLabel),
+            text = stringResource(AuthLabel),
             style = mTypography.titleLarge
         )
 
@@ -69,9 +67,9 @@ internal fun AuthBSHeader(
             label = {
                 Text(
                     text = if (incorrectEmailOrPassword) {
-                        stringResource(AuthBSHeaderConstants.EmailTFErrorLabel)
+                        stringResource(EmailTFErrorLabel)
                     } else {
-                        stringResource(AuthBSHeaderConstants.EmailTFLabel)
+                        stringResource(EmailTFLabel)
                     }
                 )
             },
@@ -96,9 +94,9 @@ internal fun AuthBSHeader(
             label = {
                 Text(
                     text = if (incorrectEmailOrPassword) {
-                        stringResource(AuthBSHeaderConstants.PasswordTFErrorLabel)
+                        stringResource(PasswordTFErrorLabel)
                     } else {
-                        stringResource(AuthBSHeaderConstants.PasswordTFLabel)
+                        stringResource(PasswordTFLabel)
                     }
                 )
             },
