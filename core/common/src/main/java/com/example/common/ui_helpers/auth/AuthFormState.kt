@@ -5,7 +5,7 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class AuthFormState(
     val isAuthBSVisible: Boolean = false,
-    val email: String = "",
+    val login: String = "",
     val password: String = "",
     val isError: Boolean = false
 ) {

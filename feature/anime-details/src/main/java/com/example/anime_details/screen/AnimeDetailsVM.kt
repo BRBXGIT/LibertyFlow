@@ -75,24 +75,23 @@ class AnimeDetailsVM @Inject constructor(
         val form = _state.value.authForm
 
         executeAuthentication(
-            request = TokenRequest(form.email, form.password),
-            onStart = { setAuthErrorState(false) },
-            onValidationError = { setAuthErrorState(true) },
+            request = TokenRequest(form.login, form.password),
+            onStart = { setAuthErrorState(isError = false) },
+            onValidationError = { setAuthErrorState(isError = true, bsVisible = true) },
             onError = { messageRes, retry ->
                 sendSnackbar(messageRes, retry)
             }
         )
     }
 
-    private fun setAuthErrorState(isError: Boolean) {
-        _state.update { it.updateAuthForm { f -> f.copy(isError = isError) } }
-    }
+    private fun setAuthErrorState(isError: Boolean, bsVisible: Boolean = false) =
+        _state.update { it.updateAuthForm { f -> f.copy(isError = isError, isAuthBSVisible = bsVisible) } }
 
     private fun handleAuthFormUpdate(field: AnimeDetailsIntent.UpdateAuthForm.AuthField) {
         _state.update { state ->
             state.updateAuthForm { form ->
                 when (field) {
-                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Email -> form.copy(email = field.value)
+                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Email -> form.copy(login = field.value)
                     is AnimeDetailsIntent.UpdateAuthForm.AuthField.Password -> form.copy(password = field.value)
                 }
             }
