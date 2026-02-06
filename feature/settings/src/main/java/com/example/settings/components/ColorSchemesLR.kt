@@ -77,7 +77,7 @@ private val TextBarLongWidth = 40.dp
 private val TextBarShortWidth = 25.dp
 private val TextBarCorner = 2.dp
 private val TextBarSpacing = 4.dp
-private val TextContainerPadding = 8.dp
+private val ContentPadding = 8.dp
 
 private data class ColorSchemePreview(
     val name: Int,
@@ -132,6 +132,8 @@ private val colorSchemes = listOf(
     )
 )
 
+private const val LOW_BAR = "_"
+
 @Composable
 internal fun LazyItemScope.ColorSchemesLR(
     theme: LibertyFlowTheme,
@@ -155,8 +157,8 @@ internal fun LazyItemScope.ColorSchemesLR(
 
             val targetValue = preview.baseValue.forMode(isDarkTheme)
 
-            val isSelected = theme.activeColorScheme?.name?.substringAfter("_") ==
-                    targetValue.name.substringAfter("_")
+            val isSelected = theme.activeColorScheme?.name?.substringAfter(LOW_BAR) ==
+                    targetValue.name.substringAfter(LOW_BAR)
 
             ColorSchemePreviewCard(
                 themeName = stringResource(preview.name),
@@ -183,7 +185,7 @@ private fun ColorSchemePreviewCard(
         modifier = Modifier
             .width(CardWidth)
             .clip(RoundedCornerShape(CardCorner))
-            .clickable { onClick() }
+            .clickable(onClick = onClick)
             .border(borderThickness, borderColor, RoundedCornerShape(CardCorner))
             .background(scheme.surface),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -210,7 +212,7 @@ private fun ColorSchemePreviewCard(
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(TextContainerPadding),
+                    .padding(ContentPadding),
                 verticalArrangement = Arrangement.spacedBy(TextBarSpacing)
             ) {
                 Box(
@@ -230,6 +232,7 @@ private fun ColorSchemePreviewCard(
             // Focal Point Accent (Tertiary)
             Box(
                 modifier = Modifier
+                    .padding(end = ContentPadding)
                     .size(TertiaryAccentSize)
                     .background(scheme.tertiary, CircleShape)
                     .align(Alignment.CenterEnd)

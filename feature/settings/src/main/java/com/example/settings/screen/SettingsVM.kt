@@ -57,9 +57,8 @@ class SettingsVM @Inject constructor(
     }
 
     // --- Effects ---
-    fun sendEffect(effect: UiEffect) = viewModelScope.launch(dispatcherIo) {
-        _effects.send(effect)
-    }
+    fun sendEffect(effect: UiEffect) =
+        viewModelScope.launch { _effects.send(effect) }
 
     // --- Theme ---
     private fun toggleUseExpressive() = viewModelScope.launch(dispatcherIo) {

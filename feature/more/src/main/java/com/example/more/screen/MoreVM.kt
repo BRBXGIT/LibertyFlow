@@ -47,11 +47,8 @@ class MoreVM @Inject constructor(
     }
 
     // --- Effects ---
-    fun sendEffect(effect: UiEffect) {
-        viewModelScope.launch(dispatcherIo) {
-            _effects.send(effect)
-        }
-    }
+    fun sendEffect(effect: UiEffect) =
+        viewModelScope.launch { _effects.send(effect) }
 
     // --- Data ---
     private fun logout() {
