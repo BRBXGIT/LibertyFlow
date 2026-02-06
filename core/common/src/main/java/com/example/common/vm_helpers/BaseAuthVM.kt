@@ -13,43 +13,42 @@ import kotlinx.coroutines.launch
 
 abstract class BaseAuthVM(
     private val authRepo: AuthRepo,
-    private val dispatcherIo: CoroutineDispatcher
+    protected val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
 
     /**
-     * Observes authentication state and updates UI.
+     * Exposes the current authentication state as a StateFlow.
+     * Inheritors can use this to react to login/logout events.
      */
-    protected fun observeAuthState(onCollect: (AuthState) -> Unit) {
-        viewModelScope.launch(dispatcherIo) {
-            authRepo.authState.collect { authState ->
-                onCollect(authState)
-            }
-        }
-    }
+    val authState = authRepo.authState.toLazily(AuthState.LoggedOut)
 
     /**
-     * Requests auth token using email/password.
-     * Shows snackbar with retry on unknown errors.
+     * Executes authentication request.
+     * @param request Data containing credentials.
+     * @param onStart Triggered when the network call begins.
+     * @param onValidationError Triggered if credentials are wrong (401/403).
+     * @param onError Triggered for generic network failures, provides a retry callback.
      */
-    protected fun getAuthToken(
+    protected fun executeAuthentication(
+        request: TokenRequest,
         onStart: () -> Unit,
         onSuccess: () -> Unit = {},
-        onIncorrectData: () -> Unit,
-        onAnyError: suspend (Int, onRetry: () -> Unit) -> Unit,
-        request: TokenRequest
+        onValidationError: () -> Unit,
+        onError: suspend (messageRes: Int, onRetry: () -> Unit) -> Unit
     ) {
-        viewModelScope.launch(dispatcherIo) {
+        viewModelScope.launch(ioDispatcher) {
             onStart()
-
             authRepo.getToken(request)
                 .onSuccess { uiToken ->
-                    authRepo.saveToken(uiToken.token!!)
+                    uiToken.token?.let { authRepo.saveToken(it) }
                     onSuccess()
                 }
                 .onError { error, messageRes ->
-                    when(error) {
-                        NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> onIncorrectData()
-                        else -> onAnyError(messageRes) { getAuthToken(onStart, onSuccess, onIncorrectData, onAnyError, request) }
+                    when (error) {
+                        NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> onValidationError()
+                        else -> onError(messageRes) {
+                            executeAuthentication(request, onStart, onSuccess, onValidationError, onError)
+                        }
                     }
                 }
         }

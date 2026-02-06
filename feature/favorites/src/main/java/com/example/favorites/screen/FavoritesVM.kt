@@ -21,7 +21,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,9 +35,8 @@ private const val RETRY = "Retry"
 class FavoritesVM @Inject constructor(
     authRepo: AuthRepo,
     private val favoritesRepo: FavoritesRepo,
-    @param:Dispatcher(LibertyFlowDispatcher.IO)
-    private val dispatcherIo: CoroutineDispatcher
-) : BaseAuthVM(authRepo, dispatcherIo) {
+    @Dispatcher(LibertyFlowDispatcher.IO) ioDispatcher: CoroutineDispatcher
+): BaseAuthVM(authRepo, ioDispatcher) {
 
     private val _state = MutableStateFlow(FavoritesState())
     val state = _state.toLazily(FavoritesState())
@@ -44,80 +45,59 @@ class FavoritesVM @Inject constructor(
     val effects = _effects.receiveAsFlow()
 
     init {
-        // Sync auth state from BaseAuthVM
-        observeAuthState { authState ->
-            _state.update { it.withAuthState(authState) }
-        }
+        observeAuthentication()
     }
 
-    // Effects
-    fun sendEffect(effect: UiEffect) {
-        viewModelScope.launch(dispatcherIo) {
-            _effects.send(effect)
-        }
-    }
-
-    // Intents
+    // --- Intents ---
+    /**
+     * Entry point for all UI interactions.
+     */
     fun sendIntent(intent: FavoritesIntent) {
         when (intent) {
-            // Toggles
-            FavoritesIntent.ToggleIsAuthBSVisible ->
-                _state.update { it.copy(authForm = it.authForm.toggleIsAuthBSVisible()) }
-            FavoritesIntent.ToggleIsSearching ->
+            // --- Ui ---
+            is FavoritesIntent.ToggleIsAuthBSVisible ->
+                _state.update { it.toggleAuthBS() }
+            is FavoritesIntent.ToggleIsSearching ->
                 _state.update { it.copy(searchForm = it.searchForm.toggleSearching()) }
-
-            // Toggles
+            is FavoritesIntent.UpdateQuery ->
+                _state.update { it.copy(searchForm = it.searchForm.updateQuery(intent.query)) }
             is FavoritesIntent.SetIsLoading ->
                 _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
             is FavoritesIntent.SetIsError ->
                 _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
 
-            // Search
-            is FavoritesIntent.UpdateQuery ->
-                _state.update { it.copy(searchForm = it.searchForm.updateQuery(intent.query)) }
-
-            // Auth
-            is FavoritesIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)
-            FavoritesIntent.GetTokens -> performLogin()
+            // --- Auth ---
+            is FavoritesIntent.UpdateAuthForm -> updateAuthField(intent.field)
+            is FavoritesIntent.GetTokens -> performLogin()
         }
     }
 
-    // Paging request driven by search query
-    private val requestFlow = _state
-        .map { ShortRequestParameters(search = it.searchForm.query) }
-        .distinctUntilChanged()
+    // --- Effects ---
+    fun sendEffect(effect: UiEffect) =
+        viewModelScope.launch { _effects.send(effect) }
 
-    val favorites = requestFlow
-        .flatMapLatest { request ->
-            favoritesRepo.getFavorites(CommonRequest(request))
-        }
-        .cachedIn(viewModelScope)
-
-    // Auth
+    // --- Auth ---
+    /**
+     * Handles login logic using the base class helper.
+     */
     private fun performLogin() {
-        val currentState = _state.value.authForm
+        val form = _state.value.authForm
 
-        getAuthToken(
-            request = TokenRequest(currentState.email, currentState.password),
-            onStart = {
-                _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
-            },
-            onIncorrectData = {
-                _state.update { it.updateAuthForm { f -> f.copy(isError = true) } }
-            },
-            onAnyError = { messageRes, retryAction ->
-                sendEffect(
-                    UiEffect.ShowSnackbarWithAction(
-                        messageRes = messageRes,
-                        actionLabel = RETRY,
-                        action = retryAction
-                    )
-                )
+        executeAuthentication(
+            request = TokenRequest(form.email, form.password),
+            onStart = { setAuthErrorState(false) },
+            onValidationError = { setAuthErrorState(true) },
+            onError = { msg, retry ->
+                sendEffect(UiEffect.ShowSnackbarWithAction(msg, RETRY, retry))
             }
         )
     }
 
-    private fun handleAuthFormUpdate(field: FavoritesIntent.UpdateAuthForm.AuthField) {
+    private fun setAuthErrorState(isError: Boolean) {
+        _state.update { it.updateAuthForm { f -> f.copy(isError = isError) } }
+    }
+
+    private fun updateAuthField(field: FavoritesIntent.UpdateAuthForm.AuthField) {
         _state.update { state ->
             state.updateAuthForm { form ->
                 when (field) {
@@ -127,4 +107,26 @@ class FavoritesVM @Inject constructor(
             }
         }
     }
+
+    /**
+     * Reacts to authentication changes and updates the main UI state.
+     */
+    private fun observeAuthentication() {
+        authState
+            .onEach { auth -> _state.update { it.copy(authState = auth) } }
+            .launchIn(viewModelScope)
+    }
+
+    // --- Data Streams ---
+    /**
+     * Paging data stream. Automatically re-fetches when search query changes.
+     * Includes 300ms debounce to avoid excessive API calls during typing.
+     */
+    val favorites = _state
+        .map { it.searchForm.query }
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
+            favoritesRepo.getFavorites(CommonRequest(ShortRequestParameters(search = query)))
+        }
+        .cachedIn(viewModelScope)
 }

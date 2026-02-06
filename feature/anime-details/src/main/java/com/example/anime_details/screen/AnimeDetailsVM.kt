@@ -22,6 +22,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -37,7 +39,7 @@ class AnimeDetailsVM @Inject constructor(
     private val watchedEpsRepo: WatchedEpsRepo,
     private val favoritesRepo: FavoritesRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-) : BaseAuthVM(authRepo, dispatcherIo) {
+): BaseAuthVM(authRepo, dispatcherIo) {
 
     private val _state = MutableStateFlow(AnimeDetailsState())
     val state = _state.toWhileSubscribed(AnimeDetailsState())
@@ -47,17 +49,57 @@ class AnimeDetailsVM @Inject constructor(
 
     init {
         // Observe auth state changes from the BaseVM/Repo
-        observeAuthState { authState ->
-            _state.update { state ->
-                state.copy(authState = authState)
+        observeAuthentication()
+    }
+
+    // --- Auth ---
+    /**
+     * Reacts to authentication changes.
+     * Synchronizes local state and fetches favorites for logged-in users.
+     */
+    private fun observeAuthentication() {
+        authState
+            .onEach { auth ->
+                _state.update { it.copy(authState = auth) }
+                if (auth is AuthState.LoggedIn) {
+                    fetchFavoritesIds()
+                }
             }
-            if (authState is AuthState.LoggedIn) {
-                fetchFavoritesIds()
+            .launchIn(viewModelScope)
+    }
+
+    /**
+     * Executes login request using credentials from the UI state.
+     */
+    private fun performLogin() {
+        val form = _state.value.authForm
+
+        executeAuthentication(
+            request = TokenRequest(form.email, form.password),
+            onStart = { setAuthErrorState(false) },
+            onValidationError = { setAuthErrorState(true) },
+            onError = { messageRes, retry ->
+                sendSnackbar(messageRes, retry)
+            }
+        )
+    }
+
+    private fun setAuthErrorState(isError: Boolean) {
+        _state.update { it.updateAuthForm { f -> f.copy(isError = isError) } }
+    }
+
+    private fun handleAuthFormUpdate(field: AnimeDetailsIntent.UpdateAuthForm.AuthField) {
+        _state.update { state ->
+            state.updateAuthForm { form ->
+                when (field) {
+                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Email -> form.copy(email = field.value)
+                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Password -> form.copy(password = field.value)
+                }
             }
         }
     }
 
-    // --- Effects ---
+    // --- Intents ---
     fun sendIntent(intent: AnimeDetailsIntent) {
         when (intent) {
             is AnimeDetailsIntent.FetchAnime -> fetchAnime(intent.id)
@@ -82,14 +124,11 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
-    // --- Intents ---
-    fun sendEffect(effect: UiEffect) {
-        viewModelScope.launch(dispatcherIo) {
-            _effects.send(effect)
-        }
-    }
+    // --- Effects ---
+    fun sendEffect(effect: UiEffect) =
+        viewModelScope.launch { _effects.send(effect) }
 
-    // --- Anime ---
+    // --- Data ---
     private fun fetchAnime(id: Int) {
         viewModelScope.launch(dispatcherIo) {
             _state.update { it.copy(loadingState = LoadingState(isLoading = true, isError = false)) }
@@ -174,35 +213,6 @@ class AnimeDetailsVM @Inject constructor(
                     _state.update { it.updateFavorites { f -> f.copy(isError = true, isLoading = false) } }
                     sendSnackbar(messageRes) { toggleFavorite(shouldAdd) }
                 }
-        }
-    }
-
-    // --- Auth ---
-    private fun performLogin() {
-        val currentState = _state.value.authForm
-
-        getAuthToken(
-            request = TokenRequest(currentState.email, currentState.password),
-            onStart = {
-                _state.update { it.updateAuthForm { f -> f.copy(isError = false) } }
-            },
-            onIncorrectData = {
-                _state.update { it.updateAuthForm { f -> f.copy(isError = true) } }
-            },
-            onAnyError = { messageRes, retryAction ->
-                sendSnackbar(messageRes, retryAction)
-            }
-        )
-    }
-
-    private fun handleAuthFormUpdate(field: AnimeDetailsIntent.UpdateAuthForm.AuthField) {
-        _state.update { state ->
-            state.updateAuthForm { form ->
-                when (field) {
-                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Email -> form.copy(email = field.value)
-                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Password -> form.copy(password = field.value)
-                }
-            }
         }
     }
 

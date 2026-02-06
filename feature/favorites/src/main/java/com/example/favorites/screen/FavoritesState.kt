@@ -16,9 +16,9 @@ data class FavoritesState(
 
     val searchForm: SearchForm = SearchForm()
 ) {
-    // Auth
-    fun withAuthState(state: AuthState) =
-        copy(authState = state)
+    // Toggles
+    fun toggleAuthBS() = copy(authForm = authForm.copy(isAuthBSVisible = !authForm.isAuthBSVisible))
+
     fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): FavoritesState {
         return copy(authForm = transformer(authForm))
     }
