@@ -22,36 +22,41 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.design_system.R
 import com.example.design_system.theme.theme.mTypography
 
+private val ErrorLabelRes = R.string.error_section_label
 
-private val ErrorLabel = R.string.error_section_label
+private val AnimRes = R.raw.error_animation
+
+private val ContainerPadding = 16.dp
+private val ColumnSpacedBy = 16.dp
+private val AnimSize = 170.dp
 
 @Composable
 fun ErrorSection() {
     // Load Lottie composition once and remember it across recompositions
     val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.error_animation)
+        LottieCompositionSpec.RawRes(AnimRes)
     )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = ContainerPadding),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(ColumnSpacedBy)
         ) {
             // Error animation (infinite loop)
             LottieAnimation(
                 composition = composition,
-                modifier = Modifier.size(170.dp),
+                modifier = Modifier.size(AnimSize),
                 iterations = LottieConstants.IterateForever
             )
 
             // Error label text
             Text(
-                text = stringResource(ErrorLabel),
+                text = stringResource(ErrorLabelRes),
                 style = mTypography.bodyLarge.copy(lineBreak = LineBreak.Paragraph),
                 textAlign = TextAlign.Center
             )

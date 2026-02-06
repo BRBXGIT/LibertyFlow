@@ -40,7 +40,7 @@ class CollectionsVM @Inject constructor(
     authRepo: AuthRepo,
     private val collectionsRepo: CollectionsRepo,
     @Dispatcher(LibertyFlowDispatcher.IO) ioDispatcher: CoroutineDispatcher
-) : BaseAuthVM(authRepo, ioDispatcher) {
+): BaseAuthVM(authRepo, ioDispatcher) {
 
     private val _state = MutableStateFlow(CollectionsState())
     val state = _state.toLazily(CollectionsState())
@@ -123,9 +123,8 @@ class CollectionsVM @Inject constructor(
         )
     }
 
-    private fun setAuthErrorState(isError: Boolean) {
+    private fun setAuthErrorState(isError: Boolean) =
         _state.update { it.updateAuthForm { f -> f.copy(isError = isError) } }
-    }
 
     private fun handleAuthFormUpdate(field: CollectionsIntent.UpdateAuthForm.AuthField) {
         _state.update { state ->
