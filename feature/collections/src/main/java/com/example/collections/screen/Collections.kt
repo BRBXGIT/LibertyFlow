@@ -44,6 +44,10 @@ private val TopBarLabel = R.string.collections_top_bar_label
 
 private const val RETRY = "Retry"
 
+/**
+ * Main entry point for the Collections screen.
+ * Handles the scaffold, top bar, and high-level auth state switching.
+ */
 @Composable
 internal fun Collections(
     state: CollectionsState,
@@ -108,6 +112,9 @@ internal fun Collections(
     }
 }
 
+/**
+ * Encapsulates the logic for the logged-in user experience, including paging states.
+ */
 @Composable
 private fun LoggedInContent(
     state: CollectionsState,
@@ -149,10 +156,9 @@ private fun CollectionsPagerContent(
     ) { Collection.entries.size }
 
     Column {
-        LaunchedEffect(pagerState) {
-            snapshotFlow { pagerState.currentPage }.collect { page ->
-                onIntent(CollectionsIntent.SetCollection(page.toCollection()))
-            }
+        // Synchronize Pager state with ViewModel state
+        LaunchedEffect(pagerState.currentPage) {
+            onIntent(CollectionsIntent.SetCollection(pagerState.currentPage.toCollection()))
         }
 
         CollectionsTabRow(

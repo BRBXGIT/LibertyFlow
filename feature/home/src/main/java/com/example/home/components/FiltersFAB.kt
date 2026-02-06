@@ -22,7 +22,7 @@ private const val ZERO_OFFSET = 0
 private const val FAB_OFFSET_ANIMATION_LABEL = "Fab offset animation label"
 
 @Composable
-fun FiltersFAB(
+internal fun FiltersFAB(
     visible: Boolean,
     onIntent: (HomeIntent) -> Unit
 ) {

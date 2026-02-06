@@ -35,7 +35,7 @@ import com.example.favorites.R
 private val TopBarLabel = R.string.favorites_top_bar_label
 
 @Composable
-fun Favorites(
+internal fun Favorites(
     state: FavoritesState,
     favorites: LazyPagingItems<AnimeItem>,
     snackbarHostState: SnackbarHostState,

@@ -20,7 +20,7 @@ private val standardTabShape = RoundedCornerShape(
 )
 
 @Composable
-fun M3Tab(
+internal fun M3Tab(
     modifier: Modifier = Modifier,
     shape: Shape = standardTabShape,
     text: String,

@@ -28,7 +28,7 @@ private const val ANIMATED_BG_COLOR_LABEL = "Animated tab bg color"
 private const val ANIMATED_CONTENT_COLOR_LABEL = "Animated tab bg color"
 
 @Composable
-fun TabletTab(
+internal fun TabletTab(
     modifier: Modifier = Modifier,
     shape: Shape = mShapes.extraLarge,
     selected: Boolean,
