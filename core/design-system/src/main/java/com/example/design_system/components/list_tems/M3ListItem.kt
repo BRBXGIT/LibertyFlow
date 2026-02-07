@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.design_system.components.switches.LibertyFlowSwitch
+import com.example.design_system.containers.UpDownAnimatedContent
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
@@ -79,15 +80,7 @@ fun M3ListItem(
             )
 
             description?.let {
-                AnimatedContent(
-                    label = DESCRIPTION_ANIMATION_LABEL,
-                    targetState = description,
-                    transitionSpec = {
-                        (slideInVertically { height -> height } + fadeIn())
-                            .togetherWith(exit = slideOutVertically { height -> -height } + fadeOut())
-                            .using(SizeTransform(clip = false))
-                    }
-                ) { description ->
+                UpDownAnimatedContent(targetState = description) { description ->
                     Text(
                         text = description,
                         style = mTypography.bodyMedium,

@@ -4,6 +4,7 @@ package com.example.anime_details.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -17,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -28,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.design_system.containers.VerticalSlideAnimatedContainer
+import com.example.design_system.containers.UpDownAnimatedContent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
@@ -36,14 +37,18 @@ import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mTypography
 import kotlinx.coroutines.delay
 
+private sealed interface TopBarState {
+    data object Loading: TopBarState
+    data object Error: TopBarState
+    data class Content(val title: String): TopBarState
+    data object Empty: TopBarState
+}
+
 // Static error title text
-private val ERROR_TEXT = R.string.error_section_label
+private val ErrorLabelRes = R.string.error_section_label
 
 // Fully transparent top bar background
 private const val TOP_BAR_ALPHA = 0f
-
-// Title text configuration
-private const val TEXT_MAX_LINES = 1
 
 @Composable
 internal fun TopBar(
@@ -53,29 +58,23 @@ internal fun TopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onEffect: (UiEffect) -> Unit
 ) {
-    // Determines when the title should be visible
-    val showTitle = !isLoading && englishTitle != null && !isError
+    val currentState = when {
+        isLoading -> TopBarState.Loading
+        isError -> TopBarState.Error
+        englishTitle != null -> TopBarState.Content(englishTitle)
+        else -> TopBarState.Empty
+    }
 
     TopAppBar(
         title = {
-            // Loading state
-            VerticalSlideAnimatedContainer(visible = isLoading) {
-                AnimatedLoadingText()
-            }
-
-            // Normal title state
-            VerticalSlideAnimatedContainer(visible = showTitle) {
-                Text(
-                    text = englishTitle!!,
-                    maxLines = TEXT_MAX_LINES,
-                    overflow = TextOverflow.Ellipsis,
-                    style = mTypography.titleLarge
-                )
-            }
-
-            // Error state
-            VerticalSlideAnimatedContainer(visible = isError) {
-                Text(text = stringResource(ERROR_TEXT), style = mTypography.titleLarge)
+            // TODO: maybe change to older version with AnimatedVisibility
+            UpDownAnimatedContent(targetState = currentState) { state ->
+                when (state) {
+                    is TopBarState.Loading -> AnimatedLoadingText()
+                    is TopBarState.Error -> TopBarText(text = stringResource(ErrorLabelRes))
+                    is TopBarState.Content -> TopBarText(text = state.title)
+                    TopBarState.Empty -> Spacer(Modifier)
+                }
             }
         },
         navigationIcon = {
@@ -121,7 +120,7 @@ private const val ANIMATION_LABEL = "Dot alpha animation"
 @Composable
 private fun AnimatedLoadingText() {
     // Controls how many dots are visible
-    var dotCount by rememberSaveable { mutableIntStateOf(START_DOT_COUNT) }
+    var dotCount by remember { mutableIntStateOf(START_DOT_COUNT) }
 
     // Cycles dot visibility
     LaunchedEffect(Unit) {
@@ -149,6 +148,19 @@ private fun AnimatedLoadingText() {
             )
         }
     }
+}
+
+// Title text configuration
+private const val TEXT_MAX_LINES = 1
+
+@Composable
+private fun TopBarText(text: String) {
+    Text(
+        text = text,
+        maxLines = TEXT_MAX_LINES,
+        overflow = TextOverflow.Ellipsis,
+        style = mTypography.titleLarge
+    )
 }
 
 // Navigation icon size
@@ -181,7 +193,7 @@ private fun AnimatedLoadingTextPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun AnimeScreenTopBaPreview() {
+private fun AnimeScreenTopBarPreview() {
     LibertyFlowTheme {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 

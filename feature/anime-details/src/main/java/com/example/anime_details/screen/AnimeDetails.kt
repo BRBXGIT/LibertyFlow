@@ -15,6 +15,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
@@ -39,7 +40,6 @@ import com.example.common.refresh.RefreshEffect
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.common.PosterType
-import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.data.models.releases.anime_details.Episode
 import com.example.data.models.releases.anime_details.Torrent
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
@@ -114,6 +114,18 @@ internal fun AnimeDetails(
                 )
             }
 
+            val headerData = remember {
+                HeaderData(
+                    type = anime.type,
+                    episodes = anime.episodes.size,
+                    posterPath = anime.poster.fullPath(PosterType.PREVIEW),
+                    russianName = anime.name.russian,
+                    season = anime.season,
+                    year = anime.year,
+                    isOngoing = anime.isOngoing
+                )
+            }
+
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(LC_ARRANGEMENT.dp),
                 contentPadding = PaddingValues(bottom = LC_BOTTOM_PADDING.dp),
@@ -121,7 +133,7 @@ internal fun AnimeDetails(
             ) {
                 // Header section
                 header(
-                    animeDetails = anime,
+                    headerData = headerData,
                     topInnerPadding = innerPadding.calculateTopPadding() + PLUS_TOP_PADDING.dp
                 )
 
@@ -159,20 +171,10 @@ internal fun AnimeDetails(
 }
 
 private fun LazyListScope.header(
-    animeDetails: AnimeDetails,
+    headerData: HeaderData,
     topInnerPadding: Dp
 ) {
     // Maps UI model to header UI data
-    val headerData = HeaderData(
-        type = animeDetails.type,
-        episodes = animeDetails.episodes.size,
-        posterPath = animeDetails.poster.fullPath(PosterType.PREVIEW),
-        russianName = animeDetails.name.russian,
-        season = animeDetails.season,
-        year = animeDetails.year,
-        isOngoing = animeDetails.isOngoing
-    )
-
     item(key = HEADER_KEY) {
         Header(headerData, topInnerPadding)
     }

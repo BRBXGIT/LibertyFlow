@@ -2,13 +2,6 @@
 
 package com.example.design_system.components.buttons
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,20 +19,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.design_system.containers.AnimatedBorderContainer
+import com.example.design_system.containers.UpDownAnimatedContent
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
 
-// Animation constants
-private const val ANIMATION_DURATION = 300
-private const val OFFSET_DIVIDER = 2
-
 // UI Dimension constants (dp)
 private val ICON_SIZE_DP = 22.dp
-private val CONTENT_PADDING_DP = 4.dp
+private val CONTENT_PADDING_DP = 2.dp
 private val SPACING_DP = 8.dp
-
-// Labels for Compose tooling
-private const val CONTENT_TRANSITION_LABEL = "Button content transition"
 
 data class ActionButtonState(
     val iconRes: Int,
@@ -64,15 +51,7 @@ fun RainbowActionButton(
         borderColors = borderColors,
         modifier = modifier
     ) {
-        AnimatedContent(
-            targetState = state,
-            transitionSpec = {
-                (slideInVertically { it / OFFSET_DIVIDER } + fadeIn(tween(ANIMATION_DURATION)))
-                    .togetherWith(slideOutVertically { -it / OFFSET_DIVIDER } + fadeOut(tween(ANIMATION_DURATION)))
-            },
-            label = CONTENT_TRANSITION_LABEL,
-            modifier = Modifier.fillMaxWidth()
-        ) { targetState ->
+        UpDownAnimatedContent(targetState = state) { targetState ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

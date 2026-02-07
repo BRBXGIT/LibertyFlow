@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.example.anime_details.components
 
 import androidx.compose.animation.animateColorAsState
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +34,7 @@ import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mTypography
 
 private val NO_DESCRIPTION_PROVIDED_STRING =
@@ -61,11 +65,8 @@ internal fun LazyItemScope.Description(
 
     // Animate gradient color based on expanded state
     val animatedGradientColor by animateColorAsState(
-        targetValue = if (isExpanded) {
-            mColors.onBackground
-        } else {
-            mColors.background
-        },
+        animationSpec = mMotionScheme.fastEffectsSpec(),
+        targetValue = if (isExpanded) mColors.onBackground else mColors.background,
         label = ANIMATED_COLOR_LABEL
     )
 
