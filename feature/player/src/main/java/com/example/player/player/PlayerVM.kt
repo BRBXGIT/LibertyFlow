@@ -55,7 +55,7 @@ class PlayerVM @Inject constructor(
     fun sendIntent(intent: PlayerIntent) {
         when(intent) {
             // Player Lifecycle & Controls
-            is PlayerIntent.SetUpPlayer -> setUpPlayer(intent.episodes, intent.startIndex)
+            is PlayerIntent.SetUpPlayer -> setUpPlayer(intent.episodes, intent.startIndex, intent.animeName)
             is PlayerIntent.SetIsScrubbing -> _playerState.update { it.setIsScrubbing(intent.value) }
             PlayerIntent.TogglePlayPause -> togglePlayPause()
             PlayerIntent.StopPlayer -> stopPlayer()
@@ -108,7 +108,7 @@ class PlayerVM @Inject constructor(
     }
 
     @OptIn(UnstableApi::class)
-    private fun setUpPlayer(episodes: List<Episode>, startIndex: Int) {
+    private fun setUpPlayer(episodes: List<Episode>, startIndex: Int, animeName: String) {
         // TODO: Antipattern context in vm
         val intent = Intent(context, PlaybackService::class.java)
         ContextCompat.startForegroundService(context, intent)
@@ -120,6 +120,7 @@ class PlayerVM @Inject constructor(
             // 2. Initialize UI state
             _playerState.update {
                 it.copy(
+                    animeName = animeName,
                     uiPlayerState = PlayerState.UiPlayerState.Mini,
                     episodes = episodes,
                     currentEpisodeIndex = startIndex,
@@ -130,7 +131,7 @@ class PlayerVM @Inject constructor(
             // 3. Prepare the Player on the Main Thread
             withContext(dispatcherMain) {
                 player.setMediaItems(
-                    episodes.map { it.toMediaItem(settings.quality) },
+                    episodes.map { it.toMediaItem(settings.quality, animeName) },
                     startIndex,
                     START_POSITION
                 )
@@ -221,7 +222,8 @@ class PlayerVM @Inject constructor(
         val wasPlaying = player.isPlaying
 
         // Re-map episodes to the new quality URLs
-        val items = _playerState.value.episodes.map { it.toMediaItem(quality) }
+        val animeName = _playerState.value.animeName
+        val items = _playerState.value.episodes.map { it.toMediaItem(quality, animeName) }
 
         player.setMediaItems(items, currentIndex, currentPos)
         player.prepare()
@@ -287,8 +289,10 @@ class PlayerVM @Inject constructor(
     }
 }
 
+private const val NO_TITLE_PROVIDED = "No title provided"
+
 // --- Mappers ---
-private fun Episode.toMediaItem(quality: VideoQuality): MediaItem {
+private fun Episode.toMediaItem(quality: VideoQuality, animeName: String): MediaItem {
     val uri = when(quality) {
         VideoQuality.SD -> hls480
         VideoQuality.HD -> hls720 ?: hls480
@@ -299,8 +303,8 @@ private fun Episode.toMediaItem(quality: VideoQuality): MediaItem {
         .setUri(uri)
         .setMediaMetadata(
             MediaMetadata.Builder()
-                .setTitle("Episode 1")
-                .setArtist("LibertyFlow")
+                .setTitle(name ?: NO_TITLE_PROVIDED)
+                .setArtist(animeName)
                 .build()
         )
         .build()

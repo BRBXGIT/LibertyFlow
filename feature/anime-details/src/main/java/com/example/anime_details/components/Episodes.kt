@@ -47,6 +47,7 @@ private const val COLUMN_VERTICAL_PADDING = 16
 
 @Composable
 internal fun LazyItemScope.Episodes(
+    animeName: String,
     episodes: List<Episode>,
     watchedEps: List<Int>,
     onIntent: (AnimeDetailsIntent) -> Unit,
@@ -71,7 +72,7 @@ internal fun LazyItemScope.Episodes(
                 watchedEps = watchedEps,
                 onClick = {
                     onIntent(AnimeDetailsIntent.AddEpisodeToWatched(index))
-                    onPlayerIntent(PlayerIntent.SetUpPlayer(episodes, index))
+                    onPlayerIntent(PlayerIntent.SetUpPlayer(episodes, index, animeName))
                 },
             )
         }
@@ -144,6 +145,7 @@ private fun EpisodePreview() {
     LazyColumn {
         item {
             Episodes(
+                animeName = "Some name",
                 episodes = emptyList(),
                 watchedEps = emptyList(),
                 onIntent = {},

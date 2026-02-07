@@ -7,6 +7,7 @@ import com.example.data.models.releases.anime_details.Episode
 @Immutable
 data class PlayerState(
     // Content & Settings
+    val animeName: String = "",
     val uiPlayerState: UiPlayerState = UiPlayerState.Closed,
     val episodes: List<Episode> = emptyList(),
     val currentEpisodeIndex: Int = 0,

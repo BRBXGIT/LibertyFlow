@@ -164,7 +164,13 @@ internal fun AnimeDetails(
                 torrents(anime.torrents, onEffect)
 
                 // Episodes list
-                episodes(anime.episodes, state.watchedEps, onIntent, onPlayerIntent)
+                episodes(
+                    animeName = anime.name.russian,
+                    episodes = anime.episodes,
+                    watchedEps = state.watchedEps,
+                    onIntent = onIntent,
+                    onPlayerIntent = onPlayerIntent
+                )
             }
         }
     }
@@ -222,12 +228,19 @@ private fun LazyListScope.torrents(
 }
 
 private fun LazyListScope.episodes(
+    animeName: String,
     episodes: List<Episode>,
     watchedEps: List<Int>,
     onIntent: (AnimeDetailsIntent) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     item(key = EPISODES_KEY) {
-        Episodes(episodes, watchedEps, onIntent, onPlayerIntent)
+        Episodes(
+            animeName = animeName,
+            episodes = episodes,
+            watchedEps = watchedEps,
+            onIntent = onIntent,
+            onPlayerIntent = onPlayerIntent,
+        )
     }
 }

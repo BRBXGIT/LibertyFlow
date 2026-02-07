@@ -5,7 +5,11 @@ import com.example.data.models.releases.anime_details.Episode
 
 sealed interface PlayerIntent {
     // --- Player ---
-    data class SetUpPlayer(val episodes: List<Episode>, val startIndex: Int): PlayerIntent
+    data class SetUpPlayer(
+        val episodes: List<Episode>,
+        val startIndex: Int,
+        val animeName: String
+    ): PlayerIntent
     data class SetIsScrubbing(val value: Boolean): PlayerIntent
     data object TogglePlayPause: PlayerIntent
     data object StopPlayer: PlayerIntent
