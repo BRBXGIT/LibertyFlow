@@ -1,9 +1,14 @@
 package com.example.player.player
 
-import androidx.lifecycle.ViewModel
+import android.content.Context
+import android.content.Intent
+import androidx.annotation.OptIn
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
@@ -12,7 +17,9 @@ import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.models.player.VideoQuality
 import com.example.data.models.releases.anime_details.Episode
+import com.example.player.components.playback_service.PlaybackService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,6 +37,7 @@ private const val START_POSITION = 0L
 class PlayerVM @Inject constructor(
     val player: ExoPlayer,
     private val playerSettingsRepo: PlayerSettingsRepo,
+    @param:ApplicationContext private val context: Context,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
     @param:Dispatcher(LibertyFlowDispatcher.Main) private val dispatcherMain: CoroutineDispatcher
 ): BasePlayerSettingsVM(playerSettingsRepo, dispatcherIo) {
@@ -99,7 +107,12 @@ class PlayerVM @Inject constructor(
         }
     }
 
+    @OptIn(UnstableApi::class)
     private fun setUpPlayer(episodes: List<Episode>, startIndex: Int) {
+        // TODO: Antipattern context in vm
+        val intent = Intent(context, PlaybackService::class.java)
+        ContextCompat.startForegroundService(context, intent)
+
         viewModelScope.launch(dispatcherIo) {
             // 1. Fetch initial settings before touching the player
             val settings = playerSettingsRepo.playerSettings.first()
@@ -275,11 +288,20 @@ class PlayerVM @Inject constructor(
 }
 
 // --- Mappers ---
-private fun Episode.toMediaItem(quality: VideoQuality) =
-    MediaItem.fromUri(
-        when(quality) {
-            VideoQuality.SD -> hls480
-            VideoQuality.HD -> hls720 ?: hls480
-            VideoQuality.FHD -> hls1080 ?: hls720 ?: hls480
-        }
-    )
+private fun Episode.toMediaItem(quality: VideoQuality): MediaItem {
+    val uri = when(quality) {
+        VideoQuality.SD -> hls480
+        VideoQuality.HD -> hls720 ?: hls480
+        VideoQuality.FHD -> hls1080 ?: hls720 ?: hls480
+    }
+
+    return MediaItem.Builder()
+        .setUri(uri)
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle("Episode 1")
+                .setArtist("LibertyFlow")
+                .build()
+        )
+        .build()
+}

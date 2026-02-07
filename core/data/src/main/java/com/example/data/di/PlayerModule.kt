@@ -1,23 +1,36 @@
 package com.example.data.di
 
 import android.content.Context
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C.AUDIO_CONTENT_TYPE_MOVIE
+import androidx.media3.common.C.USAGE_MEDIA
 import androidx.media3.exoplayer.ExoPlayer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+private const val SEEK_MILLIS = 5000L
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object PlayerModule {
 
     @Provides
-    @ViewModelScoped
+    @Singleton
     fun provideExoPlayer(@ApplicationContext context: Context) =
         ExoPlayer.Builder(context)
-            .setSeekForwardIncrementMs(5000L)
-            .setSeekBackIncrementMs(5000L)
+            .setSeekForwardIncrementMs(SEEK_MILLIS)
+            .setSeekBackIncrementMs(SEEK_MILLIS)
+            .setHandleAudioBecomingNoisy(true)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AUDIO_CONTENT_TYPE_MOVIE)
+                    .setUsage(USAGE_MEDIA)
+                    .build(),
+                true
+            )
             .build()
 }

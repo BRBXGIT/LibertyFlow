@@ -12,24 +12,24 @@ jetbrainsKotlinJvm = "2.3.0"
 coreKtx = "1.17.0"
 
 # Activity compose
-activityCompose = "1.12.2"
+activityCompose = "1.12.3"
 
 # Compose bom
-composeBom = "2026.01.00"
+composeBom = "2026.01.01"
 
 # Compose runtime
-runtime = "1.10.1"
+runtime = "1.10.2"
 
 # Material 3
-material3Android = "1.5.0-alpha12"
+material3Android = "1.5.0-alpha13"
 
 # Hilt
 hiltAndroid = "2.58"
 hiltNavigationCompose = "1.3.0"
 
 # Navigation & serialization
-composeNavigation = "2.9.6"
-serialization = "1.9.0"
+composeNavigation = "2.9.7"
+serialization = "1.10.0"
 
 # Room
 roomKtx = "2.8.4"
@@ -41,7 +41,7 @@ coilCompose = "2.7.0"
 kspPlugin = "2.3.0"
 
 # Paging
-pagingCompose = "3.3.6"
+pagingCompose = "3.4.0"
 
 # Lottie
 lottie = "6.7.1"
@@ -56,23 +56,20 @@ hazeMaterials = "1.6.6"
 datastorePreferences = "1.2.0"
 
 # Compose animation graphics
-animationGraphics = "1.10.1"
+animationGraphics = "1.10.2"
 
 # Retrofit
 retrofit = "3.0.0"
 converterGson = "3.0.0"
 
 # Media 3
-media3 = "1.9.0"
-
-# Material
-material = "1.10.1"
+media3 = "1.9.2"
 
 # Lifecycle ViewModel
 lifecycleViewmodelKtx = "2.10.0"
 
 # Testing
-mockk = "1.14.7"
+mockk = "1.14.9"
 junit = "4.13.2"
 coroutinesTest = "1.10.2"
 turbine = "1.2.1"
@@ -133,13 +130,11 @@ androidx-animation-graphics = { module = "androidx.compose.animation:animation-g
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3" }
 media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" } # Old verion for PlayerView
+androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 
 # Retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
-
-# Material
-androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 
 # Compose debug
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
