@@ -3,7 +3,6 @@ package com.example.data.di
 import android.content.ComponentName
 import android.content.Context
 import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
 import androidx.media3.common.C.AUDIO_CONTENT_TYPE_MOVIE
 import androidx.media3.common.C.USAGE_MEDIA
 import androidx.media3.exoplayer.ExoPlayer
@@ -22,8 +21,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object PlayerModule {
 
-    private const val SEEK_INCREMENT_MS = 5000L
-
     @Provides
     @Singleton
     fun provideAudioAttributes(): AudioAttributes = AudioAttributes.Builder()
@@ -37,8 +34,6 @@ object PlayerModule {
         @ApplicationContext context: Context,
         audioAttributes: AudioAttributes
     ): ExoPlayer = ExoPlayer.Builder(context)
-        .setSeekForwardIncrementMs(SEEK_INCREMENT_MS)
-        .setSeekBackIncrementMs(SEEK_INCREMENT_MS)
         .setAudioAttributes(audioAttributes, true) // true = handleAudioFocus
         .setHandleAudioBecomingNoisy(true)
         .build()

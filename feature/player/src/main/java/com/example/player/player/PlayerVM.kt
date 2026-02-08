@@ -1,5 +1,6 @@
 package com.example.player.player
 
+import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -40,14 +41,11 @@ class PlayerVM @Inject constructor(
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.toLazily(PlayerState())
 
-    // --- Controller ---
+    // --- Controller & Jobs ---
     private var mediaController: MediaController? = null
-
-    // --- Jobs ---
     private var progressJob: Job? = null
     private var controllerVisibilityJob: Job? = null
 
-    // --- Init ---
     init {
         initializeController()
         observeSettings()
@@ -55,13 +53,12 @@ class PlayerVM @Inject constructor(
 
     private fun initializeController() {
         viewModelScope.launch(dispatcherMain) {
-            try {
-                mediaController = controllerFuture.asDeferred().await()
-
-                mediaController?.addListener(playerListener)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            runCatching {
+                controllerFuture.asDeferred().await()
+            }.onSuccess { controller ->
+                mediaController = controller
+                controller.addListener(playerListener)
+            }.onFailure { it.printStackTrace() }
         }
     }
 
@@ -112,9 +109,8 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Logic Implementation ---
-
     private fun setUpPlayer(intent: PlayerIntent.SetUpPlayer) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherMain) {
             val controller = mediaController ?: controllerFuture.asDeferred().await().also { mediaController = it }
 
             val settings = playerSettingsRepo.playerSettings.first()
@@ -144,9 +140,8 @@ class PlayerVM @Inject constructor(
         }
     }
 
-    private fun togglePlayPause(controller: MediaController) {
+    private fun togglePlayPause(controller: MediaController) =
         if (controller.isPlaying) controller.pause() else controller.play()
-    }
 
     private fun stopPlayer(controller: MediaController) {
         progressJob?.cancel()
@@ -155,13 +150,11 @@ class PlayerVM @Inject constructor(
         updateState { PlayerState() }
     }
 
-    private fun seekRelative(controller: MediaController, offsetMs: Long) {
+    private fun seekRelative(controller: MediaController, offsetMs: Long) =
         controller.seekTo(controller.currentPosition + offsetMs)
-    }
 
-    private fun changeMediaItem(controller: MediaController, offset: Int) {
+    private fun changeMediaItem(controller: MediaController, offset: Int) =
         if (offset > 0) controller.seekToNextMediaItem() else controller.seekToPreviousMediaItem()
-    }
 
     private fun skipOpening(controller: MediaController) {
         val endMs = (currentState.currentEpisode?.opening?.end?.toLong() ?: 0L) * 1000
@@ -169,7 +162,6 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Settings & Quality Change ---
-
     private fun observeSettings() {
         viewModelScope.launch(dispatcherIo) {
             playerSettingsRepo.playerSettings.collect { newSettings ->
@@ -197,7 +189,6 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Progress Tracking (Reading from Controller) ---
-
     private fun startProgressTracker(controller: MediaController) {
         progressJob?.cancel()
         progressJob = viewModelScope.launch(dispatcherMain) {
@@ -236,7 +227,6 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Listeners ---
-
     private val playerListener = object : Player.Listener {
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             mediaController?.let { ctrl ->
@@ -299,6 +289,17 @@ class PlayerVM @Inject constructor(
 
 private const val NO_TITLE_PROVIDED = "No title provided"
 
+// Just for fun :)
+private val ArtworksList = listOf(
+    "https://i.pinimg.com/736x/b9/60/64/b96064e99125509c7b0b77425520c5ae.jpg",
+    "https://i.pinimg.com/736x/d0/97/f0/d097f040b61e0a223c7ccb2eb8982848.jpg",
+    "https://i.pinimg.com/1200x/f7/a3/5f/f7a35fb05ccccc861cfbdaab7c3603c5.jpg",
+    "https://i.pinimg.com/1200x/4f/64/89/4f6489d77796bc8381ef3477a19e16c9.jpg",
+    "https://i.pinimg.com/736x/86/e2/1f/86e21fa28ccbea7f058338b101b3ba78.jpg",
+    "https://i.pinimg.com/736x/2b/5c/28/2b5c28602c81ec0de64d3098972da411.jpg",
+    "https://i.pinimg.com/736x/24/eb/aa/24ebaada5139f61e22340654392f819d.jpg"
+)
+
 // --- Mappers ---
 private fun Episode.toMediaItem(quality: VideoQuality, animeName: String): MediaItem {
     val uri = when(quality) {
@@ -313,6 +314,7 @@ private fun Episode.toMediaItem(quality: VideoQuality, animeName: String): Media
             MediaMetadata.Builder()
                 .setTitle(name ?: NO_TITLE_PROVIDED)
                 .setArtist(animeName)
+                .setArtworkUri(ArtworksList.random().toUri())
                 .build()
         )
         .build()

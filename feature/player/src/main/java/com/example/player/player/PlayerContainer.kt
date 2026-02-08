@@ -55,44 +55,49 @@ fun PlayerContainer(
 
 @Composable
 private fun HandleLandscape(uiPlayerState: PlayerState.UiPlayerState) {
-    val window = LocalContext.current.findActivity()?.window
+    val context = LocalContext.current
 
+    // LaunchedEffect ensures the side-effect runs only when uiPlayerState changes
     LaunchedEffect(uiPlayerState) {
-        window?.let {
-            val isLandscape = uiPlayerState == PlayerState.UiPlayerState.Full
-            changeSystemBars(it, isLandscape)
+        val activity = context.findActivity()
+        val window = activity?.window ?: return@LaunchedEffect
 
-            val activity = it.context.findActivity()
-            activity?.requestedOrientation = if (isLandscape) {
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            } else {
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            }
+        val isLandscape = uiPlayerState == PlayerState.UiPlayerState.Full
+
+        // Update System UI visibility (status and navigation bars)
+        toggleSystemBars(window, hide = isLandscape)
+
+        // Force orientation change based on player mode
+        activity.requestedOrientation = if (isLandscape) {
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 }
 
+/**
+ * Utility function to find the host Activity from a Context.
+ */
 private fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
 }
 
-private fun changeSystemBars(window: Window, hide: Boolean) {
-    val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+/**
+ * Manages the visibility and behavior of the system bars.
+ */
+private fun toggleSystemBars(window: Window, hide: Boolean) {
+    val controller = WindowInsetsControllerCompat(window, window.decorView)
 
-    when(hide) {
-        true -> {
-            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-
-            windowInsetsController.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-        false -> {
-            windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
-
-            windowInsetsController.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-        }
+    if (hide) {
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    } else {
+        controller.show(WindowInsetsCompat.Type.systemBars())
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 }
