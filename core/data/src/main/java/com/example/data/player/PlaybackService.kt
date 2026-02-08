@@ -9,11 +9,11 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class PlaybackService : MediaSessionService() {
-    private var mediaSession: MediaSession? = null
 
-    // Инжектим сам плеер (ExoPlayer)
     @Inject
     lateinit var player: ExoPlayer
+
+    private var mediaSession: MediaSession? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -26,6 +26,7 @@ class PlaybackService : MediaSessionService() {
         mediaSession?.run {
             player.release()
             release()
+            mediaSession = null
         }
         super.onDestroy()
     }
