@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerVM @Inject constructor(
-    val uiPlayer: ExoPlayer,
+    val uiPlayer: ExoPlayer, // Inject only for passing to ui
     private val controllerFuture: ListenableFuture<MediaController>,
     private val playerSettingsRepo: PlayerSettingsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
