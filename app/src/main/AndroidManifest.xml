@@ -35,7 +35,7 @@
         </activity>
 
         <service
-            android:name="com.example.player.components.playback_service.PlaybackService"
+            android:name="com.example.data.player.PlaybackService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             tools:ignore="ExportedService">

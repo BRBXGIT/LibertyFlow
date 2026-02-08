@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.0")
     // Media 3
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.hls)
