@@ -96,6 +96,7 @@ private val NO_TITLE_PROVIDED_STRING =
 
 // Label for episode animated color
 private const val EPISODE_ANIMATED_ALPHA_LABEL = "Episode animated alpha label"
+private const val DOT = "•"
 
 private const val UNWATCHED_ALPHA = 1f
 private const val WATCHED_ALPHA = 0.5f
@@ -127,7 +128,7 @@ private fun Episode(
         val name = episode.name ?: stringResource(NO_TITLE_PROVIDED_STRING)
 
         Text(
-            text = "${index + ADD_TO_INDEX}  •  $name",
+            text = "${index + ADD_TO_INDEX}  $DOT  $name",
             maxLines = EPISODE_TEXT_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
             style = mTypography.bodyLarge,

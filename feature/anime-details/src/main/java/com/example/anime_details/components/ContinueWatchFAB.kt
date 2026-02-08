@@ -29,7 +29,7 @@ fun ContinueWatchFAB(
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     AnimatedVisibility(
-        visible = state.anime!!.episodes.isNotEmpty(),
+        visible = state.anime!!.episodes.isNotEmpty() && state.watchedEps.size != state.anime.episodes.size,
         enter = fadeIn(tween(FAB_ANIMATION_DURATION)),
         exit = fadeOut(tween(FAB_ANIMATION_DURATION))
     ) {
