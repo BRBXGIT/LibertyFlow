@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -43,12 +44,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+// UI Constants for the mini player dimensions and spacing
 private const val WIDTH = 200
 private const val HEIGHT = 120
 private const val MARGIN = 16
 private const val CENTER_DIVIDER = 2
 private const val ZERO = 0
 
+/**
+ * The main container for the Mini Player.
+ * Handles the layout, gesture detection, and coordination between player state and UI.
+ */
 @Composable
 internal fun MiniPlayerContainer(
     navBarVisible: Boolean,
@@ -61,39 +67,48 @@ internal fun MiniPlayerContainer(
     val navBarSize = calculateNavBarSize()
     val statusBarSize = calculateStatusBarSize()
 
+    // Memoize constraints to avoid recalculation unless layout factors change
     val constraints = remember(density, navBarVisible, navBarSize, statusBarSize) {
         PlayerConstraints(density, navBarVisible, navBarSize, statusBarSize)
     }
 
+    // BoxWithConstraints provides the maxWidth/maxHeight of the parent container
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
+        // Initialize the state holder that manages position and animation logic
         val playerStateHolder = rememberMiniPlayerState(
             screenWidth = constraints.toPx(maxWidth),
             screenHeight = constraints.toPx(maxHeight),
             playerConstraints = constraints
         )
 
+        // React to navigation bar visibility changes (e.g., adjust player position)
         LaunchedEffect(navBarVisible) {
             playerStateHolder.onNavBarVisibilityChanged()
         }
 
         Box(
             modifier = Modifier
-                .offset { playerStateHolder.offset.value.toIntOffset() }
+                .offset { playerStateHolder.offset.value.toIntOffset() } // Apply dynamic position
                 .size(WIDTH.dp, HEIGHT.dp)
                 .clip(mShapes.small)
                 .background(Color.Black)
                 .pointerInput(navBarVisible) {
+                    // Handle drag gestures
                     detectDragGestures(
                         onDrag = { change, dragAmount ->
-                            change.consume()
+                            change.consume() // Prevent parent from scrolling
                             playerStateHolder.dragBy(dragAmount)
                         },
-                        onDragEnd = { playerStateHolder.snapToCorner() }
+                        onDragEnd = {
+                            // When released, snap the player to the nearest screen corner
+                            playerStateHolder.snapToCorner()
+                        }
                     )
                 }
         ) {
+            // Render the control overlay and the actual Video surface
             MiniPlayerController(playerState, onPlayerEffect, onPlayerIntent)
             Player(player, playerState)
         }
@@ -101,7 +116,8 @@ internal fun MiniPlayerContainer(
 }
 
 /**
- * Size and paddings in px
+ * Helper class to calculate and store boundaries in Pixels.
+ * Considers system bars (Status/Navigation) and margins.
  */
 private class PlayerConstraints(
     private val density: Density,
@@ -112,16 +128,21 @@ private class PlayerConstraints(
     val widthPx = with(density) { WIDTH.dp.toPx() }
     val heightPx = with(density) { HEIGHT.dp.toPx() }
     val marginPx = with(density) { MARGIN.dp.toPx() }
+
+    // Top boundary: Status bar height + defined margin
     val topLimitPx = with(density) { (statusBarSize + MARGIN.dp).toPx() }
+
+    // Bottom boundary: Accounts for navigation bar visibility
     val bottomMarginPx = with(density) {
         (MARGIN.dp + if (navBarVisible) navBarSize else ZERO.dp).toPx()
     }
 
+    // Utility function for DP to PX conversion
     fun toPx(dp: Dp) = with(density) { dp.toPx() }
 }
 
 /**
- * Position and animation states
+ * Factory function to create and remember the MiniPlayerStateHolder.
  */
 @Composable
 private fun rememberMiniPlayerState(
@@ -132,39 +153,63 @@ private fun rememberMiniPlayerState(
     val scope = rememberCoroutineScope()
     val motionScheme = mMotionScheme
 
-    return remember(screenWidth, screenHeight, playerConstraints) {
+    // Recreate holder only if screen dimensions change
+    val holder = remember(screenWidth, screenHeight) {
         MiniPlayerStateHolder(scope, screenWidth, screenHeight, playerConstraints, motionScheme)
     }
+
+    // Ensure the holder always has the latest layout constraints
+    SideEffect {
+        holder.updateConfig(playerConstraints)
+    }
+
+    return holder
 }
 
+/**
+ * State holder that manages the physics and movement of the mini player.
+ */
 private class MiniPlayerStateHolder(
     private val scope: CoroutineScope,
     private val screenWidth: Float,
     private val screenHeight: Float,
-    private val config: PlayerConstraints,
+    private var config: PlayerConstraints,
     private val motionScheme: MotionScheme
 ) {
+    // The animatable offset representing the current (x, y) position
     val offset = Animatable(
         initialValue = Offset(
-            x = screenWidth - config.widthPx - config.marginPx,
+            x = screenWidth - config.widthPx - config.marginPx, // Initial: Bottom Right
             y = screenHeight - config.heightPx - config.bottomMarginPx
         ),
         typeConverter = Offset.VectorConverter
     )
 
+    // Calculated maximum bounds for X and Y axes
     private val limitYMax get() = screenHeight - config.heightPx - config.bottomMarginPx
     private val limitXMax get() = screenWidth - config.widthPx - config.marginPx
 
+    fun updateConfig(newConfig: PlayerConstraints) {
+        config = newConfig
+    }
+
+    /**
+     * Updates the position during a drag event, keeping the player within screen bounds.
+     */
     fun dragBy(dragAmount: Offset) {
         val newX = (offset.value.x + dragAmount.x).coerceIn(config.marginPx, limitXMax)
         val newY = (offset.value.y + dragAmount.y).coerceIn(config.topLimitPx, limitYMax)
         scope.launch { offset.snapTo(Offset(newX, newY)) }
     }
 
+    /**
+     * Animates the player to the nearest corner of the screen when released.
+     */
     fun snapToCorner() {
         val centerX = offset.value.x + config.widthPx / CENTER_DIVIDER
         val centerY = offset.value.y + config.heightPx / CENTER_DIVIDER
 
+        // Determine target corner based on which quadrant the center point is in
         val targetX = if (centerX < screenWidth / CENTER_DIVIDER) config.marginPx else limitXMax
         val targetY = if (centerY < screenHeight / CENTER_DIVIDER) config.topLimitPx else limitYMax
 
@@ -176,15 +221,23 @@ private class MiniPlayerStateHolder(
         }
     }
 
+    /**
+     * Smoothly adjusts the player position if the navigation bar appears/disappears.
+     * Only triggers if the player is currently in the bottom half of the screen.
+     */
     suspend fun onNavBarVisibilityChanged() {
-        val isAtBottomHalf = offset.value.y > (screenHeight / CENTER_DIVIDER)
-        if (isAtBottomHalf) {
-            offset.animateTo(Offset(offset.value.x, limitYMax))
+        val isInBottomHalf = offset.value.y > (screenHeight / CENTER_DIVIDER)
+
+        if (isInBottomHalf) {
+            offset.animateTo(
+                targetValue = offset.value.copy(y = limitYMax),
+                animationSpec = motionScheme.slowSpatialSpec()
+            )
         }
     }
 }
 
-// Extension
+// Extension to convert Float Offset to IntOffset for the Modifier.offset call
 private fun Offset.toIntOffset() = IntOffset(x.roundToInt(), y.roundToInt())
 
 /**

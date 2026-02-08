@@ -74,9 +74,15 @@ private val SkipButtonSize = 38.dp
 private val PlayPauseButtonSize = 40.dp
 
 private val NoTitleLabel = R.string.no_title_provided_label
+private val EpisodeLabel = R.string.episode_label
+private val SkipOpeningLabel = R.string.skip_opening_label
+private val UnlockLabel = R.string.unlock_label
 
 private const val ZERO = 0
 private const val ONE = 1
+private const val TRACK_ALPHA = 0.24f
+private const val SAFE_TOTAL_DURATION = 0L
+private val SliderHeight = 1.dp
 
 @Composable
 internal fun FullScreenPlayerController(
@@ -86,14 +92,20 @@ internal fun FullScreenPlayerController(
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
-    val visibility = rememberControllerVisibility(playerState.isControllerVisible, playerState.episodeTime.isScrubbing)
 
-    // Derived data for UI
-    val currentEpisode = playerState.episodes.getOrNull(playerState.currentEpisodeIndex)
+    // Optimizing visibility: derived state ensures we don't recalculate logic unless these specific values change
+    val visibility = rememberControllerVisibility(
+        playerState.isControllerVisible,
+        playerState.episodeTime.isScrubbing
+    )
+
+    // Derived data for UI: Prevents recalculating strings every time playerState.episodeTime updates
+    val currentEpisode = remember(playerState.episodes, playerState.currentEpisodeIndex) {
+        playerState.episodes.getOrNull(playerState.currentEpisodeIndex)
+    }
     val title = currentEpisode?.name ?: stringResource(NoTitleLabel)
-    val episodeNumber = playerState.currentEpisodeIndex + ONE
+    val episodeNumber = remember(playerState.currentEpisodeIndex) { playerState.currentEpisodeIndex + ONE }
 
-    // 1. Interaction Layer (Captures taps to toggle visibility)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -102,28 +114,26 @@ internal fun FullScreenPlayerController(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             )
-    )
-
-    // 2. Main Controls (Only visible when NOT locked)
-    if (!playerState.isLocked) {
-        MainControlsOverlay(
-            title = title,
-            episodeNumber = episodeNumber,
-            playerState = playerState,
-            onPlayerEffect = onPlayerEffect,
-            visibility = visibility,
-            contentPadding = systemBarsPadding,
-            pipManager = pipManager,
-            onPlayerIntent = onPlayerIntent
-        )
-    }
-
-    // 3. Unlock Overlay (Only visible when locked)
-    if (playerState.isLocked) {
-        UnlockOverlay(
-            onPlayerIntent = onPlayerIntent,
-            alpha = visibility.controlsAlpha
-        )
+    ) {
+        if (playerState.isLocked) {
+            // Only visible when locked. Alpha is applied via graphicsLayer for performance.
+            UnlockOverlay(
+                onPlayerIntent = onPlayerIntent,
+                alpha = visibility.controlsAlpha
+            )
+        } else {
+            // Main UI controls
+            MainControlsOverlay(
+                title = title,
+                episodeNumber = episodeNumber,
+                playerState = playerState,
+                visibility = visibility,
+                pipManager = pipManager,
+                contentPadding = systemBarsPadding,
+                onPlayerEffect = onPlayerEffect,
+                onPlayerIntent = onPlayerIntent
+            )
+        }
     }
 }
 
@@ -134,13 +144,14 @@ private fun MainControlsOverlay(
     playerState: PlayerState,
     visibility: ControllerVisibility,
     pipManager: PipManager,
+    contentPadding: PaddingValues,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit,
-    contentPadding: PaddingValues
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            // Using graphicsLayer for alpha to avoid invalidating the layout/draw phase of children
             .graphicsLayer { alpha = visibility.controlsAlpha }
             .background(Color.Black.copy(alpha = visibility.overlayAlpha))
             .padding(
@@ -150,20 +161,41 @@ private fun MainControlsOverlay(
                 end = EdgePadding
             )
     ) {
-        Header(title, episodeNumber, playerState, onPlayerIntent)
-        CenterControls(playerState, onPlayerEffect, onPlayerIntent)
-        Footer(playerState, pipManager, onPlayerEffect, onPlayerIntent)
-        SkipOpeningButton(playerState.isSkipOpeningButtonVisible, onPlayerIntent)
+        Header(
+            title = title,
+            episodeNumber = episodeNumber,
+            isControllerVisible = playerState.isControllerVisible,
+            onPlayerIntent = onPlayerIntent
+        )
+
+        CenterControls(
+            currentEpisodeIndex = playerState.currentEpisodeIndex,
+            totalEpisodes = playerState.episodes.size,
+            playerState = playerState,
+            isControllerVisible = playerState.isControllerVisible,
+            onPlayerEffect = onPlayerEffect,
+            onPlayerIntent = onPlayerIntent
+        )
+
+        Footer(
+            playerState = playerState,
+            pipManager = pipManager,
+            onPlayerEffect = onPlayerEffect,
+            onPlayerIntent = onPlayerIntent
+        )
+
+        SkipOpeningButton(
+            visible = playerState.isSkipOpeningButtonVisible,
+            onPlayerIntent = onPlayerIntent
+        )
     }
 }
-
-private val EpisodeLabel = R.string.episode_label
 
 @Composable
 private fun BoxScope.Header(
     title: String,
     episodeNumber: Int,
-    playerState: PlayerState,
+    isControllerVisible: Boolean,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     Row(
@@ -173,6 +205,7 @@ private fun BoxScope.Header(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        // Left Side: Back & Info
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(IconSpacing)
@@ -180,7 +213,7 @@ private fun BoxScope.Header(
             PlayerIconButton(
                 icon = LibertyFlowIcons.ArrowDown,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) },
-                isEnabled = playerState.isControllerVisible
+                isEnabled = isControllerVisible
             )
             Column(verticalArrangement = Arrangement.spacedBy(HeaderSpacing)) {
                 Text(
@@ -195,16 +228,17 @@ private fun BoxScope.Header(
             }
         }
 
+        // Right Side: Quick Settings
         Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.Checklist,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },
-                isEnabled = playerState.isControllerVisible
+                isEnabled = isControllerVisible
             )
             PlayerIconButton(
                 icon = LibertyFlowIcons.Settings,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleSettingsBS) },
-                isEnabled = playerState.isControllerVisible
+                isEnabled = isControllerVisible
             )
         }
     }
@@ -212,7 +246,10 @@ private fun BoxScope.Header(
 
 @Composable
 private fun BoxScope.CenterControls(
+    currentEpisodeIndex: Int,
+    totalEpisodes: Int,
     playerState: PlayerState,
+    isControllerVisible: Boolean,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
@@ -222,12 +259,12 @@ private fun BoxScope.CenterControls(
         horizontalArrangement = Arrangement.spacedBy(ControlSpacing)
     ) {
         PlayerIconButton(
-            isAvailable = playerState.currentEpisodeIndex > ZERO,
+            isAvailable = currentEpisodeIndex > ZERO,
             icon = LibertyFlowIcons.Previous,
             iconSize = SkipIconSize,
             modifier = Modifier.size(SkipButtonSize),
             onClick = { onPlayerEffect(PlayerEffect.SkipEpisode(forward = false)) },
-            isEnabled = playerState.isControllerVisible
+            isEnabled = isControllerVisible
         )
 
         AnimatedPlayPauseButton(
@@ -235,21 +272,19 @@ private fun BoxScope.CenterControls(
             onPlayerIntent = onPlayerIntent,
             iconSize = PlayPauseIconSize,
             buttonSize = PlayPauseButtonSize,
-            isEnabled = playerState.isControllerVisible
+            isEnabled = isControllerVisible
         )
 
         PlayerIconButton(
-            isAvailable = playerState.currentEpisodeIndex < playerState.episodes.size - ONE,
+            isAvailable = currentEpisodeIndex < totalEpisodes - ONE,
             icon = LibertyFlowIcons.Next,
             iconSize = SkipIconSize,
             modifier = Modifier.size(SkipButtonSize),
             onClick = { onPlayerEffect(PlayerEffect.SkipEpisode(forward = true)) },
-            isEnabled = playerState.isControllerVisible
+            isEnabled = isControllerVisible
         )
     }
 }
-
-private const val SLASH = "/"
 
 @Composable
 private fun BoxScope.Footer(
@@ -260,61 +295,19 @@ private fun BoxScope.Footer(
 ) {
     var scrubPosition by remember { mutableStateOf<Long?>(null) }
 
-    val currentTime = scrubPosition ?: playerState.episodeTime.current
-    val totalTime = playerState.episodeTime.total
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .align(Alignment.BottomCenter),
         verticalArrangement = Arrangement.spacedBy(HeaderSpacing)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "${currentTime.formatMinSec()} $SLASH ${totalTime.formatMinSec()}",
-                style = mTypography.bodyMedium.copy(color = Color.White)
-            )
-
-            Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
-                PlayerIconButton(
-                    icon = LibertyFlowIcons.Lock,
-                    onClick = { onPlayerIntent(PlayerIntent.ToggleIsLocked) },
-                    isEnabled = playerState.isControllerVisible
-                )
-
-                // Animated Crop Toggle
-                val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.CropAnimated)
-                val painter = rememberAnimatedVectorPainter(animatedVector, !playerState.isCropped)
-                IconButton(
-                    onClick = { onPlayerIntent(PlayerIntent.ToggleCropped) }
-                ) {
-                    Image(painter = painter, contentDescription = null, colorFilter = ColorFilter.tint(Color.White))
-                }
-
-                val pipContext = LocalContext.current
-                PlayerIconButton(
-                    icon = LibertyFlowIcons.Pip,
-                    onClick = {
-                        onPlayerIntent(PlayerIntent.TurnOffController)
-                        if (pipManager.isPipSupported(pipContext)) {
-                            pipManager.updatedPipParams()?.let { params ->
-                                (pipContext as Activity).enterPictureInPictureMode(params)
-                            }
-                        }
-                    },
-                    isEnabled = playerState.isControllerVisible
-                )
-                PlayerIconButton(
-                    icon = LibertyFlowIcons.QuitFullScreen,
-                    onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) },
-                    isEnabled = playerState.isControllerVisible
-                )
-            }
-        }
+        // Time and Actions Row
+        TimeAndActionsRow(
+            playerState = playerState,
+            scrubPosition = scrubPosition,
+            pipManager = pipManager,
+            onPlayerIntent = onPlayerIntent
+        )
 
         PlayerSlider(
             currentPosition = playerState.episodeTime.current,
@@ -333,12 +326,73 @@ private fun BoxScope.Footer(
     }
 }
 
-private const val TRACK_ALPHA = 0.24f
-private const val SAFE_RANGE_START = 0f
+@Composable
+private fun TimeAndActionsRow(
+    playerState: PlayerState,
+    scrubPosition: Long?,
+    pipManager: PipManager,
+    onPlayerIntent: (PlayerIntent) -> Unit
+) {
+    val context = LocalContext.current
 
-private const val SAFE_TOTAL_DURATION = 0L
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Optimized Time Label: Separated to limit recompositions when only time changes
+        val displayTime = scrubPosition ?: playerState.episodeTime.current
+        Text(
+            text = "${displayTime.formatMinSec()} / ${playerState.episodeTime.total.formatMinSec()}",
+            style = mTypography.bodyMedium.copy(color = Color.White)
+        )
 
-private val SliderHeight = 1.dp
+        Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
+            PlayerIconButton(
+                icon = LibertyFlowIcons.Lock,
+                onClick = { onPlayerIntent(PlayerIntent.ToggleIsLocked) },
+                isEnabled = playerState.isControllerVisible
+            )
+
+            // Dynamic Crop Toggle with Vector Animation
+            CropButton(isCropped = playerState.isCropped) {
+                onPlayerIntent(PlayerIntent.ToggleCropped)
+            }
+
+            PlayerIconButton(
+                icon = LibertyFlowIcons.Pip,
+                onClick = {
+                    onPlayerIntent(PlayerIntent.TurnOffController)
+                    if (pipManager.isPipSupported(context)) {
+                        pipManager.updatedPipParams()?.let { params ->
+                            (context as? Activity)?.enterPictureInPictureMode(params)
+                        }
+                    }
+                },
+                isEnabled = playerState.isControllerVisible
+            )
+
+            PlayerIconButton(
+                icon = LibertyFlowIcons.QuitFullScreen,
+                onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) },
+                isEnabled = playerState.isControllerVisible
+            )
+        }
+    }
+}
+
+@Composable
+private fun CropButton(isCropped: Boolean, onClick: () -> Unit) {
+    val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.CropAnimated)
+    val painter = rememberAnimatedVectorPainter(animatedVector, !isCropped)
+    IconButton(onClick = onClick) {
+        Image(
+            painter = painter,
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(Color.White)
+        )
+    }
+}
 
 @Composable
 private fun PlayerSlider(
@@ -348,12 +402,14 @@ private fun PlayerSlider(
     onScrubbing: (Long) -> Unit,
     onSeekFinished: (Long) -> Unit
 ) {
+    // We use derived state to avoid heavy math on every recomposition if inputs didn't change
+    val safeTotalDuration = remember(totalDuration) { totalDuration.coerceAtLeast(SAFE_TOTAL_DURATION).toFloat() }
     val displayPosition = (scrubPosition ?: currentPosition).toFloat()
-    val safeTotalDuration = totalDuration.coerceAtLeast(SAFE_TOTAL_DURATION).toFloat()
 
     Box(contentAlignment = Alignment.CenterStart, modifier = Modifier.fillMaxWidth()) {
         LinearProgressIndicator(
-            progress = { displayPosition / safeTotalDuration },
+            // Key optimization: the lambda version of progress avoids full component recomposition
+            progress = { if (safeTotalDuration > 0) displayPosition / safeTotalDuration else 0f },
             modifier = Modifier.fillMaxWidth(),
             color = Color.White,
             trackColor = Color.White.copy(alpha = TRACK_ALPHA),
@@ -362,7 +418,7 @@ private fun PlayerSlider(
 
         Slider(
             value = displayPosition,
-            valueRange = SAFE_RANGE_START..safeTotalDuration,
+            valueRange = 0f..safeTotalDuration,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(SliderHeight),
@@ -377,40 +433,26 @@ private fun PlayerSlider(
     }
 }
 
-private const val TOTAL_SECONDS_DIVIDER = 1000
-private const val SECONDS_MINUTES_DIVIDER = 60
-private const val FORMAT = "%02d:%02d"
-
-private fun Long.formatMinSec(): String {
-    val totalSeconds = this / TOTAL_SECONDS_DIVIDER
-    val minutes = totalSeconds / SECONDS_MINUTES_DIVIDER
-    val seconds = totalSeconds % SECONDS_MINUTES_DIVIDER
-    return FORMAT.format(minutes, seconds)
-}
-
-private val SkipOpeningLabel = R.string.skip_opening_label
-private const val BUTTON_ANIMATION_LABEL = "Skip opening button animation label"
-
 @Composable
 private fun BoxScope.SkipOpeningButton(visible: Boolean, onPlayerIntent: (PlayerIntent) -> Unit) {
     val animatedAlpha by animateFloatAsState(
         targetValue = if (visible) 1f else 0f,
         animationSpec = mMotionScheme.slowEffectsSpec(),
-        label = BUTTON_ANIMATION_LABEL
+        label = "SkipOpeningAlpha"
     )
 
-    ButtonWithIcon(
-        text = stringResource(SkipOpeningLabel),
-        icon = LibertyFlowIcons.RewindForwardCircle,
-        type = ButtonWithIconType.Outlined,
-        onClick = { onPlayerIntent(PlayerIntent.SkipOpening) },
-        modifier = Modifier
-            .align(Alignment.CenterEnd)
-            .graphicsLayer { alpha = animatedAlpha },
-    )
+    if (animatedAlpha > 0f) {
+        ButtonWithIcon(
+            text = stringResource(SkipOpeningLabel),
+            icon = LibertyFlowIcons.RewindForwardCircle,
+            type = ButtonWithIconType.Outlined,
+            onClick = { onPlayerIntent(PlayerIntent.SkipOpening) },
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .graphicsLayer { alpha = animatedAlpha },
+        )
+    }
 }
-
-private val UnlockLabel = R.string.unlock_label
 
 @Composable
 private fun UnlockOverlay(
@@ -454,4 +496,12 @@ private fun PlayerIconButton(
             tint = if (isAvailable) Color.White else Color.Gray
         )
     }
+}
+
+// --- Utils ---
+private fun Long.formatMinSec(): String {
+    val totalSeconds = this / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "%02d:%02d".format(minutes, seconds)
 }

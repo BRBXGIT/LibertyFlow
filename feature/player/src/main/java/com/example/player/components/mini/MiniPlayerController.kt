@@ -123,7 +123,7 @@ private fun ControllerButton(
             painter = painterResource(icon),
             contentDescription = null,
             modifier = Modifier.size(ICON_SIZE.dp),
-            tint = mColors.onBackground
+            tint = Color.White
         )
     }
 }
