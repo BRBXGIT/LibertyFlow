@@ -22,7 +22,6 @@ class ThemeVM @Inject constructor(themeRepo: ThemeRepo): ViewModel() {
         flow = themeRepo.libertyFlowTheme,
         flow2 = _isSystemInDarkMode
     ) { theme, isSystemDark ->
-
         val finalColorScheme = resolveColorScheme(
             storedColor = theme.activeColorScheme,
             themePref = theme.userThemePreference,
@@ -39,9 +38,8 @@ class ThemeVM @Inject constructor(themeRepo: ThemeRepo): ViewModel() {
 
     fun sendIntent(intent: ThemeIntent) {
         when (intent) {
-            is ThemeIntent.UpdateSystemDarkMode -> {
+            is ThemeIntent.UpdateSystemDarkMode ->
                 _isSystemInDarkMode.value = intent.isSystemInDarkMode
-            }
         }
     }
 

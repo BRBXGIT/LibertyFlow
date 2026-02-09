@@ -39,7 +39,6 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
-    implementation(libs.androidx.media3.session)
     ksp(libs.hilt.android.compiler)
     // Paging
     implementation(libs.androidx.paging.runtime.ktx)
@@ -55,6 +54,8 @@ dependencies {
     implementation(libs.converter.gson)
     // Media 3 for hilt injection
     implementation(libs.androidx.media3.exoplayer)
+    // Media 3 for player session
+    api(libs.androidx.media3.session)
 
     // === Testing ===
     // Unit tests

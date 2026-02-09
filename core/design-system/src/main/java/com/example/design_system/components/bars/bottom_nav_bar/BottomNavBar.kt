@@ -64,11 +64,11 @@ private val navItems = listOf(
         iconRes = LibertyFlowIcons.HeartAnimated,
         destination = FavoritesRoute
     ),
-    NavItem(
-        labelRes = CollectionsLabel,
-        iconRes = LibertyFlowIcons.BookAnimated,
-        destination = CollectionsRoute
-    ),
+//    NavItem(
+//        labelRes = CollectionsLabel,
+//        iconRes = LibertyFlowIcons.BookAnimated,
+//        destination = CollectionsRoute
+//    ),
     NavItem(
         labelRes = MoreLabel,
         iconRes = LibertyFlowIcons.DotsAnimated,

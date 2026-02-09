@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_label">Добро пожаловать!</string>
+    <string name="welcome_description">
+        LibertyFlow это сервис для просмотра и отслеживания аниме в озвучке от AniLiberty.
+    </string>
+
+    <string name="vpn_label">VPN</string>
+    <string name="vpn_description">
+        Если у вас не грузятся какие-либо данные попробуйте использовать VPN или DPI спуффер.
+    </string>
+
+    <string name="permissions_label">Разрешения</string>
+    <string name="permissions_description">
+        От вас требуется разрешение уведомлений, они будут появляться только при проигрывании аниме :)
+    </string>
+
+    <string name="permission_button_label">Разрешить уведомления</string>
+
+    <string name="permission_denied_label">Вы всегда можете включить их в настройках ;)</string>
+</resources>

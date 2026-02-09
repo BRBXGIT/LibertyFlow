@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_label">Welcome!</string>
+    <string name="welcome_description">
+        LibertyFlow is a service for watching and observing anime with AniLiberty voice acting.
+    </string>
+
+    <string name="vpn_label">VPN</string>
+    <string name="vpn_description">
+        If some data is loading slowly try to use VPN or DPI puffer.
+    </string>
+
+    <string name="permissions_label">Permissions</string>
+    <string name="permissions_description">
+        We need permissions to show notifications, it will be showed only when watching anime :)
+    </string>
+
+    <string name="permission_button_label">Allow notifications</string>
+    
+    <string name="permission_denied_label">You can always turn it in settings ;)</string>
+</resources>

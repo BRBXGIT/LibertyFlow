@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":core:local")) // Only for obfuscation
     implementation(project(":core:common"))
     // Feature modules
+    implementation(project(":feature:onboarding"))
     implementation(project(":feature:home"))
     implementation(project(":feature:favorites"))
     implementation(project(":feature:collections"))
@@ -69,6 +70,8 @@ dependencies {
     implementation(project(":feature:info"))
     implementation(project(":feature:settings"))
 
+    // Splashscreen
+    implementation(libs.androidx.core.splashscreen)
     // Media 3 only for arguments
     implementation(libs.androidx.media3.exoplayer)
     // Core

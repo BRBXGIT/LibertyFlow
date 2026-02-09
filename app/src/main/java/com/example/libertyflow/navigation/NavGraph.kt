@@ -34,12 +34,13 @@ import com.example.home.navigation.home
 import com.example.home.screen.HomeVM
 import com.example.info.navigation.info
 import com.example.more.navigation.more
+import com.example.onboarding.navigation.onboarding
 import com.example.player.player.PlayerContainer
 import com.example.player.player.PlayerVM
 import com.example.settings.navigation.settings
 
 @Composable
-fun NavGraph(themeVM: ThemeVM) {
+fun NavGraph(themeVM: ThemeVM, startDestination: NavigationBase) {
     val navController = rememberNavController()
 
     // Initialize vm's here to don't refetch values
@@ -62,11 +63,12 @@ fun NavGraph(themeVM: ThemeVM) {
         Box(Modifier.fillMaxSize()) {
             NavHost(
                 navController = navController,
-                startDestination = HomeRoute
+                startDestination = startDestination
             ) {
+                onboarding(navController)
                 home(homeVM, navController)
                 favorites(favoritesVM, refreshVM, navController)
-                collections(collectionsVM, refreshVM, themeVM, navController)
+//                collections(collectionsVM, refreshVM, themeVM, navController)
                 animeDetails(refreshVM, playerVM, navController)
                 more(navController)
                 info(navController)
