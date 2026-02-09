@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
             val appStartingState by appStartingVM.appStartingState.collectAsStateWithLifecycle()
 
             splashScreen.setKeepOnScreenCondition {
-                appStartingState.onboardingCompleted != OnboardingState.Loading
+                appStartingState.onboardingCompleted is OnboardingState.Loading
             }
 
             val themeVM = hiltViewModel<ThemeVM>()
@@ -56,13 +56,15 @@ class MainActivity : ComponentActivity() {
                 useExpressive = themeState.useExpressive,
                 colorScheme = themeState.activeColorScheme
             ) {
-                NavGraph(
-                    themeVM = themeVM,
-                    startDestination = when(appStartingState.onboardingCompleted) {
-                        OnboardingState.Completed -> HomeRoute
-                        else -> OnboardingRoute
-                    }
-                )
+                if (appStartingState.onboardingCompleted !is OnboardingState.Loading) {
+                    NavGraph(
+                        themeVM = themeVM,
+                        startDestination = when(appStartingState.onboardingCompleted) {
+                            OnboardingState.Completed -> HomeRoute
+                            else -> OnboardingRoute
+                        }
+                    )
+                }
             }
         }
     }
