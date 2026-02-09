@@ -10,12 +10,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.common.navigation.MoreRoute
 import com.example.common.ui_helpers.effects.HandleCommonEffects
+import com.example.design_system.utils.standardScreenEnterTransition
+import com.example.design_system.utils.standardScreenExitTransition
 import com.example.more.screen.More
 import com.example.more.screen.MoreVM
 
 fun NavGraphBuilder.more(
     navController: NavController
-) = composable<MoreRoute> {
+) = composable<MoreRoute>(
+    exitTransition = { standardScreenExitTransition() },
+    enterTransition = { standardScreenEnterTransition() }
+) {
     val moreVM = hiltViewModel<MoreVM>()
 
     val state by moreVM.state.collectAsStateWithLifecycle()

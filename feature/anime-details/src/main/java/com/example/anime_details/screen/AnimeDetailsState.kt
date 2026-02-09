@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.example.common.ui_helpers.auth.AuthFormState
 import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.data.models.auth.AuthState
+import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.releases.anime_details.AnimeDetails
 
 @Immutable
@@ -33,6 +34,13 @@ data class AnimeDetailsState(
         val isLoading: Boolean = false,
         val isError: Boolean = false,
         val ids: List<Int> = emptyList()
+    )
+
+    @Immutable
+    data class CollectionsState(
+        val isLoading: Boolean = false,
+        val isError: Boolean = false,
+        val ids: List<Map<Collection, List<Int>>> = emptyList()
     )
 
     // Auth

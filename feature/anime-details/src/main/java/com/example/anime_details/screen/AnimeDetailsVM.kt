@@ -215,6 +215,13 @@ class AnimeDetailsVM @Inject constructor(
         }
     }
 
+    // --- Collections ---
+    private fun fetchCollections() {
+        viewModelScope.launch(dispatcherIo) {
+
+        }
+    }
+
     // Helper to reduce boilerplate for effects
     private fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
         viewModelScope.launch(dispatcherIo) {
