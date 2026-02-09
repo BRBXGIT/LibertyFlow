@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Avoid bug when theme doesn't want to change after splashscreen
+        // Avoid bug when theme doesn't change after splashscreen
         setTheme(R.style.Theme_LibertyFlow)
 
         enableEdgeToEdge()

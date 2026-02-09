@@ -16,7 +16,7 @@ class OnboardingRepoImpl @Inject constructor(
             when(value) {
                 true -> OnboardingState.Completed
                 false -> OnboardingState.NotCompleted
-                null -> OnboardingState.Loading
+                null -> OnboardingState.NotCompleted
             }
         }
 
