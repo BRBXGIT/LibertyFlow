@@ -12,11 +12,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.player"
+    namespace = "com.example.onboarding"
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 28
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,27 +39,20 @@ android {
 dependencies {
 
     // Core modules
-    implementation(project(":core:design-system"))
     implementation(project(":core:common"))
+    implementation(project(":core:design-system"))
     implementation(project(":core:data"))
 
-    // Media 3
-    implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.exoplayer.hls)
-    implementation(libs.media3.ui)
-    implementation(libs.androidx.media3.session)
-    // Coroutines guava
-    implementation(libs.kotlinx.coroutines.guava)
+    // Navigation
+    implementation(libs.navigation.compose)
     // Material 3
     implementation(libs.androidx.material3.android)
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
-    // Compose animation graphics
-    implementation(libs.androidx.animation.graphics)
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime
     implementation(libs.androidx.compose.runtime)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

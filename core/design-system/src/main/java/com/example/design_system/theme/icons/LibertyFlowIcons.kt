@@ -59,6 +59,9 @@ object LibertyFlowIcons {
     val Download = R.drawable.ic_download_filled
     val DoubleCheckFilled = R.drawable.ic_double_check_filled
     val PlayFilled = R.drawable.ic_play_filled
+    val AltArrowLeftFilled = R.drawable.ic_alt_arrow_left_filled
+    val AltArrowRightFilled = R.drawable.ic_alt_arrow_right_filled
+
 
     // Multicolored
     val AniLiberty = R.drawable.ic_aniliberty_multicolored
@@ -68,4 +71,9 @@ object LibertyFlowIcons {
     val Patreon = R.drawable.ic_patreon_multicolored
     val Telegram = R.drawable.ic_telegram_multicolored
     val Discord = R.drawable.ic_discord_multicolored
+
+    // Webp
+    val Welcome = R.drawable.welcome
+    val Vpn = R.drawable.vpn
+    val Permissions = R.drawable.permissions
 }

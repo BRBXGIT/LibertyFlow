@@ -3,6 +3,9 @@ package com.example.common.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
+data object OnboardingRoute: NavigationBase
+
+@Serializable
 data object HomeRoute: NavigationBase, NavBarItem
 
 @Serializable
