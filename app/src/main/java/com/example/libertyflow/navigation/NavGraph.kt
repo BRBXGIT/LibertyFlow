@@ -68,7 +68,7 @@ fun NavGraph(themeVM: ThemeVM, startDestination: NavigationBase) {
                 onboarding(navController)
                 home(homeVM, navController)
                 favorites(favoritesVM, refreshVM, navController)
-                collections(collectionsVM, refreshVM, themeVM, navController)
+//                collections(collectionsVM, refreshVM, themeVM, navController)
                 animeDetails(refreshVM, playerVM, navController)
                 more(navController)
                 info(navController)
