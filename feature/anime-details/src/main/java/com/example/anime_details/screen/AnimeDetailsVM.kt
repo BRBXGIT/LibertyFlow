@@ -68,7 +68,6 @@ class AnimeDetailsVM @Inject constructor(
                 _state.update { it.copy(authState = auth) }
                 if (auth is AuthState.LoggedIn) {
                     fetchFavoritesIds()
-                    fetchCollections()
                 }
             }
             .launchIn(viewModelScope)
@@ -178,17 +177,38 @@ class AnimeDetailsVM @Inject constructor(
     // --- Favorites ---
     private fun fetchFavoritesIds() {
         viewModelScope.launch(dispatcherIo) {
-            _state.update { it.updateFavorites { f -> f.copy(isLoading = true, isError = false) } }
+            _state.update {
+                it.copy(
+                    favoritesState = it.favoritesState.copy(
+                        loadingState = it.favoritesState.loadingState.withBoth(
+                            loading = true,
+                            error = false
+                        )
+                    )
+                )
+            }
 
             favoritesRepo.getFavoritesIds()
                 .onSuccess { ids ->
                     _state.update {
-                        it.updateFavorites { f -> f.copy(ids = ids, isLoading = false) }
+                        it.copy(
+                            favoritesState = it.favoritesState.copy(
+                                ids = ids,
+                                loadingState = it.favoritesState.loadingState.withLoading(false)
+                            )
+                        )
                     }
                 }
                 .onError { _, messageRes ->
                     _state.update {
-                        it.updateFavorites { f -> f.copy(isError = true, isLoading = false) }
+                        it.copy(
+                            favoritesState = it.favoritesState.copy(
+                                loadingState = it.favoritesState.loadingState.withBoth(
+                                    loading = false,
+                                    error = true
+                                )
+                            )
+                        )
                     }
                     sendSnackbar(messageRes) { fetchFavoritesIds() }
                 }
@@ -199,7 +219,16 @@ class AnimeDetailsVM @Inject constructor(
         val animeId = _state.value.anime?.id ?: return
 
         viewModelScope.launch(dispatcherIo) {
-            _state.update { it.updateFavorites { f -> f.copy(isLoading = true, isError = false) } }
+            _state.update {
+                it.copy(
+                    favoritesState = it.favoritesState.copy(
+                        loadingState = it.favoritesState.loadingState.withBoth(
+                            loading = true,
+                            error = false
+                        )
+                    )
+                )
+            }
 
             // Construct request
             val request = FavoriteRequest().apply { add(FavoriteItem(animeId)) }
@@ -211,15 +240,10 @@ class AnimeDetailsVM @Inject constructor(
 
             result
                 .onSuccess {
-                    _state.update {
-                        // Reuse the safe logic from State class
-                        it.updateFavorites { f -> f.copy(isLoading = false) }.run {
-                            if (shouldAdd) addAnimeToFavorites() else removeAnimeFromFavorites()
-                        }
-                    }
+                    _state.update { it.addAnimeToFavorites() }
                 }
                 .onError { _, messageRes ->
-                    _state.update { it.updateFavorites { f -> f.copy(isError = true, isLoading = false) } }
+                    _state.update { it.removeAnimeFromFavorites() }
                     sendSnackbar(messageRes) { toggleFavorite(shouldAdd) }
                 }
         }
@@ -228,77 +252,73 @@ class AnimeDetailsVM @Inject constructor(
     // --- Collections ---
     private fun fetchCollections() {
         viewModelScope.launch(dispatcherIo) {
-            _state.update { it.updateCollections { c -> c.copy(isLoading = true, isError = false) } }
+            _state.update { it.copy(collectionsState = it.collectionsState.copy(
+                loadingState = it.collectionsState.loadingState.withBoth(loading = true, error = false)
+            ))}
 
             collectionsRepo.getCollectionsIds()
                 .onSuccess { collections ->
-                    _state.update {
-                        it.updateCollections { c -> c.copy(collections = collections, isLoading = false) }
-                    }
+                    _state.update { it.copy(
+                        collectionsState = it.collectionsState.copy(
+                            collections = collections,
+                            loadingState = it.collectionsState.loadingState.withLoading(false)
+                        )
+                    )}
                 }
                 .onError { _, messageRes ->
-                    _state.update {
-                        it.updateCollections { c -> c.copy(isError = true, isLoading = false) }
-                    }
+                    _state.update { it.copy(
+                        collectionsState = it.collectionsState.copy(
+                            loadingState = it.collectionsState.loadingState.withBoth(loading = false, error = true)
+                        )
+                    )}
                     sendSnackbar(messageRes) { fetchCollections() }
                 }
         }
     }
 
-    private fun toggleCollection(targetCollection: Collection) {
+    private fun toggleCollection(targetType: Collection) {
         val animeId = _state.value.anime?.id ?: return
-
-        val currentCollection = _state.value.collectionsState.collections.find {
-            it.ids.contains(animeId)
-        }
+        val currentActive = _state.value.activeCollection
 
         viewModelScope.launch(dispatcherIo) {
-            _state.update { it.updateCollections { c -> c.copy(isLoading = true, isError = false) } }
-
-            val isRemoval = currentCollection?.collection == targetCollection
-
-            val result = if (isRemoval) {
-                val request = CollectionRequest().apply { add(CollectionItem(animeId, currentCollection.collection)) }
-                collectionsRepo.deleteFromCollection(request)
-            } else {
-                val request = CollectionRequest().apply { add(CollectionItem(animeId, targetCollection)) }
-                collectionsRepo.addToCollection(request)
+            if (currentActive == targetType) {
+                handleCollectionAction(animeId, targetType, isAdding = false)
             }
-
-            result
-                .onSuccess {
-                    _state.update { state ->
-                        state.updateCollections { it.copy(isLoading = false) }.run {
-                            var clearedState = this
-                            state.collectionsState.collections.forEach { col ->
-                                clearedState = clearedState.removeAnimeFromCollection(col.collection)
-                            }
-
-                            if (!isRemoval) {
-                                clearedState.addAnimeToCollection(targetCollection)
-                            } else {
-                                clearedState
-                            }
-                        }
-                    }
-                }
-                .onError { _, messageRes ->
-                    _state.update { it.updateCollections { c -> c.copy(isLoading = false, isError = true) } }
-                    sendSnackbar(messageRes) { toggleCollection(targetCollection) }
-                }
+            else {
+                handleCollectionAction(animeId, targetType, isAdding = true)
+            }
         }
+    }
+
+    private suspend fun handleCollectionAction(animeId: Int, type: Collection, isAdding: Boolean) {
+        _state.update { it.copy(collectionsState = it.collectionsState.copy(
+            loadingState = it.collectionsState.loadingState.withLoading(true)
+        ))}
+
+        val request = CollectionRequest().apply { add(CollectionItem(animeId, type)) }
+        val result = if (isAdding) collectionsRepo.addToCollection(request)
+        else collectionsRepo.deleteFromCollection(request)
+
+        result
+            .onSuccess {
+                _state.update { it.updateCollection(type, isAdding) }
+            }
+            .onError { _, messageRes ->
+                _state.update { it.copy(collectionsState = it.collectionsState.copy(
+                    loadingState = it.collectionsState.loadingState.withLoading(false)
+                ))}
+                sendSnackbar(messageRes)
+            }
     }
 
     // Helper to reduce boilerplate for effects
     private fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
-        viewModelScope.launch(dispatcherIo) {
-            _effects.send(
-                UiEffect.ShowSnackbarWithAction(
-                    messageRes = messageRes,
-                    actionLabel = action?.let { RETRY },
-                    action = action
-                )
+        sendEffect(
+            effect = UiEffect.ShowSnackbarWithAction(
+                messageRes = messageRes,
+                actionLabel = action?.let { RETRY },
+                action = action
             )
-        }
+        )
     }
 }

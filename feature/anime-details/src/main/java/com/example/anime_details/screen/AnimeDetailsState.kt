@@ -5,8 +5,8 @@ import com.example.common.ui_helpers.auth.AuthFormState
 import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.data.models.auth.AuthState
 import com.example.data.models.collections.collection.AnimeCollection
-import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.releases.anime_details.AnimeDetails
+import com.example.data.models.common.request.request_parameters.Collection
 
 @Immutable
 data class AnimeDetailsState(
@@ -35,15 +35,13 @@ data class AnimeDetailsState(
     // --- Nested States ---
     @Immutable
     data class FavoritesState(
-        val isLoading: Boolean = false,
-        val isError: Boolean = false,
+        val loadingState: LoadingState = LoadingState(),
         val ids: List<Int> = emptyList()
     )
 
     @Immutable
     data class CollectionsState(
-        val isLoading: Boolean = false,
-        val isError: Boolean = false,
+        val loadingState: LoadingState = LoadingState(),
         val collections: List<AnimeCollection> = emptyList()
     )
 
@@ -53,54 +51,35 @@ data class AnimeDetailsState(
     }
 
     // Favorites
-    fun updateFavorites(transformer: (FavoritesState) -> FavoritesState): AnimeDetailsState {
-        return copy(favoritesState = transformer(favoritesState))
-    }
-
     fun addAnimeToFavorites(): AnimeDetailsState {
         val animeId = anime?.id ?: return this
-        return updateFavorites { it.copy(ids = it.ids + animeId) }
+        return copy(favoritesState = favoritesState.copy(ids = favoritesState.ids + animeId, loadingState = loadingState.withLoading(false)))
     }
 
     fun removeAnimeFromFavorites(): AnimeDetailsState {
         val animeId = anime?.id ?: return this
-        return updateFavorites { it.copy(ids = it.ids - animeId) }
+        return copy(favoritesState = favoritesState.copy(ids = favoritesState.ids - animeId, loadingState = loadingState.withLoading(false)))
     }
 
     // Collections
-    fun updateCollections(transformer: (CollectionsState) -> CollectionsState): AnimeDetailsState {
-        return copy(collectionsState = transformer(collectionsState))
-    }
+    val activeCollection: Collection?
+        get() = collectionsState.collections.firstOrNull { col ->
+            anime?.id in col.ids
+        }?.collection
 
-    fun addAnimeToCollection(collection: Collection): AnimeDetailsState {
+    fun updateCollection(collection: Collection, isAdded: Boolean): AnimeDetailsState {
         val animeId = anime?.id ?: return this
-
-        return updateCollections { state ->
-            state.copy(
-                collections = state.collections.map { col ->
-                    if (col.collection == collection) {
-                        col.copy(ids = (col.ids + animeId).distinct())
-                    } else {
-                        col
-                    }
-                }
-            )
+        val updatedCollections = collectionsState.collections.map { col ->
+            if (col.collection == collection) {
+                val newIds = if (isAdded) col.ids + animeId else col.ids - animeId
+                col.copy(ids = newIds)
+            } else col
         }
-    }
-
-    fun removeAnimeFromCollection(collection: Collection): AnimeDetailsState {
-        val animeId = anime?.id ?: return this
-
-        return updateCollections { state ->
-            state.copy(
-                collections = state.collections.map { col ->
-                    if (col.collection == collection) {
-                        col.copy(ids = col.ids - animeId)
-                    } else {
-                        col
-                    }
-                }
+        return copy(
+            collectionsState = collectionsState.copy(
+                collections = updatedCollections,
+                loadingState = collectionsState.loadingState.withLoading(false)
             )
-        }
+        )
     }
 }
