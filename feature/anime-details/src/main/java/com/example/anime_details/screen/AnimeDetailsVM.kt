@@ -241,10 +241,9 @@ class AnimeDetailsVM @Inject constructor(
 
             result
                 .onSuccess {
-                    _state.update { it.addAnimeToFavorites() }
+                    if (shouldAdd) _state.update { it.addAnimeToFavorites() } else _state.update { it.removeAnimeFromFavorites() }
                 }
                 .onError { _, messageRes ->
-                    _state.update { it.removeAnimeFromFavorites() }
                     sendSnackbar(messageRes) { toggleFavorite(shouldAdd) }
                 }
         }

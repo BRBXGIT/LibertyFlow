@@ -39,7 +39,7 @@ class FavoritesRepoImpl @Inject constructor(
                     apiCall = { dto ->
                         favoritesApi.getFavorites(
                             sessionToken = authPrefsManager.token.firstOrNull()!!,
-                            request = dto as CommonRequestDto
+                            request = dto as CommonRequestDto // TODO: Fix all such casts
                         )
                     },
                     baseRequest = request.toCommonRequestDto()
