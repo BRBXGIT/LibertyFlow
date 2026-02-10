@@ -5,10 +5,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.data.domain.CollectionsRepo
-import com.example.data.models.collections.collection_ids.CollectionIds
+import com.example.data.models.collections.collection.AnimeCollection
+import com.example.data.models.collections.mappers.toAnimeCollections
 import com.example.data.models.collections.request.CollectionRequest
 import com.example.data.models.collections.mappers.toCollectionRequestDto
-import com.example.data.models.collections.mappers.toCollectionIds
 import com.example.data.models.common.mappers.toCommonRequestWithCollectionTypeDto
 import com.example.data.models.common.mappers.toAnimeItem
 import com.example.data.models.common.request.common_request.CommonRequestWithCollectionType
@@ -47,12 +47,12 @@ class CollectionsRepoImpl @Inject constructor(
         ).flow.map { pagingData -> pagingData.map { it.toAnimeItem() } }
     }
 
-    override suspend fun getCollectionsIds(): NetworkResult<CollectionIds> {
+    override suspend fun getCollectionsIds(): NetworkResult<List<AnimeCollection>> {
         val token = authPrefsManager.token.first()!!
 
         return NetworkRequest.safeApiCall(
             call = { collectionsApi.getCollectionsIds(token) },
-            map = { it.toCollectionIds() }
+            map = { it.toAnimeCollections() }
         )
     }
 

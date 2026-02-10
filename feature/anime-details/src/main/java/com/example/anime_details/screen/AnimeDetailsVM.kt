@@ -8,11 +8,15 @@ import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.toWhileSubscribed
 import com.example.data.domain.AuthRepo
+import com.example.data.domain.CollectionsRepo
 import com.example.data.domain.FavoritesRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.domain.WatchedEpsRepo
 import com.example.data.models.auth.AuthState
 import com.example.data.models.auth.TokenRequest
+import com.example.data.models.collections.request.CollectionItem
+import com.example.data.models.collections.request.CollectionRequest
+import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.favorites.FavoriteItem
 import com.example.data.models.favorites.FavoriteRequest
 import com.example.data.utils.remote.network_request.onError
@@ -38,6 +42,7 @@ class AnimeDetailsVM @Inject constructor(
     private val releasesRepo: ReleasesRepo,
     private val watchedEpsRepo: WatchedEpsRepo,
     private val favoritesRepo: FavoritesRepo,
+    private val collectionsRepo: CollectionsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
 ): BaseAuthVM(authRepo, dispatcherIo) {
 
@@ -218,7 +223,64 @@ class AnimeDetailsVM @Inject constructor(
     // --- Collections ---
     private fun fetchCollections() {
         viewModelScope.launch(dispatcherIo) {
+            _state.update { it.updateCollections { c -> c.copy(isLoading = true, isError = false) } }
 
+            collectionsRepo.getCollectionsIds()
+                .onSuccess { collections ->
+                    _state.update {
+                        it.updateCollections { c -> c.copy(collections = collections, isLoading = false) }
+                    }
+                }
+                .onError { _, messageRes ->
+                    _state.update {
+                        it.updateCollections { c -> c.copy(isError = true, isLoading = false) }
+                    }
+                    sendSnackbar(messageRes) { fetchCollections() }
+                }
+        }
+    }
+
+    private fun toggleCollection(targetCollection: Collection) {
+        val animeId = _state.value.anime?.id ?: return
+
+        val currentCollection = _state.value.collectionsState.collections.find {
+            it.ids.contains(animeId)
+        }
+
+        viewModelScope.launch(dispatcherIo) {
+            _state.update { it.updateCollections { c -> c.copy(isLoading = true, isError = false) } }
+
+            val isRemoval = currentCollection?.collection == targetCollection
+
+            val result = if (isRemoval) {
+                val request = CollectionRequest().apply { add(CollectionItem(animeId, currentCollection.collection)) }
+                collectionsRepo.deleteFromCollection(request)
+            } else {
+                val request = CollectionRequest().apply { add(CollectionItem(animeId, targetCollection)) }
+                collectionsRepo.addToCollection(request)
+            }
+
+            result
+                .onSuccess {
+                    _state.update { state ->
+                        state.updateCollections { it.copy(isLoading = false) }.run {
+                            var clearedState = this
+                            state.collectionsState.collections.forEach { col ->
+                                clearedState = clearedState.removeAnimeFromCollection(col.collection)
+                            }
+
+                            if (!isRemoval) {
+                                clearedState.addAnimeToCollection(targetCollection)
+                            } else {
+                                clearedState
+                            }
+                        }
+                    }
+                }
+                .onError { _, messageRes ->
+                    _state.update { it.updateCollections { c -> c.copy(isLoading = false, isError = true) } }
+                    sendSnackbar(messageRes) { toggleCollection(targetCollection) }
+                }
         }
     }
 

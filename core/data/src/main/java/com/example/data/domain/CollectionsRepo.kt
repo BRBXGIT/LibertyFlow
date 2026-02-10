@@ -1,7 +1,7 @@
 package com.example.data.domain
 
 import androidx.paging.PagingData
-import com.example.data.models.collections.collection_ids.CollectionIds
+import com.example.data.models.collections.collection.AnimeCollection
 import com.example.data.models.collections.request.CollectionRequest
 import com.example.data.models.common.request.common_request.CommonRequestWithCollectionType
 import com.example.data.models.common.ui_anime_item.AnimeItem
@@ -14,7 +14,7 @@ interface CollectionsRepo {
         request: CommonRequestWithCollectionType
     ): Flow<PagingData<AnimeItem>>
 
-    suspend fun getCollectionsIds(): NetworkResult<CollectionIds>
+    suspend fun getCollectionsIds(): NetworkResult<List<AnimeCollection>>
 
     suspend fun addToCollection(request: CollectionRequest): NetworkResult<Unit>
 
