@@ -23,7 +23,7 @@ import com.example.data.models.theme.LibertyFlowTheme
 import com.example.data.models.theme.TabType
 import com.example.data.models.theme.ThemeValue
 import com.example.design_system.components.bars.basic_top_bar.BasicTopBar
-import com.example.design_system.components.bottom_sheets.player_settings.VideoQualityBS
+import com.example.design_system.components.bottom_sheets.quality_bs.VideoQualityBS
 import com.example.design_system.components.dividers.dividerWithLabel
 import com.example.design_system.components.list_tems.M3ListItem
 import com.example.design_system.theme.icons.LibertyFlowIcons

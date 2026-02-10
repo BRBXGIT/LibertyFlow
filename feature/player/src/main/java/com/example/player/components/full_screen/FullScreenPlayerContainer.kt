@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.design_system.components.bottom_sheets.player_settings.VideoQualityBS
+import com.example.design_system.components.bottom_sheets.quality_bs.VideoQualityBS
 import com.example.player.components.player.Player
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent

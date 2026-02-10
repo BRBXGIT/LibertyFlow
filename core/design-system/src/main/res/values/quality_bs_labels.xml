@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sd_label">SD 480p</string>
+    <string name="hd_label">HD 720p</string>
+    <string name="fhd_label">FHD 1080p</string>
+</resources>
