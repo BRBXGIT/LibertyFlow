@@ -10,18 +10,21 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
-private const val ANIMATION_DURATION = 250
+private const val ANIMATION_DURATION = 300
 private const val HEIGHT_DIVIDER = 2
 
 private const val ANIMATED_CONTENT_LABEL = "Animated up down content"
 
 @Composable
 fun <S> UpDownAnimatedContent(
+    modifier: Modifier = Modifier,
     targetState: S,
     content: @Composable AnimatedContentScope.(targetState: S) -> Unit
 ) {
     AnimatedContent(
+        modifier = modifier,
         label = ANIMATED_CONTENT_LABEL,
         content = content,
         targetState = targetState,

@@ -4,7 +4,6 @@ package com.example.anime_details.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -16,6 +15,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -60,76 +60,8 @@ private val ErrorLabelRes = R.string.error_section_label
 // Fully transparent top bar background
 private const val TOP_BAR_ALPHA = 0f
 
-@Composable
-internal fun TopBar(
-    state: AnimeDetailsState,
-    scrollBehavior: TopAppBarScrollBehavior,
-    onEffect: (UiEffect) -> Unit,
-    onRefreshEffect: (RefreshEffect) -> Unit,
-    onIntent: (AnimeDetailsIntent) -> Unit
-) {
-    TopAppBar(
-        title = {
-            val titleState = when {
-                state.loadingState.isLoading -> TitleState.Loading
-                state.loadingState.isError -> TitleState.Error
-                state.anime?.name?.english != null -> TitleState.Content(state.anime.name.english)
-                else -> TitleState.Empty
-            }
-
-            UpDownAnimatedContent(targetState = titleState) { state ->
-                when (state) {
-                    is TitleState.Loading -> AnimatedLoadingText()
-                    is TitleState.Error -> TopBarText(text = stringResource(ErrorLabelRes))
-                    is TitleState.Content -> TopBarText(text = state.title)
-                    TitleState.Empty -> Spacer(Modifier)
-                }
-            }
-        },
-        navigationIcon = {
-            // Back navigation
-            TopBarIconButton(
-                icon = LibertyFlowIcons.ArrowLeftFilled,
-                onClick = { onEffect(UiEffect.NavigateBack) }
-            )
-        },
-        actions = {
-            val collectionState = when {
-                state.collectionsState.loadingState.isLoading -> CollectionState.Loading
-                state.activeCollection != null -> CollectionState.Added
-                else -> CollectionState.Empty
-            }
-
-            UpDownAnimatedContent(targetState = collectionState) {
-                when (collectionState) {
-                    CollectionState.Added -> {
-                        TopBarIconButton(
-                            icon = LibertyFlowIcons.ListFilled,
-                            onClick = {
-                                onIntent(AnimeDetailsIntent.ToggleCollection(Collection.PLANNED))
-                                onRefreshEffect(RefreshEffect.RefreshCollection(Collection.PLANNED))
-                            }
-                        )
-                    }
-                    CollectionState.Empty -> {
-                        TopBarIconButton(
-                            icon = LibertyFlowIcons.List,
-                            onClick = {
-                                onIntent(AnimeDetailsIntent.ToggleCollection(Collection.PLANNED))
-                                onRefreshEffect(RefreshEffect.RefreshCollection(Collection.PLANNED))
-                            }
-                        )
-                    }
-                    CollectionState.Loading -> { /* Empty */ }
-                }
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = mColors.surfaceContainer.copy(alpha = TOP_BAR_ALPHA),
-        ),
-        scrollBehavior = scrollBehavior
-    )
-}
+// IconButton * 2
+private val CollectionBoxSize = 48.dp
 
 // Loading animation timing
 private const val DELAY = 200L
@@ -149,6 +81,74 @@ private val LOADING_TEXT = R.string.loading_label
 private const val DOT = "."
 
 private const val ANIMATION_LABEL = "Dot alpha animation"
+
+private fun AnimeDetailsState.toTitleState(): TitleState = when {
+    loadingState.isLoading -> TitleState.Loading
+    loadingState.isError -> TitleState.Error
+    anime?.name?.english != null -> TitleState.Content(anime.name.english)
+    else -> TitleState.Empty
+}
+
+private fun AnimeDetailsState.toCollectionState(): CollectionState = when {
+    collectionsState.loadingState.isLoading -> CollectionState.Loading
+    activeCollection != null -> CollectionState.Added
+    else -> CollectionState.Empty
+}
+
+@Composable
+internal fun TopBar(
+    state: AnimeDetailsState,
+    scrollBehavior: TopAppBarScrollBehavior,
+    onEffect: (UiEffect) -> Unit,
+    onRefreshEffect: (RefreshEffect) -> Unit,
+    onIntent: (AnimeDetailsIntent) -> Unit
+) {
+    val titleState by remember(state) { derivedStateOf { state.toTitleState() } }
+    val collectionState by remember(state) { derivedStateOf { state.toCollectionState() } }
+
+    TopAppBar(
+        title = {
+            UpDownAnimatedContent(targetState = titleState) { target ->
+                when (target) {
+                    is TitleState.Loading -> AnimatedLoadingText()
+                    is TitleState.Error -> TopBarText(stringResource(ErrorLabelRes))
+                    is TitleState.Content -> TopBarText(target.title)
+                    TitleState.Empty -> Unit
+                }
+            }
+        },
+        navigationIcon = {
+            TopBarIconButton(
+                icon = LibertyFlowIcons.ArrowLeftFilled,
+                onClick = { onEffect(UiEffect.NavigateBack) }
+            )
+        },
+        actions = {
+            UpDownAnimatedContent(
+                modifier = Modifier.size(CollectionBoxSize),
+                targetState = collectionState,
+            ) { target ->
+                val (icon, onClick) = when (target) {
+                    CollectionState.Added -> LibertyFlowIcons.ListCheckFilled to {
+                        onIntent(AnimeDetailsIntent.ToggleCollection(Collection.PLANNED))
+                        onRefreshEffect(RefreshEffect.RefreshCollection(Collection.PLANNED))
+                    }
+                    CollectionState.Empty -> LibertyFlowIcons.ListArrowDown to {
+                        onIntent(AnimeDetailsIntent.ToggleCollection(Collection.PLANNED))
+                        onRefreshEffect(RefreshEffect.RefreshCollection(Collection.PLANNED))
+                    }
+                    CollectionState.Loading -> LibertyFlowIcons.Clock to {}
+                }
+
+                TopBarIconButton(icon = icon, onClick = onClick)
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = mColors.surfaceContainer.copy(alpha = TOP_BAR_ALPHA),
+        ),
+        scrollBehavior = scrollBehavior
+    )
+}
 
 @Composable
 private fun AnimatedLoadingText() {

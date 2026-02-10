@@ -13,6 +13,7 @@ object LibertyFlowIcons {
     val PlayPauseAnimated = R.drawable.ic_play_pause_animated
     val CropAnimated = R.drawable.ic_crop_animated
 
+
     // Outlined
     val Magnifier = R.drawable.ic_magnifier
     val CrossCircle = R.drawable.ic_cross_circle
@@ -27,7 +28,7 @@ object LibertyFlowIcons {
     val Logout = R.drawable.ic_logout
     val Info = R.drawable.ic_info
     val Settings = R.drawable.ic_settings
-    val List = R.drawable.ic_list
+    val ListArrowDown = R.drawable.ic_list_arrow_down
     val Rewind = R.drawable.ic_rewind
     val RewindBack = R.drawable.ic_rewind_back
     val FullScreen = R.drawable.ic_full_screen
@@ -50,6 +51,8 @@ object LibertyFlowIcons {
     val PieChart = R.drawable.ic_pie_chart
     val Colour = R.drawable.ic_colour
     val Tablet = R.drawable.ic_tablet
+    val Clock = R.drawable.ic_clock
+
 
     // Filled
     val ArrowLeftFilled = R.drawable.ic_arrow_left_filled
@@ -61,7 +64,7 @@ object LibertyFlowIcons {
     val PlayFilled = R.drawable.ic_play_filled
     val AltArrowLeftFilled = R.drawable.ic_alt_arrow_left_filled
     val AltArrowRightFilled = R.drawable.ic_alt_arrow_right_filled
-    val ListFilled = R.drawable.ic_list_filled
+    val ListCheckFilled = R.drawable.ic_list_check_filled
 
 
     // Multicolored
@@ -72,6 +75,7 @@ object LibertyFlowIcons {
     val Patreon = R.drawable.ic_patreon_multicolored
     val Telegram = R.drawable.ic_telegram_multicolored
     val Discord = R.drawable.ic_discord_multicolored
+
 
     // Webp
     val Welcome = R.drawable.welcome
