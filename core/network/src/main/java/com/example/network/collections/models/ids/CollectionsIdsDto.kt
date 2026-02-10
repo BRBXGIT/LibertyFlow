@@ -1,3 +1,3 @@
 package com.example.network.collections.models.ids
 
-class CollectionsIdsDto: ArrayList<CollectionsIdsSubListDto>()
+class CollectionsIdsDto: ArrayList<CollectionsIdItem>()

@@ -64,20 +64,25 @@ data class AnimeDetailsState(
     // Collections
     val activeCollection: Collection?
         get() = collectionsState.collections.firstOrNull { col ->
-            anime?.id in col.ids
+            col.id == anime?.id
         }?.collection
 
     fun updateCollection(collection: Collection, isAdded: Boolean): AnimeDetailsState {
         val animeId = anime?.id ?: return this
-        val updatedCollections = collectionsState.collections.map { col ->
-            if (col.collection == collection) {
-                val newIds = if (isAdded) col.ids + animeId else col.ids - animeId
-                col.copy(ids = newIds)
-            } else col
+
+        val currentList = collectionsState.collections.toMutableList()
+
+        if (isAdded) {
+            if (currentList.none { it.id == animeId && it.collection == collection }) {
+                currentList.add(AnimeCollection(collection = collection, id = animeId))
+            }
+        } else {
+            currentList.removeAll { it.id == animeId && it.collection == collection }
         }
+
         return copy(
             collectionsState = collectionsState.copy(
-                collections = updatedCollections,
+                collections = currentList,
                 loadingState = collectionsState.loadingState.withLoading(false)
             )
         )

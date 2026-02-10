@@ -68,6 +68,7 @@ class AnimeDetailsVM @Inject constructor(
                 _state.update { it.copy(authState = auth) }
                 if (auth is AuthState.LoggedIn) {
                     fetchFavoritesIds()
+                    fetchCollections()
                 }
             }
             .launchIn(viewModelScope)

@@ -21,16 +21,26 @@ internal fun CollectionRequest.toCollectionRequestDto(): CollectionRequestDto {
     return collectionRequestDto
 }
 
-internal fun CollectionsIdsDto.toAnimeCollections(): List<AnimeCollection> {
-    return this.mapNotNull { subList ->
-        val rawType = subList.lastOrNull()?.toString()?.uppercase()
+internal fun CollectionsIdsDto.toAnimeCollection(): List<AnimeCollection> {
+    return this.mapNotNull { item ->
+        if (item.size < 2) return@mapNotNull null
 
-        val collectionType = Collection.entries.find { it.name == rawType }
+        val id = when (val idValue = item[0]) {
+            is Number -> idValue.toInt()
+            is String -> idValue.toIntOrNull()
+            else -> null
+        }
 
-        if (collectionType == null) return@mapNotNull null
+        val status = try {
+            Collection.valueOf(item[1].toString())
+        } catch (e: IllegalArgumentException) {
+            null
+        }
 
-        val ids = subList.dropLast(1).mapNotNull { it as? Int }
-
-        AnimeCollection(collection = collectionType, ids = ids)
+        if (id != null && status != null) {
+            AnimeCollection(status, id)
+        } else {
+            null
+        }
     }
 }

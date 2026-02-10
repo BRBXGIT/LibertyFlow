@@ -94,39 +94,33 @@ internal fun TopBar(
             )
         },
         actions = {
-            if (!state.loadingState.isLoading) {
-                val currentCollection = state.collectionsState.collections.find {
-                    it.ids.contains(state.anime?.id)
-                }
+            val collectionState = when {
+                state.collectionsState.loadingState.isLoading -> CollectionState.Loading
+                state.activeCollection != null -> CollectionState.Added
+                else -> CollectionState.Empty
+            }
 
-                val collectionState = when {
-                    state.collectionsState.isLoading -> CollectionState.Loading
-                    currentCollection != null -> CollectionState.Added
-                    else -> CollectionState.Empty
-                }
-
-                UpDownAnimatedContent(targetState = collectionState) {
-                    when (collectionState) {
-                        CollectionState.Added -> {
-                            TopBarIconButton(
-                                icon = LibertyFlowIcons.ListFilled,
-                                onClick = {
-                                    onRefreshEffect(RefreshEffect.RefreshCollection(Collection.WATCHING))
-                                    onIntent(AnimeDetailsIntent.ToggleCollection(Collection.WATCHING))
-                                }
-                            )
-                        }
-                        CollectionState.Empty -> {
-                            TopBarIconButton(
-                                icon = LibertyFlowIcons.List,
-                                onClick = {
-                                    onRefreshEffect(RefreshEffect.RefreshCollection(Collection.WATCHING))
-                                    onIntent(AnimeDetailsIntent.ToggleCollection(Collection.WATCHING))
-                                }
-                            )
-                        }
-                        CollectionState.Loading -> { /* Empty */ }
+            UpDownAnimatedContent(targetState = collectionState) {
+                when (collectionState) {
+                    CollectionState.Added -> {
+                        TopBarIconButton(
+                            icon = LibertyFlowIcons.ListFilled,
+                            onClick = {
+                                onIntent(AnimeDetailsIntent.ToggleCollection(Collection.PLANNED))
+                                onRefreshEffect(RefreshEffect.RefreshCollection(Collection.PLANNED))
+                            }
+                        )
                     }
+                    CollectionState.Empty -> {
+                        TopBarIconButton(
+                            icon = LibertyFlowIcons.List,
+                            onClick = {
+                                onIntent(AnimeDetailsIntent.ToggleCollection(Collection.PLANNED))
+                                onRefreshEffect(RefreshEffect.RefreshCollection(Collection.PLANNED))
+                            }
+                        )
+                    }
+                    CollectionState.Loading -> { /* Empty */ }
                 }
             }
         },

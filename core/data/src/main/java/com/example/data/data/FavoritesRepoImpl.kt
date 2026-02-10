@@ -17,6 +17,7 @@ import com.example.data.utils.remote.network_request.NetworkRequest
 import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.data.utils.remote.paging.CommonPagingSource
 import com.example.local.auth.AuthPrefsManager
+import com.example.network.common.common_request_models.common_request.CommonRequestDto
 import com.example.network.common.common_utils.CommonNetworkConstants
 import com.example.network.favorites.api.FavoritesApi
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +36,12 @@ class FavoritesRepoImpl @Inject constructor(
             config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
             pagingSourceFactory = {
                 CommonPagingSource(
-                    apiCall = { favoritesApi.getFavorites(authPrefsManager.token.firstOrNull()!!, request.toCommonRequestDto()) },
+                    apiCall = { dto ->
+                        favoritesApi.getFavorites(
+                            sessionToken = authPrefsManager.token.firstOrNull()!!,
+                            request = dto as CommonRequestDto
+                        )
+                    },
                     baseRequest = request.toCommonRequestDto()
                 )
             }

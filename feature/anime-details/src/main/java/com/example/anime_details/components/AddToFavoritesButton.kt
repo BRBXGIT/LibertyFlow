@@ -54,11 +54,11 @@ internal fun LazyItemScope.AddToFavoritesButton(
 
     val buttonState = remember(favoritesState, authState, animeId) {
         when {
-            favoritesState.isError -> ActionButtonState(
+            favoritesState.loadingState.isError -> ActionButtonState(
                 LibertyFlowIcons.DangerCircle, ErrorFavoritesLabelRes
             ) { /* Nothing here */ }
 
-            favoritesState.isLoading -> ActionButtonState(
+            favoritesState.loadingState.isLoading -> ActionButtonState(
                 LibertyFlowIcons.Cat, LoadingFavoritesLabelRes, isLoading = true
             ) { /* Nothing here */ }
 

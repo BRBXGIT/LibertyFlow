@@ -1,11 +1,9 @@
 package com.example.data.utils.remote.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.data.utils.remote.network_request.NetworkRequest
-import com.example.data.utils.remote.network_request.onError
-import com.example.data.utils.remote.network_request.onSuccess
+import com.example.data.utils.remote.network_request.NetworkResult
 import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPaginationDto
 import com.example.network.common.common_request_models.common_request_base.CommonRequestDtoBase
 import com.example.network.common.common_response_models.AnimeResponseItemDto
@@ -17,29 +15,34 @@ internal class CommonPagingSource(
 ): PagingSource<Int, AnimeResponseItemDto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, AnimeResponseItemDto> {
-        val key = params.key ?: 1
-        val currentRequest = baseRequest.withPageAndLimit(key)
+        val page = params.key ?: 1
+        val request = baseRequest.withPageAndLimit(page)
 
-        var loadResult: LoadResult<Int, AnimeResponseItemDto>? = null
-
-        NetworkRequest.safeApiCall(
-            call = { apiCall(currentRequest) },
-            map = { it }
-        ).onSuccess {
-            val pagination = it.metaDto.paginationDto
-            loadResult = LoadResult.Page(
-                data = it.data,
-                prevKey = if (key > 1) key - 1 else null,
-                nextKey = if (key < pagination.totalPages) key + 1 else null
+        return when (
+            val result = NetworkRequest.safeApiCall(
+                call = { apiCall(request) },
+                map = { it }
             )
-        }.onError { _, message ->
-            loadResult = LoadResult.Error(Exception(message.toString()))
+        ) {
+            is NetworkResult.Success -> {
+                val pagination = result.data.metaDto.paginationDto
+                LoadResult.Page(
+                    data = result.data.data,
+                    prevKey = if (page > 1) page - 1 else null,
+                    nextKey = if (page < pagination.totalPages) page + 1 else null
+                )
+            }
+            is NetworkResult.Error -> {
+                LoadResult.Error(Exception(result.messageRes.toString()))
+            }
         }
-
-        return loadResult!!
     }
 
+
     override fun getRefreshKey(state: PagingState<Int, AnimeResponseItemDto>): Int? {
-        return state.anchorPosition
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
     }
 }
