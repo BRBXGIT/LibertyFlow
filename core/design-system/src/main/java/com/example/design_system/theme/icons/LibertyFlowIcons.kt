@@ -61,6 +61,7 @@ object LibertyFlowIcons {
     val PlayFilled = R.drawable.ic_play_filled
     val AltArrowLeftFilled = R.drawable.ic_alt_arrow_left_filled
     val AltArrowRightFilled = R.drawable.ic_alt_arrow_right_filled
+    val ListFilled = R.drawable.ic_list_filled
 
 
     // Multicolored

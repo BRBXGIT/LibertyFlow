@@ -68,6 +68,7 @@ class AnimeDetailsVM @Inject constructor(
                 _state.update { it.copy(authState = auth) }
                 if (auth is AuthState.LoggedIn) {
                     fetchFavoritesIds()
+                    fetchCollections()
                 }
             }
             .launchIn(viewModelScope)
@@ -106,6 +107,7 @@ class AnimeDetailsVM @Inject constructor(
     // --- Intents ---
     fun sendIntent(intent: AnimeDetailsIntent) {
         when (intent) {
+            // Main data
             is AnimeDetailsIntent.FetchAnime -> fetchAnime(intent.id)
             is AnimeDetailsIntent.ObserveWatchedEps -> observeWatchedEpisodes(intent.id)
             is AnimeDetailsIntent.AddEpisodeToWatched -> addEpisodeToWatched(intent.episodeIndex)
@@ -113,6 +115,9 @@ class AnimeDetailsVM @Inject constructor(
             // Favorites
             AnimeDetailsIntent.AddToFavorite -> toggleFavorite(shouldAdd = true)
             AnimeDetailsIntent.RemoveFromFavorite -> toggleFavorite(shouldAdd = false)
+
+            // Collections
+            is AnimeDetailsIntent.ToggleCollection -> toggleCollection(intent.collection)
 
             // Auth
             AnimeDetailsIntent.GetTokens -> performLogin()

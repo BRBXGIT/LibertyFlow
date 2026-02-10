@@ -87,11 +87,11 @@ internal fun AnimeDetails(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopBar(
-                isError = state.loadingState.isError,
-                englishTitle = state.anime?.name?.english,
-                isLoading = state.loadingState.isLoading,
+                state = state,
                 scrollBehavior = topBarScrollBehavior,
-                onEffect = onEffect
+                onEffect = onEffect,
+                onIntent = onIntent,
+                onRefreshEffect = onRefreshEffect
             )
         },
         modifier = Modifier
@@ -148,17 +148,17 @@ internal fun AnimeDetails(
                 )
 
                 // Genres list
-                genres(anime.genres.map { it.name })
+                genres(genres = anime.genres.map { it.name })
 
                 // Description section
                 description(
-                    anime.description,
-                    state.isDescriptionExpanded,
-                    onIntent
+                    description = anime.description,
+                    isExpanded = state.isDescriptionExpanded,
+                    onIntent = onIntent
                 )
 
                 // Torrents divider
-                dividerWithLabel(TORRENTS_LABEL_RES)
+                dividerWithLabel(labelRes = TORRENTS_LABEL_RES)
 
                 // Torrents list
                 torrents(anime.torrents, onEffect)

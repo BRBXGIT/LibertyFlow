@@ -19,7 +19,7 @@ interface CollectionsApi {
         @Body request: CommonRequestDtoWithCollectionTypeDto
     ): Response<AnimeItemsPaginationDto>
 
-    @GET
+    @GET("accounts/users/me/collections/ids")
     suspend fun getCollectionsIds(
         @Header("Authorization") sessionToken: String,
     ): Response<CollectionsIdsDto>

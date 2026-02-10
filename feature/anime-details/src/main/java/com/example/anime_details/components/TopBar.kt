@@ -28,7 +28,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
+import com.example.anime_details.screen.AnimeDetailsIntent
+import com.example.anime_details.screen.AnimeDetailsState
+import com.example.common.refresh.RefreshEffect
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.data.models.common.request.request_parameters.Collection
 import com.example.design_system.containers.UpDownAnimatedContent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
@@ -37,11 +41,17 @@ import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mTypography
 import kotlinx.coroutines.delay
 
-private sealed interface TopBarState {
-    data object Loading: TopBarState
-    data object Error: TopBarState
-    data class Content(val title: String): TopBarState
-    data object Empty: TopBarState
+private sealed interface TitleState {
+    data object Loading: TitleState
+    data object Error: TitleState
+    data class Content(val title: String): TitleState
+    data object Empty: TitleState
+}
+
+private sealed interface CollectionState {
+    data object Loading: CollectionState
+    data object Empty: CollectionState
+    data object Added: CollectionState
 }
 
 // Static error title text
@@ -52,28 +62,27 @@ private const val TOP_BAR_ALPHA = 0f
 
 @Composable
 internal fun TopBar(
-    isError: Boolean,
-    englishTitle: String?,
-    isLoading: Boolean,
+    state: AnimeDetailsState,
     scrollBehavior: TopAppBarScrollBehavior,
-    onEffect: (UiEffect) -> Unit
+    onEffect: (UiEffect) -> Unit,
+    onRefreshEffect: (RefreshEffect) -> Unit,
+    onIntent: (AnimeDetailsIntent) -> Unit
 ) {
-    val currentState = when {
-        isLoading -> TopBarState.Loading
-        isError -> TopBarState.Error
-        englishTitle != null -> TopBarState.Content(englishTitle)
-        else -> TopBarState.Empty
-    }
-
     TopAppBar(
         title = {
-            // TODO: maybe change to older version with AnimatedVisibility
-            UpDownAnimatedContent(targetState = currentState) { state ->
+            val titleState = when {
+                state.loadingState.isLoading -> TitleState.Loading
+                state.loadingState.isError -> TitleState.Error
+                state.anime?.name?.english != null -> TitleState.Content(state.anime.name.english)
+                else -> TitleState.Empty
+            }
+
+            UpDownAnimatedContent(targetState = titleState) { state ->
                 when (state) {
-                    is TopBarState.Loading -> AnimatedLoadingText()
-                    is TopBarState.Error -> TopBarText(text = stringResource(ErrorLabelRes))
-                    is TopBarState.Content -> TopBarText(text = state.title)
-                    TopBarState.Empty -> Spacer(Modifier)
+                    is TitleState.Loading -> AnimatedLoadingText()
+                    is TitleState.Error -> TopBarText(text = stringResource(ErrorLabelRes))
+                    is TitleState.Content -> TopBarText(text = state.title)
+                    TitleState.Empty -> Spacer(Modifier)
                 }
             }
         },
@@ -85,11 +94,41 @@ internal fun TopBar(
             )
         },
         actions = {
-            // TODO: Add lists logic
-//            TopBarIconButton(
-//                icon = LibertyFlowIcons.List,
-//                onClick = {}
-//            )
+            if (!state.loadingState.isLoading) {
+                val currentCollection = state.collectionsState.collections.find {
+                    it.ids.contains(state.anime?.id)
+                }
+
+                val collectionState = when {
+                    state.collectionsState.isLoading -> CollectionState.Loading
+                    currentCollection != null -> CollectionState.Added
+                    else -> CollectionState.Empty
+                }
+
+                UpDownAnimatedContent(targetState = collectionState) {
+                    when (collectionState) {
+                        CollectionState.Added -> {
+                            TopBarIconButton(
+                                icon = LibertyFlowIcons.ListFilled,
+                                onClick = {
+                                    onRefreshEffect(RefreshEffect.RefreshCollection(Collection.WATCHING))
+                                    onIntent(AnimeDetailsIntent.ToggleCollection(Collection.WATCHING))
+                                }
+                            )
+                        }
+                        CollectionState.Empty -> {
+                            TopBarIconButton(
+                                icon = LibertyFlowIcons.List,
+                                onClick = {
+                                    onRefreshEffect(RefreshEffect.RefreshCollection(Collection.WATCHING))
+                                    onIntent(AnimeDetailsIntent.ToggleCollection(Collection.WATCHING))
+                                }
+                            )
+                        }
+                        CollectionState.Loading -> { /* Empty */ }
+                    }
+                }
+            }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = mColors.surfaceContainer.copy(alpha = TOP_BAR_ALPHA),
@@ -198,11 +237,11 @@ private fun AnimeScreenTopBarPreview() {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
         TopBar(
-            englishTitle = "Death Note",
-            isLoading = true,
+            state = AnimeDetailsState(),
             scrollBehavior = scrollBehavior,
-            isError = false,
             onEffect = {},
+            onIntent = {},
+            onRefreshEffect = {}
         )
     }
 }

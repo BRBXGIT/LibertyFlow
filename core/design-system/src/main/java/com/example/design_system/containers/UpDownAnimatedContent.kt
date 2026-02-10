@@ -11,7 +11,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 
-private const val ANIMATION_DURATION = 200
+private const val ANIMATION_DURATION = 250
 private const val HEIGHT_DIVIDER = 2
 
 private const val ANIMATED_CONTENT_LABEL = "Animated up down content"

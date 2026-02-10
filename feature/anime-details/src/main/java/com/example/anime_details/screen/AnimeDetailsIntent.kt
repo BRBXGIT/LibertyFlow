@@ -1,5 +1,7 @@
 package com.example.anime_details.screen
 
+import com.example.data.models.common.request.request_parameters.Collection
+
 sealed interface AnimeDetailsIntent {
     // --- Data Operations ---
     data class FetchAnime(val id: Int) : AnimeDetailsIntent
@@ -10,6 +12,9 @@ sealed interface AnimeDetailsIntent {
     // --- Favorites Operations ---
     data object AddToFavorite: AnimeDetailsIntent
     data object RemoveFromFavorite: AnimeDetailsIntent
+
+    // Collections operations
+    data class ToggleCollection(val collection: Collection): AnimeDetailsIntent
 
     // --- UI Interactions ---
     data object ToggleIsDescriptionExpanded: AnimeDetailsIntent
