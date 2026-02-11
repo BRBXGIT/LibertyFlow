@@ -23,7 +23,7 @@
     <string name="auto_skip_opening_label">Skip opening automatically</string>
     <string name="auto_play_label">Autoplay</string>
 
-    <string name="use_expressive_label">Enable M3 Expressive</string>
+    <string name="use_expressive_label">Use expressive animations</string>
     <string name="tab_type_label">Tab style</string>
     <string name="tablet_style_label">Tablet style</string>
     <string name="m3_style_label">M3 Style</string>

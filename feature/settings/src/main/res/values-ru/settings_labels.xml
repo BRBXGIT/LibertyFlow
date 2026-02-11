@@ -23,7 +23,7 @@
     <string name="auto_skip_opening_label">Автоматически пропускать опенинг</string>
     <string name="auto_play_label">Автовоспроизведение</string>
 
-    <string name="use_expressive_label">Использовать M3 Expressive</string>
+    <string name="use_expressive_label">Использовать expressive анимации</string>
     <string name="tab_type_label">Стиль папки</string>
     <string name="tablet_style_label">Tablet</string>
     <string name="m3_style_label">M3 Style</string>
