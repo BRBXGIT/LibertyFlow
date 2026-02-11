@@ -8,6 +8,8 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -17,13 +19,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
+private const val MaxTranslationDp = 10f
+private const val RefreshThreshold = 1.001f
+private const val ResetThreshold = 0.5f
+private const val IndicatorMaxSizeDp = 47f
+private const val VibrationDurationMs = 50L
+
 @Composable
 fun VibratingContainer(
+    isSearching: Boolean,
     modifier: Modifier = Modifier,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
@@ -38,18 +48,30 @@ fun VibratingContainer(
         indicator = {},
         modifier = modifier
     ) {
-        // Optimization: Use graphicsLayer or offset lambda to avoid
-        // recomposing the whole Column when distance changes.
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.graphicsLayer {
-                // Reading state inside a lambda delays execution
-                // until the Placement/Layer phase.
-                translationY = state.distanceFraction * 8.dp.toPx()
+                translationY = state.distanceFraction * MaxTranslationDp.dp.toPx()
             }
         ) {
-            // Trigger haptic logic - it still needs to track distance,
-            // but now it doesn't affect the UI hierarchy.
-            CreateVibration(state.distanceFraction)
+            if (!isSearching) {
+                CreateVibration(state.distanceFraction)
+
+                if (isRefreshing) {
+                    ContainedLoadingIndicator(
+                        modifier = Modifier.size(IndicatorMaxSizeDp.dp)
+                    )
+                } else {
+                    val progress = state.distanceFraction.coerceIn(0f, 1f)
+                    val size = (state.distanceFraction * IndicatorMaxSizeDp)
+                        .coerceIn(0f, IndicatorMaxSizeDp).dp
+
+                    ContainedLoadingIndicator(
+                        progress = { progress },
+                        modifier = Modifier.size(size)
+                    )
+                }
+            }
 
             content()
         }
@@ -59,20 +81,15 @@ fun VibratingContainer(
 @Composable
 private fun CreateVibration(distance: Float) {
     val context = LocalContext.current
-    // Use remember with context to avoid re-fetching the service
     val vibrator = remember(context) { context.getVibrator() }
-
-    // didVibrate should be a simple remember if it's strictly for
-    // the current touch gesture interaction.
     var didVibrate by remember { mutableStateOf(false) }
 
-    // Side effect to handle haptics without triggering UI updates
     SideEffect {
-        if (distance < 1f && didVibrate) {
+        if (distance < ResetThreshold && didVibrate) {
             didVibrate = false
-        } else if (distance >= 1.5f && !didVibrate) {
+        } else if (distance >= RefreshThreshold && !didVibrate) {
             didVibrate = true
-            vibrator?.vibrateOnce()
+            vibrator?.vibrateOnce(VibrationDurationMs)
         }
     }
 }

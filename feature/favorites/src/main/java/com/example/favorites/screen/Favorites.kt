@@ -75,6 +75,7 @@ internal fun Favorites(
 
         // Pull-to-refresh container
         VibratingContainer(
+            isSearching = state.searchForm.isSearching,
             isRefreshing = state.loadingState.isLoading,
             onRefresh = favorites::refresh,
             modifier = Modifier

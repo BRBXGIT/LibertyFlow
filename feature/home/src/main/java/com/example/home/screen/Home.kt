@@ -98,6 +98,7 @@ internal fun Home(
 
         // Pull-to-refresh Wrapper
         VibratingContainer(
+            isSearching = state.isSearching,
             isRefreshing = state.loadingState.isLoading,
             onRefresh = anime::refresh,
             modifier = Modifier

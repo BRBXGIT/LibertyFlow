@@ -93,9 +93,11 @@ fun SearchingTopBar(
             }
         )
 
-        SearchLoadingIndicator(
-            isVisible = showIndicator && isLoading
-        )
+        if (searchForm.isSearching) {
+            SearchLoadingIndicator(
+                isVisible = showIndicator && isLoading
+            )
+        }
     }
 }
 
