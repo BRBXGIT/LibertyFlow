@@ -96,6 +96,7 @@ private fun PermissionSection(isVisible: Boolean, onEffect: (UiEffect) -> Unit) 
         }
     )
 
+    // TODO: Check granted or not and only then unlock transition to the next screen
     AnimatedVisibility(
         visible = isVisible,
         enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),

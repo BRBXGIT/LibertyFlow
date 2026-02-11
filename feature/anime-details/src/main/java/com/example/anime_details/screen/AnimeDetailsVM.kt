@@ -248,6 +248,17 @@ class AnimeDetailsVM @Inject constructor(
                     if (shouldAdd) _state.update { it.addAnimeToFavorites() } else _state.update { it.removeAnimeFromFavorites() }
                 }
                 .onError { _, messageRes ->
+                    _state.update {
+                        it.copy(
+                            favoritesState = it.favoritesState.copy(
+                                loadingState = it.favoritesState.loadingState.withBoth(
+                                    loading = false,
+                                    error = true
+                                )
+                            )
+                        )
+                    }
+
                     sendSnackbar(messageRes) { toggleFavorite(shouldAdd) }
                 }
         }
@@ -299,7 +310,7 @@ class AnimeDetailsVM @Inject constructor(
 
     private suspend fun handleCollectionAction(animeId: Int, type: Collection, isAdding: Boolean) {
         _state.update { it.copy(collectionsState = it.collectionsState.copy(
-            loadingState = it.collectionsState.loadingState.withLoading(true)
+            loadingState = it.collectionsState.loadingState.withBoth(loading = true, error = false)
         ))}
 
         // Just cause i want to show animation :)
@@ -315,9 +326,9 @@ class AnimeDetailsVM @Inject constructor(
             }
             .onError { _, messageRes ->
                 _state.update { it.copy(collectionsState = it.collectionsState.copy(
-                    loadingState = it.collectionsState.loadingState.withLoading(false)
+                    loadingState = it.collectionsState.loadingState.withBoth(loading = false, error = true)
                 ))}
-                sendSnackbar(messageRes)
+                sendSnackbar(messageRes) { toggleCollection(type) }
             }
     }
 

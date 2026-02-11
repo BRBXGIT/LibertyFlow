@@ -49,6 +49,7 @@ private sealed interface TitleState {
 
 private sealed interface CollectionState {
     data object Loading: CollectionState
+    data object Error: CollectionState
     data object Empty: CollectionState
     data object Added: CollectionState
     data object Unauthorized: CollectionState
@@ -91,6 +92,7 @@ private fun AnimeDetailsState.toTitleState(): TitleState = when {
 
 private fun AnimeDetailsState.toCollectionState(): CollectionState = when {
     authState !is AuthState.LoggedOut && collectionsState.loadingState.isLoading -> CollectionState.Loading
+    collectionsState.loadingState.isError -> CollectionState.Error
     activeCollection != null -> CollectionState.Added
     authState is AuthState.LoggedOut -> CollectionState.Unauthorized
     else -> CollectionState.Empty
@@ -139,6 +141,7 @@ internal fun TopBar(
                         onIntent(AnimeDetailsIntent.ToggleCollectionsBSVisible)
                     }
                     CollectionState.Loading -> LibertyFlowIcons.Clock to { /* Empty */ }
+                    CollectionState.Error -> LibertyFlowIcons.DangerCircle to { /* Empty */ }
                 }
 
                 TopBarIconButton(icon = icon, onClick = onClick)
