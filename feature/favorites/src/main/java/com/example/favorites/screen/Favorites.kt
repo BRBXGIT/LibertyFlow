@@ -52,7 +52,6 @@ internal fun Favorites(
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
             SearchingTopBar(
-                isLoading = state.loadingState.isLoading,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = scrollBehavior,
                 searchForm = state.searchForm,

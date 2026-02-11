@@ -4,19 +4,19 @@ package com.example.collections.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.example.collections.screen.CollectionsState
 import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
+import com.example.design_system.containers.VibratingContainer
 
 private const val ZERO_ELEMENTS = 0
 
@@ -26,35 +26,37 @@ private const val ZERO_ELEMENTS = 0
  */
 @Composable
 internal fun CollectionPage(
-    query: String,
+    state: CollectionsState,
     items: LazyPagingItems<AnimeItem>,
     onItemClick: (Int) -> Unit,
 ) {
     // Wrap state calculation in remember/derivedStateOf to optimize recomposition performance.
     // This ensures pageState only updates when essential properties change.
-    val pageState by remember(items.loadState.refresh, items.itemCount, query) {
+    val pageState by remember(items.loadState.refresh, items.itemCount, state.searchForm.query) {
         derivedStateOf {
-            calculatePageState(items.loadState.refresh, items.itemCount, query)
+            calculatePageState(items.loadState.refresh, items.itemCount, state.searchForm.query)
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        when (pageState) {
-            PageState.Error -> ErrorSection()
+    VibratingContainer(
+        isSearching = state.searchForm.isSearching,
+        isRefreshing = pageState == PageState.Loading,
+        onRefresh = { items.refresh() }
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (pageState) {
+                PageState.Error -> ErrorSection()
 
-            PageState.EmptyWithQuery -> EmptyCollection(emptyQuery = false)
+                PageState.EmptyWithQuery -> EmptyCollection(emptyQuery = false)
 
-            PageState.EmptyWithoutQuery -> EmptyCollection(emptyQuery = true)
+                PageState.EmptyWithoutQuery -> EmptyCollection(emptyQuery = true)
 
-            PageState.Loading -> {
-                ContainedLoadingIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-
-            PageState.Ready -> {
-                PagingAnimeItemsLazyVerticalGrid(
-                    anime = items,
-                    onItemClick = onItemClick
-                )
+                else -> {
+                    PagingAnimeItemsLazyVerticalGrid(
+                        anime = items,
+                        onItemClick = onItemClick
+                    )
+                }
             }
         }
     }

@@ -24,11 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
 
 private const val MaxTranslationDp = 10f
 private const val RefreshThreshold = 1.001f
 private const val ResetThreshold = 0.5f
-private const val IndicatorMaxSizeDp = 47f
+private const val IndicatorMaxSizeDp = 42f
 private const val VibrationDurationMs = 50L
 
 @Composable
@@ -54,7 +55,13 @@ fun VibratingContainer(
                 translationY = state.distanceFraction * MaxTranslationDp.dp.toPx()
             }
         ) {
-            if (!isSearching) {
+            if (isSearching) {
+                CreateVibration(state.distanceFraction)
+
+                if (isRefreshing) {
+                    LibertyFlowLinearIndicator()
+                }
+            } else {
                 CreateVibration(state.distanceFraction)
 
                 if (isRefreshing) {

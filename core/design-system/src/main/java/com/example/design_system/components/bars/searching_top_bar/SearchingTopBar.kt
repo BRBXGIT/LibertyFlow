@@ -2,12 +2,6 @@
 
 package com.example.design_system.components.bars.searching_top_bar
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -34,12 +28,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.common.ui_helpers.search.SearchForm
 import com.example.design_system.R
-import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mTypography
 
-private const val ANIMATION_DURATION = 300
 private val TOP_BAR_ICON_SIZE = 22.dp
 
 private const val EMPTY_STRING = ""
@@ -52,8 +44,6 @@ fun SearchingTopBar(
     onQueryChange: (String) -> Unit,
     onToggleSearch: () -> Unit,
     modifier: Modifier = Modifier,
-    isLoading: Boolean = false,
-    showIndicator: Boolean = true,
     enterAlways: Boolean = false
 ) {
     Column(modifier = modifier) {
@@ -92,12 +82,6 @@ fun SearchingTopBar(
                 )
             }
         )
-
-        if (searchForm.isSearching) {
-            SearchLoadingIndicator(
-                isVisible = showIndicator && isLoading
-            )
-        }
     }
 }
 
@@ -168,17 +152,6 @@ private fun SearchingTextField(
             unfocusedIndicatorColor = Color.Transparent
         )
     )
-}
-
-@Composable
-private fun SearchLoadingIndicator(isVisible: Boolean) {
-    AnimatedVisibility(
-        visible = isVisible,
-        enter = fadeIn(tween(ANIMATION_DURATION)) + slideInVertically(tween(ANIMATION_DURATION)),
-        exit = fadeOut(tween(ANIMATION_DURATION)) + slideOutVertically(tween(ANIMATION_DURATION))
-    ) {
-        LibertyFlowLinearIndicator()
-    }
 }
 
 @Composable
