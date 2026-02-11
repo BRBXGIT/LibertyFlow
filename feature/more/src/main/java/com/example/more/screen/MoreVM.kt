@@ -1,5 +1,6 @@
 package com.example.more.screen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
@@ -66,7 +67,7 @@ class MoreVM @Inject constructor(
                 .onError { error, messageRes ->
                     sendEffect(
                         effect = when(error) {
-                            NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> UiEffect.ShowSimpleSnackbar(
+                            NetworkErrors.UNAUTHORIZED -> UiEffect.ShowSimpleSnackbar(
                                 messageRes = messageRes
                             )
                             else -> UiEffect.ShowSnackbarWithAction(

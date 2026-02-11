@@ -21,7 +21,6 @@ import com.example.settings.screen.SettingsState
 
 private val HorizontalPadding = 16.dp
 
-// TODO: Dynamic theme doesn't work
 @Composable
 internal fun LazyItemScope.SegmentedThemeButton(
     onIntent: (SettingsIntent) -> Unit,

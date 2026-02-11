@@ -4,5 +4,5 @@ enum class ThemeValue {
     LIGHT,
     DARK,
     SYSTEM,
-    DYNAMIC // TODO: Add dynamic theme support
+    DYNAMIC
 }
