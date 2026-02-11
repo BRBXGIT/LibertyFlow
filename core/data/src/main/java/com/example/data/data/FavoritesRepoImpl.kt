@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.example.data.data
 
 import androidx.paging.Pager
@@ -5,8 +7,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.data.domain.FavoritesRepo
-import com.example.data.models.common.mappers.toCommonRequestDto
 import com.example.data.models.common.mappers.toAnimeItem
+import com.example.data.models.common.mappers.toCommonRequestDto
 import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.ui_anime_item.AnimeItem
 import com.example.data.models.favorites.FavoriteRequest
@@ -20,9 +22,11 @@ import com.example.local.auth.AuthPrefsManager
 import com.example.network.common.common_request_models.common_request.CommonRequestDto
 import com.example.network.common.common_utils.CommonNetworkConstants
 import com.example.network.favorites.api.FavoritesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -32,24 +36,32 @@ class FavoritesRepoImpl @Inject constructor(
 ): FavoritesRepo {
 
     override fun getFavorites(request: CommonRequest): Flow<PagingData<AnimeItem>> {
-        return Pager(
-            config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
-            pagingSourceFactory = {
-                CommonPagingSource(
-                    apiCall = { dto ->
-                        favoritesApi.getFavorites(
-                            sessionToken = authPrefsManager.token.firstOrNull()!!,
-                            request = dto as CommonRequestDto // TODO: Fix all such casts
+        return authPrefsManager.token
+            .filterNotNull()
+            .flatMapLatest { token ->
+                Pager(
+                    config = PagingConfig(
+                        pageSize = CommonNetworkConstants.COMMON_LIMIT,
+                        enablePlaceholders = false
+                    ),
+                    pagingSourceFactory = {
+                        CommonPagingSource(
+                            apiCall = { dto ->
+                                favoritesApi.getFavorites(
+                                    sessionToken = token,
+                                    request = dto as CommonRequestDto
+                                )
+                            },
+                            baseRequest = request.toCommonRequestDto()
                         )
-                    },
-                    baseRequest = request.toCommonRequestDto()
-                )
+                    }
+                ).flow
             }
-        ).flow.map { pagingData -> pagingData.map { it.toAnimeItem() } }
+            .map { pagingData -> pagingData.map { it.toAnimeItem() } }
     }
 
     override suspend fun getFavoritesIds(): NetworkResult<FavoritesIds> {
-        val token = authPrefsManager.token.first()!!
+        val token = authPrefsManager.token.filterNotNull().first()
 
         return NetworkRequest.safeApiCall(
             call = { favoritesApi.getFavoritesIds(token) },
@@ -58,7 +70,7 @@ class FavoritesRepoImpl @Inject constructor(
     }
 
     override suspend fun addFavorite(request: FavoriteRequest): NetworkResult<Unit> {
-        val token = authPrefsManager.token.first()!!
+        val token = authPrefsManager.token.filterNotNull().first()
 
         return NetworkRequest.safeApiCall(
             call = { favoritesApi.addFavorite(token, request.toFavoriteRequestDto()) },
@@ -67,7 +79,7 @@ class FavoritesRepoImpl @Inject constructor(
     }
 
     override suspend fun deleteFavorite(request: FavoriteRequest): NetworkResult<Unit> {
-        val token = authPrefsManager.token.first()!!
+        val token = authPrefsManager.token.filterNotNull().first()
 
         return NetworkRequest.safeApiCall(
             call = { favoritesApi.deleteFavorite(token, request.toFavoriteRequestDto()) },

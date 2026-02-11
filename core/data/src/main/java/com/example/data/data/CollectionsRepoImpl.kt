@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.example.data.data
 
 import androidx.paging.Pager
@@ -20,9 +22,12 @@ import com.example.local.auth.AuthPrefsManager
 import com.example.network.collections.api.CollectionsApi
 import com.example.network.common.common_request_models.common_request.CommonRequestDtoWithCollectionTypeDto
 import com.example.network.common.common_utils.CommonNetworkConstants
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -32,24 +37,29 @@ class CollectionsRepoImpl @Inject constructor(
 ): CollectionsRepo {
 
     override fun getAnimeInCollection(request: CommonRequestWithCollectionType): Flow<PagingData<AnimeItem>> {
-        return Pager(
-            config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
-            pagingSourceFactory = {
-                CommonPagingSource(
-                    apiCall = { dto ->
-                        collectionsApi.getAnimeInCollection(
-                            sessionToken = authPrefsManager.token.firstOrNull()!!,
-                            request = dto as CommonRequestDtoWithCollectionTypeDto
+        return authPrefsManager.token
+            .filterNotNull()
+            .flatMapLatest {
+                Pager(
+                    config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
+                    pagingSourceFactory = {
+                        CommonPagingSource(
+                            apiCall = { dto ->
+                                collectionsApi.getAnimeInCollection(
+                                    sessionToken = authPrefsManager.token.firstOrNull()!!,
+                                    request = dto as CommonRequestDtoWithCollectionTypeDto
+                                )
+                            },
+                            baseRequest = request.toCommonRequestWithCollectionTypeDto()
                         )
-                    },
-                    baseRequest = request.toCommonRequestWithCollectionTypeDto()
-                )
+                    }
+                ).flow
             }
-        ).flow.map { pagingData -> pagingData.map { it.toAnimeItem() } }
+            .map { pagingData -> pagingData.map { it.toAnimeItem() } }
     }
 
     override suspend fun getCollectionsIds(): NetworkResult<List<AnimeCollection>> {
-        val token = authPrefsManager.token.first()!!
+        val token = authPrefsManager.token.filterNotNull().first()
 
         return NetworkRequest.safeApiCall(
             call = { collectionsApi.getCollectionsIds(token) },
@@ -58,7 +68,7 @@ class CollectionsRepoImpl @Inject constructor(
     }
 
     override suspend fun addToCollection(request: CollectionRequest): NetworkResult<Unit> {
-        val token = authPrefsManager.token.first()!!
+        val token = authPrefsManager.token.filterNotNull().first()
 
         return NetworkRequest.safeApiCall(
             call = {
@@ -72,7 +82,7 @@ class CollectionsRepoImpl @Inject constructor(
     }
 
     override suspend fun deleteFromCollection(request: CollectionRequest): NetworkResult<Unit> {
-        val token = authPrefsManager.token.first()!!
+        val token = authPrefsManager.token.filterNotNull().first()
 
         return NetworkRequest.safeApiCall(
             call = {
