@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ContainedLoadingIndicator
@@ -25,12 +26,17 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
+import com.example.design_system.theme.theme.mMotionScheme
 
 private const val MaxTranslationDp = 10f
 private const val RefreshThreshold = 1.001f
 private const val ResetThreshold = 0.5f
 private const val IndicatorMaxSizeDp = 42f
 private const val VibrationDurationMs = 50L
+private const val MIN_PROGRESS = 0f
+private const val MAX_PROGRESS = 1f
+
+private const val TRANSLATION_ANIMATION_LABEL = "Dp translation animation"
 
 @Composable
 fun VibratingContainer(
@@ -49,10 +55,16 @@ fun VibratingContainer(
         indicator = {},
         modifier = modifier
     ) {
+        val translationAnimation by animateDpAsState(
+            targetValue = (state.distanceFraction * MaxTranslationDp).dp,
+            animationSpec = mMotionScheme.fastSpatialSpec(),
+            label = TRANSLATION_ANIMATION_LABEL
+        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.graphicsLayer {
-                translationY = state.distanceFraction * MaxTranslationDp.dp.toPx()
+                translationY = translationAnimation.toPx()
             }
         ) {
             if (isSearching) {
@@ -69,7 +81,7 @@ fun VibratingContainer(
                         modifier = Modifier.size(IndicatorMaxSizeDp.dp)
                     )
                 } else {
-                    val progress = state.distanceFraction.coerceIn(0f, 1f)
+                    val progress = state.distanceFraction.coerceIn(MIN_PROGRESS, MAX_PROGRESS)
                     val size = (state.distanceFraction * IndicatorMaxSizeDp)
                         .coerceIn(0f, IndicatorMaxSizeDp).dp
 
@@ -114,8 +126,10 @@ private fun Context.getVibrator(): Vibrator? {
     }
 }
 
+private const val VIBRATE_DURATION = 25L
+
 @Suppress("DEPRECATION")
-private fun Vibrator.vibrateOnce(duration: Long = 50L) {
+private fun Vibrator.vibrateOnce(duration: Long = VIBRATE_DURATION) {
     val effect = VibrationEffect.createOneShot(
         duration,
         VibrationEffect.DEFAULT_AMPLITUDE

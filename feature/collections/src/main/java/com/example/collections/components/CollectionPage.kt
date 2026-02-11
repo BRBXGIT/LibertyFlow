@@ -41,7 +41,7 @@ internal fun CollectionPage(
     VibratingContainer(
         isSearching = state.searchForm.isSearching,
         isRefreshing = pageState == PageState.Loading,
-        onRefresh = { items.refresh() }
+        onRefresh = items::refresh
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             when (pageState) {
@@ -84,10 +84,7 @@ private fun calculatePageState(
 
     return when (loadState) {
         is LoadState.Error -> PageState.Error
-        is LoadState.Loading -> {
-            // Only show full-screen loading if the list is actually empty.
-            if (isEmpty) PageState.Loading else PageState.Ready
-        }
+        is LoadState.Loading -> PageState.Loading
         is LoadState.NotLoading -> {
             if (isEmpty) {
                 if (query.isNotEmpty()) PageState.EmptyWithQuery else PageState.EmptyWithoutQuery
