@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +36,7 @@ import com.example.common.ui_helpers.search.SearchForm
 import com.example.design_system.R
 import com.example.design_system.components.indicators.LibertyFlowLinearIndicator
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mTypography
 
 private const val ANIMATION_DURATION = 300
@@ -52,9 +54,15 @@ fun SearchingTopBar(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     showIndicator: Boolean = true,
+    enterAlways: Boolean = false
 ) {
     Column(modifier = modifier) {
         TopAppBar(
+            colors = if (enterAlways) {
+                TopAppBarDefaults.topAppBarColors(scrolledContainerColor = mColors.surface)
+            } else {
+                TopAppBarDefaults.topAppBarColors()
+            },
             scrollBehavior = scrollBehavior,
             title = {
                 TopBarTitle(

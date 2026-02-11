@@ -3,7 +3,7 @@
     <string name="info_label">Информация</string>
 
     <string name="version_label">Версия</string>
-    <string name="version_description_label">Stable 1.0.0 (30.01.2026)</string>
+    <string name="version_description_label">Stable 1.1.0 (11.02.2026)</string>
     <string name="api_label">Api</string>
     <string name="api_description_label">Документация по Api</string>
     <string name="ani_liberty_label">AniLiberty</string>

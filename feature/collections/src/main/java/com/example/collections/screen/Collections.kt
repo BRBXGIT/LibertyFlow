@@ -18,7 +18,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -57,13 +56,14 @@ internal fun Collections(
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    val topBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val topBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
             SearchingTopBar(
+                enterAlways = true,
                 showIndicator = false,
                 label = stringResource(TopBarLabel),
                 scrollBehavior = topBarScrollBehavior,

@@ -33,7 +33,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val ANIMATION_DELAY = 2_000L
+private const val FAVORITES_ANIMATION_DELAY = 2_000L
+
+private const val COLLECTIONS_ANIMATION_DELAY = 1_500L
 private const val RETRY = "Retry"
 
 @HiltViewModel
@@ -237,7 +239,7 @@ class AnimeDetailsVM @Inject constructor(
             val request = FavoriteRequest().apply { add(FavoriteItem(animeId)) }
 
             // Just cause i want to show animation :)
-            delay(ANIMATION_DELAY)
+            delay(FAVORITES_ANIMATION_DELAY)
 
             val result = if (shouldAdd) favoritesRepo.addFavorite(request) else favoritesRepo.deleteFavorite(request)
 
@@ -257,6 +259,9 @@ class AnimeDetailsVM @Inject constructor(
             _state.update { it.copy(collectionsState = it.collectionsState.copy(
                 loadingState = it.collectionsState.loadingState.withBoth(loading = true, error = false)
             ))}
+
+            // Just cause i want to show animation :)
+            delay(COLLECTIONS_ANIMATION_DELAY)
 
             collectionsRepo.getCollectionsIds()
                 .onSuccess { collections ->
@@ -296,6 +301,9 @@ class AnimeDetailsVM @Inject constructor(
         _state.update { it.copy(collectionsState = it.collectionsState.copy(
             loadingState = it.collectionsState.loadingState.withLoading(true)
         ))}
+
+        // Just cause i want to show animation :)
+        delay(COLLECTIONS_ANIMATION_DELAY)
 
         val request = CollectionRequest().apply { add(CollectionItem(animeId, type)) }
         val result = if (isAdding) collectionsRepo.addToCollection(request)

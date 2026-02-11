@@ -31,6 +31,7 @@ import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.anime_details.screen.AnimeDetailsState
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.data.models.auth.AuthState
 import com.example.design_system.containers.UpDownAnimatedContent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
@@ -50,6 +51,7 @@ private sealed interface CollectionState {
     data object Loading: CollectionState
     data object Empty: CollectionState
     data object Added: CollectionState
+    data object Unauthorized: CollectionState
 }
 
 // Static error title text
@@ -88,8 +90,9 @@ private fun AnimeDetailsState.toTitleState(): TitleState = when {
 }
 
 private fun AnimeDetailsState.toCollectionState(): CollectionState = when {
-    collectionsState.loadingState.isLoading -> CollectionState.Loading
+    authState !is AuthState.LoggedOut && collectionsState.loadingState.isLoading -> CollectionState.Loading
     activeCollection != null -> CollectionState.Added
+    authState is AuthState.LoggedOut -> CollectionState.Unauthorized
     else -> CollectionState.Empty
 }
 
@@ -126,6 +129,9 @@ internal fun TopBar(
                 targetState = collectionState,
             ) { target ->
                 val (icon, onClick) = when (target) {
+                    CollectionState.Unauthorized -> LibertyFlowIcons.User to {
+                        onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible)
+                    }
                     CollectionState.Added -> LibertyFlowIcons.ListCheckFilled to {
                         onIntent(AnimeDetailsIntent.ToggleCollectionsBSVisible)
                     }

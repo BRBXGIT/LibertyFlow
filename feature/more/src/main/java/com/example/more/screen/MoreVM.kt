@@ -7,6 +7,7 @@ import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.toWhileSubscribed
 import com.example.data.domain.AuthRepo
+import com.example.data.utils.remote.network_request.NetworkErrors
 import com.example.data.utils.remote.network_request.onError
 import com.example.data.utils.remote.network_request.onSuccess
 import com.example.more.R
@@ -62,13 +63,18 @@ class MoreVM @Inject constructor(
                         )
                     )
                 }
-                .onError { _, messageRes ->
+                .onError { error, messageRes ->
                     sendEffect(
-                        effect = UiEffect.ShowSnackbarWithAction(
-                            messageRes = messageRes,
-                            actionLabel = RETRY,
-                            action = { logout() }
-                        )
+                        effect = when(error) {
+                            NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> UiEffect.ShowSimpleSnackbar(
+                                messageRes = messageRes
+                            )
+                            else -> UiEffect.ShowSnackbarWithAction(
+                                messageRes = messageRes,
+                                actionLabel = RETRY,
+                                action = { logout() }
+                            )
+                        }
                     )
                 }
         }

@@ -25,7 +25,6 @@ fun HandleCommonEffects(
                     val result = snackbarHostState!!.showSnackbar(
                         message = context.getString(effect.messageRes),
                         actionLabel = effect.actionLabel,
-                        withDismissAction = true
                     )
 
                     if (result == SnackbarResult.ActionPerformed) {

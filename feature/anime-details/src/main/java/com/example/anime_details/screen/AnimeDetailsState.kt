@@ -42,7 +42,7 @@ data class AnimeDetailsState(
     @Immutable
     data class CollectionsState(
         val collectionBSVisible: Boolean = false,
-        val loadingState: LoadingState = LoadingState(),
+        val loadingState: LoadingState = LoadingState(isLoading = true),
         val collections: List<AnimeCollection> = emptyList()
     ) {
         fun toggleBS() = copy(collectionBSVisible = !collectionBSVisible)
