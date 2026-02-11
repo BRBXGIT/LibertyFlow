@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -16,6 +17,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mMotionScheme
+import com.example.onboarding.screen.OnboardingIntent
+import com.example.onboarding.screen.OnboardingState
+import kotlinx.coroutines.launch
 
 private val BarHorizontalPadding = 16.dp
 private val ProgressHeight = 8.dp
@@ -34,18 +41,20 @@ private const val PROGRESS_WEIGHT = 0.6f
 private const val INDICATOR_ALPHA = 0.1f
 private const val DISABLED_ICON_ALPHA = 0.3f
 
-private const val NEXT_PAGE_PLUS = 1
 private const val ZERO = 0
 private const val LAST_PAGE = 2
 
 private const val ANIMATION_LABEL = "Progress animation label"
 
+private const val NEXT_PAGE_PLUS = 1
+
 @Composable
 fun BottomBar(
     currentPage: Int,
     totalPages: Int,
-    onBackClick: () -> Unit,
-    onNextClick: () -> Unit
+    state: OnboardingState,
+    pagerState: PagerState,
+    onIntent: (OnboardingIntent) -> Unit
 ) {
     val targetProgress = (currentPage + NEXT_PAGE_PLUS).toFloat() / totalPages
 
@@ -55,6 +64,7 @@ fun BottomBar(
         label = ANIMATION_LABEL
     )
 
+    val animationScope = rememberCoroutineScope()
     BottomAppBar(
         containerColor = Color.Transparent,
         contentPadding = PaddingValues(horizontal = BarHorizontalPadding)
@@ -66,7 +76,11 @@ fun BottomBar(
         ) {
             IconButton(
                 modifier = Modifier.weight(ICON_WEIGHT),
-                onClick = onBackClick,
+                onClick = {
+                    animationScope.launch {
+                        pagerState.animateScrollToPage(pagerState.currentPage - NEXT_PAGE_PLUS)
+                    }
+                },
                 enabled = currentPage > ZERO
             ) {
                 Icon(
@@ -86,14 +100,24 @@ fun BottomBar(
                 trackColor = mColors.primary.copy(alpha = INDICATOR_ALPHA)
             )
 
+            val enabled = currentPage != LAST_PAGE || state.triedToAskPermission
             IconButton(
+                enabled = enabled,
                 modifier = Modifier.weight(ICON_WEIGHT),
-                onClick = onNextClick
+                onClick = {
+                    if (pagerState.currentPage < totalPages - NEXT_PAGE_PLUS) {
+                        animationScope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage + NEXT_PAGE_PLUS)
+                        }
+                    } else {
+                        onIntent(OnboardingIntent.SaveOnboardingCompleted)
+                    }
+                }
             ) {
                 Icon(
                     painter = painterResource(if (currentPage < LAST_PAGE) LibertyFlowIcons.AltArrowRightFilled else LibertyFlowIcons.DoubleCheckFilled),
                     contentDescription = null,
-                    tint = mColors.primary
+                    tint = if (enabled) mColors.primary else mColors.onSurface.copy(alpha = DISABLED_ICON_ALPHA)
                 )
             }
         }

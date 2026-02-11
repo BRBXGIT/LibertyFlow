@@ -30,6 +30,7 @@ import com.example.common.ui_helpers.effects.UiEffect
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mTypography
 import com.example.onboarding.R
+import com.example.onboarding.screen.OnboardingIntent
 import com.example.onboarding.screen.OnboardingPage
 
 private val PageSpacingMedium = 48.dp
@@ -47,6 +48,7 @@ private val PermissionButtonLabel = R.string.permission_button_label
 @Composable
 internal fun OnboardingPageContent(
     onEffect: (UiEffect) -> Unit,
+    onIntent: (OnboardingIntent) -> Unit,
     page: OnboardingPage,
     modifier: Modifier = Modifier
 ) {
@@ -72,7 +74,8 @@ internal fun OnboardingPageContent(
 
         PermissionSection(
             isVisible = page == OnboardingPage.Permissions,
-            onEffect = onEffect
+            onEffect = onEffect,
+            onIntent = onIntent
         )
 
         Spacer(modifier = Modifier.weight(BOTTOM_SPACER_WEIGHT))
@@ -82,7 +85,11 @@ internal fun OnboardingPageContent(
 private val PermissionDeniedLabel = R.string.permission_denied_label
 
 @Composable
-private fun PermissionSection(isVisible: Boolean, onEffect: (UiEffect) -> Unit) {
+private fun PermissionSection(
+    isVisible: Boolean,
+    onEffect: (UiEffect) -> Unit,
+    onIntent: (OnboardingIntent) -> Unit
+) {
     val notificationsPermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
@@ -96,7 +103,6 @@ private fun PermissionSection(isVisible: Boolean, onEffect: (UiEffect) -> Unit) 
         }
     )
 
-    // TODO: Check granted or not and only then unlock transition to the next screen
     AnimatedVisibility(
         visible = isVisible,
         enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
@@ -106,6 +112,7 @@ private fun PermissionSection(isVisible: Boolean, onEffect: (UiEffect) -> Unit) 
             Spacer(modifier = Modifier.height(ButtonTopMargin))
             Button(
                 onClick = {
+                    onIntent(OnboardingIntent.UpdateTriedToAskPermission)
                     notificationsPermissionResultLauncher.launch(
                         Manifest.permission.POST_NOTIFICATIONS
                     )

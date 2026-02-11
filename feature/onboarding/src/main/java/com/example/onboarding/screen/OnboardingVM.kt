@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.common.vm_helpers.toLazily
 import com.example.data.domain.OnboardingRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,12 +22,16 @@ class OnboardingVM @Inject constructor(
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
 ): ViewModel() {
 
+    private val _state = MutableStateFlow(OnboardingState())
+    val state = _state.toLazily(OnboardingState())
+
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
     fun sendIntent(intent: OnboardingIntent) {
         when(intent) {
             OnboardingIntent.SaveOnboardingCompleted -> saveOnboardingCompleted()
+            OnboardingIntent.UpdateTriedToAskPermission -> _state.update { it.copy(triedToAskPermission = true) }
         }
     }
 
