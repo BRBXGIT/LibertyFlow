@@ -30,9 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.anime_details.screen.AnimeDetailsState
-import com.example.common.refresh.RefreshEffect
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.common.request.request_parameters.Collection
 import com.example.design_system.containers.UpDownAnimatedContent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
@@ -100,7 +98,6 @@ internal fun TopBar(
     state: AnimeDetailsState,
     scrollBehavior: TopAppBarScrollBehavior,
     onEffect: (UiEffect) -> Unit,
-    onRefreshEffect: (RefreshEffect) -> Unit,
     onIntent: (AnimeDetailsIntent) -> Unit
 ) {
     val titleState by remember(state) { derivedStateOf { state.toTitleState() } }
@@ -130,14 +127,12 @@ internal fun TopBar(
             ) { target ->
                 val (icon, onClick) = when (target) {
                     CollectionState.Added -> LibertyFlowIcons.ListCheckFilled to {
-                        onIntent(AnimeDetailsIntent.ToggleCollection(Collection.PLANNED))
-                        onRefreshEffect(RefreshEffect.RefreshCollection(Collection.PLANNED))
+                        onIntent(AnimeDetailsIntent.ToggleCollectionsBSVisible)
                     }
                     CollectionState.Empty -> LibertyFlowIcons.ListArrowDown to {
-                        onIntent(AnimeDetailsIntent.ToggleCollection(Collection.PLANNED))
-                        onRefreshEffect(RefreshEffect.RefreshCollection(Collection.PLANNED))
+                        onIntent(AnimeDetailsIntent.ToggleCollectionsBSVisible)
                     }
-                    CollectionState.Loading -> LibertyFlowIcons.Clock to {}
+                    CollectionState.Loading -> LibertyFlowIcons.Clock to { /* Empty */ }
                 }
 
                 TopBarIconButton(icon = icon, onClick = onClick)
@@ -235,7 +230,6 @@ private fun AnimeScreenTopBarPreview() {
             scrollBehavior = scrollBehavior,
             onEffect = {},
             onIntent = {},
-            onRefreshEffect = {}
         )
     }
 }

@@ -25,7 +25,7 @@ import com.example.network.common.common_response_models.GenreDto
 import com.example.network.common.common_response_models.NameDto
 import com.example.network.common.common_response_models.PosterDto
 
-fun Season.toName(): Int {
+fun Season.toLabelRes(): Int {
     return when(this) {
         Season.WINTER -> R.string.winter
         Season.AUTUMN -> R.string.autumn
@@ -34,7 +34,7 @@ fun Season.toName(): Int {
     }
 }
 
-fun Collection.toName(): Int {
+fun Collection.toLabelRes(): Int {
     return when(this) {
         Collection.PLANNED -> R.string.planned_collection
         Collection.WATCHED -> R.string.watched_collection
@@ -44,7 +44,7 @@ fun Collection.toName(): Int {
     }
 }
 
-fun Sorting.toName(): Int {
+fun Sorting.toLabelRes(): Int {
     return when(this) {
         Sorting.RATING_DESC -> R.string.by_popularity_label
         else -> R.string.by_novelty_label
@@ -56,7 +56,7 @@ internal fun AnimeResponseItemDto.toAnimeItem(): AnimeItem {
         id = id,
         genres = genres.map { it.toGenre() },
         poster = posterDto.toPoster(),
-        name = nameDto.toName()
+        name = nameDto.toLabelRes()
     )
 }
 
@@ -75,7 +75,7 @@ internal fun PosterDto.toPoster(): Poster {
     )
 }
 
-internal fun NameDto.toName(): Name {
+internal fun NameDto.toLabelRes(): Name {
     return Name(
         russian = main,
         english = english,

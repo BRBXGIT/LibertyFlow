@@ -18,7 +18,8 @@ sealed interface AnimeDetailsIntent {
 
     // --- UI Interactions ---
     data object ToggleIsDescriptionExpanded: AnimeDetailsIntent
-    data object ToggleIsAuthBsVisible: AnimeDetailsIntent
+    data object ToggleIsAuthBSVisible: AnimeDetailsIntent
+    data object ToggleCollectionsBSVisible: AnimeDetailsIntent
 
     // Grouped form updates to avoid polluting the intent root
     data class UpdateAuthForm(val field: AuthField): AnimeDetailsIntent {

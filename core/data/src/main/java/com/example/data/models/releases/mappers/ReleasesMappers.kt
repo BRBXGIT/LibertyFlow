@@ -1,7 +1,7 @@
 package com.example.data.models.releases.mappers
 
 import com.example.data.models.common.mappers.toGenre
-import com.example.data.models.common.mappers.toName
+import com.example.data.models.common.mappers.toLabelRes
 import com.example.data.models.common.mappers.toPoster
 import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.data.models.releases.anime_details.Ending
@@ -28,7 +28,7 @@ internal fun AnimeDetailsItemDto.toAnimeDetails(): AnimeDetails {
         genres = genres.map { it.toGenre() },
         isOngoing = isOngoing,
         members = members.map { it.toMember() },
-        name = nameDto.toName(),
+        name = nameDto.toLabelRes(),
         poster = posterDto.toPoster(),
         season = seasonDto.description,
         torrents = torrents.map { it.toTorrent() },

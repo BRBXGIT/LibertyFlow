@@ -73,7 +73,7 @@ private fun RefreshCollection(
     LaunchedEffect(Unit) {
         effects.collect { effect ->
             when(effect) {
-                is RefreshEffect.RefreshCollection -> collections[effect.collection]?.refresh()
+                is RefreshEffect.RefreshCollection -> if (effect.collection != null) collections[effect.collection]?.refresh()
                 else -> {}
             }
         }

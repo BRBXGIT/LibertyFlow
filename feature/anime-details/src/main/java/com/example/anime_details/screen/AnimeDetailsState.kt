@@ -41,9 +41,12 @@ data class AnimeDetailsState(
 
     @Immutable
     data class CollectionsState(
+        val collectionBSVisible: Boolean = false,
         val loadingState: LoadingState = LoadingState(),
         val collections: List<AnimeCollection> = emptyList()
-    )
+    ) {
+        fun toggleBS() = copy(collectionBSVisible = !collectionBSVisible)
+    }
 
     // Auth
     fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): AnimeDetailsState {
@@ -69,15 +72,12 @@ data class AnimeDetailsState(
 
     fun updateCollection(collection: Collection, isAdded: Boolean): AnimeDetailsState {
         val animeId = anime?.id ?: return this
-
         val currentList = collectionsState.collections.toMutableList()
 
+        currentList.removeAll { it.id == animeId }
+
         if (isAdded) {
-            if (currentList.none { it.id == animeId && it.collection == collection }) {
-                currentList.add(AnimeCollection(collection = collection, id = animeId))
-            }
-        } else {
-            currentList.removeAll { it.id == animeId && it.collection == collection }
+            currentList.add(AnimeCollection(collection = collection, id = animeId))
         }
 
         return copy(

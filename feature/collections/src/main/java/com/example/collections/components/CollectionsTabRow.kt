@@ -9,7 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.collections.screen.toIndex
-import com.example.data.models.common.mappers.toName
+import com.example.data.models.common.mappers.toLabelRes
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.theme.TabType
 import com.example.design_system.components.tabs.LibertyFlowTab
@@ -47,7 +47,7 @@ internal fun CollectionsTabRow(
                 tabType = themeState.tabType,
                 onClick = { onTabClick(collection) },
                 selected = selected,
-                text = stringResource(collection.toName())
+                text = stringResource(collection.toLabelRes())
             )
         }
     }

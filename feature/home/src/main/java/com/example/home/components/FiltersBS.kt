@@ -38,7 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.data.models.common.common.Genre
-import com.example.data.models.common.mappers.toName
+import com.example.data.models.common.mappers.toLabelRes
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
@@ -129,7 +129,7 @@ internal fun FiltersBS(
             selectableFilterItems(
                 items = Season.entries,
                 isSelected = { it in request.seasons },
-                itemLabel = { stringResource(it.toName()) },
+                itemLabel = { stringResource(it.toLabelRes()) },
                 onItemClick = { season, selected ->
                     onIntent(
                         if (selected) HomeIntent.RemoveSeason(season)
@@ -288,7 +288,7 @@ private fun LazyGridScope.sortingBy(
             )
 
             Text(
-                text = stringResource(sort.toName()),
+                text = stringResource(sort.toLabelRes()),
                 style = mTypography.bodyLarge
             )
         }

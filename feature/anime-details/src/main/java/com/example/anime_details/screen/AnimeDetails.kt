@@ -43,6 +43,7 @@ import com.example.data.models.common.common.PosterType
 import com.example.data.models.releases.anime_details.Episode
 import com.example.data.models.releases.anime_details.Torrent
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
+import com.example.design_system.components.bottom_sheets.collections_bs.CollectionsBS
 import com.example.design_system.components.dividers.dividerWithLabel
 import com.example.design_system.utils.ScrollDirection
 import com.example.design_system.utils.rememberDirectionalScrollState
@@ -91,7 +92,6 @@ internal fun AnimeDetails(
                 scrollBehavior = topBarScrollBehavior,
                 onEffect = onEffect,
                 onIntent = onIntent,
-                onRefreshEffect = onRefreshEffect
             )
         },
         modifier = Modifier
@@ -107,10 +107,22 @@ internal fun AnimeDetails(
                     email = state.authForm.login,
                     password = state.authForm.password,
                     incorrectEmailOrPassword = state.authForm.isError,
-                    onDismissRequest = { onIntent(AnimeDetailsIntent.ToggleIsAuthBsVisible) },
+                    onDismissRequest = { onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible) },
                     onAuthClick = { onIntent(AnimeDetailsIntent.GetTokens) },
                     onPasswordChange = { onIntent(AnimeDetailsIntent.UpdateAuthForm(AuthField.Password(it))) },
                     onEmailChange = { onIntent(AnimeDetailsIntent.UpdateAuthForm(AuthField.Email(it))) }
+                )
+            }
+
+            if (state.collectionsState.collectionBSVisible) {
+                CollectionsBS(
+                    selectedCollection = state.activeCollection,
+                    onDismissRequest = { onIntent(AnimeDetailsIntent.ToggleCollectionsBSVisible) },
+                    onItemClick = { collection ->
+                        onIntent(AnimeDetailsIntent.ToggleCollection(collection))
+                        onRefreshEffect(RefreshEffect.RefreshCollection(collection))
+                        onRefreshEffect(RefreshEffect.RefreshCollection(state.activeCollection))
+                    }
                 )
             }
 

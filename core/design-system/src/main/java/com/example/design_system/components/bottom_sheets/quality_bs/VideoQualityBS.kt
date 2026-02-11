@@ -16,8 +16,6 @@ private data class QualityItem(
     override val leadingIcon: Int? = null,
     override val onClick: () -> Unit,
     override val trailingType: BSTrailingType,
-
-    val quality: VideoQuality
 ): BSListModel
 
 @Composable
@@ -30,7 +28,6 @@ fun VideoQualityBS(
         VideoQuality.entries.map { quality ->
             QualityItem(
                 label = quality.toLabelRes(),
-                quality = quality,
                 trailingType = if (quality == selectedQuality) {
                     BSTrailingType.Toggle(isEnabled = true)
                 } else {

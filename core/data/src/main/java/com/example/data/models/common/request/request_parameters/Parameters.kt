@@ -21,4 +21,4 @@ enum class PublishStatus { IS_ONGOING, IS_NOT_ONGOING }
 
 enum class ProductionsStatus { IS_IN_PRODUCTION, IS_NOT_IN_PRODUCTION }
 
-enum class Collection { PLANNED, WATCHED, WATCHING, POSTPONED, ABANDONED }
+enum class Collection { WATCHING, PLANNED, POSTPONED, ABANDONED, WATCHED }

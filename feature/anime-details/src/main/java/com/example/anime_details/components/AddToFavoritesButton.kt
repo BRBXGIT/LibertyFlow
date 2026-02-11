@@ -57,7 +57,7 @@ internal fun LazyItemScope.AddToFavoritesButton(
 
             authState is AuthState.LoggedOut -> ActionButtonState(
                 LibertyFlowIcons.User, AuthorizeLabel
-            ) { onIntent(AnimeDetailsIntent.ToggleIsAuthBsVisible) }
+            ) { onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible) }
 
             animeId in favoritesState.ids -> ActionButtonState(
                 LibertyFlowIcons.MinusCircle, RemoveFromFavoritesLabelRes
