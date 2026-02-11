@@ -1,5 +1,6 @@
 package com.example.settings.components
 
+import android.os.Build
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -33,7 +34,14 @@ internal fun LazyItemScope.SegmentedThemeButton(
             .padding(horizontal = HorizontalPadding)
     ) {
         ThemeValue.entries.forEachIndexed { index, value ->
+            val isSupported = if (value == ThemeValue.DYNAMIC) {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+            } else {
+                true
+            }
+
             SegmentedButton(
+                enabled = isSupported,
                 shape = SegmentedButtonDefaults.itemShape(
                     index = index,
                     count = ThemeValue.entries.size

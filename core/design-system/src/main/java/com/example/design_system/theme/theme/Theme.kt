@@ -2,12 +2,18 @@
 
 package com.example.design_system.theme.theme
 
+import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import com.example.data.models.theme.ColorSchemeValue
+import com.example.data.models.theme.ThemeValue
 import com.example.design_system.theme.colors.DarkCherryColorScheme
 import com.example.design_system.theme.colors.DarkGreenAppleScheme
 import com.example.design_system.theme.colors.DarkLavenderScheme
@@ -23,11 +29,21 @@ import com.example.design_system.theme.colors.LightTacosScheme
 
 @Composable
 fun LibertyFlowTheme(
+    theme: ThemeValue = ThemeValue.SYSTEM,
     colorScheme: ColorSchemeValue = ColorSchemeValue.DARK_LAVENDER_SCHEME,
     useExpressive: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = getColorScheme(colorScheme)
+    val context = LocalContext.current
+    val colorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (theme == ThemeValue.DYNAMIC) {
+            if (isSystemInDarkTheme()) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        } else {
+            getColorScheme(colorScheme)
+        }
+    } else {
+        getColorScheme(colorScheme)
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -37,6 +53,7 @@ fun LibertyFlowTheme(
     )
 }
 
+@Composable
 private fun getColorScheme(colorSchemeValue: ColorSchemeValue): ColorScheme {
     return when (colorSchemeValue) {
         ColorSchemeValue.DARK_CHERRY_SCHEME -> DarkCherryColorScheme

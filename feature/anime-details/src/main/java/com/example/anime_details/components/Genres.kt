@@ -43,7 +43,7 @@ internal fun LazyItemScope.Genres(
                     disabledLabelColor = mColors.onSurface
                 ),
                 enabled = false,
-                onClick = { /* TODO: handle click */ },
+                onClick = { /* Do nothing */ },
                 label = {
                     Text(
                         text = genre,

@@ -54,7 +54,8 @@ class MainActivity : ComponentActivity() {
 
             LibertyFlowTheme(
                 useExpressive = themeState.useExpressive,
-                colorScheme = themeState.activeColorScheme
+                colorScheme = themeState.activeColorScheme,
+                theme = themeState.userThemePreference
             ) {
                 if (appStartingState.onboardingCompleted !is OnboardingState.Loading) {
                     NavGraph(
