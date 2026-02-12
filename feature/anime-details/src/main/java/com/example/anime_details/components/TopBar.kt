@@ -56,7 +56,7 @@ private sealed interface CollectionState {
 }
 
 // Static error title text
-private val ErrorLabelRes = R.string.error_section_label
+private val ErrorLabelRes = R.string.error_label
 
 // Fully transparent top bar background
 private const val TOP_BAR_ALPHA = 0f

@@ -24,7 +24,7 @@ import com.example.design_system.theme.icons.LibertyFlowIcons
 private val AddToFavoritesLabelRes = R.string.add_to_favorites_button_label
 private val RemoveFromFavoritesLabelRes = R.string.remove_from_favorites_button_label
 private val LoadingFavoritesLabelRes = R.string.favorites_loading_label
-private val ErrorFavoritesLabelRes = R.string.error_section_label
+private val ErrorFavoritesLabelRes = R.string.error_label
 private val AuthorizeLabel = R.string.authorize_label
 
 // Key used for item animations inside Lazy layouts.

@@ -21,7 +21,7 @@ class ThemeRepoImpl @Inject constructor(
         flow4 = themePrefsManager.tabType
     ) { theme, colorSystem, useExpressive, tabType ->
         LibertyFlowTheme(
-            useExpressive = useExpressive ?: false,
+            useExpressive = useExpressive ?: true,
             userThemePreference = theme.toEnumOrDefault(ThemeValue.SYSTEM),
             activeColorScheme = colorSystem.toEnumOrNull<ColorSchemeValue>(),
             tabType = tabType.toEnumTabType()

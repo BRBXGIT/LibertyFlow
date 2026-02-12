@@ -109,7 +109,6 @@ internal fun Home(
         ) {
             MainContent(
                 listState = lazyGridState,
-                isError = state.loadingState.isError,
                 state = state,
                 anime = anime,
                 onIntent = onIntent,
@@ -122,14 +121,13 @@ internal fun Home(
 @Composable
 private fun MainContent(
     listState: LazyGridState,
-    isError: Boolean,
     state: HomeState,
     anime: LazyPagingItems<AnimeItem>,
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
     // Early return for error state to keep indentation low
-    if (isError) {
+    if (state.loadingState.isError) {
         ErrorSection()
         return
     }
