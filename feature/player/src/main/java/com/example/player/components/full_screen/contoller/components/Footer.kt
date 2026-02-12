@@ -33,9 +33,16 @@ import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
-private val HeaderSpacing = 4.dp
-
-private val IconSpacing = 4.dp
+private object FooterDefaults {
+    val HeaderSpacing = 4.dp
+    val IconSpacing = 4.dp
+    val SliderRowSpacing = 16.dp
+    val SliderHeight = 1.dp
+    const val TRACK_ALPHA = 0.24f
+    const val SAFE_TOTAL_DURATION = 0L
+    const val MILLIS_TO_SECONDS = 1000L
+    const val SECONDS_IN_MINUTE = 60
+}
 
 @Composable
 internal fun BoxScope.Footer(
@@ -44,15 +51,15 @@ internal fun BoxScope.Footer(
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
+    // Stores the temporary position while the user is dragging the slider
     var scrubPosition by remember { mutableStateOf<Long?>(null) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .align(Alignment.BottomCenter),
-        verticalArrangement = Arrangement.spacedBy(HeaderSpacing)
+        verticalArrangement = Arrangement.spacedBy(FooterDefaults.HeaderSpacing)
     ) {
-        // Time and Actions Row
         ActionsRow(
             playerState = playerState,
             pipManager = pipManager,
@@ -62,18 +69,20 @@ internal fun BoxScope.Footer(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(FooterDefaults.SliderRowSpacing)
         ) {
-            // Optimized Time Label: Separated to limit recompositions when only time changes
-            val displayTime = scrubPosition ?: playerState.episodeTime.current
+            // Priority given to scrubPosition to ensure smooth visual feedback during seeking
+            val currentPos = scrubPosition ?: playerState.episodeTime.current
+            val totalPos = playerState.episodeTime.total
+
             Text(
-                text = "${displayTime.formatMinSec()} / ${playerState.episodeTime.total.formatMinSec()}",
+                text = "${currentPos.formatMinSec()} / ${totalPos.formatMinSec()}",
                 style = mTypography.bodyMedium.copy(color = Color.White)
             )
 
             PlayerSlider(
                 currentPosition = playerState.episodeTime.current,
-                totalDuration = playerState.episodeTime.total,
+                totalDuration = totalPos,
                 scrubPosition = scrubPosition,
                 onScrubbing = {
                     onPlayerIntent(PlayerIntent.SetIsScrubbing(true))
@@ -97,31 +106,34 @@ private fun ActionsRow(
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     val context = LocalContext.current
+    val isVisible = playerState.isControllerVisible
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
+        // Left Side: Rewind and Fast Forward controls
+        Row(horizontalArrangement = Arrangement.spacedBy(FooterDefaults.IconSpacing)) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.RewindBack,
                 onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(false)) },
-                isEnabled = playerState.isControllerVisible
+                isEnabled = isVisible
             )
 
             PlayerIconButton(
                 icon = LibertyFlowIcons.Rewind,
                 onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(true)) },
-                isEnabled = playerState.isControllerVisible
+                isEnabled = isVisible
             )
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
+        // Right Side: Utility controls (Lock, Aspect Ratio, PiP)
+        Row(horizontalArrangement = Arrangement.spacedBy(FooterDefaults.IconSpacing)) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.Lock,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleIsLocked) },
-                isEnabled = playerState.isControllerVisible
+                isEnabled = isVisible
             )
 
             ButtonWithAnimatedIcon(
@@ -131,7 +143,7 @@ private fun ActionsRow(
             ) { painter ->
                 Image(
                     painter = painter,
-                    contentDescription = null,
+                    contentDescription = "Toggle Crop Mode",
                     colorFilter = ColorFilter.tint(Color.White),
                 )
             }
@@ -146,15 +158,11 @@ private fun ActionsRow(
                         }
                     }
                 },
-                isEnabled = playerState.isControllerVisible
+                isEnabled = isVisible
             )
         }
     }
 }
-
-private const val TRACK_ALPHA = 0.24f
-private const val SAFE_TOTAL_DURATION = 0L
-private val SliderHeight = 1.dp
 
 @Composable
 private fun PlayerSlider(
@@ -164,26 +172,29 @@ private fun PlayerSlider(
     onScrubbing: (Long) -> Unit,
     onSeekFinished: (Long) -> Unit
 ) {
-    // We use derived state to avoid heavy math on every recomposition if inputs didn't change
-    val safeTotalDuration = remember(totalDuration) { totalDuration.coerceAtLeast(SAFE_TOTAL_DURATION).toFloat() }
+    // Coerce duration to prevent division by zero or negative ranges
+    val safeTotalDuration = remember(totalDuration) {
+        totalDuration.coerceAtLeast(FooterDefaults.SAFE_TOTAL_DURATION).toFloat()
+    }
     val displayPosition = (scrubPosition ?: currentPosition).toFloat()
 
     Box(contentAlignment = Alignment.CenterStart, modifier = Modifier.fillMaxWidth()) {
+        // Using a progress lambda to defer read and minimize recompositions
         LinearProgressIndicator(
-            // Key optimization: the lambda version of progress avoids full component recomposition
             progress = { if (safeTotalDuration > 0) displayPosition / safeTotalDuration else 0f },
             modifier = Modifier.fillMaxWidth(),
             color = Color.White,
-            trackColor = Color.White.copy(alpha = TRACK_ALPHA),
+            trackColor = Color.White.copy(alpha = FooterDefaults.TRACK_ALPHA),
             strokeCap = StrokeCap.Round
         )
 
+        // Overlaying a transparent Slider to handle touch input while keeping custom LinearProgress look
         Slider(
             value = displayPosition,
             valueRange = 0f..safeTotalDuration,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(SliderHeight),
+                .height(FooterDefaults.SliderHeight),
             onValueChange = { newValue -> onScrubbing(newValue.toLong()) },
             onValueChangeFinished = { onSeekFinished(displayPosition.toLong()) },
             colors = SliderDefaults.colors(
@@ -195,10 +206,9 @@ private fun PlayerSlider(
     }
 }
 
-// --- Utils ---
 private fun Long.formatMinSec(): String {
-    val totalSeconds = this / 1000
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
+    val totalSeconds = this / FooterDefaults.MILLIS_TO_SECONDS
+    val minutes = totalSeconds / FooterDefaults.SECONDS_IN_MINUTE
+    val seconds = totalSeconds % FooterDefaults.SECONDS_IN_MINUTE
     return "%02d:%02d".format(minutes, seconds)
 }

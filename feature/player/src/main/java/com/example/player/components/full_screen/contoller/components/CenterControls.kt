@@ -21,10 +21,13 @@ import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
-private val SkipIconSize = 30.dp
-private val PlayPauseIconSize = 34.dp
-private const val ZERO = 0
-private const val ONE = 1
+private object CenterControlsDefaults {
+    val SkipIconSize = 30.dp
+    val PlayPauseIconSize = 34.dp
+    val SpacingBetweenControls = 16.dp
+
+    const val TOUCH_TARGET_MULTIPLAYER = 2f
+}
 
 @Composable
 internal fun BoxScope.CenterControls(
@@ -35,27 +38,34 @@ internal fun BoxScope.CenterControls(
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
+    val hasPreviousEpisode = currentEpisodeIndex > 0
+    val hasNextEpisode = currentEpisodeIndex < totalEpisodes - 1
+    val isPlaying = playerState.episodeState == PlayerState.EpisodeState.Playing
+    val isLoading = playerState.episodeState == PlayerState.EpisodeState.Loading
+
     Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(CenterControlsDefaults.SpacingBetweenControls),
         modifier = Modifier.align(Alignment.Center),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         PlayerIconButton(
-            isAvailable = currentEpisodeIndex > ZERO,
+            isAvailable = hasPreviousEpisode,
             icon = LibertyFlowIcons.Previous,
-            iconSize = SkipIconSize,
-            modifier = Modifier.size(SkipIconSize * 2),
+            iconSize = CenterControlsDefaults.SkipIconSize,
+            modifier = Modifier.size(CenterControlsDefaults.SkipIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
             onClick = { onPlayerEffect(PlayerEffect.SkipEpisode(forward = false)) },
             isEnabled = isControllerVisible
         )
 
-        if (playerState.episodeState == PlayerState.EpisodeState.Loading) {
-            CircularWavyProgressIndicator(modifier = Modifier.size(PlayPauseIconSize))
+        if (isLoading) {
+            CircularWavyProgressIndicator(
+                modifier = Modifier.size(CenterControlsDefaults.PlayPauseIconSize)
+            )
         } else {
             ButtonWithAnimatedIcon(
                 iconId = LibertyFlowIcons.PlayPauseAnimated,
-                atEnd = playerState.episodeState == PlayerState.EpisodeState.Playing,
-                modifier = Modifier.size((PlayPauseIconSize * 2)),
+                atEnd = isPlaying,
+                modifier = Modifier.size(CenterControlsDefaults.PlayPauseIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
                 onClick = {
                     if (playerState.isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause)
                 }
@@ -64,15 +74,16 @@ internal fun BoxScope.CenterControls(
                     painter = painter,
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(Color.White),
-                    modifier = Modifier.size(PlayPauseIconSize)
+                    modifier = Modifier.size(CenterControlsDefaults.PlayPauseIconSize)
                 )
             }
         }
+
         PlayerIconButton(
-            isAvailable = currentEpisodeIndex < totalEpisodes - ONE,
+            isAvailable = hasNextEpisode,
             icon = LibertyFlowIcons.Next,
-            iconSize = SkipIconSize,
-            modifier = Modifier.size(SkipIconSize * 2),
+            iconSize = CenterControlsDefaults.SkipIconSize,
+            modifier = Modifier.size(CenterControlsDefaults.SkipIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
             onClick = { onPlayerEffect(PlayerEffect.SkipEpisode(forward = true)) },
             isEnabled = isControllerVisible
         )

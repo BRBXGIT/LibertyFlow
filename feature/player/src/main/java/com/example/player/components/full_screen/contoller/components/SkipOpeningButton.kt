@@ -18,19 +18,29 @@ import com.example.design_system.theme.theme.mMotionScheme
 import com.example.player.R
 import com.example.player.player.PlayerIntent
 
-private val SkipOpeningLabel = R.string.skip_opening_label
+private object SkipOpeningDefaults {
+    val SkipOpeningLabelRes = R.string.skip_opening_label
+    const val ALPHA_ANIMATION_LABEL = "Skip opening alpha"
+    const val VISIBLE_ALPHA = 1f
+    const val HIDDEN_ALPHA = 0f
+}
 
 @Composable
-internal fun BoxScope.SkipOpeningButton(visible: Boolean, onPlayerIntent: (PlayerIntent) -> Unit) {
+internal fun BoxScope.SkipOpeningButton(
+    visible: Boolean,
+    onPlayerIntent: (PlayerIntent) -> Unit
+) {
+    // Animate alpha to provide a smooth transition when the skip button appears/disappears
     val animatedAlpha by animateFloatAsState(
-        targetValue = if (visible) 1f else 0f,
+        targetValue = if (visible) SkipOpeningDefaults.VISIBLE_ALPHA else SkipOpeningDefaults.HIDDEN_ALPHA,
         animationSpec = mMotionScheme.slowEffectsSpec(),
-        label = "SkipOpeningAlpha"
+        label = SkipOpeningDefaults.ALPHA_ANIMATION_LABEL
     )
 
-    if (animatedAlpha > 0f) {
+    // Conditional rendering: only compose the button if it's actually visible to save resources
+    if (animatedAlpha > SkipOpeningDefaults.HIDDEN_ALPHA) {
         ButtonWithIcon(
-            text = stringResource(SkipOpeningLabel),
+            text = stringResource(SkipOpeningDefaults.SkipOpeningLabelRes),
             icon = LibertyFlowIcons.RewindForwardCircle,
             type = ButtonWithIconType.Outlined,
             onClick = { onPlayerIntent(PlayerIntent.SkipOpening) },

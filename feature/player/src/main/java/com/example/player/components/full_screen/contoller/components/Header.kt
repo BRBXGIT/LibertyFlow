@@ -18,10 +18,12 @@ import com.example.design_system.theme.theme.mTypography
 import com.example.player.R
 import com.example.player.player.PlayerIntent
 
-private val EpisodeLabel = R.string.episode_label
-private val IconSpacing = 4.dp
-private val HeaderSpacing = 4.dp
-
+private object HeaderDefaults {
+    val EpisodeLabelRes = R.string.episode_label
+    val ICON_SPACING = 4.dp
+    val HEADER_SPACING = 4.dp
+    const val MAX_TITLE_LINES = 1
+}
 
 @Composable
 internal fun BoxScope.Header(
@@ -37,31 +39,35 @@ internal fun BoxScope.Header(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left Side: Back & Info
+        // Left Section: Navigation and Episode Metadata
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(IconSpacing)
+            horizontalArrangement = Arrangement.spacedBy(HeaderDefaults.ICON_SPACING)
         ) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.ArrowDown,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) },
                 isEnabled = isControllerVisible
             )
-            Column(verticalArrangement = Arrangement.spacedBy(HeaderSpacing)) {
+
+            Column(verticalArrangement = Arrangement.spacedBy(HeaderDefaults.HEADER_SPACING)) {
                 Text(
                     text = title,
-                    style = mTypography.bodyLarge.copy(fontWeight = FontWeight.W600, color = Color.White),
-                    maxLines = 1
+                    style = mTypography.bodyLarge.copy(
+                        fontWeight = FontWeight.W600,
+                        color = Color.White
+                    ),
+                    maxLines = HeaderDefaults.MAX_TITLE_LINES
                 )
                 Text(
-                    text = "${stringResource(EpisodeLabel)} $episodeNumber",
+                    text = "${stringResource(HeaderDefaults.EpisodeLabelRes)} $episodeNumber",
                     style = mTypography.bodyMedium.copy(color = Color.Gray)
                 )
             }
         }
 
-        // Right Side: Quick Settings
-        Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
+        // Right Section: Supplementary Controls (Playlist and Settings)
+        Row(horizontalArrangement = Arrangement.spacedBy(HeaderDefaults.ICON_SPACING)) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.Checklist,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },
