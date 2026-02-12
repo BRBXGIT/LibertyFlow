@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.player.components.full_screen.FullScreenPlayerContainer
+import com.example.player.components.full_screen.container.FullScreenPlayerContainer
 import com.example.player.components.mini.MiniPlayerContainer
 
 @Composable

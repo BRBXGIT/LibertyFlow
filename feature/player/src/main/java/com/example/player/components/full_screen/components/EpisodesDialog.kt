@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
-package com.example.player.components.full_screen
+package com.example.player.components.full_screen.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

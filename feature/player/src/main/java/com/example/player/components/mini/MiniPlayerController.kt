@@ -2,6 +2,7 @@
 
 package com.example.player.components.mini
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,14 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.design_system.theme.icons.LibertyFlowIcons
-import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mShapes
-import com.example.player.components.common.AnimatedPlayPauseButton
+import com.example.player.components.common.ButtonWithAnimatedIcon
 import com.example.player.components.common.rememberControllerVisibility
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
@@ -36,8 +38,6 @@ import com.example.player.player.PlayerState
 private const val MAIN_BOX_Z_INDEX = 1f
 
 private const val CONTROLLER_PADDING = 4
-
-private val PLAY_PAUSE_BUTTON_SIZE = 28.dp
 
 @Composable
 internal fun BoxScope.MiniPlayerController(
@@ -86,12 +86,25 @@ internal fun BoxScope.MiniPlayerController(
                 visible = playerState.isControllerVisible
             )
 
-            AnimatedPlayPauseButton(
-                playerState = playerState,
-                onPlayerIntent = onPlayerIntent,
-                iconSize = ICON_SIZE.dp,
-                buttonSize = PLAY_PAUSE_BUTTON_SIZE,
-            )
+            if (playerState.episodeState == PlayerState.EpisodeState.Loading) {
+                CircularWavyProgressIndicator(modifier = Modifier.size(ICON_SIZE.dp))
+            } else {
+                ButtonWithAnimatedIcon(
+                    iconId = LibertyFlowIcons.PlayPauseAnimated,
+                    atEnd = playerState.episodeState == PlayerState.EpisodeState.Playing,
+                    modifier = Modifier.size((ICON_SIZE * 2).dp),
+                    onClick = {
+                        if (playerState.isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause)
+                    }
+                ) { painter ->
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(Color.White),
+                        modifier = Modifier.size(ICON_SIZE.dp)
+                    )
+                }
+            }
 
             ControllerButton(
                 icon = LibertyFlowIcons.Rewind,

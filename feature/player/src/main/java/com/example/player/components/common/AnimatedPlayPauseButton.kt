@@ -14,41 +14,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.Dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
 @Composable
-internal fun AnimatedPlayPauseButton(
-    playerState: PlayerState,
-    onPlayerIntent: (PlayerIntent) -> Unit,
-    iconSize: Dp,
-    buttonSize: Dp,
-    isEnabled: Boolean = true
+fun ButtonWithAnimatedIcon(
+    iconId: Int,
+    atEnd: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
+    content: @Composable (Painter) -> Unit
 ) {
-    // Animated Play/Pause icon handling
-    val animatedVector = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.PlayPauseAnimated)
-    val isPaused = playerState.episodeState == PlayerState.EpisodeState.Paused
+    val animatedVector = AnimatedImageVector.animatedVectorResource(iconId)
     val painter = rememberAnimatedVectorPainter(
         animatedImageVector = animatedVector,
-        atEnd = !isPaused
+        atEnd = atEnd
     )
 
-    if (playerState.episodeState == PlayerState.EpisodeState.Loading) {
-        CircularWavyProgressIndicator(modifier = Modifier.size(buttonSize))
-    } else {
-        IconButton(
-            modifier = Modifier.size(buttonSize),
-            onClick = { if (playerState.isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause) },
-            enabled = isEnabled
-        ) {
-            Image(
-                contentDescription = null,
-                painter = painter,
-                colorFilter = ColorFilter.tint(Color.White),
-                modifier = Modifier.size(iconSize)
-            )
-        }
+    IconButton(
+        modifier = modifier,
+        onClick = onClick,
+        enabled = isEnabled
+    ) {
+        content(painter)
     }
 }

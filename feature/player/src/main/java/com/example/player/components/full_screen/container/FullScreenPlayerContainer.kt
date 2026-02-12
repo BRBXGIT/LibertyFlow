@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalSharedTransitionApi::class)
 
-package com.example.player.components.full_screen
+package com.example.player.components.full_screen.container
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -12,6 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.design_system.components.bottom_sheets.quality_bs.VideoQualityBS
+import com.example.player.components.full_screen.components.EpisodeDialog
+import com.example.player.components.full_screen.contoller.controller.FullScreenPlayerController
+import com.example.player.components.full_screen.pip.PipManager
+import com.example.player.components.full_screen.components.SettingsBS
 import com.example.player.components.player.Player
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
@@ -29,7 +33,11 @@ internal fun FullScreenPlayerContainer(
         if (playerState.isLocked) onPlayerIntent(PlayerIntent.ToggleIsLocked)
     }
 
-    if (playerState.isEpisodesDialogVisible) EpisodeDialog(onPlayerIntent, onPlayerEffect, playerState)
+    if (playerState.isEpisodesDialogVisible) EpisodeDialog(
+        onPlayerIntent,
+        onPlayerEffect,
+        playerState
+    )
 
     if (playerState.isSettingsBSVisible) SettingsBS(playerState.playerSettings, onPlayerIntent)
 

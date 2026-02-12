@@ -34,7 +34,6 @@ object LibertyFlowIcons {
     val FullScreen = R.drawable.ic_full_screen
     val Next = R.drawable.ic_next
     val Previous = R.drawable.ic_previous
-    val QuitFullScreen = R.drawable.quit_full_screen
     val Pip = R.drawable.ic_pip
     val Lock = R.drawable.ic_lock
     val Unlock = R.drawable.ic_unlock

@@ -1,4 +1,4 @@
-package com.example.player.components.full_screen
+package com.example.player.components.full_screen.pip
 
 import android.app.Activity
 import android.app.PictureInPictureParams

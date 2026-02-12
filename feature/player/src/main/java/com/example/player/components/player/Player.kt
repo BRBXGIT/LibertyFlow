@@ -17,7 +17,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.example.player.components.full_screen.PipManager
+import com.example.player.components.full_screen.pip.PipManager
 import com.example.player.player.PlayerState
 
 private const val zIndex = 0f
