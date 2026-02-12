@@ -53,36 +53,48 @@ internal fun BoxScope.Footer(
         verticalArrangement = Arrangement.spacedBy(HeaderSpacing)
     ) {
         // Time and Actions Row
-        TimeAndActionsRow(
+        ActionsRow(
             playerState = playerState,
-            scrubPosition = scrubPosition,
             pipManager = pipManager,
-            onPlayerIntent = onPlayerIntent
+            onPlayerIntent = onPlayerIntent,
+            onPlayerEffect = onPlayerEffect
         )
 
-        PlayerSlider(
-            currentPosition = playerState.episodeTime.current,
-            totalDuration = playerState.episodeTime.total,
-            scrubPosition = scrubPosition,
-            onScrubbing = {
-                onPlayerIntent(PlayerIntent.SetIsScrubbing(true))
-                scrubPosition = it
-            },
-            onSeekFinished = {
-                onPlayerIntent(PlayerIntent.SetIsScrubbing(false))
-                onPlayerEffect(PlayerEffect.SeekTo(it))
-                scrubPosition = null
-            }
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Optimized Time Label: Separated to limit recompositions when only time changes
+            val displayTime = scrubPosition ?: playerState.episodeTime.current
+            Text(
+                text = "${displayTime.formatMinSec()} / ${playerState.episodeTime.total.formatMinSec()}",
+                style = mTypography.bodyMedium.copy(color = Color.White)
+            )
+
+            PlayerSlider(
+                currentPosition = playerState.episodeTime.current,
+                totalDuration = playerState.episodeTime.total,
+                scrubPosition = scrubPosition,
+                onScrubbing = {
+                    onPlayerIntent(PlayerIntent.SetIsScrubbing(true))
+                    scrubPosition = it
+                },
+                onSeekFinished = {
+                    onPlayerIntent(PlayerIntent.SetIsScrubbing(false))
+                    onPlayerEffect(PlayerEffect.SeekTo(it))
+                    scrubPosition = null
+                }
+            )
+        }
     }
 }
 
 @Composable
-private fun TimeAndActionsRow(
+private fun ActionsRow(
     playerState: PlayerState,
-    scrubPosition: Long?,
     pipManager: PipManager,
-    onPlayerIntent: (PlayerIntent) -> Unit
+    onPlayerIntent: (PlayerIntent) -> Unit,
+    onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -91,12 +103,19 @@ private fun TimeAndActionsRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Optimized Time Label: Separated to limit recompositions when only time changes
-        val displayTime = scrubPosition ?: playerState.episodeTime.current
-        Text(
-            text = "${displayTime.formatMinSec()} / ${playerState.episodeTime.total.formatMinSec()}",
-            style = mTypography.bodyMedium.copy(color = Color.White)
-        )
+        Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
+            PlayerIconButton(
+                icon = LibertyFlowIcons.RewindBack,
+                onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(false)) },
+                isEnabled = playerState.isControllerVisible
+            )
+
+            PlayerIconButton(
+                icon = LibertyFlowIcons.Rewind,
+                onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(true)) },
+                isEnabled = playerState.isControllerVisible
+            )
+        }
 
         Row(horizontalArrangement = Arrangement.spacedBy(IconSpacing)) {
             PlayerIconButton(
