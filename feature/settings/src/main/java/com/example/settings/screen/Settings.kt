@@ -54,6 +54,7 @@ private val QualityLabel = R.string.quality_label
 private val ShowSkipOpeningButtonLabel = R.string.show_skip_opening_button_label
 private val AutoSkipOpeningLabel = R.string.auto_skip_opening_label
 private val AutoPlayLabel = R.string.auto_play_label
+private val CropLabel = R.string.crop_label
 
 private val UseExpressiveLabel = R.string.use_expressive_label
 private val TabStyleLabel = R.string.tab_type_label
@@ -117,6 +118,12 @@ fun Settings(
                     labelRes = AutoSkipOpeningLabel,
                     isEnabled = state.playerSettings.autoSkipOpening,
                     intent = SettingsIntent.ToggleAutoSkipOpening
+                ),
+                Setting(
+                    icon = LibertyFlowIcons.Crop,
+                    labelRes = CropLabel,
+                    isEnabled = state.playerSettings.isCropped,
+                    intent = SettingsIntent.ToggleIsCropped
                 )
             )
         }

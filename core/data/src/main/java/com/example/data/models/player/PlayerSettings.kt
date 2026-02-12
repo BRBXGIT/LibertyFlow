@@ -7,5 +7,6 @@ data class PlayerSettings(
     val quality: VideoQuality = VideoQuality.SD,
     val showSkipOpeningButton: Boolean = false,
     val autoSkipOpening: Boolean= false,
-    val autoPlay: Boolean = false
+    val autoPlay: Boolean = false,
+    val isCropped: Boolean = false
 )

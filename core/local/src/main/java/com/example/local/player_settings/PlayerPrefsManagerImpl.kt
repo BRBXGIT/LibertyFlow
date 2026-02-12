@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,6 +24,7 @@ class PlayerPrefsManagerImpl @Inject constructor(
         private val SHOW_SKIP_OPENING_BUTTON_KEY = booleanPreferencesKey("show_skip_opening_button")
         private val AUTO_SKIP_OPENING_KEY = booleanPreferencesKey("auto_skip_opening")
         private val AUTO_PLAY_KEY = booleanPreferencesKey("auto_play")
+        private val IS_CROPPED = booleanPreferencesKey("is_cropped")
     }
 
     override val quality = context.datastore.data
@@ -36,6 +38,9 @@ class PlayerPrefsManagerImpl @Inject constructor(
 
     override val autoPlay = context.datastore.data
         .map { preferences -> preferences[AUTO_PLAY_KEY] }
+
+    override val isCropped = context.datastore.data
+        .map { preferences -> preferences[IS_CROPPED] }
 
     override suspend fun saveQuality(quality: String) {
         context.datastore.edit { preferences ->
@@ -58,6 +63,12 @@ class PlayerPrefsManagerImpl @Inject constructor(
     override suspend fun saveAutoPlay(autoPlay: Boolean) {
         context.datastore.edit { preferences ->
             preferences[AUTO_PLAY_KEY] = autoPlay
+        }
+    }
+
+    override suspend fun saveIsCopped(isCopped: Boolean) {
+        context.datastore.edit { preferences ->
+            preferences[IS_CROPPED] = isCopped
         }
     }
 }

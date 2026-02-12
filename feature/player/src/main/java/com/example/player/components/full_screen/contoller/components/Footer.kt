@@ -138,7 +138,7 @@ private fun ActionsRow(
 
             ButtonWithAnimatedIcon(
                 iconId = LibertyFlowIcons.CropAnimated,
-                atEnd = !playerState.isCropped,
+                atEnd = !playerState.playerSettings.isCropped,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleCropped) }
             ) { painter ->
                 Image(

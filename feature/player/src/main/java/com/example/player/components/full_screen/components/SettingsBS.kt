@@ -50,7 +50,7 @@ internal fun SettingsBS(
                 label = R.string.autoplay_label,
                 trailingType = BSTrailingType.Toggle(playerSettings.autoPlay),
                 onClick = { onPlayerIntent(PlayerIntent.ToggleAutoPlay) }
-            )
+            ),
         )
     }
 

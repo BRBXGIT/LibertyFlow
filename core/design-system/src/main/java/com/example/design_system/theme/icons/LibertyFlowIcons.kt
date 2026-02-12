@@ -51,6 +51,7 @@ object LibertyFlowIcons {
     val Colour = R.drawable.ic_colour
     val Tablet = R.drawable.ic_tablet
     val Clock = R.drawable.ic_clock
+    val Crop = R.drawable.ic_crop
 
 
     // Filled

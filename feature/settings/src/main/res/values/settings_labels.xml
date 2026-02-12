@@ -22,6 +22,7 @@
     <string name="show_skip_opening_button_label">Show skip opening button</string>
     <string name="auto_skip_opening_label">Skip opening automatically</string>
     <string name="auto_play_label">Autoplay</string>
+    <string name="crop_label">Full screen video</string>
 
     <string name="use_expressive_label">Use expressive animations</string>
     <string name="tab_type_label">Tab style</string>

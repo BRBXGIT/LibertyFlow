@@ -28,4 +28,8 @@ abstract class BasePlayerSettingsVM(
     protected fun toggleAutoPlay(value: Boolean) = viewModelScope.launch(dispatcherIo) {
         playerSettingsRepo.saveAutoPlay(value)
     }
+
+    protected fun toggleIsCropped(value: Boolean) = viewModelScope.launch(dispatcherIo) {
+        playerSettingsRepo.saveIsCopped(value)
+    }
 }

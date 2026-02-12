@@ -22,6 +22,7 @@
     <string name="show_skip_opening_button_label">Кнопка пропуска опенинга</string>
     <string name="auto_skip_opening_label">Автоматически пропускать опенинг</string>
     <string name="auto_play_label">Автовоспроизведение</string>
+    <string name="crop_label">Видео на полный экран</string>
 
     <string name="use_expressive_label">Использовать expressive анимации</string>
     <string name="tab_type_label">Стиль папки</string>

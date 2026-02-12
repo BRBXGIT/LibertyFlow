@@ -25,7 +25,6 @@ data class PlayerState(
     val isQualityBSVisible: Boolean = false,
 
     // View Modifiers
-    val isCropped: Boolean = false,
     val isLocked: Boolean = false
 ) {
     /** Accessor for the active episode */
@@ -42,7 +41,6 @@ data class PlayerState(
     )
 
     // --- State Mappers ---
-    fun toggleIsCropped() = copy(isCropped = !isCropped)
     fun toggleIsLocked() = copy(
         isLocked = !isLocked,
         isControllerVisible = false

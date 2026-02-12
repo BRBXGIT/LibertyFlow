@@ -35,7 +35,7 @@ class PlayerVM @Inject constructor(
     private val playerSettingsRepo: PlayerSettingsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
     @param:Dispatcher(LibertyFlowDispatcher.Main) private val dispatcherMain: CoroutineDispatcher
-) : BasePlayerSettingsVM(playerSettingsRepo, dispatcherIo) {
+): BasePlayerSettingsVM(playerSettingsRepo, dispatcherIo) {
 
     // --- State ---
     private val _playerState = MutableStateFlow(PlayerState())
@@ -86,13 +86,13 @@ class PlayerVM @Inject constructor(
             PlayerIntent.ToggleEpisodesDialog -> updateState { it.toggleEpisodesDialog() }
             PlayerIntent.ToggleSettingsBS -> updateState { it.toggleSettingsBS() }
             PlayerIntent.ToggleQualityBS -> updateState { it.toggleQualityBS() }
-            PlayerIntent.ToggleCropped -> updateState { it.toggleIsCropped() }
             PlayerIntent.ToggleIsLocked -> updateState { it.toggleIsLocked() }
 
             // Preferences Toggles
             PlayerIntent.ToggleAutoPlay -> toggleAutoPlay(!currentState.playerSettings.autoPlay)
             PlayerIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening(!currentState.playerSettings.autoSkipOpening)
             PlayerIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton(!currentState.playerSettings.showSkipOpeningButton)
+            PlayerIntent.ToggleCropped -> toggleIsCropped(!currentState.playerSettings.isCropped)
         }
     }
 

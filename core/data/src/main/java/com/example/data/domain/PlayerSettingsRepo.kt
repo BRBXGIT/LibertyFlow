@@ -15,4 +15,6 @@ interface PlayerSettingsRepo {
     suspend fun saveAutoSkipOpening(skip: Boolean)
 
     suspend fun saveAutoPlay(autoPlay: Boolean)
+
+    suspend fun saveIsCopped(isCropped: Boolean)
 }

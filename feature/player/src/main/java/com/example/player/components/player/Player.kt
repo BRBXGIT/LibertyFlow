@@ -33,7 +33,7 @@ internal fun BoxScope.Player(
         factory = { context ->
             PlayerView(context).apply {
                 this.player = player
-                resizeMode = getResizeMode(playerState.isCropped, playerState.uiPlayerState)
+                resizeMode = getResizeMode(playerState.playerSettings.isCropped, playerState.uiPlayerState)
                 useController = false
                 layoutParams = FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -41,7 +41,7 @@ internal fun BoxScope.Player(
                 )
             }
         },
-        update = { it.resizeMode = getResizeMode(playerState.isCropped, playerState.uiPlayerState) },
+        update = { it.resizeMode = getResizeMode(playerState.playerSettings.isCropped, playerState.uiPlayerState) },
         modifier = Modifier
             .align(Alignment.Center)
             .zIndex(zIndex)

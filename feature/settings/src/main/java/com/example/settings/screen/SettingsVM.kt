@@ -50,6 +50,7 @@ class SettingsVM @Inject constructor(
             SettingsIntent.ToggleAutoPlay -> toggleAutoPlay(!_state.value.playerSettings.autoPlay)
             SettingsIntent.ToggleAutoSkipOpening -> toggleAutoSkipOpening(!_state.value.playerSettings.autoSkipOpening)
             SettingsIntent.ToggleShowSkipOpeningButton -> toggleShowSkipOpeningButton(!_state.value.playerSettings.showSkipOpeningButton)
+            SettingsIntent.ToggleIsCropped -> toggleIsCropped(!_state.value.playerSettings.isCropped)
 
             // Screen ui
             SettingsIntent.ToggleIsQualityBSVisible -> _state.update { it.toggleQualityBS() }

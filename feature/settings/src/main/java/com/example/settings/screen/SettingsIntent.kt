@@ -10,6 +10,7 @@ sealed interface SettingsIntent {
     data object ToggleShowSkipOpeningButton: SettingsIntent
     data object ToggleAutoSkipOpening: SettingsIntent
     data object ToggleAutoPlay: SettingsIntent
+    data object ToggleIsCropped: SettingsIntent
 
     // Theme
     data object ToggleUseExpressive: SettingsIntent

@@ -15,13 +15,15 @@ class PlayerSettingsRepoImpl @Inject constructor(
         flow = playerPrefsManager.quality,
         flow2 = playerPrefsManager.showSkipOpeningButton,
         flow3 = playerPrefsManager.autoSkipOpening,
-        flow4 = playerPrefsManager.autoPlay
-    ) { quality, showSkipOpeningButton, autoSkipOpening, autoPlay ->
+        flow4 = playerPrefsManager.autoPlay,
+        flow5 = playerPrefsManager.isCropped
+    ) { quality, showSkipOpeningButton, autoSkipOpening, autoPlay, isCropped ->
         PlayerSettings(
             quality = quality.toVideoQuality(),
             showSkipOpeningButton = showSkipOpeningButton ?: true,
             autoSkipOpening = autoSkipOpening ?: false,
-            autoPlay = autoPlay ?: true
+            autoPlay = autoPlay ?: true,
+            isCropped = isCropped ?: false
         )
     }
 
@@ -36,6 +38,9 @@ class PlayerSettingsRepoImpl @Inject constructor(
 
     override suspend fun saveAutoPlay(autoPlay: Boolean) =
         playerPrefsManager.saveAutoPlay(autoPlay)
+
+    override suspend fun saveIsCopped(isCropped: Boolean) =
+        playerPrefsManager.saveIsCopped(isCropped)
 }
 
 private const val FHD = "FHD"

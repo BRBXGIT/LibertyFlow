@@ -12,6 +12,8 @@ interface PlayerPrefsManager {
 
     val autoPlay: Flow<Boolean?>
 
+    val isCropped: Flow<Boolean?>
+
     suspend fun saveQuality(quality: String)
 
     suspend fun saveShowSkipOpeningButton(show: Boolean)
@@ -19,4 +21,6 @@ interface PlayerPrefsManager {
     suspend fun saveAutoSkipOpening(skip: Boolean)
 
     suspend fun saveAutoPlay(autoPlay: Boolean)
+
+    suspend fun saveIsCopped(isCopped: Boolean)
 }
