@@ -43,7 +43,6 @@ import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
 import com.example.player.R
-import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
@@ -69,7 +68,6 @@ private val ChooseEpisodeLabel = R.string.choose_episode_label
 @Composable
 internal fun EpisodeDialog(
     onPlayerIntent: (PlayerIntent) -> Unit,
-    onPlayerEffect: (PlayerEffect) -> Unit,
     playerState: PlayerState
 ) {
     // Local state to track selection before user confirms
@@ -100,7 +98,7 @@ internal fun EpisodeDialog(
                 onSelect = { selectedIndex = it }
             )
 
-            DialogButtons(selectedIndex,onPlayerIntent, onPlayerEffect)
+            DialogButtons(selectedIndex,onPlayerIntent)
         }
     }
 }
@@ -191,7 +189,6 @@ private val DismissLabel = R.string.cancel_label
 private fun DialogButtons(
     selectedIndex: Int,
     onPlayerIntent: (PlayerIntent) -> Unit,
-    onPlayerEffect: (PlayerEffect) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -206,7 +203,7 @@ private fun DialogButtons(
 
         TextButton(
             onClick = {
-                onPlayerEffect(PlayerEffect.ChangeEpisode(selectedIndex))
+                onPlayerIntent(PlayerIntent.ChangeEpisode(selectedIndex))
                 onPlayerIntent(PlayerIntent.ToggleEpisodesDialog)
             }
         ) {

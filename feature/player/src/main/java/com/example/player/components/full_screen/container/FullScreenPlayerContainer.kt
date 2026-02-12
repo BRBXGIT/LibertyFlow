@@ -25,6 +25,7 @@ import com.example.player.player.PlayerState
 internal fun FullScreenPlayerContainer(
     player: ExoPlayer,
     playerState: PlayerState,
+    pipManager: PipManager,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
@@ -33,11 +34,7 @@ internal fun FullScreenPlayerContainer(
         if (playerState.isLocked) onPlayerIntent(PlayerIntent.ToggleIsLocked)
     }
 
-    if (playerState.isEpisodesDialogVisible) EpisodeDialog(
-        onPlayerIntent,
-        onPlayerEffect,
-        playerState
-    )
+    if (playerState.isEpisodesDialogVisible) EpisodeDialog(onPlayerIntent, playerState)
 
     if (playerState.isSettingsBSVisible) SettingsBS(playerState.playerSettings, onPlayerIntent)
 
@@ -49,7 +46,6 @@ internal fun FullScreenPlayerContainer(
         )
     }
 
-    val pipManager = PipManager()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -57,6 +53,6 @@ internal fun FullScreenPlayerContainer(
     ) {
         Player(player, playerState, pipManager)
 
-        FullScreenPlayerController(playerState, pipManager, onPlayerEffect, onPlayerIntent)
+        FullScreenPlayerController(playerState, onPlayerEffect, onPlayerIntent)
     }
 }

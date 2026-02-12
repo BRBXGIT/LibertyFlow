@@ -2,23 +2,25 @@
 
 package com.example.player.player
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
 import android.view.Window
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.exoplayer.ExoPlayer
+import com.example.common.ui_helpers.utils.findActivity
 import com.example.player.components.full_screen.container.FullScreenPlayerContainer
+import com.example.player.components.full_screen.pip.PipManager
 import com.example.player.components.mini.MiniPlayerContainer
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun PlayerContainer(
+    playerEffects: Flow<PlayerEffect>,
     playerState: PlayerState,
     player: ExoPlayer,
     navBarVisible: Boolean,
@@ -29,13 +31,17 @@ fun PlayerContainer(
 
     HandleLandscape(uiPlayerState)
 
+    val pipManager = remember { PipManager() }
+    HandlePlayerEffects(playerEffects, pipManager)
+
     when (uiPlayerState) {
         PlayerState.UiPlayerState.Full -> {
             FullScreenPlayerContainer(
                 player = player,
                 playerState = playerState,
                 onPlayerEffect = onPlayerEffect,
-                onPlayerIntent = onPlayerIntent
+                onPlayerIntent = onPlayerIntent,
+                pipManager = pipManager
             )
         }
 
@@ -44,7 +50,6 @@ fun PlayerContainer(
                 player = player,
                 navBarVisible = navBarVisible,
                 playerState = playerState,
-                onPlayerEffect = onPlayerEffect,
                 onPlayerIntent = onPlayerIntent
             )
         }
@@ -77,15 +82,6 @@ private fun HandleLandscape(uiPlayerState: PlayerState.UiPlayerState) {
 }
 
 /**
- * Utility function to find the host Activity from a Context.
- */
-private fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
-}
-
-/**
  * Manages the visibility and behavior of the system bars.
  */
 private fun toggleSystemBars(window: Window, hide: Boolean) {
@@ -99,5 +95,20 @@ private fun toggleSystemBars(window: Window, hide: Boolean) {
         controller.show(WindowInsetsCompat.Type.systemBars())
         controller.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    }
+}
+
+@Composable
+private fun HandlePlayerEffects(
+    effects: Flow<PlayerEffect>,
+    pipManager: PipManager,
+) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        effects.collect { effect ->
+            when(effect) {
+                PlayerEffect.TryPipEnterPip -> pipManager.tryEnterPip(context)
+            }
+        }
     }
 }

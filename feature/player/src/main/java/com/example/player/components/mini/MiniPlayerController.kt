@@ -42,7 +42,6 @@ private const val CONTROLLER_PADDING = 4
 @Composable
 internal fun BoxScope.MiniPlayerController(
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val visibility = rememberControllerVisibility(playerState.isControllerVisible)
@@ -82,7 +81,7 @@ internal fun BoxScope.MiniPlayerController(
         ) {
             ControllerButton(
                 icon = LibertyFlowIcons.RewindBack,
-                onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(false)) },
+                onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(false)) },
                 visible = playerState.isControllerVisible
             )
 
@@ -108,7 +107,7 @@ internal fun BoxScope.MiniPlayerController(
 
             ControllerButton(
                 icon = LibertyFlowIcons.Rewind,
-                onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(true)) },
+                onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(true)) },
                 visible = playerState.isControllerVisible
             )
         }

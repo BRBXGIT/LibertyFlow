@@ -41,7 +41,6 @@ private const val ONE = 1
 @Composable
 internal fun FullScreenPlayerController(
     playerState: PlayerState,
-    pipManager: PipManager,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
@@ -82,7 +81,6 @@ internal fun FullScreenPlayerController(
                 episodeNumber = episodeNumber,
                 playerState = playerState,
                 visibility = visibility,
-                pipManager = pipManager,
                 contentPadding = systemBarsPadding,
                 onPlayerEffect = onPlayerEffect,
                 onPlayerIntent = onPlayerIntent
@@ -97,7 +95,6 @@ private fun MainControlsOverlay(
     episodeNumber: Int,
     playerState: PlayerState,
     visibility: ControllerVisibility,
-    pipManager: PipManager,
     contentPadding: PaddingValues,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit,
@@ -127,13 +124,11 @@ private fun MainControlsOverlay(
             totalEpisodes = playerState.episodes.size,
             playerState = playerState,
             isControllerVisible = playerState.isControllerVisible,
-            onPlayerEffect = onPlayerEffect,
             onPlayerIntent = onPlayerIntent
         )
 
         Footer(
             playerState = playerState,
-            pipManager = pipManager,
             onPlayerEffect = onPlayerEffect,
             onPlayerIntent = onPlayerIntent
         )

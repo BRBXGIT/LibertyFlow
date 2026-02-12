@@ -18,9 +18,11 @@ import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.guava.asDeferred
 import kotlinx.coroutines.isActive
@@ -40,6 +42,9 @@ class PlayerVM @Inject constructor(
     // --- State ---
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.toLazily(PlayerState())
+
+    private val _playerEffects = Channel<PlayerEffect>(Channel.BUFFERED)
+    val playerEffects = _playerEffects.receiveAsFlow()
 
     // --- Controller & Jobs ---
     private var mediaController: MediaController? = null
@@ -71,6 +76,10 @@ class PlayerVM @Inject constructor(
             is PlayerIntent.SetUpPlayer -> setUpPlayer(intent)
 
             // Playback
+            is PlayerIntent.SeekForFiveSeconds -> seekRelative(controller, if (intent.forward) 5000L else -5000L)
+            is PlayerIntent.SkipEpisode -> changeMediaItem(controller, if (intent.forward) 1 else -1)
+            is PlayerIntent.ChangeEpisode -> controller.seekTo(intent.index, 0L)
+            is PlayerIntent.SeekTo -> controller.seekTo(intent.position)
             PlayerIntent.TogglePlayPause -> togglePlayPause(controller)
             PlayerIntent.StopPlayer -> stopPlayer(controller)
             PlayerIntent.SkipOpening -> skipOpening(controller)
@@ -97,16 +106,8 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Effects (Commands) ---
-    fun sendEffect(effect: PlayerEffect) {
-        val controller = mediaController ?: return
-
-        when (effect) {
-            is PlayerEffect.SeekForFiveSeconds -> seekRelative(controller, if (effect.forward) 5000L else -5000L)
-            is PlayerEffect.SkipEpisode -> changeMediaItem(controller, if (effect.forward) 1 else -1)
-            is PlayerEffect.ChangeEpisode -> controller.seekTo(effect.index, 0L)
-            is PlayerEffect.SeekTo -> controller.seekTo(effect.position)
-        }
-    }
+    fun sendEffect(effect: PlayerEffect) =
+        viewModelScope.launch { _playerEffects.send(effect) }
 
     // --- Logic Implementation ---
     private fun setUpPlayer(intent: PlayerIntent.SetUpPlayer) {

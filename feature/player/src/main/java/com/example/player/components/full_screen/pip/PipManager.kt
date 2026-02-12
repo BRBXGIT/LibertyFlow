@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.util.Rational
+import com.example.common.ui_helpers.utils.findActivity
 
 internal class PipManager {
     var videoViewBounce = Rect()
@@ -20,5 +21,12 @@ internal class PipManager {
             .setSourceRectHint(videoViewBounce)
             .setAspectRatio(Rational(16, 9))
             .build()
+    }
+
+    fun tryEnterPip(context: Context) {
+        if (isPipSupported(context)) {
+            val params = updatedPipParams() ?: return
+            (context.findActivity())?.enterPictureInPictureMode(params)
+        }
     }
 }

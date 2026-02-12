@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.player.components.common.ButtonWithAnimatedIcon
-import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
@@ -35,7 +34,6 @@ internal fun BoxScope.CenterControls(
     totalEpisodes: Int,
     playerState: PlayerState,
     isControllerVisible: Boolean,
-    onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val hasPreviousEpisode = currentEpisodeIndex > 0
@@ -53,7 +51,7 @@ internal fun BoxScope.CenterControls(
             icon = LibertyFlowIcons.Previous,
             iconSize = CenterControlsDefaults.SkipIconSize,
             modifier = Modifier.size(CenterControlsDefaults.SkipIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
-            onClick = { onPlayerEffect(PlayerEffect.SkipEpisode(forward = false)) },
+            onClick = { onPlayerIntent(PlayerIntent.SkipEpisode(forward = false)) },
             isEnabled = isControllerVisible
         )
 
@@ -84,7 +82,7 @@ internal fun BoxScope.CenterControls(
             icon = LibertyFlowIcons.Next,
             iconSize = CenterControlsDefaults.SkipIconSize,
             modifier = Modifier.size(CenterControlsDefaults.SkipIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
-            onClick = { onPlayerEffect(PlayerEffect.SkipEpisode(forward = true)) },
+            onClick = { onPlayerIntent(PlayerIntent.SkipEpisode(forward = true)) },
             isEnabled = isControllerVisible
         )
     }

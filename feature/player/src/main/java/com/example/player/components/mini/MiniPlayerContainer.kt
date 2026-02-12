@@ -60,7 +60,6 @@ internal fun MiniPlayerContainer(
     navBarVisible: Boolean,
     player: ExoPlayer,
     playerState: PlayerState,
-    onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val density = LocalDensity.current
@@ -109,7 +108,7 @@ internal fun MiniPlayerContainer(
                 }
         ) {
             // Render the control overlay and the actual Video surface
-            MiniPlayerController(playerState, onPlayerEffect, onPlayerIntent)
+            MiniPlayerController(playerState, onPlayerIntent)
             Player(player, playerState)
         }
     }

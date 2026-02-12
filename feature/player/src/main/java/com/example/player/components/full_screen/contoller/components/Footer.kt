@@ -1,6 +1,5 @@
 package com.example.player.components.full_screen.contoller.components
 
-import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,12 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mTypography
 import com.example.player.components.common.ButtonWithAnimatedIcon
-import com.example.player.components.full_screen.pip.PipManager
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
@@ -47,7 +44,6 @@ private object FooterDefaults {
 @Composable
 internal fun BoxScope.Footer(
     playerState: PlayerState,
-    pipManager: PipManager,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
@@ -62,7 +58,6 @@ internal fun BoxScope.Footer(
     ) {
         ActionsRow(
             playerState = playerState,
-            pipManager = pipManager,
             onPlayerIntent = onPlayerIntent,
             onPlayerEffect = onPlayerEffect
         )
@@ -90,7 +85,7 @@ internal fun BoxScope.Footer(
                 },
                 onSeekFinished = {
                     onPlayerIntent(PlayerIntent.SetIsScrubbing(false))
-                    onPlayerEffect(PlayerEffect.SeekTo(it))
+                    onPlayerIntent(PlayerIntent.SeekTo(it))
                     scrubPosition = null
                 }
             )
@@ -101,11 +96,9 @@ internal fun BoxScope.Footer(
 @Composable
 private fun ActionsRow(
     playerState: PlayerState,
-    pipManager: PipManager,
     onPlayerIntent: (PlayerIntent) -> Unit,
     onPlayerEffect: (PlayerEffect) -> Unit
 ) {
-    val context = LocalContext.current
     val isVisible = playerState.isControllerVisible
 
     Row(
@@ -117,13 +110,13 @@ private fun ActionsRow(
         Row(horizontalArrangement = Arrangement.spacedBy(FooterDefaults.IconSpacing)) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.RewindBack,
-                onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(false)) },
+                onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(false)) },
                 isEnabled = isVisible
             )
 
             PlayerIconButton(
                 icon = LibertyFlowIcons.Rewind,
-                onClick = { onPlayerEffect(PlayerEffect.SeekForFiveSeconds(true)) },
+                onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(true)) },
                 isEnabled = isVisible
             )
         }
@@ -152,11 +145,7 @@ private fun ActionsRow(
                 icon = LibertyFlowIcons.Pip,
                 onClick = {
                     onPlayerIntent(PlayerIntent.TurnOffController)
-                    if (pipManager.isPipSupported(context)) {
-                        pipManager.updatedPipParams()?.let { params ->
-                            (context as? Activity)?.enterPictureInPictureMode(params)
-                        }
-                    }
+                    onPlayerEffect(PlayerEffect.TryPipEnterPip)
                 },
                 isEnabled = isVisible
             )

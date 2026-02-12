@@ -90,6 +90,7 @@ fun NavGraph(themeVM: ThemeVM, startDestination: NavigationBase) {
 
             val playerState by playerVM.playerState.collectAsStateWithLifecycle()
             PlayerContainer(
+                playerEffects = playerVM.playerEffects,
                 playerState = playerState,
                 player = playerVM.uiPlayer,
                 navBarVisible = navBarVisible,
