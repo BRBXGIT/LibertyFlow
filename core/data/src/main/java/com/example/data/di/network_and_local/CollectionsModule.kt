@@ -1,8 +1,7 @@
-package com.example.data.di
+package com.example.data.di.network_and_local
 
 import com.example.data.data.CollectionsRepoImpl
 import com.example.data.domain.CollectionsRepo
-import com.example.local.auth.AuthPrefsManager
 import com.example.network.collections.api.CollectionsApi
 import dagger.Binds
 import dagger.Module

@@ -1,4 +1,4 @@
-package com.example.data.di
+package com.example.data.di.network
 
 import com.example.data.data.GenresRepoImpl
 import com.example.data.domain.GenresRepo

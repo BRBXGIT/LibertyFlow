@@ -1,27 +1,21 @@
 package com.example.local.theme
 
-import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.example.local.utils.BasePrefsManager
+import com.example.local.utils.ThemeDataStore
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val DATA_STORE_NAME = "liberty_flow_theme_prefs"
-private val Context.dataStore by preferencesDataStore(DATA_STORE_NAME)
 
 /**
  * Manages the state of the theme and color scheme settings.
  */
 @Singleton
 class ThemePrefsManagerImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
-): ThemePrefsManager {
+    @ThemeDataStore dataStore: DataStore<Preferences>
+): ThemePrefsManager, BasePrefsManager(dataStore) {
 
     private companion object {
         val THEME_KEY = stringPreferencesKey("theme")
@@ -51,16 +45,4 @@ class ThemePrefsManagerImpl @Inject constructor(
 
     override suspend fun saveTabletType(type: String) =
         setValue(TAB_TYPE_KEY, type)
-
-    // Helpers
-    private fun <T> getValue(key: Preferences.Key<T>): Flow<T?> {
-        return context.dataStore.data
-            .map { preferences -> preferences[key] }
-    }
-
-    private suspend fun <T> setValue(key: Preferences.Key<T>, value: T) {
-        context.dataStore.edit { preferences ->
-            preferences[key] = value
-        }
-    }
 }

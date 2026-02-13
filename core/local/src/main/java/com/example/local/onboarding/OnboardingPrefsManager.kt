@@ -2,7 +2,7 @@ package com.example.local.onboarding
 
 import kotlinx.coroutines.flow.Flow
 
-interface OnboardingManager {
+interface OnboardingPrefsManager {
 
     val isOnboardingCompleted: Flow<Boolean?>
 

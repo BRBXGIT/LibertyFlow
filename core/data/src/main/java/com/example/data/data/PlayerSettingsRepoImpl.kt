@@ -3,20 +3,20 @@ package com.example.data.data
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.models.player.PlayerSettings
 import com.example.data.models.player.VideoQuality
-import com.example.local.player_settings.PlayerPrefsManager
+import com.example.local.player_settings.PlayerSettingsPrefsManager
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class PlayerSettingsRepoImpl @Inject constructor(
-    private val playerPrefsManager: PlayerPrefsManager
+    private val playerSettingsPrefsManager: PlayerSettingsPrefsManager
 ): PlayerSettingsRepo {
 
     override val playerSettings = combine(
-        flow = playerPrefsManager.quality,
-        flow2 = playerPrefsManager.showSkipOpeningButton,
-        flow3 = playerPrefsManager.autoSkipOpening,
-        flow4 = playerPrefsManager.autoPlay,
-        flow5 = playerPrefsManager.isCropped
+        flow = playerSettingsPrefsManager.quality,
+        flow2 = playerSettingsPrefsManager.showSkipOpeningButton,
+        flow3 = playerSettingsPrefsManager.autoSkipOpening,
+        flow4 = playerSettingsPrefsManager.autoPlay,
+        flow5 = playerSettingsPrefsManager.isCropped
     ) { quality, showSkipOpeningButton, autoSkipOpening, autoPlay, isCropped ->
         PlayerSettings(
             quality = quality.toVideoQuality(),
@@ -28,19 +28,19 @@ class PlayerSettingsRepoImpl @Inject constructor(
     }
 
     override suspend fun saveQuality(quality: VideoQuality) =
-        playerPrefsManager.saveQuality(quality.name)
+        playerSettingsPrefsManager.saveQuality(quality.name)
 
     override suspend fun saveShowSkipOpeningButton(show: Boolean) =
-        playerPrefsManager.saveShowSkipOpeningButton(show)
+        playerSettingsPrefsManager.saveShowSkipOpeningButton(show)
 
     override suspend fun saveAutoSkipOpening(skip: Boolean) =
-        playerPrefsManager.saveAutoSkipOpening(skip)
+        playerSettingsPrefsManager.saveAutoSkipOpening(skip)
 
     override suspend fun saveAutoPlay(autoPlay: Boolean) =
-        playerPrefsManager.saveAutoPlay(autoPlay)
+        playerSettingsPrefsManager.saveAutoPlay(autoPlay)
 
     override suspend fun saveIsCopped(isCropped: Boolean) =
-        playerPrefsManager.saveIsCopped(isCropped)
+        playerSettingsPrefsManager.saveIsCopped(isCropped)
 }
 
 private const val FHD = "FHD"

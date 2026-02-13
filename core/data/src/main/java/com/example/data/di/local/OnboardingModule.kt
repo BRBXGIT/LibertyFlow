@@ -1,9 +1,7 @@
-package com.example.data.di
+package com.example.data.di.local
 
 import com.example.data.data.OnboardingRepoImpl
 import com.example.data.domain.OnboardingRepo
-import com.example.local.onboarding.OnboardingManager
-import com.example.local.onboarding.OnboardingManagerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,10 +11,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface OnboardingModule {
-
-    @Binds
-    @Singleton
-    fun bindOnboardingPrefsManager(impl: OnboardingManagerImpl): OnboardingManager
 
     @Binds
     @Singleton

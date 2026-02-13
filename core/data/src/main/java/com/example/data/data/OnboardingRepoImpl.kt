@@ -2,15 +2,15 @@ package com.example.data.data
 
 import com.example.data.domain.OnboardingRepo
 import com.example.data.models.onboarding.OnboardingState
-import com.example.local.onboarding.OnboardingManager
+import com.example.local.onboarding.OnboardingPrefsManager
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class OnboardingRepoImpl @Inject constructor(
-    private val onboardingManager: OnboardingManager
+    private val onboardingPrefsManager: OnboardingPrefsManager
 ): OnboardingRepo {
 
-    override val onboardingState = onboardingManager
+    override val onboardingState = onboardingPrefsManager
         .isOnboardingCompleted
         .map { value ->
             when(value) {
@@ -21,5 +21,5 @@ class OnboardingRepoImpl @Inject constructor(
         }
 
     override suspend fun saveOnboardingCompleted() =
-        onboardingManager.saveOnboardingCompleted()
+        onboardingPrefsManager.saveOnboardingCompleted()
 }

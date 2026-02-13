@@ -1,4 +1,4 @@
-package com.example.data.di
+package com.example.data.di.network_and_local
 
 import com.example.data.data.AuthRepoImpl
 import com.example.data.domain.AuthRepo
@@ -23,10 +23,6 @@ interface AuthModule {
         fun provideAuthApi(retrofit: Retrofit): AuthApi =
             retrofit.create(AuthApi::class.java)
     }
-
-    @Binds
-    @Singleton
-    fun bindAuthPrefsManager(impl: AuthPrefsManagerImpl): AuthPrefsManager
 
     @Binds
     @Singleton

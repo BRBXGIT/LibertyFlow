@@ -1,4 +1,4 @@
-package com.example.data.di
+package com.example.data.di.network_and_local
 
 import com.example.data.data.FavoritesRepoImpl
 import com.example.data.domain.FavoritesRepo

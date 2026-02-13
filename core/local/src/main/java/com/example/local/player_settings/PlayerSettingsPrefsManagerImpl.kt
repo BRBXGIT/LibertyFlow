@@ -1,27 +1,21 @@
 package com.example.local.player_settings
 
-import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.example.local.utils.BasePrefsManager
+import com.example.local.utils.PlayerSettingsDataStore
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val DATASTORE_NAME = "liberty_flow_player_prefs"
-private val Context.datastore by preferencesDataStore(DATASTORE_NAME)
 
 /**
  * Manages the state of the player settings.
  */
 @Singleton
-class PlayerPrefsManagerImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
-): PlayerPrefsManager {
+class PlayerSettingsPrefsManagerImpl @Inject constructor(
+    @PlayerSettingsDataStore dataStore: DataStore<Preferences>
+): PlayerSettingsPrefsManager, BasePrefsManager(dataStore) {
     private companion object {
         private val QUALITY_KEY = stringPreferencesKey("quality")
         private val SHOW_SKIP_OPENING_BUTTON_KEY = booleanPreferencesKey("show_skip_opening_button")
@@ -56,16 +50,4 @@ class PlayerPrefsManagerImpl @Inject constructor(
 
     override suspend fun saveIsCopped(isCopped: Boolean) =
         setValue(IS_CROPPED_KEY, isCopped)
-
-    // Helpers
-    private fun <T> getValue(key: Preferences.Key<T>): Flow<T?> {
-        return context.datastore.data
-            .map { preferences -> preferences[key] }
-    }
-
-    private suspend fun <T> setValue(key: Preferences.Key<T>, value: T) {
-        context.datastore.edit { preferences ->
-            preferences[key] = value
-        }
-    }
 }

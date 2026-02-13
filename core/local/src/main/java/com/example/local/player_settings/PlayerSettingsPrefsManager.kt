@@ -2,7 +2,7 @@ package com.example.local.player_settings
 
 import kotlinx.coroutines.flow.Flow
 
-interface PlayerPrefsManager {
+interface PlayerSettingsPrefsManager {
 
     val quality: Flow<String?>
 

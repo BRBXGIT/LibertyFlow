@@ -1,10 +1,9 @@
-package com.example.data.di
+package com.example.data.di.local
 
 import android.content.ComponentName
 import android.content.Context
 import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C.AUDIO_CONTENT_TYPE_MOVIE
-import androidx.media3.common.C.USAGE_MEDIA
+import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -24,8 +23,8 @@ object PlayerModule {
     @Provides
     @Singleton
     fun provideAudioAttributes(): AudioAttributes = AudioAttributes.Builder()
-        .setContentType(AUDIO_CONTENT_TYPE_MOVIE)
-        .setUsage(USAGE_MEDIA)
+        .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+        .setUsage(C.USAGE_MEDIA)
         .build()
 
     @Provides
