@@ -46,8 +46,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime(for @Immutable annotation)
     implementation(libs.androidx.compose.runtime)
-    // Gson
-    implementation(libs.converter.gson)
     // Media 3 for hilt injection
     implementation(libs.androidx.media3.exoplayer)
     // Media 3 for player session

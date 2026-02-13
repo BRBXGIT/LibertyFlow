@@ -32,7 +32,7 @@ dependencies {
 
     // Retrofit
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    api(libs.converter.gson) // Need in data module
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

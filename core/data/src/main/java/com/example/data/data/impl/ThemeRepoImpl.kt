@@ -34,7 +34,7 @@ class ThemeRepoImpl @Inject constructor(
         LibertyFlowTheme(
             useExpressive = useExpressive ?: true,
             userThemePreference = theme.toEnumOrDefault(ThemeValue.SYSTEM),
-            activeColorScheme = colorSystem.toEnumOrNull<ColorSchemeValue>(),
+            activeColorScheme = colorSystem.toEnumOrDefault(ColorSchemeValue.DARK_LAVENDER_SCHEME),
             tabType = tabType.toEnumTabType()
         )
     }
@@ -57,9 +57,6 @@ class ThemeRepoImpl @Inject constructor(
      */
     private inline fun <reified T : Enum<T>> String?.toEnumOrDefault(default: T): T =
         runCatching { enumValueOf<T>(this!!) }.getOrDefault(default)
-
-    private inline fun <reified T : Enum<T>> String?.toEnumOrNull(): T? =
-        runCatching { enumValueOf<T>(this!!) }.getOrNull()
 
     // --- Mappers ---
     private fun String?.toEnumTabType(): TabType {

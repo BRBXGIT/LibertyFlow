@@ -9,14 +9,12 @@ import com.example.data.models.releases.anime_details.Episode
 import com.example.data.models.releases.anime_details.Member
 import com.example.data.models.releases.anime_details.Opening
 import com.example.data.models.releases.anime_details.Torrent
-import com.example.data.models.releases.anime_id.AnimeId
 import com.example.network.releases.models.anime_details_item_response.AnimeDetailsItemDto
 import com.example.network.releases.models.anime_details_item_response.EndingDto
 import com.example.network.releases.models.anime_details_item_response.EpisodeDto
 import com.example.network.releases.models.anime_details_item_response.MemberDto
 import com.example.network.releases.models.anime_details_item_response.OpeningDto
 import com.example.network.releases.models.anime_details_item_response.TorrentDto
-import com.example.network.releases.models.anime_id_item_response.AnimeIdItemDto
 
 internal fun AnimeDetailsItemDto.toAnimeDetails(): AnimeDetails {
     return AnimeDetails(
