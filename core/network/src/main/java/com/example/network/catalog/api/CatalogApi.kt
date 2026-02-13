@@ -6,8 +6,23 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+/**
+ * Retrofit interface for fetching anime content from the catalog.
+ */
 interface CatalogApi {
 
-    @POST("anime/catalog/releases")
-    suspend fun getAnimeByFilters(@Body request: CommonRequestDto): Response<AnimeItemsPaginationDto>
+    /**
+     * Fetches a paginated list of anime titles based on provided filters.
+     *
+     * @param request The filter criteria (e.g., genres, years, types).
+     * @return A [Response] containing a paginated list of anime items.
+     */
+    @POST(RELEASES_URL)
+    suspend fun getAnimeByFilters(
+        @Body request: CommonRequestDto
+    ): Response<AnimeItemsPaginationDto>
+
+    companion object Endpoints {
+        const val RELEASES_URL = "anime/catalog/releases"
+    }
 }
