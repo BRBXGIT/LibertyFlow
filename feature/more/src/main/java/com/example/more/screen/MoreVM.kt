@@ -1,6 +1,5 @@
 package com.example.more.screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
@@ -8,9 +7,9 @@ import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.toWhileSubscribed
 import com.example.data.domain.AuthRepo
-import com.example.data.utils.remote.network_request.NetworkErrors
-import com.example.data.utils.remote.network_request.onError
-import com.example.data.utils.remote.network_request.onSuccess
+import com.example.data.utils.network.network_request.NetworkErrors
+import com.example.data.utils.network.network_request.onError
+import com.example.data.utils.network.network_request.onSuccess
 import com.example.more.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher

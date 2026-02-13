@@ -4,8 +4,8 @@ import com.example.data.domain.AuthRepo
 import com.example.data.models.auth.AuthState
 import com.example.data.models.auth.Token
 import com.example.data.models.auth.TokenRequest
-import com.example.data.utils.remote.network_request.NetworkRequest
-import com.example.data.utils.remote.network_request.NetworkResult
+import com.example.data.utils.network.network_request.NetworkRequest
+import com.example.data.utils.network.network_request.NetworkResult
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.auth.api.AuthApi
 import com.example.network.auth.models.SessionTokenRequestDto

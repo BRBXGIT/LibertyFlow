@@ -1,4 +1,4 @@
-package com.example.data.utils.remote.network_request
+package com.example.data.utils.network.network_request
 
 sealed interface NetworkResult<out T> {
     data class Success<out T>(val data: T): NetworkResult<T>

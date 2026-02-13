@@ -15,8 +15,8 @@ import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.request.request_parameters.PublishStatus
-import com.example.data.utils.remote.network_request.onError
-import com.example.data.utils.remote.network_request.onSuccess
+import com.example.data.utils.network.network_request.onError
+import com.example.data.utils.network.network_request.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi

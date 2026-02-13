@@ -1,4 +1,4 @@
-package com.example.data.utils.remote.network_request
+package com.example.data.utils.network.network_request
 
 interface NetworkError
 

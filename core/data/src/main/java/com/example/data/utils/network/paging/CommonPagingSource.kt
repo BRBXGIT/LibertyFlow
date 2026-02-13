@@ -1,13 +1,15 @@
-package com.example.data.utils.remote.paging
+package com.example.data.utils.network.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.data.utils.remote.network_request.NetworkRequest
-import com.example.data.utils.remote.network_request.NetworkResult
+import com.example.data.utils.network.network_request.NetworkRequest
+import com.example.data.utils.network.network_request.NetworkResult
 import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPaginationDto
 import com.example.network.common.common_request_models.common_request_base.CommonRequestDtoBase
 import com.example.network.common.common_response_models.AnimeResponseItemDto
 import retrofit2.Response
+
+private const val ONE = 1
 
 internal class CommonPagingSource(
     private val apiCall: suspend (CommonRequestDtoBase) -> Response<AnimeItemsPaginationDto>,
@@ -15,7 +17,7 @@ internal class CommonPagingSource(
 ): PagingSource<Int, AnimeResponseItemDto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, AnimeResponseItemDto> {
-        val page = params.key ?: 1
+        val page = params.key ?: ONE
         val request = baseRequest.withPageAndLimit(page)
 
         return when (
@@ -28,8 +30,8 @@ internal class CommonPagingSource(
                 val pagination = result.data.metaDto.paginationDto
                 LoadResult.Page(
                     data = result.data.data,
-                    prevKey = if (page > 1) page - 1 else null,
-                    nextKey = if (page < pagination.totalPages) page + 1 else null
+                    prevKey = if (page > ONE) page - ONE else null,
+                    nextKey = if (page < pagination.totalPages) page + ONE else null
                 )
             }
             is NetworkResult.Error -> {
@@ -41,8 +43,8 @@ internal class CommonPagingSource(
 
     override fun getRefreshKey(state: PagingState<Int, AnimeResponseItemDto>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
-            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(ONE)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(ONE)
         }
     }
 }

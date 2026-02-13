@@ -3,8 +3,8 @@ package com.example.data.data.impl
 import com.example.data.domain.GenresRepo
 import com.example.data.models.common.common.Genre
 import com.example.data.models.common.mappers.toGenre
-import com.example.data.utils.remote.network_request.NetworkRequest
-import com.example.data.utils.remote.network_request.NetworkResult
+import com.example.data.utils.network.network_request.NetworkRequest
+import com.example.data.utils.network.network_request.NetworkResult
 import com.example.network.genres.api.GenresApi
 import javax.inject.Inject
 

@@ -5,8 +5,8 @@ import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.data.models.releases.anime_id.AnimeId
 import com.example.data.models.releases.mappers.toAnimeDetails
 import com.example.data.models.releases.mappers.toAnimeId
-import com.example.data.utils.remote.network_request.NetworkRequest
-import com.example.data.utils.remote.network_request.NetworkResult
+import com.example.data.utils.network.network_request.NetworkRequest
+import com.example.data.utils.network.network_request.NetworkResult
 import com.example.network.releases.api.ReleasesApi
 import javax.inject.Inject
 

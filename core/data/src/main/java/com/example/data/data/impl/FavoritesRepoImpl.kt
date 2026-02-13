@@ -16,9 +16,9 @@ import com.example.data.models.favorites.FavoriteRequest
 import com.example.data.models.favorites.FavoritesIds
 import com.example.data.models.favorites.toFavoriteRequestDto
 import com.example.data.models.favorites.toFavoritesIds
-import com.example.data.utils.remote.network_request.NetworkRequest
-import com.example.data.utils.remote.network_request.NetworkResult
-import com.example.data.utils.remote.paging.CommonPagingSource
+import com.example.data.utils.network.network_request.NetworkRequest
+import com.example.data.utils.network.network_request.NetworkResult
+import com.example.data.utils.network.paging.CommonPagingSource
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.common.common_request_models.common_request.CommonRequestDto
 import com.example.network.common.common_utils.CommonNetworkConstants
