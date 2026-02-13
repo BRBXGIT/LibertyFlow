@@ -1,4 +1,4 @@
-package com.example.data.di.local
+package com.example.data.di
 
 import android.content.ComponentName
 import android.content.Context
