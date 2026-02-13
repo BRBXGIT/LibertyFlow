@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 class OnboardingRepoImpl @Inject constructor(
     private val onboardingPrefsManager: OnboardingPrefsManager
-) : OnboardingRepo {
+): OnboardingRepo {
 
     /**
      * A Flow that emits the current [OnboardingState].
