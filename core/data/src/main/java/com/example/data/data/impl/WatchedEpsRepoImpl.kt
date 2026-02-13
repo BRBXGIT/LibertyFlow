@@ -1,4 +1,4 @@
-package com.example.data.data
+package com.example.data.data.impl
 
 import com.example.data.domain.WatchedEpsRepo
 import com.example.local.watched_eps_db.AnimeEntity

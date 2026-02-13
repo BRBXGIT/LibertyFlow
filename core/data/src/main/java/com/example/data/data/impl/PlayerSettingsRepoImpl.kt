@@ -1,4 +1,4 @@
-package com.example.data.data
+package com.example.data.data.impl
 
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.models.player.PlayerSettings

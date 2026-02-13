@@ -1,7 +1,7 @@
 package com.example.data
 
 import app.cash.turbine.test
-import com.example.data.data.ThemeRepoImpl
+import com.example.data.data.impl.ThemeRepoImpl
 import com.example.data.models.theme.ColorSchemeValue
 import com.example.data.models.theme.ThemeValue
 import com.example.local.theme.ThemePrefsManager

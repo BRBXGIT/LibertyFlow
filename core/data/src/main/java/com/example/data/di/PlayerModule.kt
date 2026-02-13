@@ -16,10 +16,20 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Hilt module responsible for providing media playback dependencies.
+ *
+ * This module is installed in the [SingletonComponent], meaning all provided
+ * instances will exist for the duration of the application's lifecycle.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object PlayerModule {
 
+    /**
+     * Provides [AudioAttributes] configured for movie/video content.
+     * Sets the content type to [C.AUDIO_CONTENT_TYPE_MOVIE] and usage to [C.USAGE_MEDIA].
+     */
     @Provides
     @Singleton
     fun provideAudioAttributes(): AudioAttributes = AudioAttributes.Builder()
@@ -27,6 +37,16 @@ object PlayerModule {
         .setUsage(C.USAGE_MEDIA)
         .build()
 
+    /**
+     * Provides a singleton instance of [ExoPlayer].
+     *
+     * Features enabled:
+     * - **Audio Focus Management**: Automatically handles pausing/ducking when other apps play sound.
+     * - **Noisy Intent Handling**: Automatically pauses playback when headphones are disconnected.
+     *
+     * @param context The application context.
+     * @param audioAttributes The attributes defined in [provideAudioAttributes].
+     */
     @Provides
     @Singleton
     fun provideExoPlayer(
@@ -37,6 +57,14 @@ object PlayerModule {
         .setHandleAudioBecomingNoisy(true)
         .build()
 
+    /**
+     * Provides a [ListenableFuture] for a [MediaController].
+     *
+     * This allows the UI components to asynchronously connect to the [PlaybackService]
+     * using a [SessionToken].
+     *
+     * @param context The application context.
+     */
     @Provides
     @Singleton
     fun provideMediaControllerFuture(

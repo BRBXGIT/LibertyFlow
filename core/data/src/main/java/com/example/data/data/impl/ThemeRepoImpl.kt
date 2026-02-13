@@ -1,4 +1,4 @@
-package com.example.data.data
+package com.example.data.data.impl
 
 import com.example.data.domain.ThemeRepo
 import com.example.data.models.theme.ColorSchemeValue
@@ -9,6 +9,9 @@ import com.example.local.theme.ThemePrefsManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
+
+private const val CHIPS_STRING = "Chips"
+private const val M3_STRING = "M3"
 
 class ThemeRepoImpl @Inject constructor(
     private val themePrefsManager: ThemePrefsManager
@@ -49,8 +52,8 @@ class ThemeRepoImpl @Inject constructor(
 
     private fun String?.toEnumTabType(): TabType {
         return when(this) {
-            "Chips" -> TabType.Chips
-            "M3" -> TabType.M3
+            CHIPS_STRING -> TabType.Chips
+            M3_STRING -> TabType.M3
             null -> TabType.M3
             else -> TabType.Tablet
         }

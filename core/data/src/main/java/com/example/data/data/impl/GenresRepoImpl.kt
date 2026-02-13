@@ -1,4 +1,4 @@
-package com.example.data.data
+package com.example.data.data.impl
 
 import com.example.data.domain.GenresRepo
 import com.example.data.models.common.common.Genre

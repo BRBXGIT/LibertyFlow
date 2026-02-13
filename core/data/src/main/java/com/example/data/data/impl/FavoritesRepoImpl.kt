@@ -1,11 +1,12 @@
 @file:OptIn(ExperimentalCoroutinesApi::class)
 
-package com.example.data.data
+package com.example.data.data.impl
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.example.data.data.utils.BaseAuthRepoImpl
 import com.example.data.domain.FavoritesRepo
 import com.example.data.models.common.mappers.toAnimeItem
 import com.example.data.models.common.mappers.toCommonRequestDto
@@ -24,7 +25,6 @@ import com.example.network.common.common_utils.CommonNetworkConstants
 import com.example.network.favorites.api.FavoritesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -33,12 +33,10 @@ import javax.inject.Inject
 class FavoritesRepoImpl @Inject constructor(
     private val favoritesApi: FavoritesApi,
     private val authPrefsManager: AuthPrefsManager
-): FavoritesRepo {
+): FavoritesRepo, BaseAuthRepoImpl(authPrefsManager) {
 
     override fun getFavorites(request: CommonRequest): Flow<PagingData<AnimeItem>> {
-        return authPrefsManager.token
-            .filterNotNull()
-            .flatMapLatest { token ->
+        return token.flatMapLatest { token ->
                 Pager(
                     config = PagingConfig(
                         pageSize = CommonNetworkConstants.COMMON_LIMIT,
@@ -61,28 +59,22 @@ class FavoritesRepoImpl @Inject constructor(
     }
 
     override suspend fun getFavoritesIds(): NetworkResult<FavoritesIds> {
-        val token = authPrefsManager.token.filterNotNull().first()
-
         return NetworkRequest.safeApiCall(
-            call = { favoritesApi.getFavoritesIds(token) },
+            call = { favoritesApi.getFavoritesIds(token.first()) },
             map = { it.toFavoritesIds() }
         )
     }
 
     override suspend fun addFavorite(request: FavoriteRequest): NetworkResult<Unit> {
-        val token = authPrefsManager.token.filterNotNull().first()
-
         return NetworkRequest.safeApiCall(
-            call = { favoritesApi.addFavorite(token, request.toFavoriteRequestDto()) },
+            call = { favoritesApi.addFavorite(token.first(), request.toFavoriteRequestDto()) },
             map = {}
         )
     }
 
     override suspend fun deleteFavorite(request: FavoriteRequest): NetworkResult<Unit> {
-        val token = authPrefsManager.token.filterNotNull().first()
-
         return NetworkRequest.safeApiCall(
-            call = { favoritesApi.deleteFavorite(token, request.toFavoriteRequestDto()) },
+            call = { favoritesApi.deleteFavorite(token.first(), request.toFavoriteRequestDto()) },
             map = {}
         )
     }

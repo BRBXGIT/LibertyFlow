@@ -1,15 +1,15 @@
 package com.example.data.di
 
-import com.example.data.data.AuthRepoImpl
-import com.example.data.data.CatalogRepoImpl
-import com.example.data.data.CollectionsRepoImpl
-import com.example.data.data.FavoritesRepoImpl
-import com.example.data.data.GenresRepoImpl
-import com.example.data.data.OnboardingRepoImpl
-import com.example.data.data.PlayerSettingsRepoImpl
-import com.example.data.data.ReleasesRepoImpl
-import com.example.data.data.ThemeRepoImpl
-import com.example.data.data.WatchedEpsRepoImpl
+import com.example.data.data.impl.AuthRepoImpl
+import com.example.data.data.impl.CatalogRepoImpl
+import com.example.data.data.impl.CollectionsRepoImpl
+import com.example.data.data.impl.FavoritesRepoImpl
+import com.example.data.data.impl.GenresRepoImpl
+import com.example.data.data.impl.OnboardingRepoImpl
+import com.example.data.data.impl.PlayerSettingsRepoImpl
+import com.example.data.data.impl.ReleasesRepoImpl
+import com.example.data.data.impl.ThemeRepoImpl
+import com.example.data.data.impl.WatchedEpsRepoImpl
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.CollectionsRepo
