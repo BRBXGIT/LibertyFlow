@@ -8,7 +8,6 @@ import com.example.data.models.auth.toSessionTokenRequestDto
 import com.example.data.models.auth.toToken
 import com.example.data.utils.remote.network_request.NetworkRequest
 import com.example.data.utils.remote.network_request.NetworkResult
-import com.example.local.auth.AuthConstants
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.auth.api.AuthApi
 import kotlinx.coroutines.flow.firstOrNull
@@ -19,6 +18,10 @@ class AuthRepoImpl @Inject constructor(
     private val authApi: AuthApi,
     private val authPrefsManager: AuthPrefsManager
 ): AuthRepo {
+
+    private companion object {
+        const val TOKEN_TYPE = "Bearer"
+    }
 
     override val token = authPrefsManager.token
 
@@ -42,5 +45,5 @@ class AuthRepoImpl @Inject constructor(
 
     override suspend fun clearToken() = authPrefsManager.clearToken()
 
-    override suspend fun saveToken(token: String) = authPrefsManager.saveToken("${AuthConstants.TOKEN_TYPE} $token")
+    override suspend fun saveToken(token: String) = authPrefsManager.saveToken("$TOKEN_TYPE $token")
 }

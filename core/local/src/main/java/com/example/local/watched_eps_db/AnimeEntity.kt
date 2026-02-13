@@ -5,38 +5,44 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-// Entity representing a anime
+/**
+ * Represents a specific anime series within the local database.
+ * @property animeId Unique identifier for the anime (Primary Key).
+ */
 @Entity
 data class AnimeEntity(
-    // Primary key for the anime
     @PrimaryKey
     val animeId: Int
 )
 
-// Entity representing a watched episode of a anime
+/**
+ * Represents an individual episode of an anime that has been marked as watched.
+ * * This entity maintains a many-to-one relationship with [AnimeEntity] via a
+ * foreign key constraint. If the parent anime is deleted, all associated
+ * watched episodes are automatically removed.
+ *
+ * @property animeId The ID of the parent anime (Part of Composite Primary Key).
+ * @property episodeIndex The specific episode number/index (Part of Composite Primary Key).
+ */
 @Entity(
-    // Composite primary key: a anime + episode number must be unique
-    primaryKeys = ["animeId", "episodeIndex"],
-
-    // Foreign key linking this table to TitleEntity
+    primaryKeys = [
+        "animeId",
+        "episodeIndex"
+    ],
     foreignKeys = [
         ForeignKey(
-            entity = AnimeEntity::class,      // Parent table
-            parentColumns = ["animeId"],      // Column in parent table
-            childColumns = ["animeId"],       // Column in this table
-            onDelete = ForeignKey.CASCADE     // Delete episodes when the anime is deleted
+            entity = AnimeEntity::class,
+            parentColumns = ["animeId"],
+            childColumns = ["animeId"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
-
-    // Index to speed up queries filtering by animeId
-    indices = [Index(value = ["animeId"])]
+    indices = [
+        Index(value = ["animeId"])
+    ]
 )
 
 data class EpisodeEntity(
-
-    // ID of the related anime
     val animeId: Int,
-
-    // Episode index that has been watched
     val episodeIndex: Int
 )
