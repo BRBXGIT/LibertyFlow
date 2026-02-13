@@ -4,10 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.local.utils.AuthDataStore
-import com.example.local.utils.OnboardingDataStore
-import com.example.local.utils.PlayerSettingsDataStore
-import com.example.local.utils.ThemeDataStore
+import com.example.local.utils.DataStoreQualifier
+import com.example.local.utils.LibertyFlowDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,25 +36,25 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    @AuthDataStore
+    @DataStoreQualifier(LibertyFlowDataStore.Auth)
     fun provideAuthDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
         context.authStore
 
     @Provides
     @Singleton
-    @OnboardingDataStore
+    @DataStoreQualifier(LibertyFlowDataStore.Onboarding)
     fun provideOnboardingDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
         context.onboardingStore
 
     @Provides
     @Singleton
-    @PlayerSettingsDataStore
+    @DataStoreQualifier(LibertyFlowDataStore.PlayerSettings)
     fun providePlayerSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
         context.playerSettingsStore
 
     @Provides
     @Singleton
-    @ThemeDataStore
+    @DataStoreQualifier(LibertyFlowDataStore.Theme)
     fun provideThemeDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
         context.themeStore
 }

@@ -3,8 +3,9 @@ package com.example.local.auth
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.local.utils.AuthDataStore
 import com.example.local.utils.BasePrefsManager
+import com.example.local.utils.DataStoreQualifier
+import com.example.local.utils.LibertyFlowDataStore
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,9 +15,8 @@ import javax.inject.Singleton
  * Manages the persistence of authentication credentials using Jetpack DataStore.
  * Provides a reactive stream for the session token and methods for lifecycle management.
  */
-@Singleton
 class AuthPrefsManagerImpl @Inject constructor(
-    @AuthDataStore dataStore: DataStore<Preferences>
+    @DataStoreQualifier(LibertyFlowDataStore.Auth) dataStore: DataStore<Preferences>
 ): AuthPrefsManager, BasePrefsManager(dataStore) {
 
     private companion object {

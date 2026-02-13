@@ -5,16 +5,15 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.local.utils.BasePrefsManager
-import com.example.local.utils.PlayerSettingsDataStore
+import com.example.local.utils.DataStoreQualifier
+import com.example.local.utils.LibertyFlowDataStore
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Manages the state of the player settings.
  */
-@Singleton
 class PlayerSettingsPrefsManagerImpl @Inject constructor(
-    @PlayerSettingsDataStore dataStore: DataStore<Preferences>
+    @DataStoreQualifier(LibertyFlowDataStore.PlayerSettings) dataStore: DataStore<Preferences>
 ): PlayerSettingsPrefsManager, BasePrefsManager(dataStore) {
     private companion object {
         private val QUALITY_KEY = stringPreferencesKey("quality")

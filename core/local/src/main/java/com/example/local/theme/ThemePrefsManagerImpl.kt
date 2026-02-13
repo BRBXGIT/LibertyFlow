@@ -5,16 +5,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.local.utils.BasePrefsManager
-import com.example.local.utils.ThemeDataStore
+import com.example.local.utils.DataStoreQualifier
+import com.example.local.utils.LibertyFlowDataStore
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * Manages the state of the theme and color scheme settings.
  */
-@Singleton
 class ThemePrefsManagerImpl @Inject constructor(
-    @ThemeDataStore dataStore: DataStore<Preferences>
+    @DataStoreQualifier(LibertyFlowDataStore.Theme) dataStore: DataStore<Preferences>
 ): ThemePrefsManager, BasePrefsManager(dataStore) {
 
     private companion object {
