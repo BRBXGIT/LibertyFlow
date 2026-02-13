@@ -48,7 +48,7 @@
 # Network
 -keep class com.example.network.auth.models.** { *; }
 -keep class com.example.network.collections.models.** { *; }
--keep class com.example.network.common.common_pagination.** { *; }
+-keep class com.example.network.common.common_pagination_models.** { *; }
 -keep class com.example.network.common.common_request_models.** { *; }
 -keep class com.example.network.common.common_response_models.** { *; }
 -keep class com.example.network.favorites.models.** { *; }

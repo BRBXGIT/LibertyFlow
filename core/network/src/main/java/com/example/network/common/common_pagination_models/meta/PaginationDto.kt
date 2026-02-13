@@ -1,4 +1,4 @@
-package com.example.network.common.common_pagination.meta
+package com.example.network.common.common_pagination_models.meta
 
 import com.google.gson.annotations.SerializedName
 

@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.data.utils.network.network_request.NetworkRequest
 import com.example.data.utils.network.network_request.NetworkResult
-import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPaginationDto
+import com.example.network.common.common_pagination_models.anime_items_pagination.AnimeItemsPaginationDto
 import com.example.network.common.common_request_models.common_request_base.CommonRequestDtoBase
 import com.example.network.common.common_response_models.AnimeResponseItemDto
 import retrofit2.Response

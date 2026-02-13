@@ -21,8 +21,8 @@ object WatchedEpsDBModule {
     private const val WATCHED_EPS_DB_NAME = "WatchedEpsDb"
 
     /**
-     * Provides the DAO for watched episodes.
-     * Hilt will handle the database creation internally when providing the DAO.
+     * Provides the [WatchedEpsDao] for watched episodes.
+     * Hilt will handle the database creation internally when providing the [WatchedEpsDao].
      */
     @Provides
     @Singleton

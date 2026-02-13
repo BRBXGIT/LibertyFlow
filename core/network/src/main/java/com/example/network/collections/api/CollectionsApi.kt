@@ -2,7 +2,7 @@ package com.example.network.collections.api
 
 import com.example.network.collections.models.ids.CollectionsIdsDto
 import com.example.network.collections.models.request.CollectionRequestDto
-import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPaginationDto
+import com.example.network.common.common_pagination_models.anime_items_pagination.AnimeItemsPaginationDto
 import com.example.network.common.common_request_models.common_request.CommonRequestDtoWithCollectionTypeDto
 import com.example.network.common.common_utils.CommonNetworkConstants.AUTHORIZATION_HEADER
 import com.example.network.common.common_utils.CommonNetworkConstants.DELETE_METHOD

@@ -1,7 +1,7 @@
-package com.example.network.common.common_pagination.anime_items_pagination
+package com.example.network.common.common_pagination_models.anime_items_pagination
 
 import com.example.network.common.common_response_models.AnimeResponseItemDto
-import com.example.network.common.common_pagination.meta.MetaDto
+import com.example.network.common.common_pagination_models.meta.MetaDto
 import com.google.gson.annotations.SerializedName
 
 /**

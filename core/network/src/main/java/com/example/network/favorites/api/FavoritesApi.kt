@@ -1,6 +1,6 @@
 package com.example.network.favorites.api
 
-import com.example.network.common.common_pagination.anime_items_pagination.AnimeItemsPaginationDto
+import com.example.network.common.common_pagination_models.anime_items_pagination.AnimeItemsPaginationDto
 import com.example.network.common.common_request_models.common_request.CommonRequestDto
 import com.example.network.common.common_utils.CommonNetworkConstants.AUTHORIZATION_HEADER
 import com.example.network.common.common_utils.CommonNetworkConstants.DELETE_METHOD

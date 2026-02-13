@@ -85,12 +85,12 @@ class AuthRepoImpl @Inject constructor(
     // --- Mappers ---
     private fun TokenRequest.toSessionTokenRequestDto(): SessionTokenRequestDto {
         return SessionTokenRequestDto(
-            login = login,
-            password = password
+            login = this.login,
+            password = this.password
         )
     }
 
     private fun SessionTokenResponseDto.toToken(): Token {
-        return Token(token = token)
+        return Token(token = this.token)
     }
 }
