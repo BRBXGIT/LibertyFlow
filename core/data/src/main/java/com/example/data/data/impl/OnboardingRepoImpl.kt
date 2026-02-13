@@ -6,10 +6,18 @@ import com.example.local.onboarding.OnboardingPrefsManager
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * Implementation of [OnboardingRepo] managing the user's first-launch experience state.
+ * Interfaces with [OnboardingPrefsManager] for persistent storage.
+ */
 class OnboardingRepoImpl @Inject constructor(
     private val onboardingPrefsManager: OnboardingPrefsManager
-): OnboardingRepo {
+) : OnboardingRepo {
 
+    /**
+     * A Flow that emits the current [OnboardingState].
+     * Defaults to [OnboardingState.NotCompleted] if the preference is unset or false.
+     */
     override val onboardingState = onboardingPrefsManager
         .isOnboardingCompleted
         .map { value ->
@@ -20,6 +28,9 @@ class OnboardingRepoImpl @Inject constructor(
             }
         }
 
+    /**
+     * Persists the completion of the onboarding process.
+     */
     override suspend fun saveOnboardingCompleted() =
         onboardingPrefsManager.saveOnboardingCompleted()
 }

@@ -7,10 +7,18 @@ import com.example.local.player_settings.PlayerSettingsPrefsManager
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
+/**
+ * Implementation of [PlayerSettingsRepo] that manages video player configurations.
+ * Coordinates multiple preference streams into a single [PlayerSettings] state.
+ */
 class PlayerSettingsRepoImpl @Inject constructor(
     private val playerSettingsPrefsManager: PlayerSettingsPrefsManager
 ): PlayerSettingsRepo {
 
+    /**
+     * A Flow that combines individual preference emissions into a unified [PlayerSettings] object.
+     * Provides default fallback values for unset preferences.
+     */
     override val playerSettings = combine(
         flow = playerSettingsPrefsManager.quality,
         flow2 = playerSettingsPrefsManager.showSkipOpeningButton,
@@ -41,13 +49,14 @@ class PlayerSettingsRepoImpl @Inject constructor(
 
     override suspend fun saveIsCopped(isCropped: Boolean) =
         playerSettingsPrefsManager.saveIsCopped(isCropped)
-}
 
-private const val FHD = "FHD"
-private const val HD = "HD"
+    // --- Mappers ---
+    private val fhd = "FHD"
+    private val hd = "HD"
 
-private fun String?.toVideoQuality() = when(this) {
-    FHD -> VideoQuality.FHD
-    HD -> VideoQuality.HD
-    else -> VideoQuality.SD
+    private fun String?.toVideoQuality() = when(this) {
+        fhd -> VideoQuality.FHD
+        hd -> VideoQuality.HD
+        else -> VideoQuality.SD
+    }
 }

@@ -13,11 +13,19 @@ import javax.inject.Inject
 private const val CHIPS_STRING = "Chips"
 private const val M3_STRING = "M3"
 
+/**
+ * Implementation of [ThemeRepo] that manages application appearance settings.
+ * Aggregates various theme-related preferences into a single [LibertyFlowTheme] state.
+ */
 class ThemeRepoImpl @Inject constructor(
     private val themePrefsManager: ThemePrefsManager
 ): ThemeRepo {
 
-    override val libertyFlowTheme: Flow<LibertyFlowTheme> = combine(
+    /**
+     * A [Flow] combining theme, color system, and UI component preferences.
+     * Maps persistence strings to domain enums with safe default fallbacks.
+     */
+    override val libertyFlowTheme = combine(
         flow = themePrefsManager.theme,
         flow2 = themePrefsManager.colorSystem,
         flow3 = themePrefsManager.useExpressive,
@@ -44,12 +52,16 @@ class ThemeRepoImpl @Inject constructor(
         themePrefsManager.saveTabletType(tabType.name)
 
     // --- Helpers ---
+    /**
+     * Utility to safely map strings to Enums, preventing crashes on invalid stored data.
+     */
     private inline fun <reified T : Enum<T>> String?.toEnumOrDefault(default: T): T =
         runCatching { enumValueOf<T>(this!!) }.getOrDefault(default)
 
     private inline fun <reified T : Enum<T>> String?.toEnumOrNull(): T? =
         runCatching { enumValueOf<T>(this!!) }.getOrNull()
 
+    // --- Mappers ---
     private fun String?.toEnumTabType(): TabType {
         return when(this) {
             CHIPS_STRING -> TabType.Chips

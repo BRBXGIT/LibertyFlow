@@ -17,10 +17,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * Implementation of [CatalogRepo] providing paginated anime data.
+ */
 class CatalogRepoImpl @Inject constructor(
     private val catalogApi: CatalogApi
 ): CatalogRepo {
 
+    /**
+     * Streams paginated anime results filtered by [request].
+     * * Uses [CommonPagingSource] to fetch [CommonRequestDto] from the API
+     * and maps results to domain [AnimeItem] models.
+     */
     override fun getAnimeByQuery(request: CommonRequest): Flow<PagingData<AnimeItem>> {
         return Pager(
             config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),

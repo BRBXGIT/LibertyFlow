@@ -18,8 +18,6 @@ import com.example.network.releases.models.anime_details_item_response.OpeningDt
 import com.example.network.releases.models.anime_details_item_response.TorrentDto
 import com.example.network.releases.models.anime_id_item_response.AnimeIdItemDto
 
-internal fun AnimeIdItemDto.toAnimeId() = AnimeId(id)
-
 internal fun AnimeDetailsItemDto.toAnimeDetails(): AnimeDetails {
     return AnimeDetails(
         id = id,

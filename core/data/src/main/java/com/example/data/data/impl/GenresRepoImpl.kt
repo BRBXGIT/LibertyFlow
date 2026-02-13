@@ -8,10 +8,17 @@ import com.example.data.utils.network.network_request.NetworkResult
 import com.example.network.genres.api.GenresApi
 import javax.inject.Inject
 
+/**
+ * Implementation of [GenresRepo] providing static data for anime genres.
+ */
 class GenresRepoImpl @Inject constructor(
     private val genresApi: GenresApi
 ): GenresRepo {
 
+    /**
+     * Fetches all available genres from the remote API.
+     * Maps the resulting DTO list to domain [Genre] objects.
+     */
     override suspend fun getGenres(): NetworkResult<List<Genre>> {
         return NetworkRequest.safeApiCall(
             call = { genresApi.getGenres() },
