@@ -12,7 +12,7 @@ import java.net.UnknownHostException
  * This object handles the conversion of standard Retrofit [Response] objects and
  * platform exceptions into a unified [NetworkResult].
  */
-object NetworkRequest {
+internal object NetworkRequest {
 
     /**
      * Executes a network call and maps the successful response body [T] to a domain model [R].

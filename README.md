@@ -6,7 +6,7 @@
 
 ### Неофициальный андроид клиент для [AniLiberty](https://anilibria.top/)
 
-[//]: # (<img src="docs/app_logo.png"/>)
+<img src="docs/app_logo.png"/>
 
 </div>
 
@@ -19,6 +19,7 @@
 - Удобный плеер с множеством разных фич.
 - Расширенный поиск, возможность искать тайтлы по множеству параметров.
 - Отсутствие какой-либо рекламы
+- Английская версия приложения
 ## Main libraries
 - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
 - [Navigation](https://developer.android.com/guide/navigation)

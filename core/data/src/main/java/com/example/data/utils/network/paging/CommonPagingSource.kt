@@ -22,7 +22,7 @@ private const val ONE = 1
 internal class CommonPagingSource(
     private val apiCall: suspend (CommonRequestDtoBase) -> Response<AnimeItemsPaginationDto>,
     private val baseRequest: CommonRequestDtoBase,
-) : PagingSource<Int, AnimeResponseItemDto>() {
+): PagingSource<Int, AnimeResponseItemDto>() {
 
     /**
      * Triggers a synchronous-like load of a specific page based on [params].
