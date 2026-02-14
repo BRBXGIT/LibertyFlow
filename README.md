@@ -6,7 +6,9 @@
 
 ### Неофициальный андроид клиент для [AniLiberty](https://anilibria.top/)
 
-<img src="docs/app_logo.png" style="border-radius: 20px;"/>
+<div align="center">
+  <img src="docs/app_logo.png" width="500" style="border-radius: 50%;">
+</div>
 
 </div>
 
@@ -36,3 +38,4 @@
 - РКН очень любит блокировать аниме сервисы, поэтому некоторые данные могут не грузиться без впн
 ## App preview
 https://github.com/user-attachments/assets/21770f8c-8362-49cb-ae59-26ceed772e56
+
