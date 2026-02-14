@@ -63,8 +63,7 @@ class FavoritesRepoImpl @Inject constructor(
                     )
                 }
             ).flow
-        }
-            .map { pagingData -> pagingData.map { it.toAnimeItem() } }
+        }.map { pagingData -> pagingData.map { it.toAnimeItem() } }
     }
 
     /**

@@ -132,7 +132,7 @@ class CollectionsRepoImpl @Inject constructor(
 
             val status = try {
                 Collection.valueOf(item[1].toString())
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 null
             }
 
