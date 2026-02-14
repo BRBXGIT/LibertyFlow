@@ -6,7 +6,7 @@
 
 ### Неофициальный андроид клиент для [AniLiberty](https://anilibria.top/)
 
-<img src="docs/app_logo.png"/>
+<img src="docs/app_logo.png" style="border-radius: 20px;"/>
 
 </div>
 
