@@ -11,7 +11,7 @@ import com.example.data.domain.FavoritesRepo
 import com.example.data.models.common.mappers.toAnimeItem
 import com.example.data.models.common.mappers.toCommonRequestDto
 import com.example.data.models.common.request.common_request.CommonRequest
-import com.example.data.models.common.ui_anime_item.AnimeItem
+import com.example.data.models.common.anime_item.AnimeItem
 import com.example.data.models.favorites.FavoriteItem
 import com.example.data.models.favorites.FavoriteRequest
 import com.example.data.models.favorites.FavoritesIds

@@ -13,7 +13,7 @@ import com.example.data.models.common.request.request_parameters.FullRequestPara
 import com.example.data.models.common.request.request_parameters.RequestParametersBase
 import com.example.data.models.common.request.request_parameters.ShortRequestParameters
 import com.example.data.models.common.request.request_parameters.Year
-import com.example.data.models.common.ui_anime_item.AnimeItem
+import com.example.data.models.common.anime_item.AnimeItem
 import com.example.network.common.common_request_models.common_request.CommonRequestDto
 import com.example.network.common.common_request_models.common_request.CommonRequestDtoWithCollectionTypeDto
 import com.example.network.common.common_request_models.request_parameters.FullRequestParametersDto

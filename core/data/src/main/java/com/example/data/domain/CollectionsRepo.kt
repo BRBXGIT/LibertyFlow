@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import com.example.data.models.collections.collection.AnimeCollection
 import com.example.data.models.collections.request.CollectionRequest
 import com.example.data.models.common.request.common_request.CommonRequestWithCollectionType
-import com.example.data.models.common.ui_anime_item.AnimeItem
+import com.example.data.models.common.anime_item.AnimeItem
 import com.example.data.utils.network.network_request.NetworkResult
 import kotlinx.coroutines.flow.Flow
 

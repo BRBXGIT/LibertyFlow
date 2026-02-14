@@ -70,7 +70,7 @@ internal fun TorrentDto.toTorrent(): Torrent {
         filename = filename,
         leechers = leechers,
         seeders = seeders,
-        size = (size / 8 / (1024 * 1024)).toInt(), // Convert from bits to mb
+        size = (size / (1024 * 1024)).toInt(), // Convert from bytes to mb
         magnet = magnet
     )
 }

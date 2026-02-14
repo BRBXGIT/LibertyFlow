@@ -6,6 +6,19 @@ import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/**
+ * A background service that manages the lifecycle of an [ExoPlayer] instance
+ * and its associated [MediaSession].
+ *
+ * This service allows playback to continue when the app is in the background
+ * or the screen is off. It integrates with the system media controls via
+ * Media3's [MediaSession] API.
+ *
+ * @property player The [ExoPlayer] instance injected by Hilt, used as the
+ * underlying media engine.
+ * @property mediaSession The session that communicates with the system
+ * and external controllers.
+ */
 @AndroidEntryPoint
 class PlaybackService: MediaSessionService() {
 

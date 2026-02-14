@@ -12,9 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.itemKey
 import com.example.data.models.common.common.PosterType
-import com.example.data.models.common.ui_anime_item.AnimeItem
+import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.list_tems.AnimeCard
 import com.example.design_system.components.list_tems.AnimeCardUtils
 

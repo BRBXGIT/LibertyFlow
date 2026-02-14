@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.collections.screen.CollectionsState
-import com.example.data.models.common.ui_anime_item.AnimeItem
+import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.VibratingContainer

@@ -16,7 +16,7 @@ import com.example.data.models.auth.TokenRequest
 import com.example.data.models.common.request.common_request.CommonRequestWithCollectionType
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.request.request_parameters.ShortRequestParameters
-import com.example.data.models.common.ui_anime_item.AnimeItem
+import com.example.data.models.common.anime_item.AnimeItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi

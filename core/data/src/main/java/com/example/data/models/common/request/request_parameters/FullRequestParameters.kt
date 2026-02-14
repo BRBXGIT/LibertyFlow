@@ -3,6 +3,16 @@ package com.example.data.models.common.request.request_parameters
 import androidx.compose.runtime.Immutable
 import com.example.data.models.common.common.Genre
 
+/**
+ * A comprehensive set of parameters for an advanced search interface.
+ * * This class includes specific helper functions to facilitate
+ * immutable state updates in a ViewModel.
+ *
+ * @property seasons Specific anime seasons (e.g., Winter, Summer).
+ * @property years A [Year] range object containing 'from' and 'to' values.
+ * @property publishStatuses Status of the release (e.g., Released, Ongoing).
+ * @property productionStatuses Status of the production (e.g., Finished, Announced).
+ */
 @Immutable
 data class FullRequestParameters(
     override val ageRatings: List<AgeRating> = emptyList(),

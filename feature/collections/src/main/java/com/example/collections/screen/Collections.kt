@@ -21,7 +21,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.collections.R
 import com.example.collections.components.CollectionPage
@@ -30,13 +29,12 @@ import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.AuthState
 import com.example.data.models.common.request.request_parameters.Collection
-import com.example.data.models.common.ui_anime_item.AnimeItem
+import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.sections.LoggedOutSection
 import com.example.design_system.containers.PagingStatesContainer
-import com.example.design_system.containers.VibratingContainer
 import com.example.design_system.theme.logic.ThemeState
 import com.example.design_system.theme.theme.mColors
 import kotlinx.coroutines.launch
