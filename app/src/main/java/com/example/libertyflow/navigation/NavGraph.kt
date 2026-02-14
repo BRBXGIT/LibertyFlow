@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
@@ -50,7 +51,7 @@ fun NavGraph(themeVM: ThemeVM, startDestination: NavigationBase) {
     val collectionsVM = hiltViewModel<CollectionsVM>()
 
     // Refresh vm
-    val refreshVM = hiltViewModel<RefreshVM>()
+    val refreshVM = viewModel<RefreshVM>()
 
     // Player vm
     val playerVM = hiltViewModel<PlayerVM>()

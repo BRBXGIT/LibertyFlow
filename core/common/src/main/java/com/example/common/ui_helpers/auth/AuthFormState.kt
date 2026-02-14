@@ -2,6 +2,18 @@ package com.example.common.ui_helpers.auth
 
 import androidx.compose.runtime.Immutable
 
+/**
+ * Represents the UI state for the authentication form.
+ *
+ * This class is marked as [@Immutable] to allow Compose to optimize recompositions,
+ * ensuring that the UI only updates when the state properties actually change.
+ *
+ * @property isAuthBSVisible Controls the visibility of the authentication bottom sheet.
+ * @property login The current text input for the user's login or email.
+ * @property password The current text input for the user's password.
+ * @property isError Indicates if there is a validation error or a failed login attempt
+ * that should be reflected in the UI (e.g., showing red outlines or error messages).
+ */
 @Immutable
 data class AuthFormState(
     val isAuthBSVisible: Boolean = false,

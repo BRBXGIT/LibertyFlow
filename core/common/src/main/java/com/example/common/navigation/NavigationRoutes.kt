@@ -2,6 +2,7 @@ package com.example.common.navigation
 
 import kotlinx.serialization.Serializable
 
+/** All naw routes used in app */
 @Serializable
 data object OnboardingRoute: NavigationBase
 

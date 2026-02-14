@@ -7,6 +7,11 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
+/**
+ * A Hilt module responsible for providing scoped [CoroutineDispatcher] instances.
+ * * By using the [Dispatcher] qualifier, this module allows for precise control
+ * over which thread pool is injected into your repositories, use cases, or view models.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DispatchersModule {

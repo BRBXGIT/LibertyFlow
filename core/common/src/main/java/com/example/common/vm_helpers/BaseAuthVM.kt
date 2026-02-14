@@ -11,6 +11,12 @@ import com.example.data.utils.network.network_request.onSuccess
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
+/**
+ * Base class for ViewModels that handle authentication.
+ *
+ * @param authRepo is the repo with auth login
+ * @param ioDispatcher is the dispatcher for IO operations
+ */
 abstract class BaseAuthVM(
     private val authRepo: AuthRepo,
     protected val ioDispatcher: CoroutineDispatcher

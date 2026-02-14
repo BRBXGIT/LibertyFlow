@@ -3,6 +3,10 @@ package com.example.common.ui_helpers.effects
 import com.example.common.navigation.NavigationBase
 import android.content.Intent
 
+/**
+ * Defines one-time UI events that are not part of the persistent state.
+ * [UiEffect] represents 'what just happened' (e.g., navigation, showing a snackbar).
+ */
 sealed interface UiEffect {
 
     // Snackbars

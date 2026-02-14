@@ -8,7 +8,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.Flow
 
-// Common function to handle common effects
+/**
+ * A global observer for [UiEffect] streams.
+ * * This Composable uses [LaunchedEffect] to collect effects from the ViewModel
+ * and execute them exactly once.
+ * @param effects The stream of effects to handle (Channel).
+ * @param navController The controller used for [UiEffect.Navigate] actions.
+ * @param snackbarHostState The state used to display snackbars. Can be null if
+ * the screen doesn't support snackbars.
+ */
 @Composable
 fun HandleCommonEffects(
     effects: Flow<UiEffect>,

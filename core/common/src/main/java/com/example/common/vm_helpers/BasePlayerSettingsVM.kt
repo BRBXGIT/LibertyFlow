@@ -9,6 +9,11 @@ import com.example.data.models.player.VideoQuality
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
+/**
+ * Base class for vms using player settings
+ * @param playerSettingsRepo is the repo with player settings
+ * @param dispatcherIo is the dispatcher for IO operations
+ */
 abstract class BasePlayerSettingsVM(
     private val playerSettingsRepo: PlayerSettingsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
