@@ -17,8 +17,8 @@ import com.example.anime_details.screen.AnimeDetailsVM
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.refresh.RefreshVM
 import com.example.common.ui_helpers.effects.HandleCommonEffects
-import com.example.design_system.utils.standardScreenEnterTransition
-import com.example.design_system.utils.standardScreenExitTransition
+import com.example.design_system.utils.fadeScreenEnterTransition
+import com.example.design_system.utils.fadeScreenExitTransition
 import com.example.player.player.PlayerVM
 
 fun NavGraphBuilder.animeDetails(
@@ -26,8 +26,8 @@ fun NavGraphBuilder.animeDetails(
     playerVM: PlayerVM,
     navController: NavController
 ) = composable<AnimeDetailsRoute>(
-    enterTransition = { standardScreenEnterTransition() },
-    exitTransition = { standardScreenExitTransition() }
+    enterTransition = { fadeScreenEnterTransition() },
+    exitTransition = { fadeScreenExitTransition() }
 ) {
     val route = it.toRoute<AnimeDetailsRoute>()
 

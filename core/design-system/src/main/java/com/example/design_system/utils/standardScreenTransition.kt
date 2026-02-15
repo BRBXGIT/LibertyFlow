@@ -16,7 +16,7 @@ private const val ANIMATION_DURATION = 300
  * non-distracting arrival.
  * @return An EnterTransition suitable for use in a NavGraph.
  */
-fun standardScreenEnterTransition() = fadeIn(tween(ANIMATION_DURATION))
+fun fadeScreenEnterTransition() = fadeIn(tween(ANIMATION_DURATION))
 
 /**
  * Defines a standard exit transition for screens leaving the viewport.
@@ -24,4 +24,4 @@ fun standardScreenEnterTransition() = fadeIn(tween(ANIMATION_DURATION))
  * as the new content takes focus.
  * @return An ExitTransition suitable for use in a NavGraph.
  */
-fun standardScreenExitTransition() = fadeOut(tween(ANIMATION_DURATION))
+fun fadeScreenExitTransition() = fadeOut(tween(ANIMATION_DURATION))

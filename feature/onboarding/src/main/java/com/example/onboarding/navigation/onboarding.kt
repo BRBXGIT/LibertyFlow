@@ -9,14 +9,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.common.navigation.OnboardingRoute
 import com.example.common.ui_helpers.effects.HandleCommonEffects
-import com.example.design_system.utils.standardScreenEnterTransition
-import com.example.design_system.utils.standardScreenExitTransition
+import com.example.design_system.utils.fadeScreenEnterTransition
+import com.example.design_system.utils.fadeScreenExitTransition
 import com.example.onboarding.screen.Onboarding
 import com.example.onboarding.screen.OnboardingVM
 
 fun NavGraphBuilder.onboarding(navController: NavController) = composable<OnboardingRoute>(
-    enterTransition = { standardScreenEnterTransition() },
-    exitTransition = { standardScreenExitTransition() }
+    enterTransition = { fadeScreenEnterTransition() },
+    exitTransition = { fadeScreenExitTransition() }
 ) {
     val onboardingVM = hiltViewModel<OnboardingVM>()
 

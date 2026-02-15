@@ -12,16 +12,16 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.common.navigation.InfoRoute
 import com.example.common.ui_helpers.effects.HandleCommonEffects
-import com.example.design_system.utils.standardScreenEnterTransition
-import com.example.design_system.utils.standardScreenExitTransition
+import com.example.design_system.utils.fadeScreenEnterTransition
+import com.example.design_system.utils.fadeScreenExitTransition
 import com.example.info.screen.Info
 import com.example.info.screen.InfoEffect
 import com.example.info.screen.InfoVM
 import kotlinx.coroutines.flow.Flow
 
 fun NavGraphBuilder.info(navController: NavController) = composable<InfoRoute>(
-    enterTransition = { standardScreenEnterTransition() },
-    exitTransition = { standardScreenExitTransition() }
+    enterTransition = { fadeScreenEnterTransition() },
+    exitTransition = { fadeScreenExitTransition() }
 ) {
     val infoVM = hiltViewModel<InfoVM>()
 

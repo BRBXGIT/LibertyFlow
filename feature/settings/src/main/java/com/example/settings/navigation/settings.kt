@@ -8,14 +8,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.common.navigation.SettingsRoute
 import com.example.common.ui_helpers.effects.HandleCommonEffects
-import com.example.design_system.utils.standardScreenEnterTransition
-import com.example.design_system.utils.standardScreenExitTransition
+import com.example.design_system.utils.fadeScreenEnterTransition
+import com.example.design_system.utils.fadeScreenExitTransition
 import com.example.settings.screen.Settings
 import com.example.settings.screen.SettingsVM
 
 fun NavGraphBuilder.settings(navController: NavController) = composable<SettingsRoute>(
-    enterTransition = { standardScreenEnterTransition() },
-    exitTransition = { standardScreenExitTransition() }
+    enterTransition = { fadeScreenEnterTransition() },
+    exitTransition = { fadeScreenExitTransition() }
 ) {
     val settingsVM = hiltViewModel<SettingsVM>()
 

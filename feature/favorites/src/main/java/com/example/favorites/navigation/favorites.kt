@@ -16,8 +16,8 @@ import com.example.common.refresh.RefreshEffect
 import com.example.common.refresh.RefreshVM
 import com.example.common.ui_helpers.effects.HandleCommonEffects
 import com.example.data.models.common.anime_item.AnimeItem
-import com.example.design_system.utils.standardScreenEnterTransition
-import com.example.design_system.utils.standardScreenExitTransition
+import com.example.design_system.utils.fadeScreenEnterTransition
+import com.example.design_system.utils.fadeScreenExitTransition
 import com.example.favorites.screen.Favorites
 import com.example.favorites.screen.FavoritesVM
 import kotlinx.coroutines.flow.Flow
@@ -27,8 +27,8 @@ fun NavGraphBuilder.favorites(
     refreshVM: RefreshVM,
     navController: NavController
 ) = composable<FavoritesRoute>(
-    enterTransition = { standardScreenEnterTransition() },
-    exitTransition = { standardScreenExitTransition() }
+    enterTransition = { fadeScreenEnterTransition() },
+    exitTransition = { fadeScreenExitTransition() }
 ) {
     val state by favoritesVM.state.collectAsStateWithLifecycle()
     val favorites = favoritesVM.favorites.collectAsLazyPagingItems()
