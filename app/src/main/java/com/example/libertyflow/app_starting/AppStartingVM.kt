@@ -1,32 +1,26 @@
 package com.example.libertyflow.app_starting
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.common.vm_helpers.toEagerly
 import com.example.data.domain.OnboardingRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for determining the application's starting destination.
+ * * It observes the [OnboardingRepo] to check if the user has previously completed
+ * the onboarding process, allowing the UI to decide whether to show the
+ * Onboarding screens or the Main Home screen.
+ *
+ * @property onboardingRepo The data source for user preferences and onboarding status.
+ */
 @HiltViewModel
 class AppStartingVM @Inject constructor(
     private val onboardingRepo: OnboardingRepo
 ): ViewModel() {
 
-    private val _appStartingState = MutableStateFlow(AppStartingState())
-    val appStartingState = _appStartingState.toEagerly(AppStartingState())
-
-    init {
-        observeOnboarding()
-    }
-
-    private fun observeOnboarding() {
-        viewModelScope.launch {
-            onboardingRepo.onboardingState.collect { value ->
-                _appStartingState.update { it.copy(onboardingCompleted = value) }
-            }
-        }
-    }
+    val appStartingState = onboardingRepo.onboardingState
+        .map { AppStartingState(it) }
+        .toEagerly(AppStartingState())
 }

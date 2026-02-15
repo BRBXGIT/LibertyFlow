@@ -40,6 +40,21 @@ import com.example.player.player.PlayerContainer
 import com.example.player.player.PlayerVM
 import com.example.settings.navigation.settings
 
+/**
+ * The primary navigation entry point for the application.
+ *
+ * This composable initializes the NavController, manages global ViewModel instances
+ * to ensure data persistence across navigation shifts, and defines the [NavHost]
+ * structure using Type-Safe Navigation.
+ * * ### Key Responsibilities:
+ * * **ViewModel Scoping:** ViewModels are initialized here to prevent unnecessary
+ * re-fetching of data when switching between top-level destinations.
+ * * **Global UI Overlays:** Manages the visibility of the [LibertyFlowBottomNavBar]
+ * and the persistent [PlayerContainer] (mini-player).
+ *
+ * @param themeVM The ViewModel responsible for app-wide theme configurations.
+ * @param startDestination The initial route the [NavHost] should display.
+ */
 @Composable
 fun NavGraph(themeVM: ThemeVM, startDestination: NavigationBase) {
     val navController = rememberNavController()
@@ -102,6 +117,13 @@ fun NavGraph(themeVM: ThemeVM, startDestination: NavigationBase) {
     }
 }
 
+/**
+ * Extension function for [NavBackStackEntry] to determine the current active
+ * [NavBarItem] for UI synchronization.
+ * * This is used to manage navbar its visibility (e.g., hiding the bar on detail screens).
+ * @return The current [NavigationBase] route if it matches a top-level
+ * navigation item; otherwise, null.
+ */
 private fun NavBackStackEntry.currentNavBarRoute(): NavigationBase? =
     when {
         destination.hasRoute<HomeRoute>() -> HomeRoute

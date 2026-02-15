@@ -21,8 +21,18 @@ import com.example.libertyflow.app_starting.AppStartingVM
 import com.example.libertyflow.navigation.NavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * The primary entry point for the application.
+ * * This Activity manages the initial app startup flow, including:
+ * 1. **Splash Screen Management**: Keeps the splash screen visible until onboarding state is loaded.
+ * 2. **Dependency Injection**: Integrated with Hilt via [AndroidEntryPoint].
+ * 3. **Dynamic Theming**: Synchronizes system dark mode changes with the [ThemeVM] and applies
+ * the custom [LibertyFlowTheme].
+ * 4. **Navigation Routing**: Determines the initial destination ([HomeRoute] vs [OnboardingRoute])
+ * based on the user's onboarding status.
+ */
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
