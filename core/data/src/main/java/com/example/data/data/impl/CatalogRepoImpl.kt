@@ -9,6 +9,7 @@ import com.example.data.models.common.mappers.toCommonRequestDto
 import com.example.data.models.common.mappers.toAnimeItem
 import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.anime_item.AnimeItem
+import com.example.data.utils.network.network_caller.NetworkCaller
 import com.example.data.utils.network.paging.CommonPagingSource
 import com.example.network.catalog.api.CatalogApi
 import com.example.network.common.common_request_models.common_request.CommonRequestDto
@@ -21,6 +22,7 @@ import javax.inject.Inject
  * Implementation of [CatalogRepo] providing paginated anime data.
  */
 class CatalogRepoImpl @Inject constructor(
+    private val networkCaller: NetworkCaller,
     private val catalogApi: CatalogApi
 ): CatalogRepo {
 
@@ -34,6 +36,7 @@ class CatalogRepoImpl @Inject constructor(
             config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
             pagingSourceFactory = {
                 CommonPagingSource(
+                    networkCaller = networkCaller,
                     apiCall = { dto -> catalogApi.getAnimeByFilters(dto as CommonRequestDto) },
                     baseRequest = request.toCommonRequestDto()
                 )

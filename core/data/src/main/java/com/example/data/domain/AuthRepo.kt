@@ -3,7 +3,7 @@ package com.example.data.domain
 import com.example.data.models.auth.AuthState
 import com.example.data.models.auth.Token
 import com.example.data.models.auth.TokenRequest
-import com.example.data.utils.network.network_request.NetworkResult
+import com.example.data.utils.network.network_caller.NetworkResult
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepo {

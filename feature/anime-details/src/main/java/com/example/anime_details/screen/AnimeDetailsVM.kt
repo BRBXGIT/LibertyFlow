@@ -19,8 +19,8 @@ import com.example.data.models.collections.request.CollectionRequest
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.favorites.FavoriteItem
 import com.example.data.models.favorites.FavoriteRequest
-import com.example.data.utils.network.network_request.onError
-import com.example.data.utils.network.network_request.onSuccess
+import com.example.data.utils.network.network_caller.onError
+import com.example.data.utils.network.network_caller.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel

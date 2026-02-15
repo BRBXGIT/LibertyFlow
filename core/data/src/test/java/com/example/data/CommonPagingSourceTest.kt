@@ -1,6 +1,7 @@
 package com.example.data
 
 import androidx.paging.PagingSource
+import com.example.data.utils.network.network_caller.NetworkCaller
 import com.example.data.utils.network.paging.CommonPagingSource
 import com.example.network.catalog.api.CatalogApi
 import com.example.network.common.common_pagination_models.anime_items_pagination.AnimeItemsPaginationDto
@@ -21,6 +22,7 @@ import retrofit2.Response
 
 class CommonPagingSourceTest {
 
+    private val networkCaller = NetworkCaller()
     private val api = mockk<CatalogApi>()
     private val baseRequest = CommonRequestDto(
         page = 1,
@@ -31,6 +33,7 @@ class CommonPagingSourceTest {
     @Before
     fun setUp() {
         pagingSource = CommonPagingSource(
+            networkCaller = networkCaller,
             apiCall = { api.getAnimeByFilters(it as CommonRequestDto) },
             baseRequest = baseRequest
         )

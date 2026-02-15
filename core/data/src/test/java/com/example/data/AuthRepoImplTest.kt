@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.example.data.data.impl.AuthRepoImpl
 import com.example.data.domain.AuthRepo
 import com.example.data.models.auth.AuthState
+import com.example.data.utils.network.network_caller.NetworkCaller
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.auth.api.AuthApi
 import io.mockk.Runs
@@ -21,6 +22,7 @@ import org.junit.Test
 
 class AuthRepoImplTest {
 
+    private val networkCaller = NetworkCaller()
     private val authApi = mockk<AuthApi>()
     private val authPrefsManager = mockk<AuthPrefsManager>()
     private lateinit var repo: AuthRepo
@@ -73,6 +75,6 @@ class AuthRepoImplTest {
 
     // --- Helpers ---
     private fun createRepo() { // Used cause with @Before method test's couldn't be passed
-        repo = AuthRepoImpl(authApi, authPrefsManager)
+        repo = AuthRepoImpl(networkCaller, authApi, authPrefsManager)
     }
 }

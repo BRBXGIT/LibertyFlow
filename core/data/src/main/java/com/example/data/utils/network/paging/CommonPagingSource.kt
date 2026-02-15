@@ -2,8 +2,8 @@ package com.example.data.utils.network.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.data.utils.network.network_request.NetworkRequest
-import com.example.data.utils.network.network_request.NetworkResult
+import com.example.data.utils.network.network_caller.NetworkCaller
+import com.example.data.utils.network.network_caller.NetworkResult
 import com.example.network.common.common_pagination_models.anime_items_pagination.AnimeItemsPaginationDto
 import com.example.network.common.common_request_models.common_request_base.CommonRequestDtoBase
 import com.example.network.common.common_response_models.AnimeResponseItemDto
@@ -13,13 +13,15 @@ private const val ONE = 1
 
 /**
  * A generic [PagingSource] implementation for paginated anime data.
- * * This class handles the offset-based loading logic, interacting with [NetworkRequest]
+ * * This class handles the offset-based loading logic, interacting with [NetworkCaller]
  * to fetch and map data while managing prevKey and nextKey for the Paging library.
  *
+ * @property networkCaller the utility for executing network requests
  * @property apiCall A suspend function that takes a request DTO and returns a Retrofit [Response].
  * @property baseRequest The initial request configuration (filters, queries) to be paginated.
  */
 internal class CommonPagingSource(
+    private val networkCaller: NetworkCaller,
     private val apiCall: suspend (CommonRequestDtoBase) -> Response<AnimeItemsPaginationDto>,
     private val baseRequest: CommonRequestDtoBase,
 ): PagingSource<Int, AnimeResponseItemDto>() {
@@ -35,7 +37,7 @@ internal class CommonPagingSource(
         val request = baseRequest.withPageAndLimit(page)
 
         return when (
-            val result = NetworkRequest.safeApiCall(
+            val result = networkCaller.safeApiCall(
                 call = { apiCall(request) },
                 map = { it }
             )

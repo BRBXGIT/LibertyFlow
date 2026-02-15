@@ -8,15 +8,15 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.data.data.utils.BaseAuthRepoImpl
 import com.example.data.domain.FavoritesRepo
+import com.example.data.models.common.anime_item.AnimeItem
 import com.example.data.models.common.mappers.toAnimeItem
 import com.example.data.models.common.mappers.toCommonRequestDto
 import com.example.data.models.common.request.common_request.CommonRequest
-import com.example.data.models.common.anime_item.AnimeItem
 import com.example.data.models.favorites.FavoriteItem
 import com.example.data.models.favorites.FavoriteRequest
 import com.example.data.models.favorites.FavoritesIds
-import com.example.data.utils.network.network_request.NetworkRequest
-import com.example.data.utils.network.network_request.NetworkResult
+import com.example.data.utils.network.network_caller.NetworkCaller
+import com.example.data.utils.network.network_caller.NetworkResult
 import com.example.data.utils.network.paging.CommonPagingSource
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.common.common_request_models.common_request.CommonRequestDto
@@ -37,6 +37,7 @@ import javax.inject.Inject
  * Inherits authenticated session handling from [BaseAuthRepoImpl].
  */
 class FavoritesRepoImpl @Inject constructor(
+    private val networkCaller: NetworkCaller,
     private val favoritesApi: FavoritesApi,
     authPrefsManager: AuthPrefsManager,
 ): FavoritesRepo, BaseAuthRepoImpl(authPrefsManager) {
@@ -53,6 +54,7 @@ class FavoritesRepoImpl @Inject constructor(
                 ),
                 pagingSourceFactory = {
                     CommonPagingSource(
+                        networkCaller = networkCaller,
                         apiCall = { dto ->
                             favoritesApi.getFavorites(
                                 sessionToken = token,
@@ -70,7 +72,7 @@ class FavoritesRepoImpl @Inject constructor(
      * Retrieves the set of IDs for all anime currently marked as favorites.
      */
     override suspend fun getFavoritesIds(): NetworkResult<FavoritesIds> {
-        return NetworkRequest.safeApiCall(
+        return networkCaller.safeApiCall(
             call = { favoritesApi.getFavoritesIds(token.first()) },
             map = { it.toFavoritesIds() }
         )
@@ -80,7 +82,7 @@ class FavoritesRepoImpl @Inject constructor(
      * Adds an anime or list of anime to the user's favorites list.
      */
     override suspend fun addFavorite(request: FavoriteRequest): NetworkResult<Unit> {
-        return NetworkRequest.safeApiCall(
+        return networkCaller.safeApiCall(
             call = { favoritesApi.addFavorite(token.first(), request.toFavoriteRequestDto()) },
             map = {}
         )
@@ -90,7 +92,7 @@ class FavoritesRepoImpl @Inject constructor(
      * Removes an anime or list of anime from the user's favorites list.
      */
     override suspend fun deleteFavorite(request: FavoriteRequest): NetworkResult<Unit> {
-        return NetworkRequest.safeApiCall(
+        return networkCaller.safeApiCall(
             call = { favoritesApi.deleteFavorite(token.first(), request.toFavoriteRequestDto()) },
             map = {}
         )

@@ -4,8 +4,8 @@ import com.example.data.domain.AuthRepo
 import com.example.data.models.auth.AuthState
 import com.example.data.models.auth.Token
 import com.example.data.models.auth.TokenRequest
-import com.example.data.utils.network.network_request.NetworkRequest
-import com.example.data.utils.network.network_request.NetworkResult
+import com.example.data.utils.network.network_caller.NetworkCaller
+import com.example.data.utils.network.network_caller.NetworkResult
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.auth.api.AuthApi
 import com.example.network.auth.models.SessionTokenRequestDto
@@ -23,8 +23,10 @@ import javax.inject.Inject
  *
  * @property authApi The network service for authentication requests.
  * @property authPrefsManager The local storage manager for persisting authentication data.
+ * @property networkCaller the utility for execute network requests
  */
 class AuthRepoImpl @Inject constructor(
+    private val networkCaller: NetworkCaller,
     private val authApi: AuthApi,
     private val authPrefsManager: AuthPrefsManager
 ): AuthRepo {
@@ -51,7 +53,7 @@ class AuthRepoImpl @Inject constructor(
      * @return A [NetworkResult] containing the [Token] on success.
      */
     override suspend fun getToken(request: TokenRequest): NetworkResult<Token> {
-        return NetworkRequest.safeApiCall(
+        return networkCaller.safeApiCall(
             call = { authApi.getSessionToken(request.toSessionTokenRequestDto()) },
             map = { it.toToken() }
         )
@@ -64,7 +66,7 @@ class AuthRepoImpl @Inject constructor(
      * @return A [NetworkResult] indicating the outcome of the logout request.
      */
     override suspend fun logout(): NetworkResult<Unit> {
-        return NetworkRequest.safeApiCall(
+        return networkCaller.safeApiCall(
             call = { authApi.logout(token.firstOrNull()) },
             map = {}
         )

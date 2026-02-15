@@ -16,8 +16,8 @@ import com.example.data.models.common.mappers.toCommonRequestWithCollectionTypeD
 import com.example.data.models.common.request.common_request.CommonRequestWithCollectionType
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.anime_item.AnimeItem
-import com.example.data.utils.network.network_request.NetworkRequest
-import com.example.data.utils.network.network_request.NetworkResult
+import com.example.data.utils.network.network_caller.NetworkCaller
+import com.example.data.utils.network.network_caller.NetworkResult
 import com.example.data.utils.network.paging.CommonPagingSource
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.collections.api.CollectionsApi
@@ -38,6 +38,7 @@ import javax.inject.Inject
  * Extends [BaseAuthRepoImpl] to manage session token for authenticated API calls.
  */
 class CollectionsRepoImpl @Inject constructor(
+    private val networkCaller: NetworkCaller,
     private val collectionsApi: CollectionsApi,
     authPrefsManager: AuthPrefsManager
 ): CollectionsRepo, BaseAuthRepoImpl(authPrefsManager) {
@@ -52,6 +53,7 @@ class CollectionsRepoImpl @Inject constructor(
                 config = PagingConfig(pageSize = CommonNetworkConstants.COMMON_LIMIT, enablePlaceholders = false),
                 pagingSourceFactory = {
                     CommonPagingSource(
+                        networkCaller = networkCaller,
                         apiCall = { dto ->
                             collectionsApi.getAnimeInCollection(
                                 sessionToken = token,
@@ -70,7 +72,7 @@ class CollectionsRepoImpl @Inject constructor(
      * Fetches the list of all collection IDs associated with the current user.
      */
     override suspend fun getCollectionsIds(): NetworkResult<List<AnimeCollection>> {
-        return NetworkRequest.safeApiCall(
+        return networkCaller.safeApiCall(
             call = { collectionsApi.getCollectionsIds(token.first()) },
             map = { it.toAnimeCollection() }
         )
@@ -80,7 +82,7 @@ class CollectionsRepoImpl @Inject constructor(
      * Adds an anime or list of anime to a specific collection.
      */
     override suspend fun addToCollection(request: CollectionRequest): NetworkResult<Unit> {
-        return NetworkRequest.safeApiCall(
+        return networkCaller.safeApiCall(
             call = {
                 collectionsApi.addToCollection(
                     sessionToken = token.first(),
@@ -95,7 +97,7 @@ class CollectionsRepoImpl @Inject constructor(
      * Removes an anime or list of anime from a specific collection.
      */
     override suspend fun deleteFromCollection(request: CollectionRequest): NetworkResult<Unit> {
-        return NetworkRequest.safeApiCall(
+        return networkCaller.safeApiCall(
             call = {
                 collectionsApi.deleteFromCollection(
                     sessionToken = token.first(),

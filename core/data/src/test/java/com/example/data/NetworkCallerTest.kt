@@ -1,8 +1,8 @@
 package com.example.data
 
-import com.example.data.utils.network.network_request.NetworkErrors
-import com.example.data.utils.network.network_request.NetworkRequest
-import com.example.data.utils.network.network_request.NetworkResult
+import com.example.data.utils.network.network_caller.NetworkCaller
+import com.example.data.utils.network.network_caller.NetworkErrors
+import com.example.data.utils.network.network_caller.NetworkResult
 import com.example.network.auth.api.AuthApi
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -18,7 +18,9 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-class NetworkRequestTest {
+class NetworkCallerTest {
+
+    private val networkCaller = NetworkCaller()
 
     @Test
     fun `safeApiCall returns Success and map result when response is successful`() = runTest {
@@ -26,7 +28,7 @@ class NetworkRequestTest {
         val mappedData = "Mapped Data"
         val response = Response.success(rawData)
 
-        val result = NetworkRequest.safeApiCall(
+        val result = networkCaller.safeApiCall(
             call = { response },
             map = { _ -> mappedData }
         )
@@ -53,7 +55,7 @@ class NetworkRequestTest {
             val errorResponseBody = "{}".toResponseBody("application/json".toMediaTypeOrNull())
             val response = Response.error<String>(code, errorResponseBody)
 
-            val result = NetworkRequest.safeApiCall(
+            val result = networkCaller.safeApiCall(
                 call = { response },
                 map = { it }
             )
@@ -95,7 +97,7 @@ class NetworkRequestTest {
         errorsMap.forEach { (exception, error) ->
             coEvery { api.logout(any()) } throws exception
 
-            val result = NetworkRequest.safeApiCall(
+            val result = networkCaller.safeApiCall(
                 call = { api.logout("") },
                 map = { it }
             )

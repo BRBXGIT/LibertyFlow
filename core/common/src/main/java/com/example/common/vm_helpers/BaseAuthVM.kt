@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.domain.AuthRepo
 import com.example.data.models.auth.AuthState
 import com.example.data.models.auth.TokenRequest
-import com.example.data.utils.network.network_request.NetworkErrors
-import com.example.data.utils.network.network_request.onError
-import com.example.data.utils.network.network_request.onSuccess
+import com.example.data.utils.network.network_caller.NetworkErrors
+import com.example.data.utils.network.network_caller.onError
+import com.example.data.utils.network.network_caller.onSuccess
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
