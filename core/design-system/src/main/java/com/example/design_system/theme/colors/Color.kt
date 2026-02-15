@@ -2,6 +2,7 @@ package com.example.design_system.theme.colors
 
 import androidx.compose.ui.graphics.Color
 
+// TODO: mark all as internal
 val primaryCherryLight = Color(0xFF904A44)
 val onPrimaryCherryLight = Color(0xFFFFFFFF)
 val primaryContainerCherryLight = Color(0xFFFFDAD6)

@@ -11,6 +11,7 @@ import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import com.example.data.models.theme.ColorSchemeValue
 import com.example.data.models.theme.ThemeValue
@@ -29,9 +30,14 @@ import com.example.design_system.theme.colors.LightTacosScheme
 
 @Composable
 fun LibertyFlowTheme(
+    // Dimens
+    animationTokens: LibertyFlowAnimationTokens = LibertyFlowAnimationTokens(),
+    dimensions: LibertyFlowDimensions = LibertyFlowDimensions(),
+    // Theme
     theme: ThemeValue = ThemeValue.SYSTEM,
     colorScheme: ColorSchemeValue = ColorSchemeValue.DARK_LAVENDER_SCHEME,
     useExpressive: Boolean = false,
+    // Content
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
@@ -45,12 +51,17 @@ fun LibertyFlowTheme(
         getColorScheme(colorScheme)
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content,
-        motionScheme = if (useExpressive) MotionScheme.expressive() else MotionScheme.standard()
-    )
+    CompositionLocalProvider(
+        LocalDimensions provides dimensions,
+        LocalAnimationTokens provides animationTokens
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content,
+            motionScheme = if (useExpressive) MotionScheme.expressive() else MotionScheme.standard()
+        )
+    }
 }
 
 @Composable
@@ -76,8 +87,9 @@ private fun getColorScheme(colorSchemeValue: ColorSchemeValue): ColorScheme {
     }
 }
 
-
 val mColors @Composable get() = MaterialTheme.colorScheme
 val mTypography @Composable get() = MaterialTheme.typography
 val mShapes @Composable get() = MaterialTheme.shapes
 val mMotionScheme @Composable get() = MaterialTheme.motionScheme
+val mPaddings @Composable get() = LocalDimensions.current
+val mAnimationTokens @Composable get() = LocalAnimationTokens.current

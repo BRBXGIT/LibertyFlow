@@ -19,7 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.design_system.components.liberty_flow_async_image.LibertyFlowAsyncImage
+import com.example.design_system.components.async_images.LibertyFlowAsyncImage
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
