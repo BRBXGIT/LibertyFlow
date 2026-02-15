@@ -15,7 +15,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.data.models.common.common.PosterType
 import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.list_tems.AnimeCard
-import com.example.design_system.components.list_tems.AnimeCardUtils
+import com.example.design_system.components.list_tems.AnimeCardConstants
 
 // Common LazyVerticalGrid function
 private val ArrangementAlignmentPadding = 16.dp
@@ -59,7 +59,7 @@ private fun AnimeLazyVerticalGridContainer(
     LazyVerticalGrid(
         state = state,
         modifier = Modifier.fillMaxSize(),
-        columns = GridCells.Adaptive(AnimeCardUtils.CARD_WIDTH.dp),
+        columns = GridCells.Adaptive(AnimeCardConstants.CARD_WIDTH.dp),
         verticalArrangement = Arrangement.spacedBy(ArrangementAlignmentPadding),
         horizontalArrangement = Arrangement.spacedBy(ArrangementAlignmentPadding),
         contentPadding = PaddingValues(ArrangementAlignmentPadding),

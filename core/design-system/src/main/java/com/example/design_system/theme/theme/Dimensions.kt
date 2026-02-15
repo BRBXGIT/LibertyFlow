@@ -9,7 +9,7 @@ data class LibertyFlowAnimationTokens(
     val short: Int = 300,
     val medium: Int = 500,
     val long: Int = 700,
-    val extraLong: Int = 1000
+    val extraLong: Int = 900
 )
 
 data class LibertyFlowDimensions(

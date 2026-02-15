@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.design_system.components.buttons.ActionButtonState
-import com.example.design_system.components.buttons.RainbowActionButton
+import com.example.design_system.components.buttons.RainbowActionButtonWithIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.home.R
 import com.example.home.screen.HomeIntent
@@ -48,7 +48,7 @@ internal fun LazyGridItemScope.RandomAnimeButton(
         )
     }
 
-    RainbowActionButton(
+    RainbowActionButtonWithIcon(
         state = buttonState,
         showBorderAnimation = state.randomAnimeState.isLoading,
         modifier = Modifier.animateItem()

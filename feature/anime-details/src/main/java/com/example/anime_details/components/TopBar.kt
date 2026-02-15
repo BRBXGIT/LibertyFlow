@@ -32,7 +32,7 @@ import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.anime_details.screen.AnimeDetailsState
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.AuthState
-import com.example.design_system.containers.UpDownAnimatedContent
+import com.example.design_system.containers.DownUpAnimatedContent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
@@ -110,7 +110,7 @@ internal fun TopBar(
 
     TopAppBar(
         title = {
-            UpDownAnimatedContent(targetState = titleState) { target ->
+            DownUpAnimatedContent(targetState = titleState) { target ->
                 when (target) {
                     is TitleState.Loading -> AnimatedLoadingText()
                     is TitleState.Error -> TopBarText(stringResource(ErrorLabelRes))
@@ -126,7 +126,7 @@ internal fun TopBar(
             )
         },
         actions = {
-            UpDownAnimatedContent(
+            DownUpAnimatedContent(
                 modifier = Modifier.size(CollectionBoxSize),
                 targetState = collectionState,
             ) { target ->

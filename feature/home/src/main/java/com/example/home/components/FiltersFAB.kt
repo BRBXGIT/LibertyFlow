@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.design_system.components.buttons.BasicFAB
+import com.example.design_system.components.buttons.LibertyFlowBasicFAB
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.home.screen.HomeIntent
@@ -39,7 +39,7 @@ internal fun FiltersFAB(
         label = FAB_OFFSET_ANIMATION_LABEL
     )
 
-    BasicFAB(
+    LibertyFlowBasicFAB(
         modifier = Modifier.offset { fabOffset },
         icon = LibertyFlowIcons.Filters,
         onClick = { onIntent(HomeIntent.ToggleFiltersBottomSheet) }

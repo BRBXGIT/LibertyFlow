@@ -6,24 +6,32 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.design_system.R
+import com.example.design_system.theme.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mTypography
 
-private object LoggedOutSectionConstants {
-    const val HORIZONTAL_PADDING = 16
-    val LOGGED_OUT_LABEL = R.string.logged_out_label
-    val AUTH_LABEL = R.string.auth_label
+private val loggedOutTextRes = R.string.logged_out_label
+private val authLabelRes = R.string.auth_label
 
-    const val COLUMN_SPACED_BY = 16
-}
-
+/**
+ * A full-screen placeholder displayed when a user is not authenticated.
+ *
+ * This section informs the user that they are logged out and provides a
+ * direct call-to-action (CTA) to initiate the authentication process.
+ * It is typically used for screens that require a user profile,
+ * such as 'Favorites' or 'Collections.'
+ *
+ * @param onAuthClick Callback triggered when the user taps the authentication button.
+ */
 @Composable
 fun LoggedOutSection(
     onAuthClick: () -> Unit
@@ -32,14 +40,14 @@ fun LoggedOutSection(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = LoggedOutSectionConstants.HORIZONTAL_PADDING.dp),
+            .padding(horizontal = mDimens.paddingMedium),
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(LoggedOutSectionConstants.COLUMN_SPACED_BY.dp),
+            verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(LoggedOutSectionConstants.LOGGED_OUT_LABEL),
+                text = stringResource(loggedOutTextRes),
                 style = mTypography.titleMedium,
                 textAlign = TextAlign.Center,
             )
@@ -47,8 +55,18 @@ fun LoggedOutSection(
             OutlinedButton(
                 onClick = onAuthClick
             ) {
-                Text(stringResource(LoggedOutSectionConstants.AUTH_LABEL))
+                Text(stringResource(authLabelRes))
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LoggedOutSectionPreview() {
+    LibertyFlowTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            LoggedOutSection(onAuthClick = {})
         }
     }
 }

@@ -17,7 +17,7 @@ import com.example.anime_details.screen.AnimeDetailsState
 import com.example.common.refresh.RefreshEffect
 import com.example.data.models.auth.AuthState
 import com.example.design_system.components.buttons.ActionButtonState
-import com.example.design_system.components.buttons.RainbowActionButton
+import com.example.design_system.components.buttons.RainbowActionButtonWithIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 
 // String resource used as the button label
@@ -75,7 +75,7 @@ internal fun LazyItemScope.AddToFavoritesButton(
         }
     }
 
-    RainbowActionButton(
+    RainbowActionButtonWithIcon(
         state = buttonState,
         showBorderAnimation = showAnimation,
         modifier = Modifier

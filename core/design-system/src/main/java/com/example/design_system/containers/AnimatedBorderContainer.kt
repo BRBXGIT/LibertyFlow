@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mShapes
 
@@ -46,13 +47,25 @@ private const val rotationInitialValue = 0f
 private const val rotationTargetValue = 360f
 private const val rotationAnimationDuration = 4000
 
-private const val BORDER_ALPHA_LABEL = "Animated border alpha"
-private const val ROTATION_LABEL = "Rotation label"
-private const val TRANSITION_LABEL = "Rotation transition label"
-
 private const val ALPHA_VISIBLE = 1f
 private const val ALPHA_HIDDEN = 0f
 
+/**
+ * A container that renders an animated, rotating gradient border around its content.
+ *
+ * This component achieves the "moving border" effect by rotating a [Brush.sweepGradient]
+ * behind the content and using padding to reveal only the edges of that gradient.
+ *
+ * @param modifier [Modifier] to be applied to the outermost [Surface].
+ * @param bordersSize The thickness of the animated border.
+ * @param shape The corner rounding for both the border and the inner content.
+ * @param containerColor The background color of the center area and the base [Surface].
+ * @param contentColor The preferred color for text and icons inside the container.
+ * @param showAnimation If true, the border rotates and fades in; if false, it is hidden.
+ * @param borderColors The list of colors used to create the sweep gradient.
+ * @param onClick Action to perform when the container is tapped.
+ * @param content The Composable content to be hosted inside the animated border.
+ */
 @Composable
 fun AnimatedBorderContainer(
     modifier: Modifier = Modifier,
@@ -65,9 +78,13 @@ fun AnimatedBorderContainer(
     onClick: () -> Unit,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val transition = rememberInfiniteTransition(label = TRANSITION_LABEL)
+    val transition = rememberInfiniteTransition(label = "Infinite transition label")
 
-    // Optimization: Only animate if showAnimation is true to save resources
+    /**
+     * Continuous 360-degree rotation.
+     * Note: This continues to calculate even if not visible unless the
+     * Composable leaves the composition.
+     */
     val rotation by transition.animateFloat(
         initialValue = rotationInitialValue,
         targetValue = rotationTargetValue,
@@ -75,13 +92,17 @@ fun AnimatedBorderContainer(
             animation = tween(rotationAnimationDuration, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ),
-        label = ROTATION_LABEL
+        label = "Rotation animation"
     )
 
+    /**
+     * Animates the opacity of the border gradient, allowing for smooth
+     * entry/exit transitions when [showAnimation] toggles.
+     */
     val alpha by animateFloatAsState(
         targetValue = if (showAnimation) ALPHA_VISIBLE else ALPHA_HIDDEN,
         animationSpec = mMotionScheme.slowEffectsSpec(),
-        label = BORDER_ALPHA_LABEL
+        label = "Border appearing animation"
     )
 
     Surface(
@@ -117,7 +138,7 @@ fun AnimatedBorderContainer(
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.padding(vertical = 4.dp) // Fine-tune internal spacing
+                    modifier = Modifier.padding(vertical = mDimens.paddingExtraSmall) // Fine-tune internal spacing
                 ) {
                     CompositionLocalProvider(LocalContentColor provides contentColor) {
                         content()
@@ -136,12 +157,12 @@ private fun AnimatedBorderContainerPreview() {
             showAnimation = true,
             shape = mShapes.extraLarge,
             borderColors = listOf(
-                Color(0xFFE57373), // Red
-                Color(0xFFFFB74D), // Orange
-                Color(0xFFFFF176), // Yellow
-                Color(0xFF81C784), // Green
-                Color(0xFF64B5F6), // Blue
-                Color(0xFFBA68C8)  // Purple
+                Color(0xFFE57373),
+                Color(0xFFFFB74D),
+                Color(0xFFFFF176),
+                Color(0xFF81C784),
+                Color(0xFF64B5F6),
+                Color(0xFFBA68C8)
             ),
             onClick = {}
         ) {
