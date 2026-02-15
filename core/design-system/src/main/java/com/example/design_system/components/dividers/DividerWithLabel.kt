@@ -63,8 +63,8 @@ fun DividerWithLabel(
  * Also used as the unique key for the LazyList item.
  */
 fun LazyListScope.dividerWithLabel(
-    modifier: Modifier = Modifier,
-    @StringRes labelRes: Int
+    @StringRes labelRes: Int,
+    modifier: Modifier = Modifier
 ) {
     item(key = labelRes) {
         DividerWithLabel(
