@@ -36,7 +36,7 @@ internal fun TopBar(
                 onClick = { onIntent(MoreIntent.ToggleLogoutDialog) }
             ) {
                 Icon(
-                    painter = painterResource(LibertyFlowIcons.Logout),
+                    painter = painterResource(LibertyFlowIcons.Outlined.Logout),
                     contentDescription = null,
                     modifier = Modifier.size(ICON_SIZE.dp)
                 )
@@ -56,7 +56,7 @@ private fun Title() {
         horizontalArrangement = Arrangement.spacedBy(TITLE_SPACED_BY.dp)
     ) {
         Icon(
-            painter = painterResource(LibertyFlowIcons.LibertyFlow),
+            painter = painterResource(LibertyFlowIcons.Multicolored.LibertyFlow),
             contentDescription = null,
             modifier = Modifier.size(ICON_SIZE.dp),
             tint = Color.Unspecified

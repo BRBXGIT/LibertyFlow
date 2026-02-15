@@ -8,10 +8,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.design_system.R
 
+/**
+ * The default font family for the LibertyFlow design system.
+ * Uses [R.font.roboto_flex], a variable font that provides high legibility
+ * across various weights and sizes.
+ */
 private val fontFamily = FontFamily(
     Font(R.font.roboto_flex)
 )
 
+/**
+ * The Typography configuration for the LibertyFlow application.
+ * * This object defines the text styles used throughout the app, adhering to the
+ * Material 3 type system. It includes five distinct groups:
+ * - **Display**: Large, high-impact text for "hero" moments (57sp - 36sp).
+ * - **Headline**: For marking significant sections of the UI (32sp - 24sp).
+ * - **Title**: For medium-emphasis text, like headers in lists or app bars (20sp - 14sp).
+ * - **Body**: For the bulk of the application's text (16sp - 12sp).
+ * - **Label**: For small, functional text like button labels and captions (14sp - 10sp).
+ * * All styles utilize the [fontFamily] to ensure a cohesive visual identity.
+ */
 val Typography = Typography(
     displayLarge = TextStyle(
         fontWeight = FontWeight.Normal,

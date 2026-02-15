@@ -76,7 +76,7 @@ fun SearchingTopBar(
             navigationIcon = {
                 if (searchForm.isSearching) {
                     TopBarIconButton(
-                        icon = LibertyFlowIcons.ArrowLeftFilled,
+                        icon = LibertyFlowIcons.Filled.ArrowLeft,
                         onClick = {
                             onQueryChange("")
                             onToggleSearch()
@@ -127,13 +127,13 @@ private fun TopBarActions(
     if (isSearching) {
         if (query.isNotEmpty()) {
             TopBarIconButton(
-                icon = LibertyFlowIcons.CrossCircle,
+                icon = LibertyFlowIcons.Outlined.CrossCircle,
                 onClick = onClearQuery
             )
         }
     } else {
         TopBarIconButton(
-            icon = LibertyFlowIcons.Magnifier,
+            icon = LibertyFlowIcons.Outlined.Magnifier,
             onClick = onToggleSearch
         )
     }

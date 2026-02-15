@@ -41,7 +41,7 @@ internal fun FiltersFAB(
 
     LibertyFlowBasicFAB(
         modifier = Modifier.offset { fabOffset },
-        icon = LibertyFlowIcons.Filters,
+        icon = LibertyFlowIcons.Outlined.Filters,
         onClick = { onIntent(HomeIntent.ToggleFiltersBottomSheet) }
     )
 }

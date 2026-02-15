@@ -84,7 +84,7 @@ fun BottomBar(
                 enabled = currentPage > ZERO
             ) {
                 Icon(
-                    painter = painterResource(LibertyFlowIcons.AltArrowLeftFilled),
+                    painter = painterResource(LibertyFlowIcons.Filled.AltArrowLeft),
                     contentDescription = null,
                     tint = if (currentPage > ZERO) mColors.primary else mColors.onSurface.copy(alpha = DISABLED_ICON_ALPHA)
                 )
@@ -115,7 +115,7 @@ fun BottomBar(
                 }
             ) {
                 Icon(
-                    painter = painterResource(if (currentPage < LAST_PAGE) LibertyFlowIcons.AltArrowRightFilled else LibertyFlowIcons.DoubleCheckFilled),
+                    painter = painterResource(if (currentPage < LAST_PAGE) LibertyFlowIcons.Filled.AltArrowRight else LibertyFlowIcons.Filled.DoubleCheck),
                     contentDescription = null,
                     tint = if (enabled) mColors.primary else mColors.onSurface.copy(alpha = DISABLED_ICON_ALPHA)
                 )

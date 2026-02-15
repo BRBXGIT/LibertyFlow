@@ -170,7 +170,7 @@ private fun EpisodeItem(
         )
 
         Icon(
-            painter = painterResource(LibertyFlowIcons.DoubleCheckFilled),
+            painter = painterResource(LibertyFlowIcons.Filled.DoubleCheck),
             contentDescription = null,
             tint = mColors.primary,
             modifier = Modifier

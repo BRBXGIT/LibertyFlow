@@ -57,7 +57,7 @@ internal fun BoxScope.MiniPlayerController(
             .padding(CONTROLLER_PADDING.dp)
     ) {
         ControllerButton(
-            icon = LibertyFlowIcons.FullScreen,
+            icon = LibertyFlowIcons.Outlined.FullScreen,
             visible = playerState.isControllerVisible,
             modifier = Modifier.align(Alignment.TopStart),
             onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) }
@@ -65,7 +65,7 @@ internal fun BoxScope.MiniPlayerController(
 
         // Top-right exit/stop button
         ControllerButton(
-            icon = LibertyFlowIcons.CrossCircle,
+            icon = LibertyFlowIcons.Outlined.CrossCircle,
             onClick = { onPlayerIntent(PlayerIntent.StopPlayer) },
             visible = playerState.isControllerVisible,
             modifier = Modifier.align(Alignment.TopEnd)
@@ -80,7 +80,7 @@ internal fun BoxScope.MiniPlayerController(
                 .fillMaxWidth()
         ) {
             ControllerButton(
-                icon = LibertyFlowIcons.RewindBack,
+                icon = LibertyFlowIcons.Outlined.RewindBack,
                 onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(false)) },
                 visible = playerState.isControllerVisible
             )
@@ -89,7 +89,7 @@ internal fun BoxScope.MiniPlayerController(
                 CircularWavyProgressIndicator(modifier = Modifier.size(ICON_SIZE.dp))
             } else {
                 ButtonWithAnimatedIcon(
-                    iconId = LibertyFlowIcons.PlayPauseAnimated,
+                    iconId = LibertyFlowIcons.Animated.PlayPause,
                     atEnd = playerState.episodeState == PlayerState.EpisodeState.Playing,
                     modifier = Modifier.size((ICON_SIZE * 2).dp),
                     onClick = {
@@ -106,7 +106,7 @@ internal fun BoxScope.MiniPlayerController(
             }
 
             ControllerButton(
-                icon = LibertyFlowIcons.Rewind,
+                icon = LibertyFlowIcons.Outlined.Rewind,
                 onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(true)) },
                 visible = playerState.isControllerVisible
             )

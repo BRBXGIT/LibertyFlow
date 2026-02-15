@@ -35,7 +35,7 @@ fun ContinueWatchFAB(
     ) {
         LibertyFlowExtendedFAB(
             text = stringResource(if (state.watchedEps.isEmpty()) StartLabel else ContinueLabel),
-            icon = LibertyFlowIcons.PlayFilled,
+            icon = LibertyFlowIcons.Filled.Play,
             expanded = expanded,
             onClick = {
                 if (state.watchedEps.isEmpty()) {

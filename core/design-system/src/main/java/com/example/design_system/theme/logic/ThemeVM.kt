@@ -11,6 +11,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing and resolving the application's theme.
+ * * It acts as a bridge between the persistent [ThemeRepo] and the real-time system
+ * configuration to produce a [ThemeState].
+ *
+ * @property themeState A [StateFlow] that emits the finalized theme whenever preferences
+ * or system settings change.
+ */
 @HiltViewModel
 class ThemeVM @Inject constructor(themeRepo: ThemeRepo): ViewModel() {
 
@@ -44,7 +52,11 @@ class ThemeVM @Inject constructor(themeRepo: ThemeRepo): ViewModel() {
     }
 
     /**
-     * Core Logic: Determines the actual color scheme based on preferences and system state.
+     * Business Logic: Resolves the final [ColorSchemeValue].
+     * * Logic Flow:
+     * 1. Check [themePref] to decide if the UI *should* be dark.
+     * 2. Select the base color from [storedColor].
+     * 3. Use `forMode` to ensure the color variant (Light/Dark) matches the calculated mode.
      */
     private fun resolveColorScheme(
         storedColor: ColorSchemeValue?,

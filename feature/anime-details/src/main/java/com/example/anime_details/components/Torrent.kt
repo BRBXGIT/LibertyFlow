@@ -72,7 +72,7 @@ internal fun LazyItemScope.Torrent(
             onClick = { onEffect(UiEffect.IntentTo(intent)) }
         ) {
             Icon(
-                painter = painterResource(LibertyFlowIcons.Download),
+                painter = painterResource(LibertyFlowIcons.Filled.Download),
                 contentDescription = null
             )
         }
@@ -103,13 +103,13 @@ private fun TorrentInfo(
         )
 
         InfoIcon(
-            icon = LibertyFlowIcons.DoubleArrowUp,
+            icon = LibertyFlowIcons.Filled.DoubleArrowUp,
             tint = Color.Green
         )
         Text(seeders.toString(), style = mTypography.bodyMedium)
 
         InfoIcon(
-            icon = LibertyFlowIcons.DoubleArrowDown,
+            icon = LibertyFlowIcons.Filled.DoubleArrowDown,
             tint = Color.Red
         )
         Text(leechers.toString(), style = mTypography.bodyMedium)

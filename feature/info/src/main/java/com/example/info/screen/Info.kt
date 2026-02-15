@@ -106,27 +106,27 @@ private val infoItems = listOf(
     InfoItem(
         title = VersionLabel,
         description = VersionDescription,
-        icon = LibertyFlowIcons.Layers,
+        icon = LibertyFlowIcons.Outlined.Layers,
         type = InfoType.Version
     ),
     InfoItem(
         title = ApiLabel,
         description = ApiDescription,
-        icon = LibertyFlowIcons.PieChart,
+        icon = LibertyFlowIcons.Outlined.PieChart,
         type = InfoType.Api,
         url = AniLibertyApiDocsLink
     ),
     InfoItem(
         title = GitHubLabel,
         description = GitHubDescription,
-        icon = LibertyFlowIcons.GitHub,
+        icon = LibertyFlowIcons.Outlined.GitHub,
         type = InfoType.Git,
         url = BRBXGitHubLink
     ),
     InfoItem(
         title = AniLibertyLabel,
         description = AniLibertyDescription,
-        icon = LibertyFlowIcons.AniLiberty,
+        icon = LibertyFlowIcons.Multicolored.AniLiberty,
         type = InfoType.OriginalSite,
         url = AniLibertyLink
     ),

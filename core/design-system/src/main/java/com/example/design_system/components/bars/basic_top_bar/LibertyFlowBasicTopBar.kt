@@ -42,7 +42,7 @@ fun LibertyFlowBasicTopBar(
                 onClick = onNavClick
             ) {
                 Icon(
-                    painter = painterResource(LibertyFlowIcons.ArrowLeftFilled),
+                    painter = painterResource(LibertyFlowIcons.Filled.ArrowLeft),
                     contentDescription = null
                 )
             }

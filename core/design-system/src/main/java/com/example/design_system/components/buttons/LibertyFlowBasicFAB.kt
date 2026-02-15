@@ -45,7 +45,7 @@ private fun LibertyFlowBasicFABPreview() {
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
                 LibertyFlowBasicFAB(
-                    icon = LibertyFlowIcons.PlayCircle,
+                    icon = LibertyFlowIcons.Outlined.PlayCircle,
                     onClick = {}
                 )
             }

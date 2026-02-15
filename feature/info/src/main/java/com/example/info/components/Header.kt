@@ -30,7 +30,7 @@ internal fun LazyItemScope.Header() {
             .padding(horizontal = MAIN_PADDING)
     ) {
         Icon(
-            painter = painterResource(LibertyFlowIcons.LibertyFlow),
+            painter = painterResource(LibertyFlowIcons.Multicolored.LibertyFlow),
             contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier

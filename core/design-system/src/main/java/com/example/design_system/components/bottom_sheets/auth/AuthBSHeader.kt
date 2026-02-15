@@ -75,7 +75,7 @@ internal fun AuthBSHeader(
             },
             leadingIcon = {
                 Icon(
-                    painter = painterResource(LibertyFlowIcons.User),
+                    painter = painterResource(LibertyFlowIcons.Outlined.User),
                     contentDescription = null
                 )
             },
@@ -102,7 +102,7 @@ internal fun AuthBSHeader(
             },
             leadingIcon = {
                 Icon(
-                    painter = painterResource(LibertyFlowIcons.Password),
+                    painter = painterResource(LibertyFlowIcons.Outlined.Password),
                     contentDescription = null
                 )
             },
@@ -110,7 +110,7 @@ internal fun AuthBSHeader(
                 IconButton(
                     onClick = { isPasswordVisible = !isPasswordVisible }
                 ) {
-                    val animatedImage = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.EyeAnimated)
+                    val animatedImage = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.Animated.Eye)
                     val animatedPainter = rememberAnimatedVectorPainter(animatedImageVector = animatedImage, atEnd = isPasswordVisible)
 
                     Image(

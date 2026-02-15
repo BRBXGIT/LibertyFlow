@@ -48,7 +48,7 @@ internal fun BoxScope.CenterControls(
     ) {
         PlayerIconButton(
             isAvailable = hasPreviousEpisode,
-            icon = LibertyFlowIcons.Previous,
+            icon = LibertyFlowIcons.Outlined.Previous,
             iconSize = CenterControlsDefaults.SkipIconSize,
             modifier = Modifier.size(CenterControlsDefaults.SkipIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
             onClick = { onPlayerIntent(PlayerIntent.SkipEpisode(forward = false)) },
@@ -61,7 +61,7 @@ internal fun BoxScope.CenterControls(
             )
         } else {
             ButtonWithAnimatedIcon(
-                iconId = LibertyFlowIcons.PlayPauseAnimated,
+                iconId = LibertyFlowIcons.Animated.PlayPause,
                 atEnd = isPlaying,
                 modifier = Modifier.size(CenterControlsDefaults.PlayPauseIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
                 onClick = {
@@ -79,7 +79,7 @@ internal fun BoxScope.CenterControls(
 
         PlayerIconButton(
             isAvailable = hasNextEpisode,
-            icon = LibertyFlowIcons.Next,
+            icon = LibertyFlowIcons.Outlined.Next,
             iconSize = CenterControlsDefaults.SkipIconSize,
             modifier = Modifier.size(CenterControlsDefaults.SkipIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
             onClick = { onPlayerIntent(PlayerIntent.SkipEpisode(forward = true)) },

@@ -87,13 +87,13 @@ private val SettingsLabel = R.string.settings_label
 
 private val appItems = listOf(
     MoreItem(
-        icon = LibertyFlowIcons.Settings,
+        icon = LibertyFlowIcons.Outlined.Settings,
         labelRes = SettingsLabel,
         originalColor = false,
         effect = UiEffect.Navigate(SettingsRoute)
     ),
     MoreItem(
-        icon = LibertyFlowIcons.Info,
+        icon = LibertyFlowIcons.Outlined.Info,
         labelRes = InfoLabel,
         originalColor = false,
         effect = UiEffect.Navigate(InfoRoute)
@@ -130,7 +130,7 @@ private const val AniLibertyLink = "https://aniliberty.top"
 
 private val linkItems = listOf(
     MoreItem(
-        icon = LibertyFlowIcons.VK,
+        icon = LibertyFlowIcons.Multicolored.VK,
         labelRes = VKLabel,
         effect = UiEffect.IntentTo(
             Intent(
@@ -140,7 +140,7 @@ private val linkItems = listOf(
         )
     ),
     MoreItem(
-        icon = LibertyFlowIcons.YouTube,
+        icon = LibertyFlowIcons.Multicolored.YouTube,
         labelRes = YouTubeLabel,
         effect = UiEffect.IntentTo(
             Intent(
@@ -150,7 +150,7 @@ private val linkItems = listOf(
         )
     ),
     MoreItem(
-        icon = LibertyFlowIcons.Patreon,
+        icon = LibertyFlowIcons.Multicolored.Patreon,
         labelRes = PatreonLabel,
         effect = UiEffect.IntentTo(
             Intent(
@@ -160,7 +160,7 @@ private val linkItems = listOf(
         )
     ),
     MoreItem(
-        icon = LibertyFlowIcons.Telegram,
+        icon = LibertyFlowIcons.Multicolored.Telegram,
         labelRes = TelegramLabel,
         effect = UiEffect.IntentTo(
             Intent(
@@ -170,7 +170,7 @@ private val linkItems = listOf(
         )
     ),
     MoreItem(
-        icon = LibertyFlowIcons.Discord,
+        icon = LibertyFlowIcons.Multicolored.Discord,
         labelRes = DiscordLabel,
         effect = UiEffect.IntentTo(
             Intent(
@@ -180,7 +180,7 @@ private val linkItems = listOf(
         )
     ),
     MoreItem(
-        icon = LibertyFlowIcons.AniLiberty,
+        icon = LibertyFlowIcons.Multicolored.AniLiberty,
         labelRes = AniLibertyLabel,
         effect = UiEffect.IntentTo(
             Intent(

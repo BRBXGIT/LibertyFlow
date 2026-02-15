@@ -57,8 +57,8 @@ sealed interface BSTrailingType {
      */
     @Composable
     fun getIcon() = when (this) {
-        is Navigation -> LibertyFlowIcons.ArrowRightCircle
-        is Toggle -> if (isEnabled) LibertyFlowIcons.CheckCircle else LibertyFlowIcons.CrossCircle
+        is Navigation -> LibertyFlowIcons.Outlined.ArrowRightCircle
+        is Toggle -> if (isEnabled) LibertyFlowIcons.Outlined.CheckCircle else LibertyFlowIcons.Outlined.CrossCircle
     }
 
     /**

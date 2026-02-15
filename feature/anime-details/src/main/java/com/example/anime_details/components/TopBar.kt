@@ -121,7 +121,7 @@ internal fun TopBar(
         },
         navigationIcon = {
             TopBarIconButton(
-                icon = LibertyFlowIcons.ArrowLeftFilled,
+                icon = LibertyFlowIcons.Filled.ArrowLeft,
                 onClick = { onEffect(UiEffect.NavigateBack) }
             )
         },
@@ -131,17 +131,17 @@ internal fun TopBar(
                 targetState = collectionState,
             ) { target ->
                 val (icon, onClick) = when (target) {
-                    CollectionState.Unauthorized -> LibertyFlowIcons.User to {
+                    CollectionState.Unauthorized -> LibertyFlowIcons.Outlined.User to {
                         onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible)
                     }
-                    CollectionState.Added -> LibertyFlowIcons.ListCheckFilled to {
+                    CollectionState.Added -> LibertyFlowIcons.Filled.ListCheck to {
                         onIntent(AnimeDetailsIntent.ToggleCollectionsBSVisible)
                     }
-                    CollectionState.Empty -> LibertyFlowIcons.ListArrowDown to {
+                    CollectionState.Empty -> LibertyFlowIcons.Outlined.ListArrowDown to {
                         onIntent(AnimeDetailsIntent.ToggleCollectionsBSVisible)
                     }
-                    CollectionState.Loading -> LibertyFlowIcons.Clock to { /* Empty */ }
-                    CollectionState.Error -> LibertyFlowIcons.DangerCircle to { /* Empty */ }
+                    CollectionState.Loading -> LibertyFlowIcons.Outlined.Clock to { /* Empty */ }
+                    CollectionState.Error -> LibertyFlowIcons.Outlined.DangerCircle to { /* Empty */ }
                 }
 
                 TopBarIconButton(icon = icon, onClick = onClick)

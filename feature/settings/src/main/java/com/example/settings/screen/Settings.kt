@@ -96,31 +96,31 @@ fun Settings(
         ) {
             listOf(
                 Setting(
-                    icon = LibertyFlowIcons.HighQuality,
+                    icon = LibertyFlowIcons.Outlined.HighQuality,
                     labelRes = QualityLabel,
                     quality = state.playerSettings.quality,
                     intent = SettingsIntent.ToggleIsQualityBSVisible
                 ),
                 Setting(
-                    icon = LibertyFlowIcons.PlayCircle,
+                    icon = LibertyFlowIcons.Outlined.PlayCircle,
                     labelRes = AutoPlayLabel,
                     isEnabled = state.playerSettings.autoPlay,
                     intent = SettingsIntent.ToggleAutoPlay
                 ),
                 Setting(
-                    icon = LibertyFlowIcons.RewindForwardCircle,
+                    icon = LibertyFlowIcons.Outlined.RewindForwardCircle,
                     labelRes = ShowSkipOpeningButtonLabel,
                     isEnabled = state.playerSettings.showSkipOpeningButton,
                     intent = SettingsIntent.ToggleShowSkipOpeningButton
                 ),
                 Setting(
-                    icon = LibertyFlowIcons.Rocket,
+                    icon = LibertyFlowIcons.Outlined.Rocket,
                     labelRes = AutoSkipOpeningLabel,
                     isEnabled = state.playerSettings.autoSkipOpening,
                     intent = SettingsIntent.ToggleAutoSkipOpening
                 ),
                 Setting(
-                    icon = LibertyFlowIcons.Crop,
+                    icon = LibertyFlowIcons.Outlined.Crop,
                     labelRes = CropLabel,
                     isEnabled = state.playerSettings.isCropped,
                     intent = SettingsIntent.ToggleIsCropped
@@ -134,7 +134,7 @@ fun Settings(
         ) {
             listOf(
                 Setting(
-                    icon = LibertyFlowIcons.Tablet,
+                    icon = LibertyFlowIcons.Outlined.Tablet,
                     labelRes = TabStyleLabel,
                     descriptionRes = when(state.themeSettings.tabType) {
                         TabType.M3 -> M3StyleLabel
@@ -144,7 +144,7 @@ fun Settings(
                     intent = SettingsIntent.ToggleTabType
                 ),
                 Setting(
-                    icon = LibertyFlowIcons.Colour,
+                    icon = LibertyFlowIcons.Outlined.Colour,
                     labelRes = UseExpressiveLabel,
                     isEnabled = state.themeSettings.useExpressive,
                     intent = SettingsIntent.ToggleUseExpressive

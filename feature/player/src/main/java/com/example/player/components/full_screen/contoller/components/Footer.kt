@@ -109,13 +109,13 @@ private fun ActionsRow(
         // Left Side: Rewind and Fast Forward controls
         Row(horizontalArrangement = Arrangement.spacedBy(FooterDefaults.IconSpacing)) {
             PlayerIconButton(
-                icon = LibertyFlowIcons.RewindBack,
+                icon = LibertyFlowIcons.Outlined.RewindBack,
                 onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(false)) },
                 isEnabled = isVisible
             )
 
             PlayerIconButton(
-                icon = LibertyFlowIcons.Rewind,
+                icon = LibertyFlowIcons.Outlined.Rewind,
                 onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(true)) },
                 isEnabled = isVisible
             )
@@ -124,13 +124,13 @@ private fun ActionsRow(
         // Right Side: Utility controls (Lock, Aspect Ratio, PiP)
         Row(horizontalArrangement = Arrangement.spacedBy(FooterDefaults.IconSpacing)) {
             PlayerIconButton(
-                icon = LibertyFlowIcons.Lock,
+                icon = LibertyFlowIcons.Outlined.Lock,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleIsLocked) },
                 isEnabled = isVisible
             )
 
             ButtonWithAnimatedIcon(
-                iconId = LibertyFlowIcons.CropAnimated,
+                iconId = LibertyFlowIcons.Animated.Crop,
                 atEnd = !playerState.playerSettings.isCropped,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleCropped) }
             ) { painter ->
@@ -142,7 +142,7 @@ private fun ActionsRow(
             }
 
             PlayerIconButton(
-                icon = LibertyFlowIcons.Pip,
+                icon = LibertyFlowIcons.Outlined.Pip,
                 onClick = {
                     onPlayerIntent(PlayerIntent.TurnOffController)
                     onPlayerEffect(PlayerEffect.TryPipEnterPip)

@@ -92,7 +92,7 @@ private fun ButtonWithIconPreview() {
     LibertyFlowTheme {
         ButtonWithIcon(
             text = "Button with icon",
-            icon = LibertyFlowIcons.Rocket,
+            icon = LibertyFlowIcons.Outlined.Rocket,
             type = ButtonWithIconType.Filled,
             onClick = {}
         )

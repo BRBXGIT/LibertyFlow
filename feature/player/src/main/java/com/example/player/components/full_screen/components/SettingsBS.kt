@@ -29,24 +29,24 @@ internal fun SettingsBS(
         listOf(
             SettingItemModel(
                 text = R.string.quality_label,
-                leadingIcon = LibertyFlowIcons.HighQuality,
+                leadingIcon = LibertyFlowIcons.Outlined.HighQuality,
                 trailingType = BSTrailingType.Navigation,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleQualityBS) }
             ),
             SettingItemModel(
-                leadingIcon = LibertyFlowIcons.RewindForwardCircle,
+                leadingIcon = LibertyFlowIcons.Outlined.RewindForwardCircle,
                 text = R.string.skip_opening_buttons_label,
                 trailingType = BSTrailingType.Toggle(playerSettings.showSkipOpeningButton),
                 onClick = { onPlayerIntent(PlayerIntent.ToggleShowSkipOpeningButton) }
             ),
             SettingItemModel(
-                leadingIcon = LibertyFlowIcons.Rocket,
+                leadingIcon = LibertyFlowIcons.Outlined.Rocket,
                 text = R.string.auto_skip_opening_label,
                 trailingType = BSTrailingType.Toggle(playerSettings.autoSkipOpening),
                 onClick = { onPlayerIntent(PlayerIntent.ToggleAutoSkipOpening) }
             ),
             SettingItemModel(
-                leadingIcon = LibertyFlowIcons.PlayCircle,
+                leadingIcon = LibertyFlowIcons.Outlined.PlayCircle,
                 text = R.string.autoplay_label,
                 trailingType = BSTrailingType.Toggle(playerSettings.autoPlay),
                 onClick = { onPlayerIntent(PlayerIntent.ToggleAutoPlay) }

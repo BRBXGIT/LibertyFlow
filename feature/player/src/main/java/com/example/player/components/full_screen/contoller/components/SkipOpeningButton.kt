@@ -41,7 +41,7 @@ internal fun BoxScope.SkipOpeningButton(
     if (animatedAlpha > SkipOpeningDefaults.HIDDEN_ALPHA) {
         ButtonWithIcon(
             text = stringResource(SkipOpeningDefaults.SkipOpeningLabelRes),
-            icon = LibertyFlowIcons.RewindForwardCircle,
+            icon = LibertyFlowIcons.Outlined.RewindForwardCircle,
             type = ButtonWithIconType.Outlined,
             onClick = { onPlayerIntent(PlayerIntent.SkipOpening) },
             modifier = Modifier

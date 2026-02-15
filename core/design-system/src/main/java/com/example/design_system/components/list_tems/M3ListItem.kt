@@ -115,7 +115,7 @@ private fun M3ListItemPreview() {
             M3ListItem(
                 title = "Opening",
                 description = "Skip opening automatically",
-                icon = LibertyFlowIcons.Rocket,
+                icon = LibertyFlowIcons.Outlined.Rocket,
                 isChecked = true,
                 onClick = {}
             )

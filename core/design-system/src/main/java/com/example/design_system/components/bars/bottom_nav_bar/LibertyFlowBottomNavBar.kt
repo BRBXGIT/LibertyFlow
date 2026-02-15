@@ -66,22 +66,22 @@ private data class NavItem(
 private val navItems = listOf(
     NavItem(
         labelRes = HomeLabel,
-        iconRes = LibertyFlowIcons.HomeAnimated,
+        iconRes = LibertyFlowIcons.Animated.Home,
         destination = HomeRoute
     ),
     NavItem(
         labelRes = FavoritesLabel,
-        iconRes = LibertyFlowIcons.HeartAnimated,
+        iconRes = LibertyFlowIcons.Animated.Heart,
         destination = FavoritesRoute
     ),
     NavItem(
         labelRes = CollectionsLabel,
-        iconRes = LibertyFlowIcons.BookAnimated,
+        iconRes = LibertyFlowIcons.Animated.Book,
         destination = CollectionsRoute
     ),
     NavItem(
         labelRes = MoreLabel,
-        iconRes = LibertyFlowIcons.DotsAnimated,
+        iconRes = LibertyFlowIcons.Animated.Dots,
         destination = MoreRoute
     )
 )

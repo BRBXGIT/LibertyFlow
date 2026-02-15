@@ -45,7 +45,7 @@ internal fun BoxScope.Header(
             horizontalArrangement = Arrangement.spacedBy(HeaderDefaults.ICON_SPACING)
         ) {
             PlayerIconButton(
-                icon = LibertyFlowIcons.ArrowDown,
+                icon = LibertyFlowIcons.Outlined.ArrowDown,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) },
                 isEnabled = isControllerVisible
             )
@@ -69,12 +69,12 @@ internal fun BoxScope.Header(
         // Right Section: Supplementary Controls (Playlist and Settings)
         Row(horizontalArrangement = Arrangement.spacedBy(HeaderDefaults.ICON_SPACING)) {
             PlayerIconButton(
-                icon = LibertyFlowIcons.Checklist,
+                icon = LibertyFlowIcons.Outlined.Checklist,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },
                 isEnabled = isControllerVisible
             )
             PlayerIconButton(
-                icon = LibertyFlowIcons.Settings,
+                icon = LibertyFlowIcons.Outlined.Settings,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleSettingsBS) },
                 isEnabled = isControllerVisible
             )

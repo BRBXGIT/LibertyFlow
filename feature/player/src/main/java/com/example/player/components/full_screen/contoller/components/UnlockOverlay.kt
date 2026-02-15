@@ -32,7 +32,7 @@ internal fun UnlockOverlay(
     ) {
         ButtonWithIcon(
             text = stringResource(UnlockLabel),
-            icon = LibertyFlowIcons.Unlock,
+            icon = LibertyFlowIcons.Outlined.Unlock,
             onClick = { onPlayerIntent(PlayerIntent.ToggleIsLocked) },
             type = ButtonWithIconType.Outlined
         )

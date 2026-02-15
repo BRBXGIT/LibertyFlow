@@ -28,6 +28,22 @@ import com.example.design_system.theme.colors.LightSakuraScheme
 import com.example.design_system.theme.colors.LightSeaScheme
 import com.example.design_system.theme.colors.LightTacosScheme
 
+/**
+ * The primary [MaterialTheme] wrapper for the LibertyFlow application.
+ * * This theme manages:
+ * 1. **Color Schemes**: Supports dynamic Material You colors (Android 12+) and a variety of
+ * custom preset schemes.
+ * 2. **Motion**: Toggles between standard and expressive motion schemes.
+ * 3. **Custom Tokens**: Provides [LocalDimensions] and [LocalAnimationTokens] via
+ * [CompositionLocalProvider] for use in lower-level composables.
+ *
+ * @param animationTokens Custom motion and timing values for the application.
+ * @param dimensions Custom spacing, sizing, and layout constants.
+ * @param theme Determines if the theme follows system settings or uses [ThemeValue.DYNAMIC].
+ * @param colorScheme The specific color palette to apply when not using dynamic colors.
+ * @param useExpressive If true, applies the [MotionScheme.expressive] configuration.
+ * @param content The composable UI hierarchy that will inherit this theme.
+ */
 @Composable
 fun LibertyFlowTheme(
     // Dimens
@@ -64,6 +80,9 @@ fun LibertyFlowTheme(
     }
 }
 
+/**
+ * Returns the appropriate [ColorScheme] based on the provided [ColorSchemeValue] enum.
+ */
 @Composable
 private fun getColorScheme(colorSchemeValue: ColorSchemeValue): ColorScheme {
     return when (colorSchemeValue) {
@@ -87,6 +106,7 @@ private fun getColorScheme(colorSchemeValue: ColorSchemeValue): ColorScheme {
     }
 }
 
+// Quick access to theme values
 val mColors @Composable get() = MaterialTheme.colorScheme
 val mTypography @Composable get() = MaterialTheme.typography
 val mShapes @Composable get() = MaterialTheme.shapes

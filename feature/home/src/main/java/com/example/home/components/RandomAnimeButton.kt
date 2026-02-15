@@ -34,15 +34,15 @@ internal fun LazyGridItemScope.RandomAnimeButton(
         mutableStateOf(
             when {
                 state.randomAnimeState.isError -> ActionButtonState(
-                    LibertyFlowIcons.DangerCircle, ErrorLabel
+                    LibertyFlowIcons.Outlined.DangerCircle, ErrorLabel
                 ) { /* Nothing here */ }
 
                 state.randomAnimeState.isLoading -> ActionButtonState(
-                    LibertyFlowIcons.Cat, LoadingLabel, isLoading = true
+                    LibertyFlowIcons.Outlined.Cat, LoadingLabel, isLoading = true
                 ) { /* Nothing here */ }
 
                 else -> ActionButtonState(
-                    LibertyFlowIcons.FunnyCube, RandomAnimeLabel
+                    LibertyFlowIcons.Outlined.FunnyCube, RandomAnimeLabel
                 ) { onIntent(HomeIntent.GetRandomAnime) }
             }
         )

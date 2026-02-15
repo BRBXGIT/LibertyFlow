@@ -172,7 +172,7 @@ private fun AnimatedBorderContainerPreview() {
                 modifier = Modifier.padding(8.dp)
             ) {
                 Icon(
-                    painter = painterResource(LibertyFlowIcons.Filters),
+                    painter = painterResource(LibertyFlowIcons.Outlined.Filters),
                     contentDescription = null
                 )
 

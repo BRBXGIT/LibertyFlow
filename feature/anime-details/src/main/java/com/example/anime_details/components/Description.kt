@@ -140,7 +140,7 @@ private fun ExpandCollapseArrow(
     onClick: () -> Unit
 ) {
     val animatedImage = AnimatedImageVector.animatedVectorResource(
-        LibertyFlowIcons.ArrowUpAnimated
+        LibertyFlowIcons.Animated.ArrowUp
     )
 
     val painter = rememberAnimatedVectorPainter(

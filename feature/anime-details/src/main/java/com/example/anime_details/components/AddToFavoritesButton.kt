@@ -48,26 +48,26 @@ internal fun LazyItemScope.AddToFavoritesButton(
     val buttonState = remember(favoritesState, authState, animeId) {
         when {
             favoritesState.loadingState.isError -> ActionButtonState(
-                LibertyFlowIcons.DangerCircle, ErrorFavoritesLabelRes
+                LibertyFlowIcons.Outlined.DangerCircle, ErrorFavoritesLabelRes
             ) { /* Nothing here */ }
 
             favoritesState.loadingState.isLoading -> ActionButtonState(
-                LibertyFlowIcons.Cat, LoadingFavoritesLabelRes, isLoading = true
+                LibertyFlowIcons.Outlined.Cat, LoadingFavoritesLabelRes, isLoading = true
             ) { /* Nothing here */ }
 
             authState is AuthState.LoggedOut -> ActionButtonState(
-                LibertyFlowIcons.User, AuthorizeLabel
+                LibertyFlowIcons.Outlined.User, AuthorizeLabel
             ) { onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible) }
 
             animeId in favoritesState.ids -> ActionButtonState(
-                LibertyFlowIcons.MinusCircle, RemoveFromFavoritesLabelRes
+                LibertyFlowIcons.Outlined.MinusCircle, RemoveFromFavoritesLabelRes
             ) {
                 onIntent(AnimeDetailsIntent.RemoveFromFavorite)
                 onRefreshEffect(RefreshEffect.RefreshFavorites)
             }
 
             else -> ActionButtonState(
-                LibertyFlowIcons.PlusCircle, AddToFavoritesLabelRes
+                LibertyFlowIcons.Outlined.PlusCircle, AddToFavoritesLabelRes
             ) {
                 onIntent(AnimeDetailsIntent.AddToFavorite)
                 onRefreshEffect(RefreshEffect.RefreshFavorites)

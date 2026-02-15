@@ -165,7 +165,7 @@ private fun LibertyFlowExtendedFabPreview() {
             floatingActionButton = {
                 LibertyFlowExtendedFAB(
                     text = "Extended FAB",
-                    icon = LibertyFlowIcons.Rocket,
+                    icon = LibertyFlowIcons.Outlined.Rocket,
                     expanded = true,
                     onClick = {}
                 )
