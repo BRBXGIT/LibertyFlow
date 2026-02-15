@@ -23,29 +23,47 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
 
+/**
+ * Defines the contract for an item displayed within a [BSList].
+ * @property text Resource ID for the primary label text.
+ * @property leadingIcon Optional resource ID for an icon displayed at the start of the row.
+ * @property onClick Action to perform when the row is tapped; the bottom sheet will
+ * automatically dismiss after this is triggered.
+ * @property trailingType Determines the appearance and color of the trailing indicator
+ * (e.g., a chevron for navigation or a checkmark for toggles).
+ */
 interface BSListModel {
-    val label: Int
+    val text: Int
     val leadingIcon: Int?
     val onClick: () -> Unit
     val trailingType: BSTrailingType
 }
 
+/**
+ * Represents the different visual styles for the trailing element of a list item.
+ */
 sealed interface BSTrailingType {
     data object Navigation : BSTrailingType
     data class Toggle(val isEnabled: Boolean) : BSTrailingType
 
+    /**
+     * Resolves the appropriate icon resource based on the specific [BSTrailingType].
+     */
     @Composable
     fun getIcon() = when (this) {
         is Navigation -> LibertyFlowIcons.ArrowRightCircle
         is Toggle -> if (isEnabled) LibertyFlowIcons.CheckCircle else LibertyFlowIcons.CrossCircle
     }
 
+    /**
+     * Resolves the theme color for the trailing icon.
+     */
     @Composable
     fun getColor() = when (this) {
         is Navigation -> mColors.onSurface
@@ -53,9 +71,16 @@ sealed interface BSTrailingType {
     }
 }
 
-private val SHEET_CONTENT_PADDING = 16.dp
-private val LIST_SPACING = 8.dp
-
+/**
+ * A reusable Modal Bottom Sheet that displays a list of actionable items.
+ *
+ * This component uses a [LazyColumn] for performance and automatically handles
+ * the dismissal of the sheet when an item is selected.
+ *
+ * @param items The list of [BSListModel] data objects to render.
+ * @param onDismissRequest Callback to hide the sheet, triggered by clicking an item
+ * or interacting with the sheet's background.
+ */
 @Composable
 fun BSList(
     items: List<BSListModel>,
@@ -68,12 +93,12 @@ fun BSList(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(LIST_SPACING),
-            contentPadding = PaddingValues(SHEET_CONTENT_PADDING)
+            verticalArrangement = Arrangement.spacedBy(mDimens.spacingSmall),
+            contentPadding = PaddingValues(mDimens.paddingMedium)
         ) {
-            items(items, key = { it.label }) { item ->
+            items(items, key = { it.text }) { item ->
                 BSListItem(
-                    label = stringResource(item.label),
+                    label = stringResource(item.text),
                     leadingIcon = item.leadingIcon,
                     trailingIcon = item.trailingType.getIcon(),
                     trailingIconColor = item.trailingType.getColor(),
@@ -89,11 +114,12 @@ fun BSList(
 
 private const val LABEL_MAX_LINES = 1
 
-private val ICON_LABEL_GAP = 16.dp
-private val ITEM_PADDING = 16.dp
-
 private const val WEIGHT_FILL = 1f
 
+/**
+ * The internal UI row for [BSList].
+ * * Handles layout for leading icons, text with ellipsis, and colored trailing icons.
+ */
 @Composable
 private fun BSListItem(
     trailingIcon: Int,
@@ -107,9 +133,9 @@ private fun BSListItem(
             .fillMaxWidth()
             .clip(mShapes.small)
             .clickable(onClick = onClick)
-            .padding(ITEM_PADDING),
+            .padding(mDimens.paddingMedium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(ICON_LABEL_GAP)
+        horizontalArrangement = Arrangement.spacedBy(mDimens.spacingMedium)
     ) {
         if (leadingIcon != null) {
             Icon(

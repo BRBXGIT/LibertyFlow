@@ -6,7 +6,7 @@
     <string name="password_tf_label">Password</string>
     <string name="password_tf_error_label">Incorrect password</string>
     <string name="authorize_label">Authorize</string>
-    <string name="new_user_label">New user?  </string>
+    <string name="new_user_label">New user?   </string>
     <string name="registration_label">Registration</string>
     <string name="aniliberty_auth_link">https://aniliberty.top/app/auth/registration/newRegistration</string>
 </resources>

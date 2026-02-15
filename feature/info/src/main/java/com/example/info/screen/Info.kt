@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.design_system.components.bars.basic_top_bar.BasicTopBar
+import com.example.design_system.components.bars.basic_top_bar.LibertyFlowBasicTopBar
 import com.example.design_system.components.list_tems.M3ListItem
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
@@ -42,7 +42,7 @@ internal fun Info(
 
     Scaffold(
         topBar = {
-            BasicTopBar(
+            LibertyFlowBasicTopBar(
                 label = stringResource(InfoLabel),
                 onNavClick = { onCommonEffect(UiEffect.NavigateBack) },
                 scrollBehavior = topBarScrollBehavior

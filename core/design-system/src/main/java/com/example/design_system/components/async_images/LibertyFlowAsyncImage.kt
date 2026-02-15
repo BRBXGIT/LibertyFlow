@@ -35,7 +35,7 @@ import coil.size.Size
 import com.example.design_system.R
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mAnimationTokens
-import com.example.design_system.theme.theme.mPaddings
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
 
@@ -148,7 +148,7 @@ private fun ErrorStateDisplay() {
             text = stringResource(errorTextRes),
             style = mTypography.bodyLarge.copy(fontWeight = FontWeight.W600),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = mPaddings.paddingMedium)
+            modifier = Modifier.padding(horizontal = mDimens.paddingMedium)
         )
     }
 }

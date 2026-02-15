@@ -52,7 +52,7 @@ internal fun Favorites(
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
             SearchingTopBar(
-                label = stringResource(TopBarLabel),
+                text = stringResource(TopBarLabel),
                 scrollBehavior = scrollBehavior,
                 searchForm = state.searchForm,
                 onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
@@ -62,7 +62,7 @@ internal fun Favorites(
     ) { innerPadding ->
         if (state.authForm.isAuthBSVisible) {
             AuthBS(
-                email = state.authForm.login,
+                login = state.authForm.login,
                 password = state.authForm.password,
                 incorrectEmailOrPassword = state.authForm.isError,
                 onDismissRequest = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) },

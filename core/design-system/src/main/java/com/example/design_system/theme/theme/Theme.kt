@@ -91,5 +91,5 @@ val mColors @Composable get() = MaterialTheme.colorScheme
 val mTypography @Composable get() = MaterialTheme.typography
 val mShapes @Composable get() = MaterialTheme.shapes
 val mMotionScheme @Composable get() = MaterialTheme.motionScheme
-val mPaddings @Composable get() = LocalDimensions.current
+val mDimens @Composable get() = LocalDimensions.current
 val mAnimationTokens @Composable get() = LocalAnimationTokens.current

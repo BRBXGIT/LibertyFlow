@@ -13,11 +13,19 @@ data class LibertyFlowAnimationTokens(
 )
 
 data class LibertyFlowDimensions(
+    // Paddings
     val paddingExtraSmall: Dp = 4.dp,
     val paddingSmall: Dp = 8.dp,
     val paddingMedium: Dp = 16.dp,
     val paddingLarge: Dp = 20.dp,
-    val paddingExtraLarge: Dp = 24.dp
+    val paddingExtraLarge: Dp = 24.dp,
+
+    // Spacers
+    val spacingExtraSmall: Dp = 4.dp,
+    val spacingSmall: Dp = 8.dp,
+    val spacingMedium: Dp = 16.dp,
+    val spacingLarge: Dp = 20.dp,
+    val spacingExtraLarge: Dp = 24.dp,
 )
 
 val LocalDimensions = staticCompositionLocalOf { LibertyFlowDimensions() }

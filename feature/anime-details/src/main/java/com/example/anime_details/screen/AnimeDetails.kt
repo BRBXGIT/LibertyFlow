@@ -104,7 +104,7 @@ internal fun AnimeDetails(
         anime?.let {
             if (state.authForm.isAuthBSVisible) {
                 AuthBS(
-                    email = state.authForm.login,
+                    login = state.authForm.login,
                     password = state.authForm.password,
                     incorrectEmailOrPassword = state.authForm.isError,
                     onDismissRequest = { onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible) },

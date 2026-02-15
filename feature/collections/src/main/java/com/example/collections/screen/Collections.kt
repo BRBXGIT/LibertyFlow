@@ -64,7 +64,7 @@ internal fun Collections(
         topBar = {
             SearchingTopBar(
                 enterAlways = true,
-                label = stringResource(TopBarLabel),
+                text = stringResource(TopBarLabel),
                 scrollBehavior = topBarScrollBehavior,
                 searchForm = state.searchForm,
                 onQueryChange = { onIntent(CollectionsIntent.UpdateQuery(it)) },
@@ -79,7 +79,7 @@ internal fun Collections(
         // Auth Bottom Sheet
         if (state.authForm.isAuthBSVisible) {
             AuthBS(
-                email = state.authForm.login,
+                login = state.authForm.login,
                 password = state.authForm.password,
                 incorrectEmailOrPassword = state.authForm.isError,
                 onDismissRequest = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) },

@@ -2,6 +2,8 @@
 
 package com.example.design_system.components.bars.bottom_nav_bar
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
@@ -45,14 +47,22 @@ import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mMotionScheme
 
-private const val OFFSET_LABEL = "bottom_nav_bar_offset"
-
+/**
+ * Internal representation of a navigation destination within the bottom bar.
+ *
+ * @property labelRes String resource ID for the item's display name.
+ * @property iconRes Drawable resource ID for the [AnimatedImageVector].
+ * @property destination The route/base navigation object associated with this item.
+ */
 private data class NavItem(
-    val labelRes: Int,
-    val iconRes: Int, // Animated vector (outlined ↔ filled)
+    @param:StringRes val labelRes: Int,
+    @param:DrawableRes val iconRes: Int, // Animated vector (outlined ↔ filled)
     val destination: NavigationBase
 )
 
+/**
+ * The static list of items to be displayed in the application's bottom navigation.
+ */
 private val navItems = listOf(
     NavItem(
         labelRes = HomeLabel,
@@ -76,8 +86,15 @@ private val navItems = listOf(
     )
 )
 
+/**
+ * A styled [NavigationBar] that supports animated entry/exit via vertical offsets.
+ *
+ * @param visible Determines if the bar is translated into view or hidden below the screen.
+ * @param onNavItemClick Callback triggered when a new destination is selected.
+ * @param selectedRoute The current active destination used to highlight the correct item.
+ */
 @Composable
-fun BoxScope.BottomNavBar(
+fun BoxScope.LibertyFlowBottomNavBar(
     visible: Boolean,
     onNavItemClick: (NavigationBase) -> Unit,
     selectedRoute: NavigationBase?
@@ -86,7 +103,7 @@ fun BoxScope.BottomNavBar(
     val animatedOffset by animateDpAsState(
         targetValue = targetOffset,
         animationSpec = mMotionScheme.fastSpatialSpec(),
-        label = OFFSET_LABEL
+        label = "Animated offset"
     )
 
     NavigationBar(
@@ -95,7 +112,7 @@ fun BoxScope.BottomNavBar(
             .offset(y = animatedOffset)
     ) {
         navItems.forEach { navItem ->
-            BottomNavItem(
+            LibertyFlowBottomNavItem(
                 navItem = navItem,
                 isSelected = navItem.destination == selectedRoute,
                 onClick = { onNavItemClick(navItem.destination) }
@@ -104,8 +121,18 @@ fun BoxScope.BottomNavBar(
     }
 }
 
+/**
+ * Individual navigation cell within the [LibertyFlowBottomNavBar].
+ *
+ * This component manages its own [AnimatedImageVector] state, triggering the
+ * animation whenever the [isSelected] state transitions.
+ *
+ * @param navItem The configuration data for this item.
+ * @param isSelected Whether this item is currently active.
+ * @param onClick Function to execute when the user taps this item.
+ */
 @Composable
-private fun RowScope.BottomNavItem(
+private fun RowScope.LibertyFlowBottomNavItem(
     navItem: NavItem,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -144,10 +171,10 @@ private fun RowScope.BottomNavItem(
 
 @Preview
 @Composable
-private fun BottomNavBarPreview() {
+private fun LibertyFlowBottomNavBarPreview() {
     LibertyFlowTheme {
         Box {
-            BottomNavBar(
+            LibertyFlowBottomNavBar(
                 onNavItemClick = {},
                 selectedRoute = HomeRoute,
                 visible = true

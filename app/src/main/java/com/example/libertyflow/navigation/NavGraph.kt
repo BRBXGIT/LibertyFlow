@@ -27,7 +27,7 @@ import com.example.common.navigation.MoreRoute
 import com.example.common.navigation.NavBarItem
 import com.example.common.navigation.NavigationBase
 import com.example.common.refresh.RefreshVM
-import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBar
+import com.example.design_system.components.bars.bottom_nav_bar.LibertyFlowBottomNavBar
 import com.example.design_system.theme.logic.ThemeVM
 import com.example.favorites.navigation.favorites
 import com.example.favorites.screen.FavoritesVM
@@ -77,7 +77,7 @@ fun NavGraph(themeVM: ThemeVM, startDestination: NavigationBase) {
             }
 
             val navBarVisible = selectedRoute is NavBarItem
-            BottomNavBar(
+            LibertyFlowBottomNavBar(
                 visible = navBarVisible,
                 selectedRoute = selectedRoute,
                 onNavItemClick = { route ->

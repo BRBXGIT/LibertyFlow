@@ -2,6 +2,7 @@
 
 package com.example.design_system.components.bars.searching_top_bar
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -34,12 +35,22 @@ import com.example.design_system.theme.theme.mTypography
 
 private val TOP_BAR_ICON_SIZE = 22.dp
 
-private const val EMPTY_STRING = ""
-
+/**
+ * A standard Material 3 Top App Bar that toggles between a static title
+ * and an interactive search input.
+ *
+ * @param searchForm The state object containing query and search visibility.
+ * @param text The text displayed when not in searching mode.
+ * @param scrollBehavior The scroll behavior to be used with a Scaffold.
+ * @param onQueryChange Callback triggered when the search text changes.
+ * @param onToggleSearch Callback triggered to switch between search and title mode.
+ * @param modifier The modifier to be applied to the layout.
+ * @param enterAlways If true, adjusts the container color for scrolled states.
+ */
 @Composable
 fun SearchingTopBar(
     searchForm: SearchForm,
-    label: String,
+    text: String,
     scrollBehavior: TopAppBarScrollBehavior,
     onQueryChange: (String) -> Unit,
     onToggleSearch: () -> Unit,
@@ -58,7 +69,7 @@ fun SearchingTopBar(
                 TopBarTitle(
                     isSearching = searchForm.isSearching,
                     query = searchForm.query,
-                    label = label,
+                    label = text,
                     onQueryChange = onQueryChange
                 )
             },
@@ -67,7 +78,7 @@ fun SearchingTopBar(
                     TopBarIconButton(
                         icon = LibertyFlowIcons.ArrowLeftFilled,
                         onClick = {
-                            onQueryChange(EMPTY_STRING)
+                            onQueryChange("")
                             onToggleSearch()
                         }
                     )
@@ -77,7 +88,7 @@ fun SearchingTopBar(
                 TopBarActions(
                     isSearching = searchForm.isSearching,
                     query = searchForm.query,
-                    onClearQuery = { onQueryChange(EMPTY_STRING) },
+                    onClearQuery = { onQueryChange("") },
                     onToggleSearch = onToggleSearch
                 )
             }
@@ -128,12 +139,14 @@ private fun TopBarActions(
     }
 }
 
+private val inputTitleTextRes = R.string.placeholder_label
+
 @Composable
 private fun SearchingTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = stringResource(R.string.placeholder_label)
+    placeholder: String = stringResource(inputTitleTextRes)
 ) {
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
@@ -156,7 +169,7 @@ private fun SearchingTextField(
 
 @Composable
 private fun TopBarIconButton(
-    icon: Int,
+    @DrawableRes icon: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {

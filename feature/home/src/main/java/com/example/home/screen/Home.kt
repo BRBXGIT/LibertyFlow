@@ -78,7 +78,7 @@ internal fun Home(
         topBar = {
             SearchingTopBar(
                 searchForm = SearchForm(state.filtersState.request.search, state.isSearching),
-                label = stringResource(TopBarLabel),
+                text = stringResource(TopBarLabel),
                 scrollBehavior = scrollBehavior,
                 onToggleSearch = { onIntent(HomeIntent.ToggleSearching) },
                 onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
