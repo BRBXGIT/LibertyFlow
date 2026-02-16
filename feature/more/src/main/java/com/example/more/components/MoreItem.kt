@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,12 +23,18 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.common.navigation.InfoRoute
+import com.example.common.navigation.SettingsRoute
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.design_system.containers.M3Container
+import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
+import com.example.more.R
 
 /**
  * Data model for a row in the 'More' screen list.
@@ -108,5 +115,34 @@ private fun getClipShape(item: MoreItem): Shape {
         item.topItem -> baseShape.copy(bottomStart = CornerSize(ZeroDp), bottomEnd = CornerSize(ZeroDp))
         item.bottomItem -> baseShape.copy(topStart = CornerSize(ZeroDp), topEnd = CornerSize(ZeroDp))
         else -> RectangleShape
+    }
+}
+
+@Preview
+@Composable
+private fun MoreItemPreview() {
+    val appItems = listOf(
+        MoreItem(
+            iconRes = LibertyFlowIcons.Outlined.Settings,
+            labelRes = R.string.settings_label,
+            originalColor = false,
+            effect = UiEffect.Navigate(SettingsRoute)
+        ),
+        MoreItem(
+            iconRes = LibertyFlowIcons.Outlined.Info,
+            labelRes = R.string.info_label,
+            originalColor = false,
+            effect = UiEffect.Navigate(InfoRoute)
+        )
+    )
+
+    LazyColumn {
+        item {
+            M3Container(Modifier.animateItem()) {
+                appItems.forEach { item ->
+                    MoreItem(item) {}
+                }
+            }
+        }
     }
 }

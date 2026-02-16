@@ -38,11 +38,13 @@ android {
 
 dependencies {
 
+    // --- Modules ---
     // Core modules
     implementation(project(":core:data"))
     implementation(project(":core:design-system"))
     implementation(project(":core:common"))
 
+    // --- Libraries ---
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime
@@ -60,7 +62,7 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.compose)
 
-    // === Testing ===
+    // --- Testing ---
     // Unit tests
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

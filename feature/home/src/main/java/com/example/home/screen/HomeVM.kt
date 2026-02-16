@@ -17,6 +17,8 @@ import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.utils.network.network_caller.onError
 import com.example.data.utils.network.network_caller.onSuccess
+import com.example.design_system.utils.CommonAnimationDelays
+import com.example.design_system.utils.CommonStrings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,9 +33,27 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val RETRY = "Retry"
-private const val ANIMATION_DELAY = 2_000L
-
+/**
+ * ViewModel for the Home/Discovery screen, following the MVI (Model-View-Intent) pattern.
+ *
+ * This ViewModel manages the state of anime discovery, including complex filtering
+ * (genres, seasons, years, and statuses), paginated search results, and metadata
+ * fetching (genres list). It leverages StateFlow for UI state and [Channel] for
+ * one-time events (Effects).
+ *
+ * ### Key Responsibilities:
+ * - **State Management:** Maintains [HomeState] which encapsulates UI visibility,
+ * loading states, and current filter configurations.
+ * - **Reactive Filtering:** Observes changes in the filter request and automatically
+ * triggers new PagingData streams via [catalogRepo].
+ * - **Side Effects:** Handles navigation and snackbar messages through a [UiEffect] flow.
+ * - **Business Logic:** Encapsulates random anime selection and genre synchronization.
+ *
+ * @property releasesRepo Repository for fetching general release data and random selections.
+ * @property catalogRepo Repository for searching and paging through the anime catalog.
+ * @property genresRepo Repository for managing available anime genres.
+ * @property dispatcherIo The coroutine dispatcher used for background operations,
+ */
 @HiltViewModel
 class HomeVM @Inject constructor(
     private val releasesRepo: ReleasesRepo,
@@ -48,7 +68,7 @@ class HomeVM @Inject constructor(
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    // --- Intent Handling ---
+    // --- Intents ---
     fun sendIntent(intent: HomeIntent) {
         when (intent) {
             // UI Visibility state
@@ -92,6 +112,10 @@ class HomeVM @Inject constructor(
         }
     }
 
+    // --- Effects ---
+    fun sendEffect(effect: UiEffect) =
+        viewModelScope.launch { _effects.send(effect) }
+
     // --- Ongoing logic ---
     private fun handleToggleOngoing() {
         _state.update { state ->
@@ -122,7 +146,7 @@ class HomeVM @Inject constructor(
             // Reset state and show loading
             _state.update { it.copy(randomAnimeState = it.randomAnimeState.withBoth(loading = true, error = false)) }
 
-            delay(ANIMATION_DELAY) // Artificial delay for animation polish
+            delay(CommonAnimationDelays.RAINBOW_BUTTON_ANIMATION_DELAY) // Artificial delay for animation polish
 
             releasesRepo.getRandomAnime()
                 .onSuccess { anime ->
@@ -150,16 +174,12 @@ class HomeVM @Inject constructor(
     }
 
     // Helper for sending UI events (snackbars, navigation)
-    fun sendEffect(effect: UiEffect) = viewModelScope.launch {
-        _effects.send(effect)
-    }
-
     private fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
         viewModelScope.launch(dispatcherIo) {
             _effects.send(
                 UiEffect.ShowSnackbarWithAction(
                     messageRes = messageRes,
-                    actionLabel = action?.let { RETRY },
+                    actionLabel = action?.let { CommonStrings.RETRY },
                     action = action
                 )
             )

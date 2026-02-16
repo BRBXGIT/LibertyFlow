@@ -52,6 +52,9 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime
     implementation(libs.androidx.compose.runtime)
+    // Compose preview
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

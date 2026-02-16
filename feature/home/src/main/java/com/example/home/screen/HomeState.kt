@@ -5,6 +5,19 @@ import com.example.common.ui_helpers.loading_state.LoadingState
 import com.example.data.models.common.common.Genre
 import com.example.data.models.common.request.request_parameters.FullRequestParameters
 
+/**
+ * Represents the complete UI state for the Home screen.
+ * * This class is [Immutable], making it optimized for Jetpack Compose recomposition.
+ * It follows a nested state pattern to separate concerns between general UI visibility,
+ * search parameters, and domain-specific data like genres.
+ *
+ * @property loadingState Global loading and error indicators for the primary paging list.
+ * @property randomAnimeState Specialized state for the "Random Anime" feature (loading/error).
+ * @property isSearching Controls the visibility of the search bar or search mode in the UI.
+ * @property filtersState Encapsulates the visibility of the filter bottom sheet and
+ * the actual [FullRequestParameters] used for queries.
+ * @property genresState Holds the list of available genres and their independent loading status.
+ */
 @Immutable
 data class HomeState(
     // Loading paging content
@@ -29,6 +42,9 @@ data class HomeState(
     ) {
         fun toggleBS() = copy(isFiltersBSVisible = !isFiltersBSVisible)
 
+        /**DSL-style helper to mutate the [FullRequestParameters].
+         * @param block A lambda executed in the context of the current request.
+         */
         fun updateRequest(block: FullRequestParameters.() -> FullRequestParameters) =
             copy(request = request.block())
     }

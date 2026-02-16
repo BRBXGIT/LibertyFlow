@@ -25,8 +25,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.data.models.theme.LibertyFlowTheme
+import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mTypography
@@ -170,6 +173,17 @@ private fun OnboardingTextSection(
             style = mTypography.titleSmall,
             textAlign = TextAlign.Center,
             color = mColors.onBackground.copy(alpha = DESCRIPTION_ALPHA)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun OnboardingTextSectionPreview() {
+    LibertyFlowTheme {
+        OnboardingTextSection(
+            title = "Title",
+            description = "Lorem ipsim bla bla bla...",
         )
     }
 }

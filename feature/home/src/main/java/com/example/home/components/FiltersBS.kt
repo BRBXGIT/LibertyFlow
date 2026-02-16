@@ -45,6 +45,7 @@ import com.example.data.models.common.request.request_parameters.Sorting
 import com.example.design_system.components.dividers.DividerWithLabel
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
@@ -56,8 +57,6 @@ import com.example.home.screen.HomeState
 private const val GENRES_LOADING_INDICATOR_KEY = "GenresLoadingIndicatorKey"
 
 private const val MIN_GRID_CELLS_SIZE = 90
-private const val SPACED_BY = 8
-private const val CONTENT_PADDING = 16
 private const val SORTING_SPACED_BY = 8
 private const val YEAR_TF_MAX_LINES = 1
 private const val FILTER_ITEM_TEXT_MAX_LINES = 1
@@ -70,14 +69,14 @@ private const val FROM_YEAR_KEY = "FromYearKey"
 private const val TO_YEAR_KEY = "ToYearKey"
 private const val RELEASE_FINISHED_KEY = "ReleaseFinishedLabel"
 
-private val YearLabel = R.string.year_label
-private val FromYearLabel = R.string.from_year_label
-private val ToYearLabel = R.string.to_year_label
-private val SeasonsLabel = R.string.seasons_label
-private val GenresLabel = R.string.genres_label
-private val SortingLabel = R.string.sorting_label
-private val IsOngoingLabel = R.string.is_ongoing_label
-private val OngoingLabel = R.string.ongoing_label
+private val YearLabelRes = R.string.year_label
+private val FromYearLabelRes = R.string.from_year_label
+private val ToYearLabelRes = R.string.to_year_label
+private val SeasonsLabelRes = R.string.seasons_label
+private val GenresLabelRes = R.string.genres_label
+private val SortingLabelRes = R.string.sorting_label
+private val IsOngoingLabelRes = R.string.is_ongoing_label
+private val OngoingLabelRes = R.string.ongoing_label
 
 @Composable
 internal fun FiltersBS(
@@ -99,33 +98,33 @@ internal fun FiltersBS(
     ) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(MIN_GRID_CELLS_SIZE.dp),
-            verticalArrangement = Arrangement.spacedBy(SPACED_BY.dp),
-            horizontalArrangement = Arrangement.spacedBy(SPACED_BY.dp),
-            contentPadding = PaddingValues(CONTENT_PADDING.dp),
+            verticalArrangement = Arrangement.spacedBy(mDimens.spacingSmall),
+            horizontalArrangement = Arrangement.spacedBy(mDimens.spacingSmall),
+            contentPadding = PaddingValues(mDimens.paddingMedium),
             modifier = Modifier.fillMaxSize(),
         ) {
 
-            filterDivider(OngoingLabel)
+            filterDivider(OngoingLabelRes)
             releaseFinished(request.publishStatuses, onIntent)
 
-            filterDivider(SortingLabel)
+            filterDivider(SortingLabelRes)
             sortingBy(request.sorting, onIntent)
 
-            filterDivider(YearLabel)
+            filterDivider(YearLabelRes)
             yearField(
                 key = FROM_YEAR_KEY,
-                labelRes = FromYearLabel,
+                labelRes = FromYearLabelRes,
                 currentValue = request.years.from,
                 onValueChanged = { onIntent(HomeIntent.UpdateFromYear(it)) }
             )
             yearField(
                 key = TO_YEAR_KEY,
-                labelRes = ToYearLabel,
+                labelRes = ToYearLabelRes,
                 currentValue = request.years.to,
                 onValueChanged = { onIntent(HomeIntent.UpdateToYear(it)) }
             )
 
-            filterDivider(SeasonsLabel)
+            filterDivider(SeasonsLabelRes)
             selectableFilterItems(
                 items = Season.entries,
                 isSelected = { it in request.seasons },
@@ -138,7 +137,7 @@ internal fun FiltersBS(
                 }
             )
 
-            filterDivider(GenresLabel)
+            filterDivider(GenresLabelRes)
 
             if (state.genresState.loadingState.isLoading) {
                 centeredCircularIndicator()
@@ -316,7 +315,7 @@ private fun LazyGridScope.releaseFinished(
             )
 
             Text(
-                text = stringResource(IsOngoingLabel),
+                text = stringResource(IsOngoingLabelRes),
                 style = mTypography.bodyLarge
             )
         }

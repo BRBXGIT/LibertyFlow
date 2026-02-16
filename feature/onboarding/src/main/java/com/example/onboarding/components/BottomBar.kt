@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -25,7 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mMotionScheme
@@ -131,5 +134,20 @@ fun BottomBar(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewBottomBar() {
+    // Mocking the state for the first page
+    LibertyFlowTheme {
+        BottomBar(
+            currentPage = 0,
+            totalPages = 3,
+            state = OnboardingState(triedToAskPermission = false),
+            pagerState = rememberPagerState { 3 },
+            onIntent = {}
+        )
     }
 }

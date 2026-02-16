@@ -17,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mShapes
@@ -100,5 +102,13 @@ private fun DialogActionButtons(onIntent: (MoreIntent) -> Unit) {
         ) {
             Text(stringResource(LogoutLabel))
         }
+    }
+}
+
+@Preview
+@Composable
+private fun LogoutDialogPreview() {
+    LibertyFlowTheme {
+        LogoutDialog {  }
     }
 }
