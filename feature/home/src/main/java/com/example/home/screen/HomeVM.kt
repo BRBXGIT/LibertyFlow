@@ -174,15 +174,13 @@ class HomeVM @Inject constructor(
     }
 
     // Helper for sending UI events (snackbars, navigation)
-    private fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
-        viewModelScope.launch(dispatcherIo) {
-            _effects.send(
-                UiEffect.ShowSnackbarWithAction(
-                    messageRes = messageRes,
-                    actionLabel = action?.let { CommonStrings.RETRY },
-                    action = action
-                )
+    private suspend fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
+        _effects.send(
+            UiEffect.ShowSnackbarWithAction(
+                messageRes = messageRes,
+                actionLabel = action?.let { CommonStrings.RETRY },
+                action = action
             )
-        }
+        )
     }
 }

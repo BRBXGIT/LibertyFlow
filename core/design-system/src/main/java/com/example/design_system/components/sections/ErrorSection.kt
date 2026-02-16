@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,14 +43,16 @@ private val AnimSize = 170.dp
  * @see LottieAnimation
  */
 @Composable
-fun ErrorSection() {
+fun ErrorSection(
+    modifier: Modifier = Modifier
+) {
     // Load Lottie composition once and remember it across recompositions
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(AnimRes)
     )
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = mDimens.paddingMedium),
         contentAlignment = Alignment.Center
