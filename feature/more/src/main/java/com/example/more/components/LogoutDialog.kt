@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.more.components
 
 import androidx.compose.foundation.background
@@ -15,21 +17,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
 import com.example.more.R
 import com.example.more.screen.MoreIntent
 
-private val PaddingMain = 24.dp
-private val SpacingItems = 16.dp
-private val SpacingButtons = 8.dp
-
 private val SureWantLogoutLabel = R.string.sure_want_logout_label
 private val LogoutLabel = R.string.logout_label
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * A confirmation dialog displayed when a user attempts to log out.
+ * * Uses [BasicAlertDialog] to provide a custom-styled container. It informs the user
+ * of the action and provides "Cancel" or "Logout" options.
+ *
+ * @param onIntent Lambda to dispatch [MoreIntent] actions back to the owner (usually a ViewModel).
+ */
 @Composable
 internal fun LogoutDialog(onIntent: (MoreIntent) -> Unit) {
     BasicAlertDialog(
@@ -41,8 +45,8 @@ internal fun LogoutDialog(onIntent: (MoreIntent) -> Unit) {
             )
     ) {
         Column(
-            modifier = Modifier.padding(PaddingMain),
-            verticalArrangement = Arrangement.spacedBy(SpacingItems),
+            modifier = Modifier.padding(mDimens.paddingExtraLarge),
+            verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header
@@ -68,12 +72,18 @@ internal fun LogoutDialog(onIntent: (MoreIntent) -> Unit) {
 
 private val CancelLabel = R.string.cancel_label
 
+/**
+ * Renders the action buttons (Cancel/Logout) for the [LogoutDialog].
+ * - Cancel: Simply dismisses the dialog by toggling visibility.
+ * - Logout: Dispatches the logout command AND dismisses the dialog
+ * to ensure a clean UI state transition.
+ */
 @Composable
 private fun DialogActionButtons(onIntent: (MoreIntent) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(
-            space = SpacingButtons,
+            space = mDimens.spacingSmall,
             alignment = Alignment.End
         )
     ) {

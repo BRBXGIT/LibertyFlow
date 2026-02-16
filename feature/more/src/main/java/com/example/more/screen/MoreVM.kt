@@ -10,6 +10,7 @@ import com.example.data.domain.AuthRepo
 import com.example.data.utils.network.network_caller.NetworkErrors
 import com.example.data.utils.network.network_caller.onError
 import com.example.data.utils.network.network_caller.onSuccess
+import com.example.design_system.utils.CommonStrings
 import com.example.more.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,12 +21,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val RETRY = "Retry"
-
 private val SuccessLogoutLabel = R.string.success_logout_label
 
+/**
+ * ViewModel for the 'More' (Settings/Profile) screen.
+ * * It manages the [MoreState] via StateFlow and dispatches one-time UI events
+ * (such as SnackBar notifications) through a [Channel].
+ *
+ * @property authRepo Repository for handling authentication and token management.
+ * @property dispatcherIo Injected [CoroutineDispatcher] for offloading network
+ * or database operations to the IO thread.
+ */
 @HiltViewModel
-class MoreVM @Inject constructor(
+internal class MoreVM @Inject constructor(
     private val authRepo: AuthRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
 ): ViewModel() {
@@ -52,6 +60,12 @@ class MoreVM @Inject constructor(
         viewModelScope.launch { _effects.send(effect) }
 
     // --- Data ---
+    /**
+     * Performs the logout operation.
+     * 1. Calls authRepo.logout() on the IO dispatcher.
+     * 2. On success: Clears local tokens and notifies the user.
+     * 3. On error: Triggers an appropriate Snackbar effect based on the [NetworkErrors] type.
+     */
     private fun logout() {
         viewModelScope.launch(dispatcherIo) {
             authRepo.logout()
@@ -71,7 +85,7 @@ class MoreVM @Inject constructor(
                             )
                             else -> UiEffect.ShowSnackbarWithAction(
                                 messageRes = messageRes,
-                                actionLabel = RETRY,
+                                actionLabel = CommonStrings.RETRY,
                                 action = { logout() }
                             )
                         }

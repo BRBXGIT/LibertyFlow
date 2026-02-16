@@ -23,6 +23,15 @@ import com.example.more.screen.MoreIntent
 
 private const val ICON_SIZE = 22
 
+/**
+ * The top navigation bar for the 'More' screen.
+ * * Features a branded [Title] and a logout action button. It integrates with
+ * [TopAppBarScrollBehavior] to support dynamic elevation or collapsing effects
+ * during list scrolling.
+ *
+ * @param scrollBehavior Controls the visual state of the bar in response to scroll events.
+ * @param onIntent Callback to handle UI actions, specifically [MoreIntent.ToggleLogoutDialog].
+ */
 @Composable
 internal fun TopBar(
     scrollBehavior: TopAppBarScrollBehavior,
@@ -49,6 +58,11 @@ private const val TITLE_SPACED_BY = 12
 
 private const val LIBERTY_FLOW = "LibertyFlow"
 
+/**
+ * Renders the branded title for the top bar.
+ * * Combines the application icon (using its native multi-color palette)
+ * with the application name in a horizontal layout.
+ */
 @Composable
 private fun Title() {
     Row(

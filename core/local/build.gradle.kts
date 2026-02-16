@@ -30,6 +30,7 @@ android {
 
 dependencies {
 
+    // --- Libraries ---
     // Datastore
     implementation(libs.androidx.datastore.preferences)
     // Room

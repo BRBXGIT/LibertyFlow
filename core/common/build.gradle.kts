@@ -34,9 +34,11 @@ android {
 
 dependencies {
 
-    // Core modules
+    // --- Modules ---
+    // Core
     implementation(project(":core:data"))
 
+    // --- Libraries ---
     // Paging
     implementation(libs.androidx.paging.compose)
     // Nav

@@ -38,10 +38,12 @@ android {
 
 dependencies {
 
-    // Core modules
+    // --- Modules ---
+    // Core
     implementation(project(":core:common"))
     implementation(project(":core:design-system"))
 
+    // --- Libraries ---
     // Navigation
     implementation(libs.navigation.compose)
     // Material 3

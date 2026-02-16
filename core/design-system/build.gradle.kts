@@ -34,10 +34,12 @@ android {
 
 dependencies {
 
-    // Core modules
+    // --- Modules ---
+    // Core
     implementation(project(":core:data"))
     implementation(project(":core:common"))
 
+    // --- Libraries ---
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
     // Compose runtime

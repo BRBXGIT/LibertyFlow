@@ -53,13 +53,14 @@ android {
 
 dependencies {
 
-    // Core modules
+    // --- Modules ---
+    // Core
     implementation(project(":core:design-system"))
     implementation(project(":core:data"))
     implementation(project(":core:network")) // Only for obfuscation
     implementation(project(":core:local")) // Only for obfuscation
     implementation(project(":core:common"))
-    // Feature modules
+    // Feature
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:home"))
     implementation(project(":feature:favorites"))
@@ -70,6 +71,7 @@ dependencies {
     implementation(project(":feature:info"))
     implementation(project(":feature:settings"))
 
+    // --- Libraries ---
     // Splashscreen
     implementation(libs.androidx.core.splashscreen)
     // Media 3 only for arguments
@@ -90,4 +92,11 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     // Nav
     implementation(libs.navigation.compose)
+
+    // --- Testing ---
+    // Unit tests
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.turbine)
 }

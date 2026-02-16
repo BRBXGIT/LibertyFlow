@@ -30,6 +30,7 @@ android {
 
 dependencies {
 
+    // --- Libraries ---
     // Retrofit
     implementation(libs.retrofit)
     api(libs.converter.gson) // Need in data module

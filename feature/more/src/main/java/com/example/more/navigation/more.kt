@@ -15,6 +15,16 @@ import com.example.design_system.utils.fadeScreenExitTransition
 import com.example.more.screen.More
 import com.example.more.screen.MoreVM
 
+/**
+ * Defines the navigation destination for the 'More' screen.
+ *
+ * This function orchestrates the lifecycle-aware state collection and effect handling:
+ * 1. Injects the [MoreVM] using Hilt.
+ * 2. Collects MoreState in a lifecycle-aware manner to avoid resource leaks.
+ * 3. Initializes a [SnackbarHostState] for persistent UI messaging across recompositions.
+ * 4. Delegates side-effect processing to [HandleCommonEffects].
+ * @param navController The controller used for navigating between screens.
+ */
 fun NavGraphBuilder.more(
     navController: NavController
 ) = composable<MoreRoute>(

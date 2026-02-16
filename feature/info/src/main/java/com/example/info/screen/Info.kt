@@ -82,14 +82,14 @@ private enum class InfoType { Version, Api, OriginalSite, Git }
  *
  * @property title String resource for the primary label.
  * @property description String resource for the secondary supporting text.
- * @property icon Drawable resource for the leading icon.
+ * @property iconRes Drawable resource for the leading icon.
  * @property type The [InfoType] category used to determine click behavior.
  * @property url The destination link (required for all types except [InfoType.Version]).
  */
 private data class InfoItem(
     @param:StringRes val title: Int,
     @param:StringRes val description: Int,
-    @param:DrawableRes val icon: Int,
+    @param:DrawableRes val iconRes: Int,
     val type: InfoType,
     val url: String? = null
 )
@@ -126,27 +126,27 @@ private val infoItems = listOf(
     InfoItem(
         title = VersionLabel,
         description = VersionDescription,
-        icon = LibertyFlowIcons.Outlined.Layers,
+        iconRes = LibertyFlowIcons.Outlined.Layers,
         type = InfoType.Version
     ),
     InfoItem(
         title = ApiLabel,
         description = ApiDescription,
-        icon = LibertyFlowIcons.Outlined.PieChart,
+        iconRes = LibertyFlowIcons.Outlined.PieChart,
         type = InfoType.Api,
         url = AniLibertyApiDocsLink
     ),
     InfoItem(
         title = GitHubLabel,
         description = GitHubDescription,
-        icon = LibertyFlowIcons.Outlined.GitHub,
+        iconRes = LibertyFlowIcons.Outlined.GitHub,
         type = InfoType.Git,
         url = BRBXGitHubLink
     ),
     InfoItem(
         title = AniLibertyLabel,
         description = AniLibertyDescription,
-        icon = LibertyFlowIcons.Multicolored.AniLiberty,
+        iconRes = LibertyFlowIcons.Multicolored.AniLiberty,
         type = InfoType.OriginalSite,
         url = AniLibertyLink
     ),
@@ -168,7 +168,7 @@ private fun LazyListScope.infoItems(
     ) { infoItem ->
         M3ListItem(
             title = stringResource(infoItem.title),
-            icon = infoItem.icon,
+            icon = infoItem.iconRes,
             description = stringResource(infoItem.description),
             onClick = {
                 when(infoItem.type) {

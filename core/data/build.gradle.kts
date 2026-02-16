@@ -33,10 +33,12 @@ android {
 
 dependencies {
 
-    // Core modules
+    // --- Modules ---
+    // Core
     implementation(project(":core:network"))
     implementation(project(":core:local"))
 
+    // --- Libraries ---
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -51,7 +53,7 @@ dependencies {
     // Media 3 for player session
     api(libs.androidx.media3.session)
 
-    // === Testing ===
+    // --- Testing ---
     // Unit tests
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
