@@ -9,8 +9,6 @@ import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.models.common.common.Genre
-import com.example.data.models.common.request.request_parameters.Season
-import com.example.data.models.common.request.request_parameters.Sorting
 import com.example.data.models.releases.anime_id.AnimeId
 import com.example.data.utils.network.network_caller.NetworkErrors
 import com.example.data.utils.network.network_caller.NetworkResult
