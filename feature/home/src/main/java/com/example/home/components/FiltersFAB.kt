@@ -3,16 +3,21 @@
 package com.example.home.components
 
 import androidx.compose.animation.core.animateIntOffsetAsState
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.data.models.theme.LibertyFlowTheme
 import com.example.design_system.components.buttons.LibertyFlowBasicFAB
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.home.screen.HomeIntent
 
@@ -21,6 +26,24 @@ private const val ZERO_OFFSET = 0
 
 private const val FAB_OFFSET_ANIMATION_LABEL = "Fab offset animation label"
 
+/**
+ * A Floating Action Button (FAB) that provides access to the filter settings.
+ *
+ * This FAB features a vertical offset animation, allowing it to slide off-screen
+ * when not needed (e.g., during scrolling) and slide back in when active.
+ *
+ * ### Behavior:
+ * - **Animation:** Uses [animateIntOffsetAsState] with a spatial motion scheme to
+ * ensure smooth transitions between the hidden and visible states.
+ * - **Interaction:** When clicked, it dispatches [HomeIntent.ToggleFiltersBottomSheet]
+ * to open the filtering interface.
+ * - **Positioning:** Translates by [HiddenFabOffset] (80.dp) along the Y-axis
+ * when [visible] is false.
+ *
+ * @param visible Controls the visibility state; if `true`, the FAB is at its
+ * default position; if `false`, it slides down out of view.
+ * @param onIntent Lambda to handle the [HomeIntent] for opening the filter sheet.
+ */
 @Composable
 internal fun FiltersFAB(
     visible: Boolean,
@@ -44,4 +67,15 @@ internal fun FiltersFAB(
         icon = LibertyFlowIcons.Outlined.Filters,
         onClick = { onIntent(HomeIntent.ToggleFiltersBottomSheet) }
     )
+}
+
+@Preview
+@Composable
+private fun FiltersFABPreview() {
+    LibertyFlowTheme {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            floatingActionButton = { FiltersFAB(true) { } }
+        ) { }
+    }
 }

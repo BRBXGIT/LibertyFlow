@@ -15,6 +15,27 @@ import com.example.design_system.utils.fadeScreenExitTransition
 import com.example.home.screen.Home
 import com.example.home.screen.HomeVM
 
+/**
+ * Adds the Home screen destination to the [NavGraphBuilder].
+ *
+ * This function serves as the entry point for the Home feature, orchestrating the
+ * connection between the ViewModel and the UI. It handles state collection,
+ * paging data, transitions, and side effects.
+ *
+ * ### Key Responsibilities:
+ * - **State Management:** Collects HomeState using [collectAsStateWithLifecycle]
+ * for lifecycle-aware UI updates.
+ * - **Pagination:** Manages the LazyPagingItems for the anime list, ensuring
+ * efficient data loading.
+ * - **Transitions:** Applies custom fade-in and fade-out animations for screen
+ * entry and exit.
+ * - **Effect Handling:** Utilizes [HandleCommonEffects] to process one-time
+ * events like navigation or showing [SnackbarHostState] messages.
+ *
+ * @param homeVM The [HomeVM] instance providing state and handling user intents.
+ * @param navController The [NavController] used for navigating to other screens
+ * based on ViewModel effects.
+ */
 fun NavGraphBuilder.home(
     homeVM: HomeVM,
     navController: NavController

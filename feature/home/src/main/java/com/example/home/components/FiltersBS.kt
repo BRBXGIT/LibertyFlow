@@ -78,6 +78,25 @@ private val SortingLabelRes = R.string.sorting_label
 private val IsOngoingLabelRes = R.string.is_ongoing_label
 private val OngoingLabelRes = R.string.ongoing_label
 
+/**
+ * A Modal Bottom Sheet that allows users to filter and sort content.
+ *
+ * This component displays various filter categories including publication status,
+ * sorting options, release years, seasons, and a dynamic list of genres.
+ *
+ * ### Key Behaviors:
+ * - **Data Loading:** On first composition, it triggers [HomeIntent.GetGenres] if the
+ * genre list is empty.
+ * - **State Management:** Uses [HomeState] to reflect the currently selected filters
+ * and loading states.
+ * - **Adaptive Grid:** Content is displayed in a [LazyVerticalGrid] that adjusts
+ * based on the screen width using [GridCells.Adaptive].
+ *
+ * @param state The current UI state containing filter options, selected values,
+ * and loading statuses.
+ * @param onIntent A lambda to handle user interactions by dispatching [HomeIntent]
+ * actions to the business logic layer.
+ */
 @Composable
 internal fun FiltersBS(
     state: HomeState,

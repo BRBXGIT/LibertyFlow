@@ -25,6 +25,24 @@ private val ErrorLabel = R.string.random_anime_button_error_label
 private val LoadingLabel = R.string.random_anime_button_loading_label
 private val RandomAnimeLabel = R.string.random_button_label
 
+/**
+ * A specialized grid item that allows users to request a random anime selection.
+ * * This button reactively updates its appearance and behavior based on the
+ * state.randomAnimeState, transitioning between:
+ * - **Idle:** Displays a "Random" label and icon, triggering [HomeIntent.GetRandomAnime] on click.
+ * - **Loading:** Displays a "Loading" label with an animated rainbow border and a cat icon.
+ * - **Error:** Displays an error label and icon to notify the user of a failure.
+ *
+ * ### UI Details:
+ * - **Scope:** Must be placed within a [LazyGridItemScope] (e.g., inside a `LazyVerticalGrid`).
+ * - **Animations:** Uses Modifier.animateItem to handle smooth reordering or appearance
+ * within the grid, and a custom rainbow border animation during the loading state.
+ * - **Optimization:** Utilizes [remember] keyed to the loading and error states to
+ * avoid unnecessary re-allocation of the [ActionButtonState] during recomposition.
+ *
+ * @param state The global [HomeState] providing the current status of the random anime request.
+ * @param onIntent Lambda for dispatching [HomeIntent] actions back to the ViewModel.
+ */
 @Composable
 internal fun LazyGridItemScope.RandomAnimeButton(
     state: HomeState,

@@ -30,6 +30,7 @@ import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.utils.CommonStrings
 import com.example.design_system.utils.ScrollDirection
 import com.example.design_system.utils.rememberDirectionalScrollState
 import com.example.home.R
@@ -39,8 +40,28 @@ import com.example.home.components.RANDOM_BUTTON_KEY
 import com.example.home.components.RandomAnimeButton
 
 private val TopBarLabel = R.string.home_top_bar_label
-private const val RETRY_LABEL = "Retry"
 
+/**
+ * The primary entry point for the Home screen UI.
+ *
+ * This composable sets up the [Scaffold] and coordinates several high-level
+ * UI patterns:
+ * - **Paging Synchronization:** Uses [PagingStatesContainer] to bridge the
+ * gap between the Paging library's internal state and the [HomeState].
+ * - **Scroll Management:** Tracks [ScrollDirection] to show/hide the [FiltersFAB]
+ * and handles TopAppBarScrollBehavior.
+ * - **Search & Filters:** Integrates a [SearchingTopBar] and a conditional
+ * [FiltersBS] (Bottom Sheet) based on the current state.
+ * - **Refresh Logic:** Wraps content in a [VibratingContainer] for pull-to-refresh
+ * functionality tied to anime.refresh.
+ *
+ * @param state The current UI state containing filter data and visibility flags.
+ * @param anime The paginated list of anime items to be displayed.
+ * @param snackbarHostState State for managing snackbar display, particularly for
+ * paging errors.
+ * @param onIntent Lambda for sending user actions ([HomeIntent]) to the ViewModel.
+ * @param onEffect Lambda for triggering navigation or UI-only side effects ([UiEffect]).
+ */
 @Composable
 internal fun Home(
     state: HomeState,
@@ -58,7 +79,7 @@ internal fun Home(
             onEffect(
                 UiEffect.ShowSnackbarWithAction(
                     messageRes = messageRes.toInt(),
-                    actionLabel = RETRY_LABEL,
+                    actionLabel = CommonStrings.RETRY,
                     action = retry
                 )
             )
@@ -118,6 +139,16 @@ internal fun Home(
     }
 }
 
+/**
+ * Manages the main content area of the Home screen, switching between error
+ * states and the anime grid.
+ *
+ * It injects a [RandomAnimeButton] as a full-span header item at the top
+ * of the [PagingAnimeItemsLazyVerticalGrid].
+ *
+ * @param listState The scroll state of the grid, used for positioning and
+ * visibility logic.
+ */
 @Composable
 private fun MainContent(
     listState: LazyGridState,
