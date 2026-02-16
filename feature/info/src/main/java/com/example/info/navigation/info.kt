@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -19,11 +19,19 @@ import com.example.info.screen.InfoEffect
 import com.example.info.screen.InfoVM
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Defines the navigation destination for the Information screen.
+ *
+ * This function handles the setup of [InfoVM], orchestrates global and screen-specific
+ * side effects, and provides the necessary callbacks to the [Info] UI component.
+ *
+ * @param navController Used for navigating to other screens via [HandleCommonEffects].
+ */
 fun NavGraphBuilder.info(navController: NavController) = composable<InfoRoute>(
     enterTransition = { fadeScreenEnterTransition() },
     exitTransition = { fadeScreenExitTransition() }
 ) {
-    val infoVM = hiltViewModel<InfoVM>()
+    val infoVM = viewModel<InfoVM>()
 
     HandleCommonEffects(
         effects = infoVM.commonEffects,
@@ -38,6 +46,15 @@ fun NavGraphBuilder.info(navController: NavController) = composable<InfoRoute>(
     )
 }
 
+/**
+ * A specialized effect handler for the Information screen.
+ *
+ * It uses a [LaunchedEffect] to collect the [InfoEffect] stream and perform
+ * Android-specific operations that shouldn't live in a ViewModel, such as
+ * interacting with the ClipboardManager.
+ *
+ * @param effects The flow of effects to be consumed.
+ */
 @Composable
 private fun HandleEffects(effects: Flow<InfoEffect>) {
     val clipboard = LocalClipboard.current

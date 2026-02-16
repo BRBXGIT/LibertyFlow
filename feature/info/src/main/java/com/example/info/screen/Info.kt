@@ -3,6 +3,8 @@
 package com.example.info.screen
 
 import android.content.Intent
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,22 +19,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.design_system.components.bars.basic_top_bar.LibertyFlowBasicTopBar
 import com.example.design_system.components.list_tems.M3ListItem
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.info.R
 import com.example.info.components.Header
 
-private val InfoLabel = R.string.info_label
+private val InfoLabelRes = R.string.info_label
 
-private val LCSpacedBy = 16.dp
-
-private val LCBottomPadding = 16.dp
-
+/**
+ * The primary UI entry point for the Information screen.
+ * * Displays a list of application-related details including version info, API documentation,
+ * and social links using a [Scaffold] with a pinned top bar and a [LazyColumn].
+ *
+ * @param onCommonEffect Callback for global events like navigation or starting external [Intent]s.
+ * @param onEffect Callback for feature-specific events like clipboard operations.
+ */
 @Composable
 internal fun Info(
     onCommonEffect: (UiEffect) -> Unit,
@@ -43,7 +49,7 @@ internal fun Info(
     Scaffold(
         topBar = {
             LibertyFlowBasicTopBar(
-                label = stringResource(InfoLabel),
+                label = stringResource(InfoLabelRes),
                 onNavClick = { onCommonEffect(UiEffect.NavigateBack) },
                 scrollBehavior = topBarScrollBehavior
             )
@@ -54,10 +60,10 @@ internal fun Info(
     ) { innerPadding ->
         LazyColumn(
             contentPadding = PaddingValues(
-                bottom = innerPadding.calculateBottomPadding() + LCBottomPadding,
+                bottom = innerPadding.calculateBottomPadding() + mDimens.paddingMedium,
                 top = innerPadding.calculateTopPadding()
             ),
-            verticalArrangement = Arrangement.spacedBy(LCSpacedBy),
+            verticalArrangement = Arrangement.spacedBy(mDimens.paddingMedium),
             modifier = Modifier
                 .fillMaxSize()
                 .background(mColors.background)
@@ -71,14 +77,28 @@ internal fun Info(
 
 private enum class InfoType { Version, Api, OriginalSite, Git }
 
+/**
+ * Data model representing a single row in the Information list.
+ *
+ * @property title String resource for the primary label.
+ * @property description String resource for the secondary supporting text.
+ * @property icon Drawable resource for the leading icon.
+ * @property type The [InfoType] category used to determine click behavior.
+ * @property url The destination link (required for all types except [InfoType.Version]).
+ */
 private data class InfoItem(
-    val title: Int,
-    val description: Int,
-    val icon: Int,
+    @param:StringRes val title: Int,
+    @param:StringRes val description: Int,
+    @param:DrawableRes val icon: Int,
     val type: InfoType,
     val url: String? = null
 )
 
+
+/**
+ * Extension on [LazyListScope] to provide the header item.
+ * Encapsulates the [HEADER_KEY] to ensure consistent state restoration.
+ */
 private const val HEADER_KEY = "HeaderKey"
 
 private fun LazyListScope.header() {
@@ -132,6 +152,12 @@ private val infoItems = listOf(
     ),
 )
 
+/**
+ * Extension on [LazyListScope] that renders the list of [InfoItem]s.
+ * * Maps each [InfoType] to its specific action:
+ * - [InfoType.Version]: Triggers an [InfoEffect.CopyVersion].
+ * - Others: Triggers a [UiEffect.IntentTo] with the associated URL.
+ */
 private fun LazyListScope.infoItems(
     onCommonEffect: (UiEffect) -> Unit,
     onEffect: (InfoEffect) -> Unit

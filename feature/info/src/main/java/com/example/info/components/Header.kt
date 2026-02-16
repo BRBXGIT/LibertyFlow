@@ -15,11 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mDimens
 
 private val MAIN_BOX_HEIGHT = 210.dp
-private val MAIN_PADDING = 16.dp
 private val ICON_SIZE = 84.dp
 
+/**
+ * A decorative header for the Information screen list.
+ * * Contains the main application icon centered within a fixed-height box
+ * and a HorizontalDivider at the bottom.
+ */
 @Composable
 internal fun LazyItemScope.Header() {
     Box(
@@ -27,7 +32,7 @@ internal fun LazyItemScope.Header() {
             .animateItem()
             .fillMaxWidth()
             .height(MAIN_BOX_HEIGHT)
-            .padding(horizontal = MAIN_PADDING)
+            .padding(horizontal = mDimens.paddingMedium)
     ) {
         Icon(
             painter = painterResource(LibertyFlowIcons.Multicolored.LibertyFlow),
