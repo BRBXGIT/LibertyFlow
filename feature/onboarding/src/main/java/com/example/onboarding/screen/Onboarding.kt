@@ -21,6 +21,19 @@ private val onboardingPages = listOf(
     OnboardingPage.Permissions
 )
 
+/**
+ * The root Composable for the Onboarding screen, implementing a pager-based navigation flow.
+ *
+ * This component coordinates the following:
+ * 1. **Pager Logic**: Manages a [HorizontalPager] using the defined [onboardingPages].
+ * 2. **Visual Style**: Applies a vertical gradient background with the brand's primary color.
+ * 3. **Navigation UI**: Displays a custom [BottomBar] that synchronizes with the pagerState.
+ * 4. **Adaptive Content**: Dynamically injects [OnboardingPageContent] for each step of the flow.
+ *
+ * @param state The current immutable UI state.
+ * @param onIntent Lambda to dispatch actions to the business logic layer.
+ * @param onEffect Lambda to trigger one-time UI side effects (e.g., snackbars).
+ */
 @Composable
 fun Onboarding(
     state: OnboardingState,

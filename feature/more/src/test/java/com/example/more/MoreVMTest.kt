@@ -47,6 +47,7 @@ class MoreVMTest {
         unmockkAll()
     }
 
+    // --- Logout tests ---
     @Test
     fun `logout clears token and send effect on success result`() = runTest {
         coEvery { repo.logout() } returns NetworkResult.Success(Unit)
@@ -113,6 +114,18 @@ class MoreVMTest {
             coVerify(exactly = 1) { repo.clearToken() }
 
             cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    // --- State tests
+    @Test
+    fun `state updates correctly`() = runTest {
+        vm.state.test {
+            skipItems(1)
+            vm.sendIntent(MoreIntent.ToggleLogoutDialog)
+
+            val item = awaitItem()
+            assertTrue(item.isLogoutADVisible)
         }
     }
 }

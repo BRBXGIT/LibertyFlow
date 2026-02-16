@@ -28,14 +28,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mTypography
 import com.example.onboarding.R
 import com.example.onboarding.screen.OnboardingIntent
 import com.example.onboarding.screen.OnboardingPage
 
 private val PageSpacingMedium = 48.dp
-private val TextSpacingMedium = 20.dp
-private val ScreenHorizontalPadding = 24.dp
 private val ImageSize = 280.dp
 
 private const val TOP_SPACER_WEIGHT = 1f
@@ -45,6 +44,16 @@ private val ButtonTopMargin = 32.dp
 
 private val PermissionButtonLabel = R.string.permission_button_label
 
+/**
+ * The primary layout for an individual onboarding page.
+ * * Uses a [Column] with weighted spacers to center the content vertically while
+ * accommodating different screen heights.
+ *
+ * @param onEffect Callback for triggering one-time UI events (like snackbars).
+ * @param onIntent Callback for sending user actions to the ViewModel.
+ * @param page The [OnboardingPage] data object containing the resources to display.
+ * @param modifier Modifier for external layout adjustments.
+ */
 @Composable
 internal fun OnboardingPageContent(
     onEffect: (UiEffect) -> Unit,
@@ -53,7 +62,7 @@ internal fun OnboardingPageContent(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(horizontal = ScreenHorizontalPadding),
+        modifier = modifier.padding(horizontal = mDimens.paddingExtraLarge),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.weight(TOP_SPACER_WEIGHT))
@@ -84,6 +93,13 @@ internal fun OnboardingPageContent(
 
 private val PermissionDeniedLabel = R.string.permission_denied_label
 
+/**
+ * A conditional section that handles notification permission requests.
+ * * Only renders when [isVisible] is true. It manages the permission launcher and
+ * updates the ViewModel state once the user attempts to interact with the system dialog.
+ *
+ * @param isVisible Controls the [AnimatedVisibility] of this section.
+ */
 @Composable
 private fun PermissionSection(
     isVisible: Boolean,
@@ -126,6 +142,11 @@ private fun PermissionSection(
 
 private const val DESCRIPTION_ALPHA = 0.7f
 
+/**
+ * Renders the textual portion of the onboarding page.
+ * @param title The primary heading text.
+ * @param description The supporting body text, rendered with lower opacity for visual hierarchy.
+ */
 @Composable
 private fun OnboardingTextSection(
     title: String,
@@ -134,7 +155,7 @@ private fun OnboardingTextSection(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(TextSpacingMedium),
+        verticalArrangement = Arrangement.spacedBy(mDimens.spacingLarge),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

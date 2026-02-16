@@ -5,6 +5,16 @@ import androidx.annotation.StringRes
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.onboarding.R
 
+/**
+ * Defines the static content for each page in the Onboarding flow.
+ *
+ * This sealed class ensures that all possible onboarding screens are known at compile time,
+ * making it ideal for use with a [androidx.compose.foundation.pager.HorizontalPager].
+ *
+ * @property title The string resource ID for the page's primary heading.
+ * @property description The string resource ID for the supporting body text.
+ * @property image The drawable resource ID for the illustrative graphic.
+ */
 sealed class OnboardingPage(
     @param:StringRes val title: Int,
     @param:StringRes val description: Int,

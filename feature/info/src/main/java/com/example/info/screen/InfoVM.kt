@@ -35,5 +35,4 @@ class InfoVM: ViewModel() {
      */
     fun sendEffect(effect: InfoEffect) =
         viewModelScope.launch { _effects.send(effect) }
-
 }

@@ -16,38 +16,46 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.onboarding.screen.OnboardingIntent
 import com.example.onboarding.screen.OnboardingState
 import kotlinx.coroutines.launch
-
-private val BarHorizontalPadding = 16.dp
-private val ProgressHeight = 8.dp
 
 private const val ICON_WEIGHT = 0.2f
 private const val PROGRESS_WEIGHT = 0.6f
 private const val INDICATOR_ALPHA = 0.1f
 private const val DISABLED_ICON_ALPHA = 0.3f
 
-private const val ZERO = 0
 private const val LAST_PAGE = 2
 
-private const val ANIMATION_LABEL = "Progress animation label"
-
-private const val NEXT_PAGE_PLUS = 1
-
+/**
+ * A custom bottom bar for the Onboarding flow featuring a progress indicator
+ * and directional navigation buttons.
+ *
+ * This component manages:
+ * 1. **Backward Navigation**: Moves the [pagerState] to the previous index.
+ * 2. **Progress Visualization**: A [LinearProgressIndicator] that animates based on [currentPage].
+ * 3. **Forward/Finish Logic**: Advances the pager or dispatches [OnboardingIntent.SaveOnboardingCompleted]
+ * when the final page is reached.
+ *
+ * @param currentPage The current active page index from the Pager.
+ * @param totalPages The total number of pages in the onboarding sequence.
+ * @param state The current [OnboardingState] to check business logic (e.g., permission status).
+ * @param pagerState The state object controlling the [androidx.compose.foundation.pager.HorizontalPager].
+ * @param onIntent Callback to dispatch [OnboardingIntent] actions to the ViewModel.
+ */
 @Composable
 fun BottomBar(
     currentPage: Int,
@@ -56,37 +64,39 @@ fun BottomBar(
     pagerState: PagerState,
     onIntent: (OnboardingIntent) -> Unit
 ) {
-    val targetProgress = (currentPage + NEXT_PAGE_PLUS).toFloat() / totalPages
+    val targetProgress by remember(currentPage, totalPages) {
+        derivedStateOf { (currentPage + 1).toFloat() / totalPages }
+    }
 
     val animatedProgress by animateFloatAsState(
         targetValue = targetProgress,
         animationSpec = mMotionScheme.slowSpatialSpec(),
-        label = ANIMATION_LABEL
+        label = "Animated indicator progress"
     )
 
     val animationScope = rememberCoroutineScope()
     BottomAppBar(
         containerColor = Color.Transparent,
-        contentPadding = PaddingValues(horizontal = BarHorizontalPadding)
+        contentPadding = PaddingValues(horizontal = mDimens.paddingMedium)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(BarHorizontalPadding),
+            horizontalArrangement = Arrangement.spacedBy(mDimens.paddingMedium),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
                 modifier = Modifier.weight(ICON_WEIGHT),
                 onClick = {
                     animationScope.launch {
-                        pagerState.animateScrollToPage(pagerState.currentPage - NEXT_PAGE_PLUS)
+                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
                     }
                 },
-                enabled = currentPage > ZERO
+                enabled = currentPage > 0
             ) {
                 Icon(
                     painter = painterResource(LibertyFlowIcons.Filled.AltArrowLeft),
                     contentDescription = null,
-                    tint = if (currentPage > ZERO) mColors.primary else mColors.onSurface.copy(alpha = DISABLED_ICON_ALPHA)
+                    tint = if (currentPage > 0) mColors.primary else mColors.onSurface.copy(alpha = DISABLED_ICON_ALPHA)
                 )
             }
 
@@ -94,7 +104,7 @@ fun BottomBar(
                 progress = { animatedProgress },
                 modifier = Modifier
                     .weight(PROGRESS_WEIGHT)
-                    .height(ProgressHeight)
+                    .height(mDimens.spacingSmall)
                     .clip(CircleShape),
                 color = mColors.primary,
                 trackColor = mColors.primary.copy(alpha = INDICATOR_ALPHA)
@@ -105,9 +115,9 @@ fun BottomBar(
                 enabled = enabled,
                 modifier = Modifier.weight(ICON_WEIGHT),
                 onClick = {
-                    if (pagerState.currentPage < totalPages - NEXT_PAGE_PLUS) {
+                    if (pagerState.currentPage < totalPages - 1) {
                         animationScope.launch {
-                            pagerState.animateScrollToPage(pagerState.currentPage + NEXT_PAGE_PLUS)
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     } else {
                         onIntent(OnboardingIntent.SaveOnboardingCompleted)

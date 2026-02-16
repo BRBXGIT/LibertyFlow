@@ -16,6 +16,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and logic of the Onboarding flow.
+ * * This ViewModel follows a unidirectional data flow (UDF) pattern:
+ * - **State**: Managed via [MutableStateFlow], exposed as a lazy flow.
+ * - **Intents**: Handled via [sendIntent] to trigger state changes or side effects.
+ * - **Effects**: One-time UI events (like navigation) handled via a [Channel].
+ *
+ * @property onboardingRepo The repository handling persistence of onboarding data.
+ * @property dispatcherIo The injected IO dispatcher for background operations,
+ * identified by [LibertyFlowDispatcher.IO].
+ */
 @HiltViewModel
 class OnboardingVM @Inject constructor(
     private val onboardingRepo: OnboardingRepo,
@@ -28,6 +39,7 @@ class OnboardingVM @Inject constructor(
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
+    // --- Intents ---
     fun sendIntent(intent: OnboardingIntent) {
         when(intent) {
             OnboardingIntent.SaveOnboardingCompleted -> saveOnboardingCompleted()
@@ -35,9 +47,11 @@ class OnboardingVM @Inject constructor(
         }
     }
 
+    // --- Effects ---
     fun sendEffect(effect: UiEffect) =
         viewModelScope.launch { _effects.send(effect) }
 
+    // --- Data ---
     private fun saveOnboardingCompleted() = viewModelScope.launch(dispatcherIo) {
         onboardingRepo.saveOnboardingCompleted()
     }
