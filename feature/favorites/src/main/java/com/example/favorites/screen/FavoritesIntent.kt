@@ -1,5 +1,10 @@
 package com.example.favorites.screen
 
+/**
+ * Represents all possible user or system intentions for the Favorites screen.
+ * * As a [sealed interface], it ensures exhaustive handling within the ViewModel's
+ * `sendIntent` function, providing a single source of truth for UI events.
+ */
 sealed interface FavoritesIntent {
 
     // Auth

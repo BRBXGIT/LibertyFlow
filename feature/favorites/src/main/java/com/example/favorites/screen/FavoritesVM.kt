@@ -14,6 +14,7 @@ import com.example.data.domain.FavoritesRepo
 import com.example.data.models.auth.TokenRequest
 import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.request.request_parameters.ShortRequestParameters
+import com.example.design_system.utils.CommonStrings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,8 +30,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val RETRY = "Retry"
-
+/**
+ * ViewModel responsible for managing the state and logic of the Favorites screen.
+ * * This ViewModel follows a unidirectional data flow (MVI) pattern, handling
+ * authentication via [BaseAuthVM], search-based filtering, and paginated data
+ * retrieval through [FavoritesRepo].
+ *
+ * @property favoritesRepo Repository providing access to the user's favorite items.
+ * @param authRepo Repository for authentication-related operations, passed to [BaseAuthVM].
+ * @param ioDispatcher The coroutine dispatcher for background operations.
+ */
 @HiltViewModel
 class FavoritesVM @Inject constructor(
     authRepo: AuthRepo,
@@ -88,7 +97,7 @@ class FavoritesVM @Inject constructor(
             onStart = { setAuthErrorState(isError = false) },
             onValidationError = { setAuthErrorState(isError = true, bsVisible = true) },
             onError = { msg, retry ->
-                sendEffect(UiEffect.ShowSnackbarWithAction(msg, RETRY, retry))
+                sendEffect(UiEffect.ShowSnackbarWithAction(msg, CommonStrings.RETRY, retry))
             }
         )
     }
@@ -119,7 +128,6 @@ class FavoritesVM @Inject constructor(
     // --- Data Streams ---
     /**
      * Paging data stream. Automatically re-fetches when search query changes.
-     * Includes 300ms debounce to avoid excessive API calls during typing.
      */
     val favorites = _state
         .map { it.searchForm.query }

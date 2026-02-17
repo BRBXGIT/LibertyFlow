@@ -30,10 +30,24 @@ import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.containers.VibratingContainer
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.utils.CommonStrings
 import com.example.favorites.R
 
 private val TopBarLabel = R.string.favorites_top_bar_label
 
+/**
+ * The primary entry point for the Favorites screen UI.
+ * * This is a stateless Composable that reflects the current [state] and emits user
+ * actions via the [onIntent] callback. It manages a [Scaffold] containing a
+ * searching top bar, a pull-to-refresh container, and a conditional authentication
+ * BottomSheet.
+ *
+ * @param state The current [FavoritesState] containing UI and form data.
+ * @param favorites The paginated list of anime items retrieved via Paging 3.
+ * @param snackbarHostState State manager for displaying temporary snackbar messages.
+ * @param onIntent Callback to send [FavoritesIntent]s to the ViewModel.
+ * @param onEffect Callback to handle [UiEffect]s like navigation or snackbar actions.
+ */
 @Composable
 internal fun Favorites(
     state: FavoritesState,
@@ -96,6 +110,11 @@ internal fun Favorites(
     }
 }
 
+/**
+ * Orchestrates the main screen area based on the user's [AuthState].
+ * * If the user is [AuthState.LoggedIn], it displays the favorites list;
+ * otherwise, it shows the [LoggedOutSection] prompting for login.
+ */
 @Composable
 private fun MainContent(
     authState: AuthState,
@@ -121,8 +140,12 @@ private fun MainContent(
     }
 }
 
-private const val RETRY = "Retry"
-
+/**
+ * Displays the content for an authenticated user.
+ * * This function handles two critical responsibilities:
+ * 1. Syncing [favorites] paging states (loading/error) back to the ViewModel via intents.
+ * 2. Rendering the actual [PagingAnimeItemsLazyVerticalGrid] or an [ErrorSection].
+ */
 @Composable
 private fun LoggedInContent(
     isError: Boolean,
@@ -139,7 +162,7 @@ private fun LoggedInContent(
             onEffect(
                 UiEffect.ShowSnackbarWithAction(
                     messageRes = messageRes.toInt(),
-                    actionLabel = RETRY,
+                    actionLabel = CommonStrings.RETRY,
                     action = retry
                 )
             )

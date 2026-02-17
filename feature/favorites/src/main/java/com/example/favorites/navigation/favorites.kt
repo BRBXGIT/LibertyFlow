@@ -22,6 +22,17 @@ import com.example.favorites.screen.Favorites
 import com.example.favorites.screen.FavoritesVM
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Defines the Favorites destination within the [NavGraphBuilder].
+ * * This function acts as the "Glue" layer. It:
+ * 1. Collects FavoritesState and [LazyPagingItems] with lifecycle awareness.
+ * 2. Connects the [FavoritesVM]'s intent and effect flows to the UI.
+ * 3. Bridges external refresh signals from [RefreshVM] to the paging data.
+ *
+ * @param favoritesVM The primary state holder for this screen.
+ * @param refreshVM A shared ViewModel used to trigger data refreshes from other screens.
+ * @param navController Used by [HandleCommonEffects] to perform navigation side-effects.
+ */
 fun NavGraphBuilder.favorites(
     favoritesVM: FavoritesVM,
     refreshVM: RefreshVM,
@@ -54,6 +65,14 @@ fun NavGraphBuilder.favorites(
     )
 }
 
+/**
+ * A side-effect observer that listens for global refresh signals.
+ * * When a [RefreshEffect.RefreshFavorites] is received, it triggers the
+ * [LazyPagingItems.refresh] method to invalidate the current list and fetch fresh data.
+ *
+ * @param effects The stream of refresh events, usually from a shared/global source.
+ * @param favorites The paging items to be refreshed.
+ */
 @Composable
 private fun RefreshFavorites(
     effects: Flow<RefreshEffect>,
