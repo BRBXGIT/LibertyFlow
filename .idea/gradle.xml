@@ -27,6 +27,8 @@
             <option value="$PROJECT_DIR$/feature/onboarding" />
             <option value="$PROJECT_DIR$/feature/player" />
             <option value="$PROJECT_DIR$/feature/settings" />
+            <option value="$PROJECT_DIR$/shared-test" />
+            <option value="$PROJECT_DIR$/shared-test/core-testing" />
           </set>
         </option>
       </GradleProjectSettings>
