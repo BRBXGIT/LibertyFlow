@@ -13,3 +13,13 @@ kotlin {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
 }
+
+dependencies {
+
+    // --- Testing ---
+    // Unit tests
+    api(libs.junit)
+    api(libs.mockk)
+    api(libs.coroutines.test)
+    api(libs.turbine)
+}

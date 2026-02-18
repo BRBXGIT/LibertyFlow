@@ -29,6 +29,7 @@
             <option value="$PROJECT_DIR$/feature/settings" />
             <option value="$PROJECT_DIR$/shared-test" />
             <option value="$PROJECT_DIR$/shared-test/core-testing" />
+            <option value="$PROJECT_DIR$/shared-test/feature-testing" />
           </set>
         </option>
       </GradleProjectSettings>

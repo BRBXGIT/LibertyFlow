@@ -14,11 +14,11 @@ sealed interface AuthState {
      * * In this state, the application provides access to protected features
      * and maintains an active user session.
      */
-    data object LoggedIn : AuthState
+    data object LoggedIn: AuthState
 
     /**
      * Indicates that the user is not authenticated or has been logged out.
      * * In this state, the application doesn't provides access to protected features
      */
-    data object LoggedOut : AuthState
+    data object LoggedOut: AuthState
 }

@@ -51,12 +51,8 @@ dependencies {
     // Media 3 for hilt injection
     implementation(libs.androidx.media3.exoplayer)
     // Media 3 for player session
-    api(libs.androidx.media3.session)
+    api(libs.androidx.media3.session) // Api cause dagger need 'Service' class for playback
 
     // --- Testing ---
-    // Unit tests
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.turbine)
+    testImplementation(project(":shared-test:core-testing"))
 }
