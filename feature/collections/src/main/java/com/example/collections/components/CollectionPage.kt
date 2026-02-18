@@ -18,8 +18,6 @@ import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
 import com.example.design_system.containers.VibratingContainer
 
-private const val ZERO_ELEMENTS = 0
-
 /**
  * Displays a single collection page with handled states for loading, errors, and empty results.
  * * Internal visibility restricts usage to the collections feature module.
@@ -71,7 +69,7 @@ private enum class PageState {
 
 /**
  * Maps the Paging load state and item count to a high-level [PageState].
- * * @param loadState The current refresh state of the Paging data.
+ * @param loadState The current refresh state of the Paging data.
  * @param itemCount Total items currently loaded.
  * @param query The current search/filter string.
  */
@@ -80,7 +78,7 @@ private fun calculatePageState(
     itemCount: Int,
     query: String
 ): PageState {
-    val isEmpty = itemCount == ZERO_ELEMENTS
+    val isEmpty = itemCount == 0
 
     return when (loadState) {
         is LoadState.Error -> PageState.Error

@@ -37,15 +37,23 @@ import com.example.design_system.components.sections.LoggedOutSection
 import com.example.design_system.containers.PagingStatesContainer
 import com.example.design_system.theme.logic.ThemeState
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.utils.CommonStrings
 import kotlinx.coroutines.launch
 
 private val TopBarLabel = R.string.collections_top_bar_label
 
-private const val RETRY = "Retry"
-
 /**
- * Main entry point for the Collections screen.
- * Handles the scaffold, top bar, and high-level auth state switching.
+ * The primary UI layout for the Collections screen.
+ * * **Scaffold:** Integrates a [SearchingTopBar] with nested scroll behavior.
+ * * **Auth Management:** Conditionally displays the [AuthBS] (Bottom Sheet) based on the current [CollectionsState].
+ * * **State Switching:** Toggles between [LoggedInContent] and [LoggedOutSection] based on [AuthState].
+ *
+ * @param state The current UI state containing auth, search, and collection data.
+ * @param themeState Current theme configuration for visual styling.
+ * @param pagingItemsMap Map providing the [LazyPagingItems] for each collection category.
+ * @param snackbarHostState Manages the display of transient snackbar messages.
+ * @param onIntent Lambda to dispatch [CollectionsIntent] to the ViewModel.
+ * @param onEffect Lambda to trigger [UiEffect] side-effects (Navigation, Snackbars).
  */
 @Composable
 internal fun Collections(
@@ -112,7 +120,10 @@ internal fun Collections(
 }
 
 /**
- * Encapsulates the logic for the logged-in user experience, including paging states.
+ * Orchestrates the UI for authenticated users.
+ * * **Load State Management:** Uses [PagingStatesContainer] to monitor the health of the
+ * currently selected [LazyPagingItems], triggering error snackbars if loading fails.
+ * * **Pager Navigation:** Displays the [CollectionsPagerContent].
  */
 @Composable
 private fun LoggedInContent(
@@ -128,7 +139,13 @@ private fun LoggedInContent(
         items = currentItems,
         onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
         onRetryRequest = { messageRes, retry ->
-            onEffect(UiEffect.ShowSnackbarWithAction(messageRes.toInt(), RETRY, retry))
+            onEffect(
+                UiEffect.ShowSnackbarWithAction(
+                    messageRes = messageRes.toInt(),
+                    actionLabel = CommonStrings.RETRY,
+                    action = retry
+                )
+            )
         }
     )
 
@@ -141,6 +158,13 @@ private fun LoggedInContent(
     )
 }
 
+/**
+ * Manages the horizontal paging and tab synchronization for anime collections.
+ * * **Synchronization:** Uses a [LaunchedEffect] to update the [CollectionsVM] when the
+ * user swipes between pages, ensuring the state and pager remain in sync.
+ * * **Pager State:** Utilizes [rememberPagerState] to preserve scroll position across swipes.
+ * * **Tabs:** Renders the [CollectionsTabRow] as the primary navigation anchor.
+ */
 @Composable
 private fun CollectionsPagerContent(
     themeState: ThemeState,

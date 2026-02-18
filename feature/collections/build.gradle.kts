@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     // Compose preview
     implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
     // Nav
     implementation(libs.navigation.compose)
     // Material 3

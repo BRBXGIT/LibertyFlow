@@ -17,6 +17,7 @@ import com.example.data.models.common.request.common_request.CommonRequestWithCo
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.request.request_parameters.ShortRequestParameters
 import com.example.data.models.common.anime_item.AnimeItem
+import com.example.design_system.utils.CommonStrings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,8 +34,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val RETRY = "Retry"
-
+/**
+ * ViewModel responsible for managing the state and logic of the Collections screen.
+ * * This VM handles paginated anime lists across different collection types,
+ * search functionality with debouncing, and authentication flows via [BaseAuthVM].
+ *
+ * @property authRepo Repository handling authentication-related data operations.
+ * @property collectionsRepo Repository providing access to anime collections and paging data.
+ * @property ioDispatcher The [CoroutineDispatcher] used for background operations,
+ * injected via [LibertyFlowDispatcher.IO].
+ */
 @HiltViewModel
 class CollectionsVM @Inject constructor(
     authRepo: AuthRepo,
@@ -70,8 +79,10 @@ class CollectionsVM @Inject constructor(
         .distinctUntilChanged()
 
     /**
-     * Dynamic Flow Generation: Maps each Collection enum entry to its specific PagingData flow.
-     * This ensures independent paging states while reusing the search logic.
+     * A map of [Collection] types to their respective [PagingData] flows.
+     * * This dynamically generates an independent paging stream for every entry in
+     * the [Collection] enum. Each stream reacts to changes in [queryFlow] and
+     * is cached within the [viewModelScope].
      */
     val pagingFlows: Map<Collection, Flow<PagingData<AnimeItem>>> =
         Collection.entries.associateWith { collection ->
@@ -118,7 +129,13 @@ class CollectionsVM @Inject constructor(
             onStart = { setAuthErrorState(isError = false) },
             onValidationError = { setAuthErrorState(isError = true, bsVisible = true) },
             onError = { msg, retry ->
-                sendEffect(UiEffect.ShowSnackbarWithAction(msg, RETRY, retry))
+                sendEffect(
+                    effect = UiEffect.ShowSnackbarWithAction(
+                        messageRes = msg,
+                        actionLabel = CommonStrings.RETRY,
+                        action = retry
+                    )
+                )
             }
         )
     }

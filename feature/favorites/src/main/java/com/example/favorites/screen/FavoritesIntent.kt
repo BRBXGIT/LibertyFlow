@@ -11,7 +11,12 @@ sealed interface FavoritesIntent {
     data object GetTokens : FavoritesIntent
     data object ToggleIsAuthBSVisible : FavoritesIntent
 
-    // Grouped form updates to avoid polluting the intent root
+    /**
+     * Intent to update specific fields within the authentication form.
+     * * This is grouped into a nested structure to prevent the root [FavoritesIntent]
+     * from becoming cluttered with individual field update classes.
+     * @property field The specific [AuthField] being modified.
+     */
     data class UpdateAuthForm(val field: AuthField): FavoritesIntent {
         sealed interface AuthField {
             data class Email(val value: String): AuthField

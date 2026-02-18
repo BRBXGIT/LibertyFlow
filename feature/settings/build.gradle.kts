@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.androidx.material3.android)
     // Compose bom
     implementation(platform(libs.androidx.compose.bom))
+    // Compose preview
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
     // Compose runtime
     implementation(libs.androidx.compose.runtime)
     // Hilt
