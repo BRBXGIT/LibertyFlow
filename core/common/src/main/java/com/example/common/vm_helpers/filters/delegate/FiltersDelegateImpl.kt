@@ -13,12 +13,24 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+/**
+ * Concrete implementation of [FiltersDelegate] that manages the search and filter state
+ * using [MutableStateFlow].
+ *
+ * This class handles UI toggles (visibility/loading) and complex business logic for
+ * filtering criteria such as genres, seasons, and date ranges.
+ */
 class FiltersDelegateImpl @Inject constructor(): FiltersDelegate {
 
     // --- State ---
     private val _filtersState = MutableStateFlow(FiltersState())
     override val filtersState = _filtersState.asStateFlow()
 
+    /**
+     * Helper to observe state changes within a specific [CoroutineScope].
+     * @param scope The lifecycle scope in which to collect the flow.
+     * @param onUpdate Callback invoked every time the [FiltersState] changes.
+     */
     override fun observeFilters(scope: CoroutineScope, onUpdate: (FiltersState) -> Unit) {
         _filtersState
             .onEach { state -> onUpdate(state) }
