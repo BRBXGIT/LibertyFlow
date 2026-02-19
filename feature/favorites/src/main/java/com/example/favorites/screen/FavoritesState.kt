@@ -2,8 +2,8 @@ package com.example.favorites.screen
 
 import androidx.compose.runtime.Immutable
 import com.example.common.vm_helpers.auth.models.AuthState
+import com.example.common.vm_helpers.filters.models.FiltersState
 import com.example.common.vm_helpers.models.LoadingState
-import com.example.common.vm_helpers.models.SearchForm
 
 /**
  * Represents the complete UI state for the Favorites screen.
@@ -21,5 +21,5 @@ data class FavoritesState(
 
     val authState: AuthState = AuthState(),
 
-    val searchForm: SearchForm = SearchForm()
+    val filtersState: FiltersState = FiltersState()
 )

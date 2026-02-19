@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.auth.delegate.AuthDelegate
+import com.example.common.vm_helpers.filters.delegate.FiltersDelegate
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.CollectionsRepo
 import com.example.data.models.common.anime_item.AnimeItem
@@ -40,10 +41,13 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class CollectionsVM @Inject constructor(
+    private val filtersDelegate: FiltersDelegate,
     private val authDelegate: AuthDelegate,
     private val collectionsRepo: CollectionsRepo,
-): ViewModel(), AuthDelegate by authDelegate {
-
+): ViewModel(),
+    AuthDelegate by authDelegate,
+    FiltersDelegate by filtersDelegate
+{
     private val _state = MutableStateFlow(CollectionsState())
     val state = _state.toLazily(CollectionsState())
 
@@ -57,6 +61,12 @@ class CollectionsVM @Inject constructor(
                 _state.update { it.copy(authState = authState) }
             }
         )
+        observeFilters(
+            scope = viewModelScope,
+            onUpdate = { filtersState ->
+                _state.update { it.copy(filtersState = filtersState) }
+            }
+        )
     }
 
     // --- Intents ---
@@ -64,10 +74,8 @@ class CollectionsVM @Inject constructor(
         when (intent) {
             // --- Ui ---
             is CollectionsIntent.ToggleIsAuthBSVisible -> toggleAuthBS()
-            is CollectionsIntent.ToggleIsSearching ->
-                _state.update { it.copy(searchForm = it.searchForm.toggleSearching()) }
-            is CollectionsIntent.UpdateQuery ->
-                _state.update { it.copy(searchForm = it.searchForm.updateQuery(intent.query)) }
+            is CollectionsIntent.ToggleIsSearching -> toggleIsSearching()
+            is CollectionsIntent.UpdateQuery -> updateQuery(intent.query)
             is CollectionsIntent.SetCollection ->
                 _state.update { it.copy(selectedCollection = intent.collection) }
 
@@ -106,7 +114,7 @@ class CollectionsVM @Inject constructor(
      * Shared query flow with debounce to optimize search requests.
      */
     private val queryFlow = _state
-        .map { it.searchForm.query }
+        .map { it.filtersState.requestParameters.search }
         .distinctUntilChanged()
 
     /**

@@ -26,16 +26,6 @@ data class FullRequestParameters(
     val publishStatuses: List<PublishStatus> = emptyList(),
     val productionStatuses: List<ProductionsStatus> = emptyList()
 ): RequestParametersBase {
-    fun updateYear(
-        from: Int? = null,
-        to: Int? = null
-    ) = copy(
-        years = years.copy(
-            from = from ?: years.from,
-            to = to ?: years.to
-        )
-    )
-
     fun updateSearch(search: String) = copy(search = search)
 
     fun addGenre(genre: Genre) = copy(genres = genres + genre)
@@ -47,6 +37,4 @@ data class FullRequestParameters(
     fun removeSeason(season: Season) = copy(seasons = seasons - season)
 
     fun updateSorting(sorting: Sorting) = copy(sorting = sorting)
-
-    fun toggleIsOngoing(publishStatuses: List<PublishStatus>) = copy(publishStatuses = publishStatuses)
 }

@@ -27,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.example.common.vm_helpers.models.SearchForm
 import com.example.design_system.R
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
@@ -49,7 +48,8 @@ private val TOP_BAR_ICON_SIZE = 22.dp
  */
 @Composable
 fun SearchingTopBar(
-    searchForm: SearchForm,
+    isSearching: Boolean,
+    query: String,
     text: String,
     scrollBehavior: TopAppBarScrollBehavior,
     onQueryChange: (String) -> Unit,
@@ -67,14 +67,14 @@ fun SearchingTopBar(
             scrollBehavior = scrollBehavior,
             title = {
                 TopBarTitle(
-                    isSearching = searchForm.isSearching,
-                    query = searchForm.query,
+                    isSearching = isSearching,
+                    query = query,
                     label = text,
                     onQueryChange = onQueryChange
                 )
             },
             navigationIcon = {
-                if (searchForm.isSearching) {
+                if (isSearching) {
                     TopBarIconButton(
                         icon = LibertyFlowIcons.Filled.ArrowLeft,
                         onClick = {
@@ -86,8 +86,8 @@ fun SearchingTopBar(
             },
             actions = {
                 TopBarActions(
-                    isSearching = searchForm.isSearching,
-                    query = searchForm.query,
+                    isSearching = isSearching,
+                    query = query,
                     onClearQuery = { onQueryChange("") },
                     onToggleSearch = onToggleSearch
                 )

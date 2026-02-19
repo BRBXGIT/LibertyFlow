@@ -68,7 +68,8 @@ internal fun Favorites(
             SearchingTopBar(
                 text = stringResource(TopBarLabel),
                 scrollBehavior = scrollBehavior,
-                searchForm = state.searchForm,
+                isSearching = state.filtersState.isSearching,
+                query = state.filtersState.requestParameters.search,
                 onQueryChange = { onIntent(FavoritesIntent.UpdateQuery(it)) },
                 onToggleSearch = { onIntent(FavoritesIntent.ToggleIsSearching) },
             )
@@ -88,7 +89,7 @@ internal fun Favorites(
 
         // Pull-to-refresh container
         VibratingContainer(
-            isSearching = state.searchForm.isSearching,
+            isSearching = state.filtersState.isSearching,
             isRefreshing = state.loadingState.isLoading,
             onRefresh = favorites::refresh,
             modifier = Modifier

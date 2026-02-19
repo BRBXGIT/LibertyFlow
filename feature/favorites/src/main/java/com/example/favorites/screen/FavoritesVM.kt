@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.auth.delegate.AuthDelegate
+import com.example.common.vm_helpers.filters.delegate.FiltersDelegate
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.FavoritesRepo
 import com.example.data.models.common.request.common_request.CommonRequest
@@ -36,9 +37,12 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoritesVM @Inject constructor(
     private val authDelegate: AuthDelegate,
+    private val filtersDelegate: FiltersDelegate,
     private val favoritesRepo: FavoritesRepo,
-): ViewModel(), AuthDelegate by authDelegate {
-
+): ViewModel(),
+    AuthDelegate by authDelegate,
+    FiltersDelegate by filtersDelegate
+{
     private val _state = MutableStateFlow(FavoritesState())
     val state = _state.toLazily(FavoritesState())
 
@@ -52,6 +56,12 @@ class FavoritesVM @Inject constructor(
                 _state.update { it.copy(authState = authState) }
             }
         )
+        observeFilters(
+            scope = viewModelScope,
+            onUpdate = { filtersState -> 
+                _state.update { it.copy(filtersState = filtersState) }
+            }
+        )
     }
 
     // --- Intents ---
@@ -62,10 +72,8 @@ class FavoritesVM @Inject constructor(
         when (intent) {
             // --- Ui ---
             is FavoritesIntent.ToggleIsAuthBSVisible -> toggleAuthBS()
-            is FavoritesIntent.ToggleIsSearching ->
-                _state.update { it.copy(searchForm = it.searchForm.toggleSearching()) }
-            is FavoritesIntent.UpdateQuery ->
-                _state.update { it.copy(searchForm = it.searchForm.updateQuery(intent.query)) }
+            is FavoritesIntent.ToggleIsSearching -> toggleIsSearching()
+            is FavoritesIntent.UpdateQuery -> updateQuery(intent.query)
             is FavoritesIntent.SetIsLoading ->
                 _state.update { it.copy(loadingState = it.loadingState.withLoading(intent.value)) }
             is FavoritesIntent.SetIsError ->
@@ -106,7 +114,7 @@ class FavoritesVM @Inject constructor(
      * Paging data stream. Automatically re-fetches when search query changes.
      */
     val favorites = _state
-        .map { it.searchForm.query }
+        .map { it.filtersState.requestParameters.search }
         .distinctUntilChanged()
         .flatMapLatest { query ->
             favoritesRepo.getFavorites(CommonRequest(ShortRequestParameters(search = query)))
