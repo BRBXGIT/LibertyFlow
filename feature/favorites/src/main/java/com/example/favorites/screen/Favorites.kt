@@ -2,6 +2,7 @@
 
 package com.example.favorites.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,6 +57,12 @@ internal fun Favorites(
     onIntent: (FavoritesIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
+    BackHandler {
+        if (state.filtersState.isSearching) {
+            onIntent(FavoritesIntent.ToggleIsSearching)
+        }
+    }
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(

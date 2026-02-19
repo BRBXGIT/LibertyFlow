@@ -30,14 +30,22 @@ internal fun CollectionPage(
 ) {
     // Wrap state calculation in remember/derivedStateOf to optimize recomposition performance.
     // This ensures pageState only updates when essential properties change.
-    val pageState by remember(items.loadState.refresh, items.itemCount, state.searchForm.query) {
+    val pageState by remember(
+        key1 = items.loadState.refresh,
+        key2 = items.itemCount,
+        key3 = state.filtersState.requestParameters.search
+    ) {
         derivedStateOf {
-            calculatePageState(items.loadState.refresh, items.itemCount, state.searchForm.query)
+            calculatePageState(
+                loadState = items.loadState.refresh,
+                itemCount = items.itemCount,
+                query = state.filtersState.requestParameters.search
+            )
         }
     }
 
     VibratingContainer(
-        isSearching = state.searchForm.isSearching,
+        isSearching = state.filtersState.isSearching,
         isRefreshing = pageState == PageState.Loading,
         onRefresh = items::refresh
     ) {

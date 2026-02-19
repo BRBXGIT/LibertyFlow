@@ -2,6 +2,7 @@
 
 package com.example.home.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -69,6 +70,12 @@ internal fun Home(
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
+    BackHandler {
+        if (state.filtersState.isSearching) {
+            onIntent(HomeIntent.ToggleSearching)
+        }
+    }
+
     // Synchronize Paging library states with our HomeState flags
     PagingStatesContainer(
         items = anime,

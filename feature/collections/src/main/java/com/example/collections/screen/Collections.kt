@@ -2,6 +2,7 @@
 
 package com.example.collections.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,6 +65,12 @@ internal fun Collections(
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
+    BackHandler {
+        if (state.filtersState.isSearching) {
+            onIntent(CollectionsIntent.ToggleIsSearching)
+        }
+    }
+
     val topBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
