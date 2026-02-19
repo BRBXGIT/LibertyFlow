@@ -98,7 +98,7 @@ internal fun Home(
         contentWindowInsets = WindowInsets(bottom = calculateNavBarSize()),
         topBar = {
             SearchingTopBar(
-                searchForm = SearchForm(state.filtersState.request.search, state.isSearching),
+                searchForm = SearchForm(state.filtersState.requestParameters.search, state.filtersState.isSearching),
                 text = stringResource(TopBarLabel),
                 scrollBehavior = scrollBehavior,
                 onToggleSearch = { onIntent(HomeIntent.ToggleSearching) },
@@ -117,7 +117,7 @@ internal fun Home(
 
         // Pull-to-refresh Wrapper
         VibratingContainer(
-            isSearching = state.isSearching,
+            isSearching = state.filtersState.isSearching,
             isRefreshing = state.loadingState.isLoading,
             onRefresh = anime::refresh,
             modifier = Modifier

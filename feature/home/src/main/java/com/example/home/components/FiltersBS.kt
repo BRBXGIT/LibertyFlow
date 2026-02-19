@@ -109,7 +109,7 @@ internal fun FiltersBS(
         }
     }
 
-    val request = state.filtersState.request
+    val request = state.filtersState.requestParameters
 
     ModalBottomSheet(
         shape = mShapes.small,

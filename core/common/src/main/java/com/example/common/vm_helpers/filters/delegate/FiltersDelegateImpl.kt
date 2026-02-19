@@ -11,8 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class FiltersDelegateImpl: FiltersDelegate {
+class FiltersDelegateImpl @Inject constructor(): FiltersDelegate {
 
     // --- State ---
     private val _filtersState = MutableStateFlow(FiltersState())

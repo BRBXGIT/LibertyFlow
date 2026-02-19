@@ -9,12 +9,12 @@ import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.common.vm_helpers.filters.delegate.FiltersDelegate
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.models.common.request.common_request.CommonRequest
-import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.utils.network.network_caller.onError
 import com.example.data.utils.network.network_caller.onSuccess
 import com.example.design_system.utils.CommonAnimationDelays.RAINBOW_BUTTON_ANIMATION_DELAY
@@ -56,11 +56,12 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeVM @Inject constructor(
+    private val filtersDelegate: FiltersDelegate,
     private val releasesRepo: ReleasesRepo,
     private val catalogRepo: CatalogRepo,
     private val genresRepo: GenresRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
-): ViewModel() {
+): ViewModel(), FiltersDelegate by filtersDelegate {
 
     private val _state = MutableStateFlow(HomeState())
     val state = _state.toLazily(HomeState())
@@ -68,37 +69,36 @@ class HomeVM @Inject constructor(
     private val _effects = Channel<UiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
+    init {
+        observeFilters(
+            scope = viewModelScope,
+            onUpdate = { state -> _state.update { it.copy(filtersState = state) } }
+        )
+    }
+
     // --- Intents ---
     fun sendIntent(intent: HomeIntent) {
         when (intent) {
             // UI Visibility state
-            HomeIntent.ToggleSearching ->
-                _state.update { it.toggleSearching() }
-            HomeIntent.ToggleFiltersBottomSheet ->
-                _state.update { it.copy(filtersState = it.filtersState.toggleBS()) }
+            HomeIntent.ToggleSearching -> toggleIsSearching()
+            HomeIntent.ToggleFiltersBottomSheet -> toggleFiltersBS()
 
             // Filter mutations
-            is HomeIntent.UpdateQuery ->
-                _state.update { it.copy(filtersState = it.filtersState.updateRequest { updateSearch(intent.query) }) }
-            is HomeIntent.UpdateSorting ->
-                _state.update { it.copy(filtersState = it.filtersState.updateRequest { updateSorting(intent.sorting) }) }
-            is HomeIntent.ToggleIsOngoing -> handleToggleOngoing()
+            is HomeIntent.UpdateQuery -> updateQuery(intent.query)
+            is HomeIntent.UpdateSorting -> updateSorting(intent.sorting)
+            is HomeIntent.ToggleIsOngoing -> toggleIsOngoing()
 
             // Genre management
-            is HomeIntent.AddGenre ->
-                _state.update { it.copy(filtersState = it.filtersState.updateRequest { addGenre(intent.genre) }) }
-            is HomeIntent.RemoveGenre ->
-                _state.update { it.copy(filtersState = it.filtersState.updateRequest { removeGenre(intent.genre) }) }
+            is HomeIntent.AddGenre -> addGenre(intent.genre)
+            is HomeIntent.RemoveGenre -> removeGenre(intent.genre)
 
-            // Season & Year filters
-            is HomeIntent.AddSeason ->
-                _state.update { it.copy(filtersState = it.filtersState.updateRequest { addSeason(intent.season) }) }
-            is HomeIntent.RemoveSeason ->
-                _state.update { it.copy(filtersState = it.filtersState.updateRequest { removeSeason(intent.season) }) }
-            is HomeIntent.UpdateFromYear ->
-                _state.update { it.copy(filtersState = it.filtersState.updateRequest { updateYear(from = intent.year) }) }
-            is HomeIntent.UpdateToYear ->
-                _state.update { it.copy(filtersState = it.filtersState.updateRequest { updateYear(to = intent.year) }) }
+            // --- Season ---
+            is HomeIntent.AddSeason -> addSeason(intent.season)
+            is HomeIntent.RemoveSeason -> removeSeason(intent.season)
+
+            // --- Years ---
+            is HomeIntent.UpdateFromYear -> updateFromYear(intent.year)
+            is HomeIntent.UpdateToYear -> updateToYear(intent.year)
 
             // Global Loading/Error states
             is HomeIntent.SetLoading ->
@@ -116,21 +116,9 @@ class HomeVM @Inject constructor(
     fun sendEffect(effect: UiEffect) =
         viewModelScope.launch { _effects.send(effect) }
 
-    // --- Ongoing logic ---
-    private fun handleToggleOngoing() {
-        _state.update { state ->
-            val isCurrentlyEmpty = state.filtersState.request.publishStatuses.isEmpty()
-            state.copy(
-                filtersState = state.filtersState.updateRequest {
-                    toggleIsOngoing(if (isCurrentlyEmpty) listOf(PublishStatus.IS_ONGOING) else emptyList())
-                }
-            )
-        }
-    }
-
     // --- Data Streams ---
     val anime = _state
-        .map { it.filtersState.request }
+        .map { it.filtersState.requestParameters }
         .distinctUntilChanged()
         .flatMapLatest { request ->
             catalogRepo.getAnimeByQuery(CommonRequest(request))
