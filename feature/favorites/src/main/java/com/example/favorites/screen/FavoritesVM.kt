@@ -26,13 +26,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * ViewModel responsible for managing the state and logic of the Favorites screen.
- * * This ViewModel follows a unidirectional data flow (MVI) pattern, handling
- * authentication with authDelegate, search-based filtering, and paginated data
- * retrieval through [FavoritesRepo].
+ * ViewModel for the Favorites screen, managing user-bookmarked anime and authentication state.
  *
- * @property authDelegate Delegate that providing access to user's auth state and authentication logic
- * @property favoritesRepo Repository providing access to the user's favorite items.
+ * This ViewModel leverages multiple delegation to handle distinct responsibilities:
+ * - [AuthDelegate]: Manages login state, token retrieval, and authentication UI visibility.
+ * - [FiltersDelegate]: Manages search queries and filtering state for the favorites list.
+ *
+ * @property authDelegate Delegate providing authentication logic and state.
+ * @property filtersDelegate Delegate providing search and filter state management.
+ * @property favoritesRepo Repository providing a paginated stream of the user's favorite anime.
  */
 @HiltViewModel
 class FavoritesVM @Inject constructor(
@@ -58,7 +60,7 @@ class FavoritesVM @Inject constructor(
         )
         observeFilters(
             scope = viewModelScope,
-            onUpdate = { filtersState -> 
+            onUpdate = { filtersState ->
                 _state.update { it.copy(filtersState = filtersState) }
             }
         )

@@ -34,25 +34,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * ViewModel for the Home/Discovery screen, following the MVI (Model-View-Intent) pattern.
+ * ViewModel for the Home screen, responsible for orchestrating anime discovery,
+ * catalog filtering, and global UI effects.
  *
- * This ViewModel manages the state of anime discovery, including complex filtering
- * (genres, seasons, years, and statuses), paginated search results, and metadata
- * fetching (genres list). It leverages StateFlow for UI state and [Channel] for
- * one-time events (Effects).
+ * It utilizes [FiltersDelegate] via class delegation to manage the complex state
+ * of search filters seamlessly.
  *
- * ### Key Responsibilities:
- * - **State Management:** Maintains [HomeState] which encapsulates UI visibility,
- * loading states, and current filter configurations.
- * - **Reactive Filtering:** Observes changes in the filter request and automatically
- * triggers new PagingData streams via [catalogRepo].
- * - **Side Effects:** Handles navigation and snackbar messages through a [UiEffect] flow.
- * - **Business Logic:** Encapsulates random anime selection and genre synchronization.
- *
- * @property releasesRepo Repository for fetching general release data and random selections.
- * @property catalogRepo Repository for searching and paging through the anime catalog.
- * @property genresRepo Repository for managing available anime genres.
- * @property dispatcherIo The coroutine dispatcher used for background operations,
+ * @property filtersDelegate Delegate handling the logic for search parameters and filter UI state.
+ * @property releasesRepo Repository for fetching general anime releases and random suggestions.
+ * @property catalogRepo Repository providing the paginated stream of filtered anime.
+ * @property genresRepo Repository for fetching available anime genres.
+ * @property dispatcherIo Optimized dispatcher for background network/disk operations.
  */
 @HiltViewModel
 class HomeVM @Inject constructor(
@@ -116,7 +108,7 @@ class HomeVM @Inject constructor(
     fun sendEffect(effect: UiEffect) =
         viewModelScope.launch { _effects.send(effect) }
 
-    // --- Data Streams ---
+    // --- Data streams ---
     val anime = _state
         .map { it.filtersState.requestParameters }
         .distinctUntilChanged()
@@ -148,17 +140,29 @@ class HomeVM @Inject constructor(
 
     private fun getGenres() {
         viewModelScope.launch(dispatcherIo) {
-            _state.update { it.copy(genresState = it.genresState.copy(loadingState = it.genresState.loadingState.withLoading(true))) }
+            _state.update {
+                it.copy(
+                    genresState = it.genresState.copy(
+                        loadingState = it.genresState.loadingState.withLoading(true)
+                    )
+                )
+            }
 
             genresRepo.getGenres()
                 .onSuccess { genres -> _state.update { it.copy(genresState = it.genresState.withGenres(genres)) } }
                 .onError { _, messageRes -> sendSnackbarWithAction(messageRes) { getGenres() } }
 
-            _state.update { it.copy(genresState = it.genresState.copy(loadingState = it.genresState.loadingState.withLoading(false))) }
+            _state.update {
+                it.copy(
+                    genresState = it.genresState.copy(
+                        loadingState = it.genresState.loadingState.withLoading(false)
+                    )
+                )
+            }
         }
     }
 
-    // Helper for sending UI events (snackbars, navigation)
+    // Helper for sending UI events (snackbars)
     private suspend fun sendSnackbarWithAction(messageRes: Int, action: (() -> Unit)? = null) {
         _effects.send(
             element = UiEffect.ShowSnackbarWithAction(

@@ -16,12 +16,15 @@ sealed interface HomeIntent {
     data object ToggleSearching: HomeIntent
     data object ToggleFiltersBottomSheet: HomeIntent
 
+
     // Flags
     data class SetLoading(val value: Boolean): HomeIntent
     data class SetError(val value: Boolean): HomeIntent
 
+
     // Search
     data class UpdateQuery(val query: String): HomeIntent
+
 
     // Filters
     data class AddGenre(val genre: Genre): HomeIntent
@@ -32,6 +35,7 @@ sealed interface HomeIntent {
     data class UpdateToYear(val year: Int): HomeIntent
     data class UpdateSorting(val sorting: Sorting): HomeIntent
     data object ToggleIsOngoing: HomeIntent
+
 
     // Data
     data object GetRandomAnime: HomeIntent
