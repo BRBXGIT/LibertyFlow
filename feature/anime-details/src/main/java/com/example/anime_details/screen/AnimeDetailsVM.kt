@@ -1,19 +1,17 @@
 package com.example.anime_details.screen
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.common.vm_helpers.auth.delegate.AuthDelegate
 import com.example.common.vm_helpers.models.LoadingState
-import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.utils.toWhileSubscribed
-import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
 import com.example.data.domain.FavoritesRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.domain.WatchedEpsRepo
-import com.example.data.models.auth.UserAuthState
-import com.example.data.models.auth.TokenRequest
 import com.example.data.models.collections.request.CollectionItem
 import com.example.data.models.collections.request.CollectionRequest
 import com.example.data.models.common.request.request_parameters.Collection
@@ -21,13 +19,12 @@ import com.example.data.models.favorites.FavoriteItem
 import com.example.data.models.favorites.FavoriteRequest
 import com.example.data.utils.network.network_caller.onError
 import com.example.data.utils.network.network_caller.onSuccess
+import com.example.design_system.utils.CommonStrings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,13 +37,13 @@ private const val RETRY = "Retry"
 
 @HiltViewModel
 class AnimeDetailsVM @Inject constructor(
-    authRepo: AuthRepo,
+    private val authDelegate: AuthDelegate,
     private val releasesRepo: ReleasesRepo,
     private val watchedEpsRepo: WatchedEpsRepo,
     private val favoritesRepo: FavoritesRepo,
     private val collectionsRepo: CollectionsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-): BaseAuthVM(authRepo, dispatcherIo) {
+): ViewModel(), AuthDelegate by authDelegate {
 
     private val _state = MutableStateFlow(AnimeDetailsState())
     val state = _state.toWhileSubscribed(AnimeDetailsState())
@@ -55,55 +52,31 @@ class AnimeDetailsVM @Inject constructor(
     val effects = _effects.receiveAsFlow()
 
     init {
-        // Observe auth state changes from the BaseVM/Repo
-        observeAuthentication()
-    }
-
-    // --- Auth ---
-    /**
-     * Reacts to authentication changes.
-     * Synchronizes local state and fetches favorites for logged-in users.
-     */
-    private fun observeAuthentication() {
-        userAuthState
-            .onEach { auth ->
-                _state.update { it.copy(userAuthState = auth) }
-                if (auth is UserAuthState.LoggedIn) {
-                    fetchFavoritesIds()
-                    fetchCollections()
-                }
-            }
-            .launchIn(viewModelScope)
-    }
-
-    /**
-     * Executes login request using credentials from the UI state.
-     */
-    private fun performLogin() {
-        val form = _state.value.authForm
-
-        executeAuthentication(
-            request = TokenRequest(form.login, form.password),
-            onStart = { setAuthErrorState(isError = false) },
-            onValidationError = { setAuthErrorState(isError = true, bsVisible = true) },
-            onError = { messageRes, retry ->
-                sendSnackbar(messageRes, retry)
+        observeAuth(
+            scope = viewModelScope,
+            onUpdate = { authState ->
+                _state.update { it.copy(authState = authState) }
             }
         )
     }
 
-    private fun setAuthErrorState(isError: Boolean, bsVisible: Boolean = false) =
-        _state.update { it.updateAuthForm { f -> f.copy(isError = isError, isAuthBSVisible = bsVisible) } }
-
-    private fun handleAuthFormUpdate(field: AnimeDetailsIntent.UpdateAuthForm.AuthField) {
-        _state.update { state ->
-            state.updateAuthForm { form ->
-                when (field) {
-                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Email -> form.copy(login = field.value)
-                    is AnimeDetailsIntent.UpdateAuthForm.AuthField.Password -> form.copy(password = field.value)
-                }
+    // --- Auth ---
+    /**
+     * Executes login request using credentials from the UI state.
+     */
+    private fun performLogin() {
+        login(
+            scope = viewModelScope,
+            onError = { msgRes, retry ->
+                sendEffect(
+                    effect = UiEffect.ShowSnackbarWithAction(
+                        messageRes = msgRes,
+                        actionLabel = CommonStrings.RETRY,
+                        action = retry
+                    )
+                )
             }
-        }
+        )
     }
 
     // --- Intents ---
@@ -128,12 +101,13 @@ class AnimeDetailsVM @Inject constructor(
             AnimeDetailsIntent.ToggleIsDescriptionExpanded ->
                 _state.update { it.copy(isDescriptionExpanded = !it.isDescriptionExpanded) }
             AnimeDetailsIntent.ToggleIsAuthBSVisible ->
-                _state.update { it.copy(authForm = it.authForm.toggleIsAuthBSVisible()) }
+                _state.update { it.copy(authState = it.authState.toggleIsAuthBSVisible()) }
             AnimeDetailsIntent.ToggleCollectionsBSVisible ->
                 _state.update { it.copy(collectionsState = it.collectionsState.toggleBS()) }
 
-            // Form Updates (Consolidated)
-            is AnimeDetailsIntent.UpdateAuthForm -> handleAuthFormUpdate(intent.field)
+            // Auth
+            is AnimeDetailsIntent.UpdateLogin -> onLoginChanged(intent.login)
+            is AnimeDetailsIntent.UpdatePassword -> onPasswordChanged(intent.password)
         }
     }
 

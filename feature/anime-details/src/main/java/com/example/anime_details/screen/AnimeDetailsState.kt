@@ -3,16 +3,12 @@ package com.example.anime_details.screen
 import androidx.compose.runtime.Immutable
 import com.example.common.vm_helpers.models.AuthState
 import com.example.common.vm_helpers.models.LoadingState
-import com.example.data.models.auth.UserAuthState
 import com.example.data.models.collections.collection.AnimeCollection
 import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.data.models.common.request.request_parameters.Collection
 
 @Immutable
 data class AnimeDetailsState(
-    // Global Auth Status
-    val userAuthState: UserAuthState = UserAuthState.LoggedOut,
-
     // Screen Loading/Error States
     val loadingState: LoadingState = LoadingState(),
 
@@ -27,7 +23,7 @@ data class AnimeDetailsState(
     val collectionsState: CollectionsState = CollectionsState(),
 
     // Auth Bottom Sheet & Form (Grouped to isolate frequent updates)
-    val authForm: AuthState = AuthState(),
+    val authState: AuthState = AuthState(),
 
     // UI Toggles
     val isDescriptionExpanded: Boolean = false,
@@ -50,7 +46,7 @@ data class AnimeDetailsState(
 
     // Auth
     fun updateAuthForm(transformer: (AuthState) -> AuthState): AnimeDetailsState {
-        return copy(authForm = transformer(authForm))
+        return copy(authState = transformer(authState))
     }
 
     // Favorites

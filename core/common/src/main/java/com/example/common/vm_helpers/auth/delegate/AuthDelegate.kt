@@ -8,7 +8,7 @@ interface AuthDelegate {
 
     val authState: StateFlow<AuthState>
 
-    fun observeAuth(scope: CoroutineScope)
+    fun observeAuth(scope: CoroutineScope, onUpdate: (AuthState) -> Unit)
     fun toggleAuthBS()
     fun onLoginChanged(login: String)
     fun onPasswordChanged(password: String)

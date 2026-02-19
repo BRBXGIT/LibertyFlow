@@ -21,11 +21,7 @@ sealed interface AnimeDetailsIntent {
     data object ToggleIsAuthBSVisible: AnimeDetailsIntent
     data object ToggleCollectionsBSVisible: AnimeDetailsIntent
 
-    // Grouped form updates to avoid polluting the intent root
-    data class UpdateAuthForm(val field: AuthField): AnimeDetailsIntent {
-        sealed interface AuthField {
-            data class Email(val value: String): AuthField
-            data class Password(val value: String): AuthField
-        }
-    }
+    // Auth
+    data class UpdateLogin(val login: String): AnimeDetailsIntent
+    data class UpdatePassword(val password: String): AnimeDetailsIntent
 }

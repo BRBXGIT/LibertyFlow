@@ -35,7 +35,6 @@ import com.example.anime_details.components.Header
 import com.example.anime_details.components.HeaderData
 import com.example.anime_details.components.TopBar
 import com.example.anime_details.components.Torrent
-import com.example.anime_details.screen.AnimeDetailsIntent.UpdateAuthForm.AuthField
 import com.example.common.refresh.RefreshEffect
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.UserAuthState
@@ -102,15 +101,15 @@ internal fun AnimeDetails(
 
         // Render content only when anime data is available
         anime?.let {
-            if (state.authForm.isAuthBSVisible) {
+            if (state.authState.isAuthBSVisible) {
                 AuthBS(
-                    login = state.authForm.login,
-                    password = state.authForm.password,
-                    incorrectEmailOrPassword = state.authForm.isError,
+                    login = state.authState.login,
+                    password = state.authState.password,
+                    incorrectEmailOrPassword = state.authState.isError,
                     onDismissRequest = { onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible) },
                     onAuthClick = { onIntent(AnimeDetailsIntent.GetTokens) },
-                    onPasswordChange = { onIntent(AnimeDetailsIntent.UpdateAuthForm(AuthField.Password(it))) },
-                    onEmailChange = { onIntent(AnimeDetailsIntent.UpdateAuthForm(AuthField.Email(it))) }
+                    onPasswordChange = { onIntent(AnimeDetailsIntent.UpdatePassword(it)) },
+                    onEmailChange = { onIntent(AnimeDetailsIntent.UpdateLogin(it)) }
                 )
             }
 
@@ -152,7 +151,7 @@ internal fun AnimeDetails(
                 // Add to favorites button
                 addToFavoriteButton(
                     animeId = state.anime.id,
-                    userAuthState = state.userAuthState,
+                    userAuthState = state.authState.userAuthState,
                     onIntent = onIntent,
                     showAnimation = state.loadingState.isLoading,
                     favoritesState = state.favoritesState,

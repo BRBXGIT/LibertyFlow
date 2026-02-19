@@ -36,9 +36,13 @@ class AuthDelegateImpl @Inject constructor(
     private val _authState = MutableStateFlow(AuthState())
     override val authState = _authState.asStateFlow()
 
-    override fun observeAuth(scope: CoroutineScope) {
+    override fun observeAuth(scope: CoroutineScope, onUpdate: (AuthState) -> Unit) {
         authRepo.userAuthState
             .onEach { auth -> _authState.update { it.copy(userAuthState = auth) } }
+            .launchIn(scope)
+
+        authState
+            .onEach { state -> onUpdate(state) }
             .launchIn(scope)
     }
 

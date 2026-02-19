@@ -18,9 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -48,10 +46,12 @@ class FavoritesVM @Inject constructor(
     val effects = _effects.receiveAsFlow()
 
     init {
-        observeAuth(viewModelScope)
-        authState
-            .onEach { state -> _state.update { it.copy(authState = state) } }
-            .launchIn(viewModelScope)
+        observeAuth(
+            scope = viewModelScope,
+            onUpdate = { authState ->
+                _state.update { it.copy(authState = authState) }
+            }
+        )
     }
 
     // --- Intents ---
