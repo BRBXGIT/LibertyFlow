@@ -1,7 +1,7 @@
 package com.example.collections.screen
 
 import androidx.compose.runtime.Immutable
-import com.example.common.vm_helpers.models.AuthState
+import com.example.common.vm_helpers.auth.models.AuthState
 import com.example.common.vm_helpers.models.SearchForm
 import com.example.data.models.common.request.request_parameters.Collection
 

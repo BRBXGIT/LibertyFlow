@@ -2,7 +2,7 @@ package com.example.common.vm_helpers.auth.delegate
 
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
-import com.example.common.vm_helpers.models.AuthState
+import com.example.common.vm_helpers.auth.models.AuthState
 import com.example.data.domain.AuthRepo
 import com.example.data.models.auth.TokenRequest
 import com.example.data.utils.network.network_caller.NetworkErrors

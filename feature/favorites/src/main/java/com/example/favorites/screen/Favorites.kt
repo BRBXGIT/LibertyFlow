@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.models.AuthState
+import com.example.common.vm_helpers.auth.models.AuthState
 import com.example.data.models.auth.UserAuthState
 import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize

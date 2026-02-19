@@ -91,10 +91,10 @@ private fun AnimeDetailsState.toTitleState(): TitleState = when {
 }
 
 private fun AnimeDetailsState.toCollectionState(): CollectionState = when {
-    userAuthState !is UserAuthState.LoggedOut && collectionsState.loadingState.isLoading -> CollectionState.Loading
+    authState.userAuthState !is UserAuthState.LoggedOut && collectionsState.loadingState.isLoading -> CollectionState.Loading
     collectionsState.loadingState.isError -> CollectionState.Error
     activeCollection != null -> CollectionState.Added
-    userAuthState is UserAuthState.LoggedOut -> CollectionState.Unauthorized
+    authState.userAuthState is UserAuthState.LoggedOut -> CollectionState.Unauthorized
     else -> CollectionState.Empty
 }
 

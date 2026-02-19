@@ -8,7 +8,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.auth.delegate.AuthDelegate
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.CollectionsRepo
@@ -33,7 +32,7 @@ import javax.inject.Inject
 /**
  * ViewModel responsible for managing the state and logic of the Collections screen.
  * * This VM handles paginated anime lists across different collection types,
- * search functionality with debouncing, and authentication flows via [BaseAuthVM].
+ * search functionality with debouncing, and authentication flows via [AuthDelegate].
  *
  * @property authDelegate Delegate that providing access to user's auth state and authentication logic
  * @property collectionsRepo Repository providing access to anime collections and paging data.

@@ -1,7 +1,7 @@
 package com.example.anime_details.screen
 
 import androidx.compose.runtime.Immutable
-import com.example.common.vm_helpers.models.AuthState
+import com.example.common.vm_helpers.auth.models.AuthState
 import com.example.common.vm_helpers.models.LoadingState
 import com.example.data.models.collections.collection.AnimeCollection
 import com.example.data.models.releases.anime_details.AnimeDetails
