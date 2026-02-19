@@ -9,8 +9,8 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
-import com.example.common.vm_helpers.BasePlayerSettingsVM
-import com.example.common.vm_helpers.toLazily
+import com.example.common.vm_helpers.player.BasePlayerSettingsVM
+import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.models.player.VideoQuality
 import com.example.data.models.releases.anime_details.Episode

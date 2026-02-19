@@ -27,7 +27,7 @@ import com.example.collections.components.CollectionPage
 import com.example.collections.components.CollectionsTabRow
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
@@ -46,7 +46,7 @@ private val TopBarLabel = R.string.collections_top_bar_label
  * The primary UI layout for the Collections screen.
  * * **Scaffold:** Integrates a [SearchingTopBar] with nested scroll behavior.
  * * **Auth Management:** Conditionally displays the [AuthBS] (Bottom Sheet) based on the current [CollectionsState].
- * * **State Switching:** Toggles between [LoggedInContent] and [LoggedOutSection] based on [AuthState].
+ * * **State Switching:** Toggles between [LoggedInContent] and [LoggedOutSection] based on [UserAuthState].
  *
  * @param state The current UI state containing auth, search, and collection data.
  * @param themeState Current theme configuration for visual styling.
@@ -103,15 +103,15 @@ internal fun Collections(
                 .background(mColors.background)
                 .padding(top = innerPadding.calculateTopPadding(), bottom = calculateNavBarSize())
         ) {
-            when (state.authState) {
-                AuthState.LoggedIn -> LoggedInContent(
+            when (state.userAuthState) {
+                UserAuthState.LoggedIn -> LoggedInContent(
                     state = state,
                     themeState = themeState,
                     pagingItemsMap = pagingItemsMap,
                     onIntent = onIntent,
                     onEffect = onEffect
                 )
-                AuthState.LoggedOut -> LoggedOutSection(
+                UserAuthState.LoggedOut -> LoggedOutSection(
                     onAuthClick = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) }
                 )
             }

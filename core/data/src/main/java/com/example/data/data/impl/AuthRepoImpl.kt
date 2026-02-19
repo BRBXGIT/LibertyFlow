@@ -1,7 +1,7 @@
 package com.example.data.data.impl
 
 import com.example.data.domain.AuthRepo
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.auth.Token
 import com.example.data.models.auth.TokenRequest
 import com.example.data.utils.network.network_caller.NetworkCaller
@@ -39,11 +39,11 @@ class AuthRepoImpl @Inject constructor(
     override val token = authPrefsManager.token
 
     /**
-     * A derived Flow representing the user's current [AuthState].
-     * Emits [AuthState.LoggedIn] if a valid token exists, otherwise [AuthState.LoggedOut].
+     * A derived Flow representing the user's current [UserAuthState].
+     * Emits [UserAuthState.LoggedIn] if a valid token exists, otherwise [UserAuthState.LoggedOut].
      */
-    override val authState = token.map { token ->
-        if (token.isNullOrBlank()) AuthState.LoggedOut else AuthState.LoggedIn
+    override val userAuthState = token.map { token ->
+        if (token.isNullOrBlank()) UserAuthState.LoggedOut else UserAuthState.LoggedIn
     }
 
     /**

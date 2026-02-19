@@ -1,7 +1,7 @@
 package com.example.home.screen
 
 import androidx.compose.runtime.Immutable
-import com.example.common.ui_helpers.loading_state.LoadingState
+import com.example.common.vm_helpers.loading.LoadingState
 import com.example.data.models.common.common.Genre
 import com.example.data.models.common.request.request_parameters.FullRequestParameters
 

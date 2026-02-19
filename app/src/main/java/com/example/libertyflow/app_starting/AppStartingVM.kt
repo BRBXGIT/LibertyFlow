@@ -1,7 +1,7 @@
 package com.example.libertyflow.app_starting
 
 import androidx.lifecycle.ViewModel
-import com.example.common.vm_helpers.toEagerly
+import com.example.common.vm_helpers.utils.toEagerly
 import com.example.data.domain.OnboardingRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map

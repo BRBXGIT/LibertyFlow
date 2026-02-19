@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.FavoritesRepo
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.auth.Token
 import com.example.data.utils.network.network_caller.NetworkErrors
 import com.example.data.utils.network.network_caller.NetworkResult
@@ -42,13 +42,13 @@ class FavoritesVMTest {
 
     private lateinit var vm: FavoritesVM
 
-    private val authStateFlow = MutableStateFlow<AuthState>(AuthState.LoggedOut)
+    private val userAuthStateFlow = MutableStateFlow<UserAuthState>(UserAuthState.LoggedOut)
 
     @Before
     fun setup() {
         Dispatchers.setMain(dispatcher)
 
-        every { authRepo.authState } returns authStateFlow
+        every { authRepo.userAuthState } returns userAuthStateFlow
 
         vm = FavoritesVM(authRepo, favoritesRepo, dispatcher)
     }
@@ -64,12 +64,12 @@ class FavoritesVMTest {
     fun `init should subscribe to authState and update VM state`() = runTest {
         vm.state.test {
             val initialState = awaitItem()
-            assertEquals(AuthState.LoggedOut, initialState.authState)
+            assertEquals(UserAuthState.LoggedOut, initialState.authState)
 
-            authStateFlow.emit(AuthState.LoggedIn)
+            userAuthStateFlow.emit(UserAuthState.LoggedIn)
 
             val loggedInState = awaitItem()
-            assertEquals(AuthState.LoggedIn, loggedInState.authState)
+            assertEquals(UserAuthState.LoggedIn, loggedInState.authState)
         }
     }
 
@@ -77,11 +77,11 @@ class FavoritesVMTest {
     @Test
     fun `ToggleIsAuthBSVisible intent should toggle boolean state`() = runTest {
         vm.state.test {
-            assertFalse(awaitItem().authForm.isAuthBSVisible)
+            assertFalse(awaitItem().authState.isAuthBSVisible)
             vm.sendIntent(FavoritesIntent.ToggleIsAuthBSVisible)
-            assertTrue(awaitItem().authForm.isAuthBSVisible)
+            assertTrue(awaitItem().authState.isAuthBSVisible)
             vm.sendIntent(FavoritesIntent.ToggleIsAuthBSVisible)
-            assertFalse(awaitItem().authForm.isAuthBSVisible)
+            assertFalse(awaitItem().authState.isAuthBSVisible)
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -120,10 +120,10 @@ class FavoritesVMTest {
             skipItems(1)
 
             vm.sendIntent(FavoritesIntent.UpdateAuthForm(FavoritesIntent.UpdateAuthForm.AuthField.Email(email)))
-            assertEquals(email, awaitItem().authForm.login)
+            assertEquals(email, awaitItem().authState.login)
 
             vm.sendIntent(FavoritesIntent.UpdateAuthForm(FavoritesIntent.UpdateAuthForm.AuthField.Password(pass)))
-            assertEquals(pass, awaitItem().authForm.password)
+            assertEquals(pass, awaitItem().authState.password)
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -132,7 +132,7 @@ class FavoritesVMTest {
     // --- Tests for Authentication Logic (Complex) ---
     @Test
     fun `GetTokens intent success should save token and clear errors`() = runTest {
-        coEvery { authRepo.authState } returns flowOf(AuthState.LoggedOut)
+        coEvery { authRepo.userAuthState } returns flowOf(UserAuthState.LoggedOut)
 
         val token = "123"
         val successResult = NetworkResult.Success(Token(token))
@@ -147,7 +147,7 @@ class FavoritesVMTest {
             val final = awaitItem()
 
             coVerify(exactly = 1) { authRepo.saveToken(token) }
-            assertFalse(final.authForm.isError)
+            assertFalse(final.authState.isError)
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -172,8 +172,8 @@ class FavoritesVMTest {
             advanceUntilIdle()
 
             val final = expectMostRecentItem()
-            assertTrue(final.authForm.isError)
-            assertTrue(final.authForm.isAuthBSVisible)
+            assertTrue(final.authState.isError)
+            assertTrue(final.authState.isAuthBSVisible)
             coVerify(exactly = 0) { authRepo.saveToken(any()) } // Don't save token
         }
     }

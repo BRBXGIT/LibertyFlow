@@ -7,18 +7,18 @@ package com.example.data.models.auth
  * resources. Using a `sealed interface` ensures compile-time safety and exhaustive
  * checks when used in `when` expressions.
  */
-sealed interface AuthState {
+sealed interface UserAuthState {
 
     /**
      * Indicates that the user is currently authenticated.
      * * In this state, the application provides access to protected features
      * and maintains an active user session.
      */
-    data object LoggedIn: AuthState
+    data object LoggedIn: UserAuthState
 
     /**
      * Indicates that the user is not authenticated or has been logged out.
      * * In this state, the application doesn't provides access to protected features
      */
-    data object LoggedOut: AuthState
+    data object LoggedOut: UserAuthState
 }

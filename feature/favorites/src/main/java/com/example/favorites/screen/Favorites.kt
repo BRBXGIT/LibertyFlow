@@ -2,7 +2,6 @@
 
 package com.example.favorites.screen
 
-import com.example.favorites.screen.FavoritesIntent.UpdateAuthForm.AuthField
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
@@ -74,15 +73,15 @@ internal fun Favorites(
             )
         }
     ) { innerPadding ->
-        if (state.authForm.isAuthBSVisible) {
+        if (state.authState.isAuthBSVisible) {
             AuthBS(
-                login = state.authForm.login,
-                password = state.authForm.password,
-                incorrectEmailOrPassword = state.authForm.isError,
+                login = state.authState.login,
+                password = state.authState.password,
+                incorrectEmailOrPassword = state.authState.isError,
                 onDismissRequest = { onIntent(FavoritesIntent.ToggleIsAuthBSVisible) },
                 onAuthClick = { onIntent(FavoritesIntent.GetTokens) },
-                onPasswordChange = { onIntent(FavoritesIntent.UpdateAuthForm(AuthField.Password(it))) },
-                onEmailChange = { onIntent(FavoritesIntent.UpdateAuthForm(AuthField.Email(it))) }
+                onPasswordChange = { onIntent(FavoritesIntent.UpdatePassword(it)) },
+                onEmailChange = { onIntent(FavoritesIntent.UpdateLogin(it)) }
             )
         }
 
@@ -111,27 +110,27 @@ internal fun Favorites(
 }
 
 /**
- * Orchestrates the main screen area based on the user's [AuthState].
- * * If the user is [AuthState.LoggedIn], it displays the favorites list;
+ * Orchestrates the main screen area based on the user's [UserAuthState].
+ * * If the user is [UserAuthState.LoggedIn], it displays the favorites list;
  * otherwise, it shows the [LoggedOutSection] prompting for login.
  */
 @Composable
 private fun MainContent(
-    authState: AuthState,
+    authState: com.example.common.vm_helpers.auth.AuthState,
     isError: Boolean,
     favorites: LazyPagingItems<AnimeItem>,
     onIntent: (FavoritesIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
-    when (authState) {
-        AuthState.LoggedIn ->
+    when (authState.userAuthState) {
+        UserAuthState.LoggedIn ->
             LoggedInContent(
                 isError = isError,
                 favorites = favorites,
                 onIntent = onIntent,
                 onEffect = onEffect
             )
-        AuthState.LoggedOut ->
+        UserAuthState.LoggedOut ->
             LoggedOutSection(
                 onAuthClick = {
                     onIntent(FavoritesIntent.ToggleIsAuthBSVisible)

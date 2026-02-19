@@ -1,9 +1,9 @@
 package com.example.anime_details.screen
 
 import androidx.compose.runtime.Immutable
-import com.example.common.ui_helpers.auth.AuthFormState
-import com.example.common.ui_helpers.loading_state.LoadingState
-import com.example.data.models.auth.AuthState
+import com.example.common.vm_helpers.auth.AuthState
+import com.example.common.vm_helpers.loading.LoadingState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.collections.collection.AnimeCollection
 import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.data.models.common.request.request_parameters.Collection
@@ -11,7 +11,7 @@ import com.example.data.models.common.request.request_parameters.Collection
 @Immutable
 data class AnimeDetailsState(
     // Global Auth Status
-    val authState: AuthState = AuthState.LoggedOut,
+    val userAuthState: UserAuthState = UserAuthState.LoggedOut,
 
     // Screen Loading/Error States
     val loadingState: LoadingState = LoadingState(),
@@ -27,7 +27,7 @@ data class AnimeDetailsState(
     val collectionsState: CollectionsState = CollectionsState(),
 
     // Auth Bottom Sheet & Form (Grouped to isolate frequent updates)
-    val authForm: AuthFormState = AuthFormState(),
+    val authForm: AuthState = AuthState(),
 
     // UI Toggles
     val isDescriptionExpanded: Boolean = false,
@@ -49,7 +49,7 @@ data class AnimeDetailsState(
     }
 
     // Auth
-    fun updateAuthForm(transformer: (AuthFormState) -> AuthFormState): AnimeDetailsState {
+    fun updateAuthForm(transformer: (AuthState) -> AuthState): AnimeDetailsState {
         return copy(authForm = transformer(authForm))
     }
 

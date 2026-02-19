@@ -15,7 +15,7 @@ import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.anime_details.screen.AnimeDetailsState
 import com.example.common.refresh.RefreshEffect
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.design_system.components.buttons.ActionButtonState
 import com.example.design_system.components.buttons.RainbowActionButtonWithIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
@@ -40,12 +40,12 @@ private val ButtonPadding = 16.dp
 internal fun LazyItemScope.AddToFavoritesButton(
     animeId: Int,
     favoritesState: AnimeDetailsState.FavoritesState,
-    authState: AuthState,
+    userAuthState: UserAuthState,
     showAnimation: Boolean,
     onIntent: (AnimeDetailsIntent) -> Unit,
     onRefreshEffect: (RefreshEffect) -> Unit
 ) {
-    val buttonState = remember(favoritesState, authState, animeId) {
+    val buttonState = remember(favoritesState, userAuthState, animeId) {
         when {
             favoritesState.loadingState.isError -> ActionButtonState(
                 LibertyFlowIcons.Outlined.DangerCircle, ErrorFavoritesLabelRes
@@ -55,7 +55,7 @@ internal fun LazyItemScope.AddToFavoritesButton(
                 LibertyFlowIcons.Outlined.Cat, LoadingFavoritesLabelRes, isLoading = true
             ) { /* Nothing here */ }
 
-            authState is AuthState.LoggedOut -> ActionButtonState(
+            userAuthState is UserAuthState.LoggedOut -> ActionButtonState(
                 LibertyFlowIcons.Outlined.User, AuthorizeLabel
             ) { onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible) }
 
@@ -93,7 +93,7 @@ private fun AddToFavoritesButtonPreview() {
             AddToFavoritesButton(
                 animeId = 1,
                 favoritesState = AnimeDetailsState.FavoritesState(),
-                authState = AuthState.LoggedIn,
+                userAuthState = UserAuthState.LoggedIn,
                 showAnimation = true,
                 onIntent = {},
                 onRefreshEffect = {}

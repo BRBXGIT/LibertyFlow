@@ -3,7 +3,7 @@ package com.example.data
 import app.cash.turbine.test
 import com.example.data.data.impl.AuthRepoImpl
 import com.example.data.domain.AuthRepo
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.utils.network.network_caller.NetworkCaller
 import com.example.local.auth.AuthPrefsManager
 import com.example.network.auth.api.AuthApi
@@ -39,8 +39,8 @@ class AuthRepoImplTest {
 
         createRepo()
 
-        repo.authState.test {
-            assertEquals(AuthState.LoggedIn, awaitItem())
+        repo.userAuthState.test {
+            assertEquals(UserAuthState.LoggedIn, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -52,8 +52,8 @@ class AuthRepoImplTest {
 
         createRepo()
 
-        repo.authState.test {
-            assertEquals(AuthState.LoggedOut, awaitItem())
+        repo.userAuthState.test {
+            assertEquals(UserAuthState.LoggedOut, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }

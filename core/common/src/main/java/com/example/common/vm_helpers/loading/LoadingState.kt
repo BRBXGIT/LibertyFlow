@@ -1,4 +1,4 @@
-package com.example.common.ui_helpers.loading_state
+package com.example.common.vm_helpers.loading
 
 import androidx.compose.runtime.Immutable
 

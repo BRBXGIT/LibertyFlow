@@ -4,15 +4,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.ui_helpers.loading_state.LoadingState
+import com.example.common.vm_helpers.loading.LoadingState
 import com.example.common.vm_helpers.BaseAuthVM
-import com.example.common.vm_helpers.toWhileSubscribed
+import com.example.common.vm_helpers.utils.toWhileSubscribed
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
 import com.example.data.domain.FavoritesRepo
 import com.example.data.domain.ReleasesRepo
 import com.example.data.domain.WatchedEpsRepo
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.auth.TokenRequest
 import com.example.data.models.collections.request.CollectionItem
 import com.example.data.models.collections.request.CollectionRequest
@@ -65,10 +65,10 @@ class AnimeDetailsVM @Inject constructor(
      * Synchronizes local state and fetches favorites for logged-in users.
      */
     private fun observeAuthentication() {
-        authState
+        userAuthState
             .onEach { auth ->
-                _state.update { it.copy(authState = auth) }
-                if (auth is AuthState.LoggedIn) {
+                _state.update { it.copy(userAuthState = auth) }
+                if (auth is UserAuthState.LoggedIn) {
                     fetchFavoritesIds()
                     fetchCollections()
                 }

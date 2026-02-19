@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.BasePlayerSettingsVM
-import com.example.common.vm_helpers.toWhileSubscribed
+import com.example.common.vm_helpers.player.BasePlayerSettingsVM
+import com.example.common.vm_helpers.utils.toWhileSubscribed
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.domain.ThemeRepo
 import com.example.data.models.theme.ColorSchemeValue

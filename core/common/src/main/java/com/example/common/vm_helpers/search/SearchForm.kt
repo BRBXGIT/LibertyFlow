@@ -1,4 +1,4 @@
-package com.example.common.ui_helpers.search
+package com.example.common.vm_helpers.search
 
 import androidx.compose.runtime.Immutable
 

@@ -1,4 +1,4 @@
-package com.example.common.vm_helpers
+package com.example.common.vm_helpers.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

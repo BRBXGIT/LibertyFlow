@@ -2,8 +2,9 @@ package com.example.common.vm_helpers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.AuthRepo
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.auth.TokenRequest
 import com.example.data.utils.network.network_caller.NetworkErrors
 import com.example.data.utils.network.network_caller.onError
@@ -11,6 +12,7 @@ import com.example.data.utils.network.network_caller.onSuccess
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
+// TODO: Rewrite to independent delegate
 /**
  * Base class for ViewModels that handle authentication.
  *
@@ -26,7 +28,7 @@ abstract class BaseAuthVM(
      * Exposes the current authentication state as a StateFlow.
      * Inheritors can use this to react to login/logout events.
      */
-    val authState = authRepo.authState.toLazily(AuthState.LoggedOut)
+    val userAuthState = authRepo.userAuthState.toLazily(UserAuthState.LoggedOut)
 
     /**
      * Executes authentication request.

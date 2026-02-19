@@ -8,7 +8,7 @@ import com.example.collections.screen.CollectionsVM
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.auth.Token
 import com.example.data.utils.network.network_caller.NetworkErrors
 import com.example.data.utils.network.network_caller.NetworkResult
@@ -43,13 +43,13 @@ class CollectionsVMTest {
 
     private lateinit var vm: CollectionsVM
 
-    private val authStateFlow = MutableStateFlow<AuthState>(AuthState.LoggedOut)
+    private val userAuthStateFlow = MutableStateFlow<UserAuthState>(UserAuthState.LoggedOut)
 
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
 
-        every { authRepo.authState } returns authStateFlow
+        every { authRepo.userAuthState } returns userAuthStateFlow
 
         vm = CollectionsVM(authRepo, collectionsRepo, dispatcher)
     }
@@ -65,12 +65,12 @@ class CollectionsVMTest {
     fun `init should subscribe to authState and update VM state`() = runTest {
         vm.state.test {
             val initialState = awaitItem()
-            assertEquals(AuthState.LoggedOut, initialState.authState)
+            assertEquals(UserAuthState.LoggedOut, initialState.userAuthState)
 
-            authStateFlow.emit(AuthState.LoggedIn)
+            userAuthStateFlow.emit(UserAuthState.LoggedIn)
 
             val loggedInState = awaitItem()
-            assertEquals(AuthState.LoggedIn, loggedInState.authState)
+            assertEquals(UserAuthState.LoggedIn, loggedInState.userAuthState)
         }
     }
 
@@ -133,7 +133,7 @@ class CollectionsVMTest {
     // --- Tests for Authentication Logic (Complex) ---
     @Test
     fun `GetTokens intent success should save token and clear errors`() = runTest {
-        coEvery { authRepo.authState } returns flowOf(AuthState.LoggedOut)
+        coEvery { authRepo.userAuthState } returns flowOf(UserAuthState.LoggedOut)
 
         val token = "123"
         val successResult = NetworkResult.Success(Token(token))

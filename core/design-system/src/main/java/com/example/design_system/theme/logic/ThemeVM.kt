@@ -1,7 +1,7 @@
 package com.example.design_system.theme.logic
 
 import androidx.lifecycle.ViewModel
-import com.example.common.vm_helpers.toEagerly
+import com.example.common.vm_helpers.utils.toEagerly
 import com.example.data.domain.ThemeRepo
 import com.example.data.models.theme.ColorSchemeValue
 import com.example.data.models.theme.ThemeValue

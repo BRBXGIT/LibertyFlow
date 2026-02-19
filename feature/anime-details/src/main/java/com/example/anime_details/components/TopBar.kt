@@ -31,7 +31,7 @@ import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.anime_details.screen.AnimeDetailsState
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.design_system.containers.DownUpAnimatedContent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
@@ -91,10 +91,10 @@ private fun AnimeDetailsState.toTitleState(): TitleState = when {
 }
 
 private fun AnimeDetailsState.toCollectionState(): CollectionState = when {
-    authState !is AuthState.LoggedOut && collectionsState.loadingState.isLoading -> CollectionState.Loading
+    userAuthState !is UserAuthState.LoggedOut && collectionsState.loadingState.isLoading -> CollectionState.Loading
     collectionsState.loadingState.isError -> CollectionState.Error
     activeCollection != null -> CollectionState.Added
-    authState is AuthState.LoggedOut -> CollectionState.Unauthorized
+    userAuthState is UserAuthState.LoggedOut -> CollectionState.Unauthorized
     else -> CollectionState.Empty
 }
 

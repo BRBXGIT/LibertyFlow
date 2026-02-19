@@ -2,16 +2,16 @@
 
 package com.example.favorites.screen
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.BaseAuthVM
-import com.example.common.vm_helpers.toLazily
-import com.example.data.domain.AuthRepo
+import com.example.common.vm_helpers.auth.AuthDelegate
+import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.FavoritesRepo
-import com.example.data.models.auth.TokenRequest
 import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.request.request_parameters.ShortRequestParameters
 import com.example.design_system.utils.CommonStrings
@@ -37,15 +37,14 @@ import javax.inject.Inject
  * retrieval through [FavoritesRepo].
  *
  * @property favoritesRepo Repository providing access to the user's favorite items.
- * @param authRepo Repository for authentication-related operations, passed to [BaseAuthVM].
  * @param ioDispatcher The coroutine dispatcher for background operations.
  */
 @HiltViewModel
 class FavoritesVM @Inject constructor(
-    authRepo: AuthRepo,
+    private val authDelegate: AuthDelegate,
     private val favoritesRepo: FavoritesRepo,
     @Dispatcher(LibertyFlowDispatcher.IO) ioDispatcher: CoroutineDispatcher
-): BaseAuthVM(authRepo, ioDispatcher) {
+): ViewModel(), AuthDelegate by authDelegate {
 
     private val _state = MutableStateFlow(FavoritesState())
     val state = _state.toLazily(FavoritesState())
@@ -54,7 +53,10 @@ class FavoritesVM @Inject constructor(
     val effects = _effects.receiveAsFlow()
 
     init {
-        observeAuthentication()
+        observeAuth(viewModelScope)
+        authState
+            .onEach { state -> _state.update { it.copy(authState = state) } }
+            .launchIn(viewModelScope)
     }
 
     // --- Intents ---
@@ -64,8 +66,7 @@ class FavoritesVM @Inject constructor(
     fun sendIntent(intent: FavoritesIntent) {
         when (intent) {
             // --- Ui ---
-            is FavoritesIntent.ToggleIsAuthBSVisible ->
-                _state.update { it.toggleAuthBS() }
+            is FavoritesIntent.ToggleIsAuthBSVisible -> toggleAuthBS()
             is FavoritesIntent.ToggleIsSearching ->
                 _state.update { it.copy(searchForm = it.searchForm.toggleSearching()) }
             is FavoritesIntent.UpdateQuery ->
@@ -76,7 +77,8 @@ class FavoritesVM @Inject constructor(
                 _state.update { it.copy(loadingState = it.loadingState.withError(intent.value)) }
 
             // --- Auth ---
-            is FavoritesIntent.UpdateAuthForm -> updateAuthField(intent.field)
+            is FavoritesIntent.UpdateLogin -> onLoginChanged(intent.login)
+            is FavoritesIntent.UpdatePassword -> onPasswordChanged(intent.password)
             is FavoritesIntent.GetTokens -> performLogin()
         }
     }
@@ -87,42 +89,21 @@ class FavoritesVM @Inject constructor(
 
     // --- Auth ---
     /**
-     * Handles login logic using the base class helper.
+     * Handles login logic using the delegate class helper.
      */
     private fun performLogin() {
-        val form = _state.value.authForm
-
-        executeAuthentication(
-            request = TokenRequest(form.login, form.password),
-            onStart = { setAuthErrorState(isError = false) },
-            onValidationError = { setAuthErrorState(isError = true, bsVisible = true) },
-            onError = { msg, retry ->
-                sendEffect(UiEffect.ShowSnackbarWithAction(msg, CommonStrings.RETRY, retry))
+        login(
+            scope = viewModelScope,
+            onError = { msgRes, retry ->
+                sendEffect(
+                    effect = UiEffect.ShowSnackbarWithAction(
+                        messageRes = msgRes,
+                        actionLabel = CommonStrings.RETRY,
+                        action = retry
+                    )
+                )
             }
         )
-    }
-
-    private fun setAuthErrorState(isError: Boolean, bsVisible: Boolean = false) =
-        _state.update { it.updateAuthForm { f -> f.copy(isError = isError, isAuthBSVisible = bsVisible) } }
-
-    private fun updateAuthField(field: FavoritesIntent.UpdateAuthForm.AuthField) {
-        _state.update { state ->
-            state.updateAuthForm { form ->
-                when (field) {
-                    is FavoritesIntent.UpdateAuthForm.AuthField.Email -> form.copy(login = field.value)
-                    is FavoritesIntent.UpdateAuthForm.AuthField.Password -> form.copy(password = field.value)
-                }
-            }
-        }
-    }
-
-    /**
-     * Reacts to authentication changes and updates the main UI state.
-     */
-    private fun observeAuthentication() {
-        authState
-            .onEach { auth -> _state.update { it.copy(authState = auth) } }
-            .launchIn(viewModelScope)
     }
 
     // --- Data Streams ---

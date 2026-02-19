@@ -38,7 +38,7 @@ import com.example.anime_details.components.Torrent
 import com.example.anime_details.screen.AnimeDetailsIntent.UpdateAuthForm.AuthField
 import com.example.common.refresh.RefreshEffect
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.data.models.auth.AuthState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.common.common.PosterType
 import com.example.data.models.releases.anime_details.Episode
 import com.example.data.models.releases.anime_details.Torrent
@@ -152,7 +152,7 @@ internal fun AnimeDetails(
                 // Add to favorites button
                 addToFavoriteButton(
                     animeId = state.anime.id,
-                    authState = state.authState,
+                    userAuthState = state.userAuthState,
                     onIntent = onIntent,
                     showAnimation = state.loadingState.isLoading,
                     favoritesState = state.favoritesState,
@@ -203,11 +203,11 @@ private fun LazyListScope.addToFavoriteButton(
     onIntent: (AnimeDetailsIntent) -> Unit,
     onRefreshEffect: (RefreshEffect) -> Unit,
     favoritesState: AnimeDetailsState.FavoritesState,
-    authState: AuthState,
+    userAuthState: UserAuthState,
     showAnimation: Boolean
 ) {
     item(key = ADD_TO_FAVORITE_BUTTON_KEY) {
-        AddToFavoritesButton(animeId, favoritesState, authState, showAnimation, onIntent, onRefreshEffect)
+        AddToFavoritesButton(animeId, favoritesState, userAuthState, showAnimation, onIntent, onRefreshEffect)
     }
 }
 

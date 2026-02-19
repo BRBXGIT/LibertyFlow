@@ -9,7 +9,7 @@ import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.BaseAuthVM
-import com.example.common.vm_helpers.toLazily
+import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.AuthRepo
 import com.example.data.domain.CollectionsRepo
 import com.example.data.models.auth.TokenRequest
@@ -65,7 +65,7 @@ class CollectionsVM @Inject constructor(
      * Syncs the global authentication state with the local UI state.
      */
     private fun observeAuthentication() {
-        authState
+        userAuthState
             .onEach { auth -> _state.update { it.setAuthState(auth) } }
             .launchIn(viewModelScope)
     }
