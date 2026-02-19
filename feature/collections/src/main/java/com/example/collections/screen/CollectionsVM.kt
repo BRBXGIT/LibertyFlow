@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.auth.delegate.AuthDelegate
-import com.example.common.vm_helpers.filters.delegate.FiltersDelegate
+import com.example.common.vm_helpers.auth.component.AuthComponent
+import com.example.common.vm_helpers.filters.component.FiltersComponent
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.CollectionsRepo
 import com.example.data.models.common.anime_item.AnimeItem
@@ -34,21 +34,21 @@ import javax.inject.Inject
  * (e.g., Watching, Completed) with integrated search and authentication.
  *
  * This class utilizes dual delegation:
- * - [AuthDelegate]: Handles user authentication and login visibility state.
- * - [FiltersDelegate]: Handles search query logic and visibility of the search bar.
+ * - [AuthComponent]: Handles user authentication and login visibility state.
+ * - [FiltersComponent]: Handles search query logic and visibility of the search bar.
  *
- * @property authDelegate Delegate for authentication operations.
- * @property filtersDelegate Delegate for search and filter state management.
+ * @property authComponent Delegate for authentication operations.
+ * @property filtersComponent Delegate for search and filter state management.
  * @property collectionsRepo Repository providing paginated data for specific user collections.
  */
 @HiltViewModel
 class CollectionsVM @Inject constructor(
-    private val filtersDelegate: FiltersDelegate,
-    private val authDelegate: AuthDelegate,
+    private val filtersComponent: FiltersComponent,
+    private val authComponent: AuthComponent,
     private val collectionsRepo: CollectionsRepo,
 ): ViewModel(),
-    AuthDelegate by authDelegate,
-    FiltersDelegate by filtersDelegate
+    AuthComponent by authComponent,
+    FiltersComponent by filtersComponent
 {
     private val _state = MutableStateFlow(CollectionsState())
     val state = _state.toLazily(CollectionsState())

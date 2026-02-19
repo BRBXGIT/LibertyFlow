@@ -1,4 +1,4 @@
-package com.example.common.vm_helpers.auth.delegate
+package com.example.common.vm_helpers.auth.component
 
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Concrete implementation of [AuthDelegate] responsible for managing the authentication state
+ * Concrete implementation of [AuthComponent] responsible for managing the authentication state
  * and coordinating login operations between the UI and [AuthRepo].
  *
  * This delegate encapsulates the [AuthState] using [MutableStateFlow] to ensure a single
@@ -28,10 +28,10 @@ import javax.inject.Inject
  * @property authRepo The repository handling remote and local authentication data operations.
  * @property dispatcherIo The coroutine dispatcher optimized for I/O tasks, used for network calls.
  */
-class AuthDelegateImpl @Inject constructor(
+class AuthComponentImpl @Inject constructor(
     private val authRepo: AuthRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-): AuthDelegate {
+): AuthComponent {
 
     private val _authState = MutableStateFlow(AuthState())
     override val authState = _authState.asStateFlow()

@@ -1,4 +1,4 @@
-package com.example.common.vm_helpers.filters.delegate
+package com.example.common.vm_helpers.filters.component
 
 import com.example.common.vm_helpers.filters.models.FiltersState
 import com.example.data.models.common.common.Genre
@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
- * Concrete implementation of [FiltersDelegate] that manages the search and filter state
+ * Concrete implementation of [FiltersComponent] that manages the search and filter state
  * using [MutableStateFlow].
  *
  * This class handles UI toggles (visibility/loading) and complex business logic for
  * filtering criteria such as genres, seasons, and date ranges.
  */
-class FiltersDelegateImpl @Inject constructor(): FiltersDelegate {
+class FiltersComponentImpl @Inject constructor(): FiltersComponent {
 
     // --- State ---
     private val _filtersState = MutableStateFlow(FiltersState())

@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.auth.delegate.AuthDelegate
-import com.example.common.vm_helpers.filters.delegate.FiltersDelegate
+import com.example.common.vm_helpers.auth.component.AuthComponent
+import com.example.common.vm_helpers.filters.component.FiltersComponent
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.FavoritesRepo
 import com.example.data.models.common.request.common_request.CommonRequest
@@ -29,21 +29,21 @@ import javax.inject.Inject
  * ViewModel for the Favorites screen, managing user-bookmarked anime and authentication state.
  *
  * This ViewModel leverages multiple delegation to handle distinct responsibilities:
- * - [AuthDelegate]: Manages login state, token retrieval, and authentication UI visibility.
- * - [FiltersDelegate]: Manages search queries and filtering state for the favorites list.
+ * - [AuthComponent]: Manages login state, token retrieval, and authentication UI visibility.
+ * - [FiltersComponent]: Manages search queries and filtering state for the favorites list.
  *
- * @property authDelegate Delegate providing authentication logic and state.
- * @property filtersDelegate Delegate providing search and filter state management.
+ * @property authComponent Delegate providing authentication logic and state.
+ * @property filtersComponent Delegate providing search and filter state management.
  * @property favoritesRepo Repository providing a paginated stream of the user's favorite anime.
  */
 @HiltViewModel
 class FavoritesVM @Inject constructor(
-    private val authDelegate: AuthDelegate,
-    private val filtersDelegate: FiltersDelegate,
+    private val authComponent: AuthComponent,
+    private val filtersComponent: FiltersComponent,
     private val favoritesRepo: FavoritesRepo,
 ): ViewModel(),
-    AuthDelegate by authDelegate,
-    FiltersDelegate by filtersDelegate
+    AuthComponent by authComponent,
+    FiltersComponent by filtersComponent
 {
     private val _state = MutableStateFlow(FavoritesState())
     val state = _state.toLazily(FavoritesState())

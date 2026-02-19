@@ -1,4 +1,4 @@
-package com.example.common.vm_helpers.filters.delegate
+package com.example.common.vm_helpers.filters.component
 
 import com.example.common.vm_helpers.filters.models.FiltersState
 import com.example.data.models.common.common.Genre
@@ -7,7 +7,7 @@ import com.example.data.models.common.request.request_parameters.Sorting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
-interface FiltersDelegate {
+interface FiltersComponent {
 
     // Filters
     val filtersState: StateFlow<FiltersState>

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.auth.delegate.AuthDelegate
+import com.example.common.vm_helpers.auth.component.AuthComponent
 import com.example.common.vm_helpers.models.LoadingState
 import com.example.common.vm_helpers.utils.toWhileSubscribed
 import com.example.data.domain.CollectionsRepo
@@ -37,13 +37,13 @@ private const val RETRY = "Retry"
 
 @HiltViewModel
 class AnimeDetailsVM @Inject constructor(
-    private val authDelegate: AuthDelegate,
+    private val authComponent: AuthComponent,
     private val releasesRepo: ReleasesRepo,
     private val watchedEpsRepo: WatchedEpsRepo,
     private val favoritesRepo: FavoritesRepo,
     private val collectionsRepo: CollectionsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
-): ViewModel(), AuthDelegate by authDelegate {
+): ViewModel(), AuthComponent by authComponent {
 
     private val _state = MutableStateFlow(AnimeDetailsState())
     val state = _state.toWhileSubscribed(AnimeDetailsState())

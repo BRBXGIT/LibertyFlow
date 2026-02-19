@@ -1,10 +1,10 @@
-package com.example.common.vm_helpers.auth.delegate
+package com.example.common.vm_helpers.auth.component
 
 import com.example.common.vm_helpers.auth.models.AuthState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
-interface AuthDelegate {
+interface AuthComponent {
 
     val authState: StateFlow<AuthState>
     fun observeAuth(scope: CoroutineScope, onUpdate: (AuthState) -> Unit)

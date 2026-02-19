@@ -9,7 +9,7 @@ import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.filters.delegate.FiltersDelegate
+import com.example.common.vm_helpers.filters.component.FiltersComponent
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.CatalogRepo
 import com.example.data.domain.GenresRepo
@@ -37,10 +37,10 @@ import javax.inject.Inject
  * ViewModel for the Home screen, responsible for orchestrating anime discovery,
  * catalog filtering, and global UI effects.
  *
- * It utilizes [FiltersDelegate] via class delegation to manage the complex state
+ * It utilizes [FiltersComponent] via class delegation to manage the complex state
  * of search filters seamlessly.
  *
- * @property filtersDelegate Delegate handling the logic for search parameters and filter UI state.
+ * @property filtersComponent Delegate handling the logic for search parameters and filter UI state.
  * @property releasesRepo Repository for fetching general anime releases and random suggestions.
  * @property catalogRepo Repository providing the paginated stream of filtered anime.
  * @property genresRepo Repository for fetching available anime genres.
@@ -48,12 +48,12 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeVM @Inject constructor(
-    private val filtersDelegate: FiltersDelegate,
+    private val filtersComponent: FiltersComponent,
     private val releasesRepo: ReleasesRepo,
     private val catalogRepo: CatalogRepo,
     private val genresRepo: GenresRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
-): ViewModel(), FiltersDelegate by filtersDelegate {
+): ViewModel(), FiltersComponent by filtersComponent {
 
     private val _state = MutableStateFlow(HomeState())
     val state = _state.toLazily(HomeState())
