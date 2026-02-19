@@ -1,7 +1,8 @@
-package com.example.common.vm_helpers.auth
+package com.example.common.vm_helpers.auth.delegate
 
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
+import com.example.common.vm_helpers.models.AuthState
 import com.example.data.domain.AuthRepo
 import com.example.data.models.auth.TokenRequest
 import com.example.data.utils.network.network_caller.NetworkErrors
@@ -17,6 +18,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Concrete implementation of [AuthDelegate] responsible for managing the authentication state
+ * and coordinating login operations between the UI and [AuthRepo].
+ *
+ * This delegate encapsulates the [AuthState] using [MutableStateFlow] to ensure a single
+ * source of truth for the login UI.
+ *
+ * @property authRepo The repository handling remote and local authentication data operations.
+ * @property dispatcherIo The coroutine dispatcher optimized for I/O tasks, used for network calls.
+ */
 class AuthDelegateImpl @Inject constructor(
     private val authRepo: AuthRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher
@@ -43,6 +54,16 @@ class AuthDelegateImpl @Inject constructor(
     override fun onErrorChanged(isError: Boolean) =
         _authState.update { it.copy(isError = isError) }
 
+    /**
+     * Executes the login process.
+     * * This function switches to the [dispatcherIo], clears previous errors, and requests
+     * a token from the [authRepo]. On success, the token is persisted. On failure, it
+     * handles specific business logic for incorrect credentials or triggers a retry callback.
+     *
+     * @param scope The scope used to launch the asynchronous login request.
+     * @param onError A lambda triggered on network errors. It provides the error message
+     * resource ID and a retry function to re-attempt the login.
+     */
     override fun login(
         scope: CoroutineScope,
         onError: (Int, retry: () -> Unit) -> Unit,

@@ -85,15 +85,15 @@ internal fun Collections(
     ) { innerPadding ->
 
         // Auth Bottom Sheet
-        if (state.authForm.isAuthBSVisible) {
+        if (state.authState.isAuthBSVisible) {
             AuthBS(
-                login = state.authForm.login,
-                password = state.authForm.password,
-                incorrectEmailOrPassword = state.authForm.isError,
+                login = state.authState.login,
+                password = state.authState.password,
+                incorrectEmailOrPassword = state.authState.isError,
                 onDismissRequest = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) },
                 onAuthClick = { onIntent(CollectionsIntent.GetTokens) },
-                onPasswordChange = { onIntent(CollectionsIntent.UpdateAuthForm(CollectionsIntent.UpdateAuthForm.AuthField.Password(it))) },
-                onEmailChange = { onIntent(CollectionsIntent.UpdateAuthForm(CollectionsIntent.UpdateAuthForm.AuthField.Email(it))) }
+                onPasswordChange = { onIntent(CollectionsIntent.UpdatePassword(it)) },
+                onEmailChange = { onIntent(CollectionsIntent.UpdateLogin(it)) }
             )
         }
 
@@ -103,7 +103,7 @@ internal fun Collections(
                 .background(mColors.background)
                 .padding(top = innerPadding.calculateTopPadding(), bottom = calculateNavBarSize())
         ) {
-            when (state.userAuthState) {
+            when (state.authState.userAuthState) {
                 UserAuthState.LoggedIn -> LoggedInContent(
                     state = state,
                     themeState = themeState,
@@ -137,7 +137,6 @@ private fun LoggedInContent(
     val currentItems = pagingItemsMap[state.selectedCollection]!!
     PagingStatesContainer(
         items = currentItems,
-        onErrorChange = { onIntent(CollectionsIntent.SetIsError(it)) },
         onRetryRequest = { messageRes, retry ->
             onEffect(
                 UiEffect.ShowSnackbarWithAction(

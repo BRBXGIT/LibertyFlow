@@ -1,4 +1,4 @@
-package com.example.common.vm_helpers.search
+package com.example.common.vm_helpers.models
 
 import androidx.compose.runtime.Immutable
 

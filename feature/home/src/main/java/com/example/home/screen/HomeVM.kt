@@ -17,7 +17,7 @@ import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.utils.network.network_caller.onError
 import com.example.data.utils.network.network_caller.onSuccess
-import com.example.design_system.utils.CommonAnimationDelays
+import com.example.design_system.utils.CommonAnimationDelays.RAINBOW_BUTTON_ANIMATION_DELAY
 import com.example.design_system.utils.CommonStrings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -129,12 +129,9 @@ class HomeVM @Inject constructor(
     }
 
     // --- Data Streams ---
-    // Observes request changes and triggers new paging data
-    private val requestFlow = _state
+    val anime = _state
         .map { it.filtersState.request }
         .distinctUntilChanged()
-
-    val anime = requestFlow
         .flatMapLatest { request ->
             catalogRepo.getAnimeByQuery(CommonRequest(request))
         }
@@ -146,7 +143,7 @@ class HomeVM @Inject constructor(
             // Reset state and show loading
             _state.update { it.copy(randomAnimeState = it.randomAnimeState.withBoth(loading = true, error = false)) }
 
-            delay(CommonAnimationDelays.RAINBOW_BUTTON_ANIMATION_DELAY) // Artificial delay for animation polish
+            delay(RAINBOW_BUTTON_ANIMATION_DELAY) // Artificial delay for animation polish
 
             releasesRepo.getRandomAnime()
                 .onSuccess { anime ->
@@ -154,7 +151,7 @@ class HomeVM @Inject constructor(
                 }
                 .onError { _, messageRes ->
                     _state.update { it.copy(randomAnimeState = it.randomAnimeState.withError(true)) }
-                    sendSnackbar(messageRes) { getRandomAnime() }
+                    sendSnackbarWithAction(messageRes) { getRandomAnime() }
                 }
 
             _state.update { it.copy(randomAnimeState = it.randomAnimeState.withLoading(false)) }
@@ -167,16 +164,16 @@ class HomeVM @Inject constructor(
 
             genresRepo.getGenres()
                 .onSuccess { genres -> _state.update { it.copy(genresState = it.genresState.withGenres(genres)) } }
-                .onError { _, messageRes -> sendSnackbar(messageRes) { getGenres() } }
+                .onError { _, messageRes -> sendSnackbarWithAction(messageRes) { getGenres() } }
 
             _state.update { it.copy(genresState = it.genresState.copy(loadingState = it.genresState.loadingState.withLoading(false))) }
         }
     }
 
     // Helper for sending UI events (snackbars, navigation)
-    private suspend fun sendSnackbar(messageRes: Int, action: (() -> Unit)? = null) {
+    private suspend fun sendSnackbarWithAction(messageRes: Int, action: (() -> Unit)? = null) {
         _effects.send(
-            UiEffect.ShowSnackbarWithAction(
+            element = UiEffect.ShowSnackbarWithAction(
                 messageRes = messageRes,
                 actionLabel = action?.let { CommonStrings.RETRY },
                 action = action

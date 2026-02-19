@@ -27,7 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.example.common.vm_helpers.search.SearchForm
+import com.example.common.vm_helpers.models.SearchForm
 import com.example.design_system.R
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors

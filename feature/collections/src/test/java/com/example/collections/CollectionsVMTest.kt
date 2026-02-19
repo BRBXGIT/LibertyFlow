@@ -78,11 +78,11 @@ class CollectionsVMTest {
     @Test
     fun `ToggleIsAuthBSVisible intent should toggle boolean state`() = runTest {
         vm.state.test {
-            assertFalse(awaitItem().authForm.isAuthBSVisible)
+            assertFalse(awaitItem().authState.isAuthBSVisible)
             vm.sendIntent(CollectionsIntent.ToggleIsAuthBSVisible)
-            assertTrue(awaitItem().authForm.isAuthBSVisible)
+            assertTrue(awaitItem().authState.isAuthBSVisible)
             vm.sendIntent(CollectionsIntent.ToggleIsAuthBSVisible)
-            assertFalse(awaitItem().authForm.isAuthBSVisible)
+            assertFalse(awaitItem().authState.isAuthBSVisible)
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -121,10 +121,10 @@ class CollectionsVMTest {
             skipItems(1)
 
             vm.sendIntent(CollectionsIntent.UpdateAuthForm(CollectionsIntent.UpdateAuthForm.AuthField.Email(email)))
-            assertEquals(email, awaitItem().authForm.login)
+            assertEquals(email, awaitItem().authState.login)
 
             vm.sendIntent(CollectionsIntent.UpdateAuthForm(CollectionsIntent.UpdateAuthForm.AuthField.Password(pass)))
-            assertEquals(pass, awaitItem().authForm.password)
+            assertEquals(pass, awaitItem().authState.password)
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -148,7 +148,7 @@ class CollectionsVMTest {
             val final = awaitItem()
 
             coVerify(exactly = 1) { authRepo.saveToken(token) }
-            assertFalse(final.authForm.isError)
+            assertFalse(final.authState.isError)
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -173,8 +173,8 @@ class CollectionsVMTest {
             advanceUntilIdle()
 
             val final = expectMostRecentItem()
-            assertTrue(final.authForm.isError)
-            assertTrue(final.authForm.isAuthBSVisible)
+            assertTrue(final.authState.isError)
+            assertTrue(final.authState.isAuthBSVisible)
             coVerify(exactly = 0) { authRepo.saveToken(any()) } // Don't save token
         }
     }

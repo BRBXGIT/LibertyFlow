@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.dispatchers.Dispatcher
 import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.loading.LoadingState
+import com.example.common.vm_helpers.models.LoadingState
 import com.example.common.vm_helpers.BaseAuthVM
 import com.example.common.vm_helpers.utils.toWhileSubscribed
 import com.example.data.domain.AuthRepo

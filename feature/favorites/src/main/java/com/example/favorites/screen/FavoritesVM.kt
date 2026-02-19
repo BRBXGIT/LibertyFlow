@@ -5,18 +5,14 @@ package com.example.favorites.screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.common.dispatchers.Dispatcher
-import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.ui_helpers.effects.UiEffect
-import com.example.common.vm_helpers.BaseAuthVM
-import com.example.common.vm_helpers.auth.AuthDelegate
+import com.example.common.vm_helpers.auth.delegate.AuthDelegate
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.FavoritesRepo
 import com.example.data.models.common.request.common_request.CommonRequest
 import com.example.data.models.common.request.request_parameters.ShortRequestParameters
 import com.example.design_system.utils.CommonStrings
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,17 +29,16 @@ import javax.inject.Inject
 /**
  * ViewModel responsible for managing the state and logic of the Favorites screen.
  * * This ViewModel follows a unidirectional data flow (MVI) pattern, handling
- * authentication via [BaseAuthVM], search-based filtering, and paginated data
+ * authentication with authDelegate, search-based filtering, and paginated data
  * retrieval through [FavoritesRepo].
  *
+ * @property authDelegate Delegate that providing access to user's auth state and authentication logic
  * @property favoritesRepo Repository providing access to the user's favorite items.
- * @param ioDispatcher The coroutine dispatcher for background operations.
  */
 @HiltViewModel
 class FavoritesVM @Inject constructor(
     private val authDelegate: AuthDelegate,
     private val favoritesRepo: FavoritesRepo,
-    @Dispatcher(LibertyFlowDispatcher.IO) ioDispatcher: CoroutineDispatcher
 ): ViewModel(), AuthDelegate by authDelegate {
 
     private val _state = MutableStateFlow(FavoritesState())

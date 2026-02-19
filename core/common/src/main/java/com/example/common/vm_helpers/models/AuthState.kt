@@ -1,4 +1,4 @@
-package com.example.common.vm_helpers.auth
+package com.example.common.vm_helpers.models
 
 import androidx.compose.runtime.Immutable
 import com.example.data.models.auth.UserAuthState
