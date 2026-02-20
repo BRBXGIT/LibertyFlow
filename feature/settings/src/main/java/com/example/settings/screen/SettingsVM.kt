@@ -21,6 +21,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and user interactions
+ * of the Settings screen.
+ *
+ * It acts as a bridge between the [ThemeRepo], [PlayerSettingsRepo], and the UI.
+ * This ViewModel follows a unidirectional data flow (UDF) pattern:
+ * 1. **State Observation**: Synchronizes with underlying preferences via [observePrefs].
+ * 2. **Intent Handling**: Processes user actions through [sendIntent].
+ * 3. **Side Effects**: Communicates one-off events (like navigation or toasts) via [effects].
+ *
+ * @param themeRepo Repository for UI-related persistence (Themes, Colors, Layouts).
+ * @param playerSettingsRepo Repository with playback settings.
+ * @param dispatcherIo The [CoroutineDispatcher] used for non-blocking disk/IO operations.
+ */
 @HiltViewModel
 class SettingsVM @Inject constructor(
     private val themeRepo: ThemeRepo,

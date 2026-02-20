@@ -13,6 +13,18 @@ import com.example.design_system.utils.fadeScreenExitTransition
 import com.example.settings.screen.Settings
 import com.example.settings.screen.SettingsVM
 
+/**
+ * Extension function for [NavGraphBuilder] to register the Settings screen destination.
+ * * This function encapsulates the boilerplate required to initialize the Settings
+ * feature within the navigation graph, including:
+ * 1. **Custom Transitions**: Applies fade-in and fade-out animations for screen entry/exit.
+ * 2. **State Management**: Connects a [hiltViewModel] to the [Settings] UI.
+ * 3. **Lifecycle-Awareness**: Uses [collectAsStateWithLifecycle] to safely observe UI state.
+ * 4. **Side Effects**: Integrates [HandleCommonEffects] to process one-time events
+ * (like navigation or snackbars) dispatched from the ViewModel.
+ *
+ * @param navController The [NavController] used for navigating away from the Settings screen.
+ */
 fun NavGraphBuilder.settings(navController: NavController) = composable<SettingsRoute>(
     enterTransition = { fadeScreenEnterTransition() },
     exitTransition = { fadeScreenExitTransition() }

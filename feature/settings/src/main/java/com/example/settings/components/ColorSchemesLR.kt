@@ -28,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.data.models.theme.ColorSchemeValue
-import com.example.data.models.theme.LibertyFlowTheme
 import com.example.data.models.theme.ThemeValue
 import com.example.design_system.theme.colors.DarkCherryColorScheme
 import com.example.design_system.theme.colors.DarkGreenAppleScheme
@@ -42,13 +41,10 @@ import com.example.design_system.theme.colors.LightLavenderScheme
 import com.example.design_system.theme.colors.LightSakuraScheme
 import com.example.design_system.theme.colors.LightSeaScheme
 import com.example.design_system.theme.colors.LightTacosScheme
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mTypography
 import com.example.settings.R
 import com.example.settings.screen.SettingsIntent
-
-// --- Layout Constants ---
-private val LRArrangement = 16.dp
-private val LRPadding = 16.dp
 
 // --- Card Dimensions ---
 private val CardWidth = 140.dp
@@ -76,8 +72,6 @@ private val TextBarHeight = 6.dp
 private val TextBarLongWidth = 40.dp
 private val TextBarShortWidth = 25.dp
 private val TextBarCorner = 2.dp
-private val TextBarSpacing = 4.dp
-private val ContentPadding = 8.dp
 
 private data class ColorSchemePreview(
     val name: Int,
@@ -86,46 +80,46 @@ private data class ColorSchemePreview(
     val baseValue: ColorSchemeValue
 )
 
-private val CherryLabel = R.string.cherry_label
-private val TacosLabel = R.string.tacos_label
-private val LavenderLabel = R.string.lavender_label
-private val AppleLabel = R.string.green_apple_label
-private val SakuraLabel = R.string.sakura_label
-private val SeaLabel = R.string.sea_label
+private val CherryLabelRes = R.string.cherry_label
+private val TacosLabelRes = R.string.tacos_label
+private val LavenderLabelRes = R.string.lavender_label
+private val AppleLabelRes = R.string.green_apple_label
+private val SakuraLabelRes = R.string.sakura_label
+private val SeaLabelRes = R.string.sea_label
 
 private val colorSchemes = listOf(
     ColorSchemePreview(
-        name = LavenderLabel,
+        name = LavenderLabelRes,
         lightScheme = LightLavenderScheme,
         darkScheme = DarkLavenderScheme,
         baseValue = ColorSchemeValue.LIGHT_LAVENDER_SCHEME
     ),
     ColorSchemePreview(
-        name = CherryLabel,
+        name = CherryLabelRes,
         lightScheme = LightCherryColorScheme,
         darkScheme = DarkCherryColorScheme,
         baseValue = ColorSchemeValue.LIGHT_CHERRY_SCHEME
     ),
     ColorSchemePreview(
-        name = TacosLabel,
+        name = TacosLabelRes,
         lightScheme = LightTacosScheme,
         darkScheme = DarkTacosScheme,
         baseValue = ColorSchemeValue.LIGHT_TACOS_SCHEME
     ),
     ColorSchemePreview(
-        name = SeaLabel,
+        name = SeaLabelRes,
         lightScheme = LightSeaScheme,
         darkScheme = DarkSeaScheme,
         baseValue = ColorSchemeValue.LIGHT_SEA_SCHEME
     ),
     ColorSchemePreview(
-        name = AppleLabel,
+        name = AppleLabelRes,
         lightScheme = LightGreenAppleScheme,
         darkScheme = DarkGreenAppleScheme,
         baseValue = ColorSchemeValue.LIGHT_GREEN_APPLE_SCHEME
     ),
     ColorSchemePreview(
-        name = SakuraLabel,
+        name = SakuraLabelRes,
         lightScheme = LightSakuraScheme,
         darkScheme = DarkSakuraScheme,
         baseValue = ColorSchemeValue.LIGHT_SAKURA_SCHEME
@@ -134,30 +128,41 @@ private val colorSchemes = listOf(
 
 private const val LOW_BAR = "_"
 
+/**
+ * A horizontally scrollable row that displays color scheme preview cards.
+ * * This component evaluates the current [theme] (Light, Dark, or System) to
+ * determine which version of the color palettes to display. It handles
+ * selection logic by comparing the base color scheme values.
+ *
+ * @param colorScheme The currently active [ColorSchemeValue] from the application state.
+ * @param theme The current [ThemeValue] to determine if previews should look light or dark.
+ * @param onIntent Callback to dispatch a [SettingsIntent.SetColorScheme] when a card is clicked.
+ */
 @Composable
 internal fun LazyItemScope.ColorSchemesLR(
-    theme: LibertyFlowTheme,
+    colorScheme: ColorSchemeValue?,
+    theme: ThemeValue,
     onIntent: (SettingsIntent) -> Unit
 ) {
     LazyRow(
-        contentPadding = PaddingValues(horizontal = LRPadding),
-        horizontalArrangement = Arrangement.spacedBy(LRArrangement),
+        contentPadding = PaddingValues(horizontal = mDimens.paddingMedium),
+        horizontalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .animateItem()
             .fillMaxWidth()
     ) {
         items(colorSchemes) { preview ->
-            val isDarkTheme = if (theme.userThemePreference == ThemeValue.SYSTEM) {
+            val isDarkTheme = if (theme == ThemeValue.SYSTEM) {
                 isSystemInDarkTheme()
             } else {
-                theme.userThemePreference != ThemeValue.LIGHT
+                theme != ThemeValue.LIGHT
             }
             val visualColors = if (isDarkTheme) preview.darkScheme else preview.lightScheme
 
             val targetValue = preview.baseValue.forMode(isDarkTheme)
 
-            val isSelected = theme.activeColorScheme?.name?.substringAfter(LOW_BAR) ==
+            val isSelected = colorScheme?.name?.substringAfter(LOW_BAR) ==
                     targetValue.name.substringAfter(LOW_BAR)
 
             ColorSchemePreviewCard(
@@ -170,6 +175,17 @@ internal fun LazyItemScope.ColorSchemesLR(
     }
 }
 
+/**
+ * A decorative card representing a specific color theme.
+ * * It contains an abstract UI illustration using [scheme] colors (Primary, Secondary,
+ * Tertiary, and Surface variants) to give the user a visual "vibe" of the theme
+ * before applying it.
+ *
+ * @param themeName The localized string name of the theme (e.g., 'Sakura').
+ * @param scheme The [ColorScheme] containing the actual colors to be rendered.
+ * @param isSelected Whether this specific scheme is the one currently active.
+ * @param onClick Triggered when the user selects this card.
+ */
 @Composable
 private fun ColorSchemePreviewCard(
     themeName: String,
@@ -212,8 +228,8 @@ private fun ColorSchemePreviewCard(
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(ContentPadding),
-                verticalArrangement = Arrangement.spacedBy(TextBarSpacing)
+                    .padding(mDimens.paddingSmall),
+                verticalArrangement = Arrangement.spacedBy(mDimens.spacingExtraSmall)
             ) {
                 Box(
                     Modifier
@@ -232,7 +248,7 @@ private fun ColorSchemePreviewCard(
             // Focal Point Accent (Tertiary)
             Box(
                 modifier = Modifier
-                    .padding(end = ContentPadding)
+                    .padding(end = mDimens.paddingSmall)
                     .size(TertiaryAccentSize)
                     .background(scheme.tertiary, CircleShape)
                     .align(Alignment.CenterEnd)

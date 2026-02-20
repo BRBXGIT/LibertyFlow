@@ -12,11 +12,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.player.VideoQuality
 import com.example.data.models.theme.LibertyFlowTheme
@@ -27,20 +27,26 @@ import com.example.design_system.components.bottom_sheets.quality_bs.VideoQualit
 import com.example.design_system.components.dividers.dividerWithLabel
 import com.example.design_system.components.list_tems.M3ListItem
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mDimens
 import com.example.settings.R
 import com.example.settings.components.ColorSchemesLR
 import com.example.settings.components.SegmentedThemeButton
 
-private val LCPadding = 16.dp
+private val SettingsLabelRes = R.string.settings_label
 
-private val LCSpacedBy = 16.dp
+private val ThemeLabelRes = R.string.theme_label
+private val PlayerLabelRes = R.string.player_label
+private val OtherLabelRes = R.string.other_label
 
-private val SettingsLabel = R.string.settings_label
-
-private val ThemeLabel = R.string.theme_label
-private val PlayerLabel = R.string.player_label
-private val OtherLabel = R.string.other_label
-
+/**
+ * A private data model representing a single row in the settings list.
+ * @property icon The drawable resource for the setting's leading icon.
+ * @property labelRes The string resource for the primary title.
+ * @property descriptionRes Optional string resource for secondary descriptive text.
+ * @property isEnabled If non-null, renders a toggle/switch representing the boolean state.
+ * @property intent The [SettingsIntent] to be dispatched when this item is interacted with.
+ */
+@Immutable
 private data class Setting(
     val icon: Int,
     val labelRes: Int,
@@ -50,18 +56,31 @@ private data class Setting(
     val intent: SettingsIntent
 )
 
-private val QualityLabel = R.string.quality_label
-private val ShowSkipOpeningButtonLabel = R.string.show_skip_opening_button_label
-private val AutoSkipOpeningLabel = R.string.auto_skip_opening_label
-private val AutoPlayLabel = R.string.auto_play_label
-private val CropLabel = R.string.crop_label
+private val QualityLabelRes = R.string.quality_label
+private val ShowSkipOpeningButtonLabelRes = R.string.show_skip_opening_button_label
+private val AutoSkipOpeningLabelRes = R.string.auto_skip_opening_label
+private val AutoPlayLabelRes = R.string.auto_play_label
+private val CropLabelRes = R.string.crop_label
 
-private val UseExpressiveLabel = R.string.use_expressive_label
-private val TabStyleLabel = R.string.tab_type_label
-private val TabletStyleLabel = R.string.tablet_style_label
-private val M3StyleLabel = R.string.m3_style_label
-private val ChipsStyleLabel = R.string.chips_style_label
+private val UseExpressiveLabelRes = R.string.use_expressive_label
+private val TabStyleLabelRes = R.string.tab_type_label
+private val TabletStyleLabelRes = R.string.tablet_style_label
+private val M3StyleLabelRes = R.string.m3_style_label
+private val ChipsStyleLabelRes = R.string.chips_style_label
 
+/**
+ * The primary entry point for the Settings UI.
+ * * This screen provides a centralized interface for users to customize:
+ * 1. **Visual Identity**: Theme preference (Light/Dark/System) and dynamic color schemes.
+ * 2. **Playback Experience**: Video quality, auto-play, and skipping preferences.
+ * 3. **Interface Style**: Tab navigation styles (M3, Tablet, or Chips) and expressive layouts.
+ * * It features a [nestedScroll] connection for smooth TopAppBar transitions and utilizes
+ * [remember] blocks to optimize the performance of setting list generation.
+ *
+ * @param state The [SettingsState] containing current user preferences and UI visibility flags.
+ * @param onIntent Lambda to process user interactions (e.g., toggling a switch).
+ * @param onEffect Lambda to trigger one-time UI events (e.g., navigating back).
+ */
 @Composable
 fun Settings(
     state: SettingsState,
@@ -73,7 +92,7 @@ fun Settings(
     Scaffold(
         topBar = {
             LibertyFlowBasicTopBar(
-                label = stringResource(SettingsLabel),
+                label = stringResource(SettingsLabelRes),
                 onNavClick = { onEffect(UiEffect.NavigateBack) },
                 scrollBehavior = topBarScrollBehavior
             )
@@ -97,31 +116,31 @@ fun Settings(
             listOf(
                 Setting(
                     icon = LibertyFlowIcons.Outlined.HighQuality,
-                    labelRes = QualityLabel,
+                    labelRes = QualityLabelRes,
                     quality = state.playerSettings.quality,
                     intent = SettingsIntent.ToggleIsQualityBSVisible
                 ),
                 Setting(
                     icon = LibertyFlowIcons.Outlined.PlayCircle,
-                    labelRes = AutoPlayLabel,
+                    labelRes = AutoPlayLabelRes,
                     isEnabled = state.playerSettings.autoPlay,
                     intent = SettingsIntent.ToggleAutoPlay
                 ),
                 Setting(
                     icon = LibertyFlowIcons.Outlined.RewindForwardCircle,
-                    labelRes = ShowSkipOpeningButtonLabel,
+                    labelRes = ShowSkipOpeningButtonLabelRes,
                     isEnabled = state.playerSettings.showSkipOpeningButton,
                     intent = SettingsIntent.ToggleShowSkipOpeningButton
                 ),
                 Setting(
                     icon = LibertyFlowIcons.Outlined.Rocket,
-                    labelRes = AutoSkipOpeningLabel,
+                    labelRes = AutoSkipOpeningLabelRes,
                     isEnabled = state.playerSettings.autoSkipOpening,
                     intent = SettingsIntent.ToggleAutoSkipOpening
                 ),
                 Setting(
                     icon = LibertyFlowIcons.Outlined.Crop,
-                    labelRes = CropLabel,
+                    labelRes = CropLabelRes,
                     isEnabled = state.playerSettings.isCropped,
                     intent = SettingsIntent.ToggleIsCropped
                 )
@@ -135,17 +154,17 @@ fun Settings(
             listOf(
                 Setting(
                     icon = LibertyFlowIcons.Outlined.Tablet,
-                    labelRes = TabStyleLabel,
+                    labelRes = TabStyleLabelRes,
                     descriptionRes = when(state.themeSettings.tabType) {
-                        TabType.M3 -> M3StyleLabel
-                        TabType.Tablet -> TabletStyleLabel
-                        TabType.Chips -> ChipsStyleLabel
+                        TabType.M3 -> M3StyleLabelRes
+                        TabType.Tablet -> TabletStyleLabelRes
+                        TabType.Chips -> ChipsStyleLabelRes
                     },
                     intent = SettingsIntent.ToggleTabType
                 ),
                 Setting(
                     icon = LibertyFlowIcons.Outlined.Colour,
-                    labelRes = UseExpressiveLabel,
+                    labelRes = UseExpressiveLabelRes,
                     isEnabled = state.themeSettings.useExpressive,
                     intent = SettingsIntent.ToggleUseExpressive
                 )
@@ -153,24 +172,24 @@ fun Settings(
         }
 
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(LCSpacedBy),
+            verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                bottom = innerPadding.calculateBottomPadding() + LCPadding,
-                top = innerPadding.calculateTopPadding() + LCPadding
+                bottom = innerPadding.calculateBottomPadding() + mDimens.paddingMedium,
+                top = innerPadding.calculateTopPadding() + mDimens.paddingMedium
             )
         ) {
-            dividerWithLabel(ThemeLabel)
+            dividerWithLabel(ThemeLabelRes)
 
             theme(state, onIntent)
 
             colorScheme(state.themeSettings, onIntent)
 
-            dividerWithLabel(PlayerLabel)
+            dividerWithLabel(PlayerLabelRes)
 
             settingsList(playerSettings, onIntent)
 
-            dividerWithLabel(OtherLabel)
+            dividerWithLabel(OtherLabelRes)
 
             settingsList(commonSettings, onIntent)
         }
@@ -188,7 +207,7 @@ private fun LazyListScope.theme(
     ) {
         SegmentedThemeButton(
             onIntent = onIntent,
-            state = state
+            theme = state.themeSettings.userThemePreference
         )
     }
 }
@@ -204,8 +223,9 @@ private fun LazyListScope.colorScheme(
             key = COLOR_SCHEME_KEY
         ) {
             ColorSchemesLR(
-                theme = theme,
-                onIntent = onIntent
+                theme = theme.userThemePreference,
+                onIntent = onIntent,
+                colorScheme = theme.activeColorScheme
             )
         }
     }
@@ -215,7 +235,10 @@ private fun LazyListScope.settingsList(
     settings: List<Setting>,
     onIntent: (SettingsIntent) -> Unit
 ) {
-    items(settings) { setting ->
+    items(
+        items = settings,
+        key = { setting -> setting.labelRes }
+    ) { setting ->
         M3ListItem(
             description = if (setting.descriptionRes == null) null else stringResource(setting.descriptionRes),
             title = stringResource(setting.labelRes),
