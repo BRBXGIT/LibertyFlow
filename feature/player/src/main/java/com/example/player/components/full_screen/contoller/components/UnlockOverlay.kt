@@ -16,8 +16,20 @@ import com.example.player.R
 import com.example.player.player.PlayerIntent
 
 private val EdgePadding = 32.dp
-private val UnlockLabel = R.string.unlock_label
+private val UnlockLabelRes = R.string.unlock_label
 
+/**
+ * A specialized overlay that appears only when the player is in a 'Locked' state.
+ *
+ * This component provides a single point of interaction to unlock the player controls.
+ * It is positioned at the bottom center of the screen to remain accessible but
+ * out of the way of the primary video content.
+ *
+ * @param onPlayerIntent Callback used to dispatch [PlayerIntent.ToggleIsLocked],
+ * which restores full interactivity to the player.
+ * @param alpha The current animated opacity level. This is typically tied to the
+ * visibility of the main controller or a specific "wake" gesture.
+ */
 @Composable
 internal fun UnlockOverlay(
     onPlayerIntent: (PlayerIntent) -> Unit,
@@ -31,7 +43,7 @@ internal fun UnlockOverlay(
         contentAlignment = Alignment.BottomCenter
     ) {
         ButtonWithIcon(
-            text = stringResource(UnlockLabel),
+            text = stringResource(UnlockLabelRes),
             icon = LibertyFlowIcons.Outlined.Unlock,
             onClick = { onPlayerIntent(PlayerIntent.ToggleIsLocked) },
             type = ButtonWithIconType.Outlined

@@ -23,10 +23,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mShapes
 import com.example.player.components.common.ButtonWithAnimatedIcon
 import com.example.player.components.common.rememberControllerVisibility
@@ -35,7 +37,6 @@ import com.example.player.player.PlayerState
 
 private const val MAIN_BOX_Z_INDEX = 1f
 
-private const val CONTROLLER_PADDING = 4
 
 /**
  * An interactive overlay for the Mini Player that provides quick access to transport controls.
@@ -66,7 +67,7 @@ internal fun BoxScope.MiniPlayerController(
             .clip(mShapes.small)
             .background(Color.Black.copy(alpha = visibility.overlayAlpha))
             .clickable { onPlayerIntent(PlayerIntent.ToggleControllerVisible) }
-            .padding(CONTROLLER_PADDING.dp)
+            .padding(mDimens.paddingExtraSmall)
     ) {
         ControllerButton(
             icon = LibertyFlowIcons.Outlined.FullScreen,
@@ -154,6 +155,18 @@ private fun ControllerButton(
             icon = icon,
             modifier = Modifier.size(ICON_SIZE.dp),
             tint = Color.White
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun MiniPlayerControllerPreview() {
+    Box {
+        MiniPlayerController(
+            episodeState = PlayerState.EpisodeState.Loading,
+            isControllerVisible = true,
+            onPlayerIntent = {}
         )
     }
 }

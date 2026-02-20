@@ -35,8 +35,18 @@ import com.example.player.player.PlayerState
 // --- Constants & Configuration ---
 private val EdgePadding = 32.dp
 private val NoTitleLabel = R.string.no_title_provided_label
-private const val ONE = 1
 
+/**
+ * The top-level controller for the full-screen video experience.
+ *
+ * This component manages the high-level UI state, switching between the [UnlockOverlay]
+ * (when the player is locked) and the [MainControlsOverlay] (standard playback UI).
+ * It also handles the global background tap gesture to toggle control visibility.
+ *
+ * @param playerState The global state containing playback data, settings, and UI flags.
+ * @param onPlayerEffect Callback for one-time side effects (e.g., entering PiP).
+ * @param onPlayerIntent Callback for user actions (e.g., play/pause, seeking).
+ */
 @Composable
 internal fun FullScreenPlayerController(
     playerState: PlayerState,
@@ -56,7 +66,7 @@ internal fun FullScreenPlayerController(
         playerState.episodes.getOrNull(playerState.currentEpisodeIndex)
     }
     val title = currentEpisode?.name ?: stringResource(NoTitleLabel)
-    val episodeNumber = remember(playerState.currentEpisodeIndex) { playerState.currentEpisodeIndex + ONE }
+    val episodeNumber = remember(playerState.currentEpisodeIndex) { playerState.currentEpisodeIndex + 1 }
 
     Box(
         modifier = Modifier
@@ -76,25 +86,60 @@ internal fun FullScreenPlayerController(
         } else {
             // Main UI controls
             MainControlsOverlay(
+                isCropped = playerState.playerSettings.isCropped,
+                totalEpisodes = playerState.episodes.size,
+                currentEpisodeIndex = playerState.currentEpisodeIndex,
+                episodeTime = playerState.episodeTime,
+                episodeState = playerState.episodeState,
+                isSkipOpeningButtonVisible = playerState.isSkipOpeningButtonVisible,
+                isControllerVisible = playerState.isControllerVisible,
                 title = title,
                 episodeNumber = episodeNumber,
-                playerState = playerState,
                 visibility = visibility,
                 contentPadding = systemBarsPadding,
                 onPlayerEffect = onPlayerEffect,
-                onPlayerIntent = onPlayerIntent
+                onPlayerIntent = onPlayerIntent,
             )
         }
     }
 }
 
+/**
+ * The primary interaction layer of the player, assembling all UI components into a single overlay.
+ *
+ * This component is responsible for:
+ * 1. **Layout Coordination**: Positioning the [Header], [Footer], [CenterControls], and [SkipOpeningButton].
+ * 2. **Visual Effects**: Managing the background scrim (dimming) and hardware-accelerated fade transitions.
+ * 3. **Safe Area Management**: Applying system bar insets to ensure controls are not obscured by
+ * notches, status bars, or navigation pills.
+ *
+ * @param isCropped The current video scaling mode (Zoom/Fill vs. Fit).
+ * @param totalEpisodes Total count of episodes in the current playlist for navigation logic.
+ * @param currentEpisodeIndex The 0-based index of the currently playing episode.
+ * @param episodeTime Data object containing current position, total duration, and scrubbing state.
+ * @param episodeState The playback lifecycle state (e.g., Playing, Paused, or Loading).
+ * @param title The formatted name of the current episode to be displayed in the header.
+ * @param episodeNumber The human-readable number of the episode (usually index + 1).
+ * @param visibility Animated alpha values for the control elements and the background dimming.
+ * @param contentPadding Padding values provided by the system to avoid overlapping with system UI.
+ * @param isSkipOpeningButtonVisible Whether the "Skip Intro" prompt should be active on screen.
+ * @param isControllerVisible Global flag for UI visibility; affects button interactivity and hitboxes.
+ * @param onPlayerEffect Dispatcher for one-time side effects like entering Picture-in-Picture.
+ * @param onPlayerIntent The primary channel for sending user actions (intentions) to the ViewModel.
+ */
 @Composable
 private fun MainControlsOverlay(
+    isCropped: Boolean,
+    totalEpisodes: Int,
+    currentEpisodeIndex: Int,
+    episodeTime: PlayerState.EpisodeTime,
+    episodeState: PlayerState.EpisodeState,
     title: String,
     episodeNumber: Int,
-    playerState: PlayerState,
     visibility: ControllerVisibility,
     contentPadding: PaddingValues,
+    isSkipOpeningButtonVisible: Boolean,
+    isControllerVisible: Boolean,
     onPlayerEffect: (PlayerEffect) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit,
 ) {
@@ -114,26 +159,28 @@ private fun MainControlsOverlay(
         Header(
             title = title,
             episodeNumber = episodeNumber,
-            isControllerVisible = playerState.isControllerVisible,
+            isControllerVisible = isControllerVisible,
             onPlayerIntent = onPlayerIntent
         )
 
         CenterControls(
-            currentEpisodeIndex = playerState.currentEpisodeIndex,
-            totalEpisodes = playerState.episodes.size,
-            playerState = playerState,
-            isControllerVisible = playerState.isControllerVisible,
-            onPlayerIntent = onPlayerIntent
+            episodeState = episodeState,
+            currentEpisodeIndex = currentEpisodeIndex,
+            totalEpisodes = totalEpisodes,
+            isControllerVisible = isControllerVisible,
+            onPlayerIntent = onPlayerIntent,
         )
 
         Footer(
-            playerState = playerState,
+            isControllerVisible = isControllerVisible,
+            isCropped = isCropped,
+            episodeTime = episodeTime,
             onPlayerEffect = onPlayerEffect,
             onPlayerIntent = onPlayerIntent
         )
 
         SkipOpeningButton(
-            visible = playerState.isSkipOpeningButtonVisible,
+            visible = isSkipOpeningButtonVisible,
             onPlayerIntent = onPlayerIntent
         )
     }

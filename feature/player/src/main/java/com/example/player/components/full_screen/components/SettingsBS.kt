@@ -13,6 +13,14 @@ import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.player.R
 import com.example.player.player.PlayerIntent
 
+/**
+ * A internal data model representing an entry in the settings bottom sheet.
+ * @property text String resource ID for the setting's display name.
+ * @property leadingIcon Icon resource ID displayed at the start of the row.
+ * @property trailingType Defines the interactive element at the end of the row
+ * (e.g., a toggle switch or a navigation arrow).
+ * @property onClick The action to execute when the setting row is tapped.
+ */
 private data class SettingItemModel(
     override val text: Int,
     override val leadingIcon: Int,
@@ -20,6 +28,15 @@ private data class SettingItemModel(
     override val onClick: () -> Unit = {},
 ): BSListModel
 
+/**
+ * The Settings Bottom Sheet component.
+ * * It provides a list of toggleable preferences and navigation links to sub-menus
+ * (like Quality selection). The list is memoized using [remember] to ensure
+ * the UI only updates when the underlying [playerSettings] change.
+ *
+ * @param playerSettings The current user preferences used to populate toggle states.
+ * @param onPlayerIntent Callback to dispatch user actions back to the ViewModel.
+ */
 @Composable
 internal fun SettingsBS(
     playerSettings: PlayerSettings,

@@ -12,19 +12,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mTypography
 import com.example.player.R
 import com.example.player.player.PlayerIntent
 
 private object HeaderDefaults {
     val EpisodeLabelRes = R.string.episode_label
-    val ICON_SPACING = 4.dp
-    val HEADER_SPACING = 4.dp
     const val MAX_TITLE_LINES = 1
 }
 
+/**
+ * A specialized [IconButton] for video player controls that supports conditional availability.
+ *
+ * This component distinguishes between two states of inactivity:
+ * 1. **Enabled/Disabled**: Controlled by [isEnabled], typically used to prevent interaction
+ * when the player UI is fading out or locked.
+ * 2. **Available/Unavailable**: Controlled by [isAvailable], used when an action doesn't
+ * exist in the current context (e.g., 'Previous' button on the first episode).
+ * Unavailable buttons are tinted gray to signify they cannot be used.
+ *
+ * @param icon The resource ID of the icon to be rendered.
+ * @param onClick The action to execute when the button is tapped.
+ * @param modifier Modifiers applied to the outer [IconButton].
+ * @param iconSize Optional specific size for the inner icon. If [Dp.Unspecified],
+ * the icon will use its own default sizing.
+ * @param isEnabled If false, the button will be non-interactive but may keep its color.
+ * @param isAvailable If false, the button will be tinted gray and will not trigger [onClick].
+ */
 @Composable
 internal fun BoxScope.Header(
     title: String,
@@ -42,7 +58,7 @@ internal fun BoxScope.Header(
         // Left Section: Navigation and Episode Metadata
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(HeaderDefaults.ICON_SPACING)
+            horizontalArrangement = Arrangement.spacedBy(mDimens.spacingExtraSmall)
         ) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.Outlined.ArrowDown,
@@ -50,7 +66,7 @@ internal fun BoxScope.Header(
                 isEnabled = isControllerVisible
             )
 
-            Column(verticalArrangement = Arrangement.spacedBy(HeaderDefaults.HEADER_SPACING)) {
+            Column(verticalArrangement = Arrangement.spacedBy(mDimens.spacingExtraSmall)) {
                 Text(
                     text = title,
                     style = mTypography.bodyLarge.copy(
@@ -67,7 +83,7 @@ internal fun BoxScope.Header(
         }
 
         // Right Section: Supplementary Controls (Playlist and Settings)
-        Row(horizontalArrangement = Arrangement.spacedBy(HeaderDefaults.ICON_SPACING)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(mDimens.spacingExtraSmall)) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.Outlined.Checklist,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },

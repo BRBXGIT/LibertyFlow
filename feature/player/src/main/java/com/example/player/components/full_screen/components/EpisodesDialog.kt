@@ -33,11 +33,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.data.models.releases.anime_details.Episode
 import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
@@ -46,23 +48,24 @@ import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
 // --- Dimens ---
-private val DialogPadding = 16.dp
-private val DialogContentSpacing = 16.dp
-private val ListVerticalPadding = 16.dp
-private val ListItemSpacing = 16.dp
-private val ItemInternalPadding = 4.dp
 private val SelectionIconSize = 16.dp
-private val ButtonArrangementSpacing = 8.dp
 
 private const val WEIGHT = 1f
 
-private const val ONE = 1
+private val ChooseEpisodeLabelRes = R.string.choose_episode_label
 
-private const val VISIBLE = 1f
-private const val INVISIBLE = 0f
-
-private val ChooseEpisodeLabel = R.string.choose_episode_label
-
+/**
+ * A dialog that allows the user to browse and select a different episode from the playlist.
+ *
+ * This component maintains its own internal selection state before committing the change
+ * to the ViewModel. This prevents the player from switching episodes immediately
+ * upon every tap, allowing the user to browse comfortably.
+ *
+ * @param onPlayerIntent The entry point for dispatching [PlayerIntent.ChangeEpisode]
+ * and visibility toggles.
+ * @param playerState The current state providing the list of [Episode]s and the
+ * currently active index.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun EpisodeDialog(
@@ -75,18 +78,18 @@ internal fun EpisodeDialog(
     BasicAlertDialog(
         onDismissRequest = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },
         modifier = Modifier
-            .padding(vertical = DialogPadding)
+            .padding(vertical = mDimens.paddingMedium)
             .background(
                 color = mColors.surfaceContainerHigh,
                 shape = mShapes.small
             )
     ) {
         Column(
-            modifier = Modifier.padding(DialogPadding),
-            verticalArrangement = Arrangement.spacedBy(DialogContentSpacing)
+            modifier = Modifier.padding(mDimens.paddingMedium),
+            verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium)
         ) {
             Text(
-                text = stringResource(ChooseEpisodeLabel),
+                text = stringResource(ChooseEpisodeLabelRes),
                 style = mTypography.bodyLarge.copy(color = mColors.onSurface),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -104,6 +107,14 @@ internal fun EpisodeDialog(
 
 private val NoTitleLabel = R.string.no_title_provided_label
 
+/**
+ * A scrollable list of episodes wrapped in a constrained column.
+ * * Uses [LazyColumn] for efficient rendering of large episode lists.
+ *
+ * @param episodes The list of content to display.
+ * @param selectedId The index currently marked as "selected" in the dialog's local state.
+ * @param onSelect Callback triggered when an item is tapped, updating the local selection.
+ */
 @Composable
 private fun ColumnScope.EpisodesList(
     episodes: List<Episode>,
@@ -114,8 +125,8 @@ private fun ColumnScope.EpisodesList(
         HorizontalDivider()
 
         LazyColumn(
-            contentPadding = PaddingValues(vertical = ListVerticalPadding),
-            verticalArrangement = Arrangement.spacedBy(ListItemSpacing)
+            contentPadding = PaddingValues(vertical = mDimens.paddingMedium),
+            verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium)
         ) {
             itemsIndexed(
                 items = episodes,
@@ -124,7 +135,7 @@ private fun ColumnScope.EpisodesList(
             ) { index, episode ->
                 EpisodeItem(
                     episodeTitle = episode.name ?: stringResource(NoTitleLabel),
-                    episodeNumber = index + ONE,
+                    episodeNumber = index + 1,
                     isSelected = selectedId == index,
                     onClick = { onSelect(index) },
                 )
@@ -135,8 +146,18 @@ private fun ColumnScope.EpisodesList(
     }
 }
 
-private const val DOT = "•"
+private const val DOT_DIVIDER = "•"
 
+/**
+ * An individual row representing a single episode.
+ * * Features a checkmark icon that fades in/out using [animateFloatAsState] to
+ * provide clear visual feedback of the current selection.
+ *
+ * @param episodeNumber The 1-based index for display.
+ * @param episodeTitle The display name of the episode.
+ * @param isSelected Whether this specific item is the currently focused selection.
+ * @param onClick Action to select this episode.
+ */
 @Composable
 private fun EpisodeItem(
     episodeNumber: Int,
@@ -149,21 +170,21 @@ private fun EpisodeItem(
             .fillMaxWidth()
             .clip(mShapes.extraSmall)
             .clickable(onClick = onClick)
-            .padding(ItemInternalPadding),
+            .padding(mDimens.paddingExtraSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "$episodeNumber $DOT $episodeTitle",
+            text = "$episodeNumber $DOT_DIVIDER $episodeTitle",
             style = mTypography.bodyMedium.copy(color = mColors.onSurface),
             modifier = Modifier.weight(WEIGHT),
-            maxLines = ONE,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
 
         // Animate alpha based on selection state
         val animatedIconAlpha by animateFloatAsState(
-            targetValue = if (isSelected) VISIBLE else INVISIBLE,
+            targetValue = if (isSelected) 1f else 0f,
             animationSpec = mMotionScheme.slowEffectsSpec(),
             label = "IconAlphaAnimation"
         )
@@ -178,8 +199,8 @@ private fun EpisodeItem(
     }
 }
 
-private val SelectLabel = R.string.select_label
-private val DismissLabel = R.string.cancel_label
+private val SelectLabelRes = R.string.select_label
+private val DismissLabelRes = R.string.cancel_label
 
 @Composable
 private fun DialogButtons(
@@ -188,13 +209,13 @@ private fun DialogButtons(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(ButtonArrangementSpacing),
+        horizontalArrangement = Arrangement.spacedBy(mDimens.spacingSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.weight(WEIGHT))
 
         TextButton(onClick = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) }) {
-            Text(text = stringResource(DismissLabel))
+            Text(text = stringResource(DismissLabelRes))
         }
 
         TextButton(
@@ -203,7 +224,18 @@ private fun DialogButtons(
                 onPlayerIntent(PlayerIntent.ToggleEpisodesDialog)
             }
         ) {
-            Text(text = stringResource(SelectLabel))
+            Text(text = stringResource(SelectLabelRes))
         }
+    }
+}
+
+@Preview
+@Composable
+private fun EpisodesDialogPreview() {
+    if (true) {
+        EpisodeDialog(
+            onPlayerIntent = {},
+            playerState = PlayerState()
+        )
     }
 }

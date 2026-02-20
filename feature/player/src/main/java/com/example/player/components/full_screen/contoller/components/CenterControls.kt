@@ -16,33 +16,53 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mDimens
 import com.example.player.components.common.ButtonWithAnimatedIcon
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
+/**
+ * Configuration defaults for the central playback controls.
+ *
+ * @property SkipIconSize The standard size for the 'Next' and 'Previous' icons.
+ * @property PlayPauseIconSize The size for the primary Play/Pause toggle.
+ * @property TOUCH_TARGET_MULTIPLAYER A multiplier applied to icon sizes to ensure
+ * buttons meet minimum accessible touch target requirements (e.g., 48dp).
+ */
 private object CenterControlsDefaults {
     val SkipIconSize = 30.dp
     val PlayPauseIconSize = 34.dp
-    val SpacingBetweenControls = 16.dp
 
     const val TOUCH_TARGET_MULTIPLAYER = 2f
 }
 
+/**
+ * The central transport control row for the video player.
+ * * This component acts as the primary interaction hub, coordinating playlist navigation
+ * and playback toggles. It intelligently manages its internal state to show either
+ * playback controls or a loading indicator based on the current buffer status.
+ *
+ * @param episodeState The current playback status (Playing, Paused, or Loading).
+ * @param currentEpisodeIndex The current position in the playlist (used for boundary checks).
+ * @param totalEpisodes Total number of items in the playlist to determine if 'Next' is available.
+ * @param isControllerVisible Controls whether the buttons are interactive and visible.
+ * @param onPlayerIntent Dispatcher for sending playback actions back to the ViewModel.
+ */
 @Composable
 internal fun BoxScope.CenterControls(
+    episodeState: PlayerState.EpisodeState,
     currentEpisodeIndex: Int,
     totalEpisodes: Int,
-    playerState: PlayerState,
     isControllerVisible: Boolean,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val hasPreviousEpisode = currentEpisodeIndex > 0
     val hasNextEpisode = currentEpisodeIndex < totalEpisodes - 1
-    val isPlaying = playerState.episodeState == PlayerState.EpisodeState.Playing
-    val isLoading = playerState.episodeState == PlayerState.EpisodeState.Loading
+    val isPlaying = episodeState == PlayerState.EpisodeState.Playing
+    val isLoading = episodeState == PlayerState.EpisodeState.Loading
 
     Row(
-        horizontalArrangement = Arrangement.spacedBy(CenterControlsDefaults.SpacingBetweenControls),
+        horizontalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
         modifier = Modifier.align(Alignment.Center),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -65,7 +85,7 @@ internal fun BoxScope.CenterControls(
                 atEnd = isPlaying,
                 modifier = Modifier.size(CenterControlsDefaults.PlayPauseIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
                 onClick = {
-                    if (playerState.isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause)
+                    if (isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause)
                 }
             ) { painter ->
                 Image(

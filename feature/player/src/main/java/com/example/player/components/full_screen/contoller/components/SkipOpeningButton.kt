@@ -18,13 +18,27 @@ import com.example.design_system.theme.theme.mMotionScheme
 import com.example.player.R
 import com.example.player.player.PlayerIntent
 
+/**
+ * UI constants and default values for the skip opening interface.
+ */
 private object SkipOpeningDefaults {
     val SkipOpeningLabelRes = R.string.skip_opening_label
-    const val ALPHA_ANIMATION_LABEL = "Skip opening alpha"
     const val VISIBLE_ALPHA = 1f
     const val HIDDEN_ALPHA = 0f
 }
 
+/**
+ * A floating button that appears when the player detects an opening or intro sequence.
+ *
+ * This component uses [animateFloatAsState] to transition smoothly between visible
+ * and hidden states. To optimize performance, it uses conditional rendering (if-check)
+ * to ensure the button is only part of the composition tree when it is active.
+ *
+ * @param visible Controls whether the button should be displayed based on
+ * the current playback time matching opening timestamps.
+ * @param onPlayerIntent The callback used to dispatch [PlayerIntent.SkipOpening]
+ * to the ViewModel.
+ */
 @Composable
 internal fun BoxScope.SkipOpeningButton(
     visible: Boolean,
@@ -34,7 +48,7 @@ internal fun BoxScope.SkipOpeningButton(
     val animatedAlpha by animateFloatAsState(
         targetValue = if (visible) SkipOpeningDefaults.VISIBLE_ALPHA else SkipOpeningDefaults.HIDDEN_ALPHA,
         animationSpec = mMotionScheme.slowEffectsSpec(),
-        label = SkipOpeningDefaults.ALPHA_ANIMATION_LABEL
+        label = "Skip opening alpha"
     )
 
     // Conditional rendering: only compose the button if it's actually visible to save resources
