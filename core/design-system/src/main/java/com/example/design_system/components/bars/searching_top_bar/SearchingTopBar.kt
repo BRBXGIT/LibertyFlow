@@ -38,7 +38,8 @@ private val TOP_BAR_ICON_SIZE = 22.dp
  * A standard Material 3 Top App Bar that toggles between a static title
  * and an interactive search input.
  *
- * @param searchForm The state object containing query and search visibility.
+ * @param isSearching If user in searching mode
+ * @param query The current query user entering
  * @param text The text displayed when not in searching mode.
  * @param scrollBehavior The scroll behavior to be used with a Scaffold.
  * @param onQueryChange Callback triggered when the search text changes.

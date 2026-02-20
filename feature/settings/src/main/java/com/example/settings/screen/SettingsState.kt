@@ -1,8 +1,10 @@
 package com.example.settings.screen
 
+import androidx.compose.runtime.Immutable
 import com.example.data.models.player.PlayerSettings
 import com.example.data.models.theme.LibertyFlowTheme
 
+@Immutable
 data class SettingsState(
     // Player
     val playerSettings: PlayerSettings = PlayerSettings(),
