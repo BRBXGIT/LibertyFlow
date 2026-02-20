@@ -13,7 +13,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
@@ -25,15 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.onboarding.screen.OnboardingIntent
-import com.example.onboarding.screen.OnboardingState
 import kotlinx.coroutines.launch
 
 private const val ICON_WEIGHT = 0.2f
@@ -96,9 +94,8 @@ fun BottomBar(
                 },
                 enabled = currentPage > 0
             ) {
-                Icon(
-                    painter = painterResource(LibertyFlowIcons.Filled.AltArrowLeft),
-                    contentDescription = null,
+                LibertyFlowIcon(
+                    icon = LibertyFlowIcons.Filled.AltArrowLeft,
                     tint = if (currentPage > 0) mColors.primary else mColors.onSurface.copy(alpha = DISABLED_ICON_ALPHA)
                 )
             }
@@ -127,9 +124,8 @@ fun BottomBar(
                     }
                 }
             ) {
-                Icon(
-                    painter = painterResource(if (currentPage < LAST_PAGE) LibertyFlowIcons.Filled.AltArrowRight else LibertyFlowIcons.Filled.DoubleCheck),
-                    contentDescription = null,
+                LibertyFlowIcon(
+                    icon = if (currentPage < LAST_PAGE) LibertyFlowIcons.Filled.AltArrowRight else LibertyFlowIcons.Filled.DoubleCheck,
                     tint = if (enabled) mColors.primary else mColors.onSurface.copy(alpha = DISABLED_ICON_ALPHA)
                 )
             }

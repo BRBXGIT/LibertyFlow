@@ -20,7 +20,6 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,11 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.data.models.releases.anime_details.Episode
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mMotionScheme
@@ -169,14 +168,11 @@ private fun EpisodeItem(
             label = "IconAlphaAnimation"
         )
 
-        Icon(
-            painter = painterResource(LibertyFlowIcons.Filled.DoubleCheck),
-            contentDescription = null,
+        LibertyFlowIcon(
+            icon = LibertyFlowIcons.Filled.DoubleCheck,
             tint = mColors.primary,
             modifier = Modifier
                 .size(SelectionIconSize)
-                // Optimization: graphicsLayer pushes alpha changes to the Draw phase,
-                // avoiding unnecessary Recomposition and Layout phases.
                 .graphicsLayer { alpha = animatedIconAlpha }
         )
     }

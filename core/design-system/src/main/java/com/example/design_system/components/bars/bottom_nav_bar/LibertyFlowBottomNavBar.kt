@@ -5,10 +5,7 @@ package com.example.design_system.components.bars.bottom_nav_bar
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.RowScope
@@ -42,6 +39,7 @@ import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarCons
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.LABEL_MAX_LINES
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.MoreLabel
 import com.example.design_system.components.bars.bottom_nav_bar.BottomNavBarConstants.VISIBLE_OFFSET
+import com.example.design_system.components.icons.LibertyFlowAnimatedIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
@@ -142,20 +140,14 @@ private fun RowScope.LibertyFlowBottomNavItem(
     // Trigger animation when selected state changes
     LaunchedEffect(isSelected) { playAnimation = isSelected }
 
-    val animatedVector = AnimatedImageVector.animatedVectorResource(navItem.iconRes)
-    val painter = rememberAnimatedVectorPainter(
-        animatedImageVector = animatedVector,
-        atEnd = playAnimation
-    )
-
     NavigationBarItem(
         selected = isSelected,
         onClick = { if (!isSelected) onClick() },
         icon = {
-            Image(
-                painter = painter,
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(mColors.onSecondaryContainer)
+            LibertyFlowAnimatedIcon(
+                colorFilter = ColorFilter.tint(mColors.onSecondaryContainer),
+                isRunning = playAnimation,
+                iconRes = navItem.iconRes
             )
         },
         label = {

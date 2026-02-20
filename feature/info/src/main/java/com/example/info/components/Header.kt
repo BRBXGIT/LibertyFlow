@@ -8,20 +8,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mDimens
 
-private val MAIN_BOX_HEIGHT = 210.dp
-private val ICON_SIZE = 84.dp
+private val MainBoxHeight = 210.dp
+private val IconSize = 84.dp
 
 /**
  * A decorative header for the Information screen list.
@@ -34,16 +33,15 @@ internal fun LazyItemScope.Header() {
         modifier = Modifier
             .animateItem()
             .fillMaxWidth()
-            .height(MAIN_BOX_HEIGHT)
+            .height(MainBoxHeight)
             .padding(horizontal = mDimens.paddingMedium)
     ) {
-        Icon(
-            painter = painterResource(LibertyFlowIcons.Multicolored.LibertyFlow),
-            contentDescription = null,
+        LibertyFlowIcon(
+            icon = LibertyFlowIcons.Multicolored.LibertyFlow,
             tint = Color.Unspecified,
             modifier = Modifier
                 .align(Alignment.Center)
-                .size(ICON_SIZE),
+                .size(IconSize),
         )
 
         HorizontalDivider(

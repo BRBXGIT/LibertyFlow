@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -21,13 +20,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.common.navigation.InfoRoute
 import com.example.common.navigation.SettingsRoute
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.containers.M3Container
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
@@ -83,9 +82,8 @@ internal fun LazyItemScope.MoreItem(
             .clickable { onEffect(item.effect) }
             .padding(mDimens.paddingMedium)
     ) {
-        Icon(
-            painter = painterResource(item.iconRes),
-            contentDescription = null,
+        LibertyFlowIcon(
+            icon = item.iconRes,
             modifier = Modifier.size(mDimens.spacingExtraLarge),
             tint = if (item.originalColor) Color.Unspecified else mColors.primary
         )

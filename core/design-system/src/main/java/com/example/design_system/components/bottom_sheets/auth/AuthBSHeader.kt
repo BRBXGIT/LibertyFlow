@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -20,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,6 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.design_system.R
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
@@ -74,10 +73,7 @@ internal fun AuthBSHeader(
                 )
             },
             leadingIcon = {
-                Icon(
-                    painter = painterResource(LibertyFlowIcons.Outlined.User),
-                    contentDescription = null
-                )
+                LibertyFlowIcon(LibertyFlowIcons.Outlined.User)
             },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email
@@ -101,10 +97,7 @@ internal fun AuthBSHeader(
                 )
             },
             leadingIcon = {
-                Icon(
-                    painter = painterResource(LibertyFlowIcons.Outlined.Password),
-                    contentDescription = null
-                )
+                LibertyFlowIcon(LibertyFlowIcons.Outlined.Password)
             },
             trailingIcon = {
                 IconButton(

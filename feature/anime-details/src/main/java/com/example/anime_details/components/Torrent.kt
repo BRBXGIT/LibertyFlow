@@ -9,19 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.releases.anime_details.Torrent
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mColors
@@ -80,9 +79,8 @@ internal fun LazyItemScope.Torrent(
         IconButton(
             onClick = { onEffect(UiEffect.IntentTo(intent)) }
         ) {
-            Icon(
-                painter = painterResource(LibertyFlowIcons.Filled.Download),
-                contentDescription = null
+            LibertyFlowIcon(
+                LibertyFlowIcons.Filled.Download
             )
         }
     }
@@ -137,9 +135,8 @@ private fun InfoIcon(
     icon: Int,
     tint: Color
 ) {
-    Icon(
-        painter = painterResource(icon),
-        contentDescription = null,
+    LibertyFlowIcon(
+        icon = icon,
         tint = tint,
         modifier = Modifier.size(INFO_ICON_SIZE.dp)
     )

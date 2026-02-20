@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,14 +23,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mShapes
 import com.example.player.components.common.ButtonWithAnimatedIcon
 import com.example.player.components.common.rememberControllerVisibility
-import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 
@@ -131,9 +129,8 @@ private fun ControllerButton(
         onClick = { if (visible) onClick() },
         modifier = modifier
     ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
+        LibertyFlowIcon(
+            icon = icon,
             modifier = Modifier.size(ICON_SIZE.dp),
             tint = Color.White
         )

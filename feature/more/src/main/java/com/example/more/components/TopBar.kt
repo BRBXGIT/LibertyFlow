@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -16,9 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mTypography
@@ -47,9 +46,8 @@ internal fun TopBar(
             IconButton(
                 onClick = { onIntent(MoreIntent.ToggleLogoutDialog) }
             ) {
-                Icon(
-                    painter = painterResource(LibertyFlowIcons.Outlined.Logout),
-                    contentDescription = null,
+                LibertyFlowIcon(
+                    icon = LibertyFlowIcons.Outlined.Logout,
                     modifier = Modifier.size(ICON_SIZE.dp)
                 )
             }
@@ -72,9 +70,11 @@ private fun Title() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(TITLE_SPACED_BY.dp)
     ) {
-        Icon(
-            painter = painterResource(LibertyFlowIcons.Multicolored.LibertyFlow),
-            contentDescription = null,
+        LibertyFlowIcon(
+            icon = LibertyFlowIcons.Multicolored.LibertyFlow
+        )
+        LibertyFlowIcon(
+            icon = LibertyFlowIcons.Multicolored.LibertyFlow,
             modifier = Modifier.size(ICON_SIZE.dp),
             tint = Color.Unspecified
         )

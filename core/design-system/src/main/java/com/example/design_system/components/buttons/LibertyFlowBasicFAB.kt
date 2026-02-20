@@ -3,12 +3,11 @@ package com.example.design_system.components.buttons
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
 
@@ -30,10 +29,7 @@ fun LibertyFlowBasicFAB(
         onClick = onClick,
         modifier = modifier
     ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null
-        )
+        LibertyFlowIcon(icon)
     }
 }
 
