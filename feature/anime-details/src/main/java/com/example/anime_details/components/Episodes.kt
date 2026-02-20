@@ -17,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -66,15 +67,17 @@ internal fun LazyItemScope.Episodes(
     ) {
         // Episode list
         episodes.forEachIndexed { index, episode ->
-            Episode(
-                index = index,
-                episode = episode,
-                watchedEps = watchedEps,
-                onClick = {
-                    onIntent(AnimeDetailsIntent.AddEpisodeToWatched(index))
-                    onPlayerIntent(PlayerIntent.SetUpPlayer(episodes, index, animeName))
-                },
-            )
+            key(index) {
+                Episode(
+                    index = index,
+                    episode = episode,
+                    watchedEps = watchedEps,
+                    onClick = {
+                        onIntent(AnimeDetailsIntent.AddEpisodeToWatched(index))
+                        onPlayerIntent(PlayerIntent.SetUpPlayer(episodes, index, animeName))
+                    },
+                )
+            }
         }
     }
 }
