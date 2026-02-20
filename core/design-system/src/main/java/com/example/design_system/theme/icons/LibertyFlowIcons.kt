@@ -23,6 +23,7 @@ object LibertyFlowIcons {
         @DrawableRes val PlayPause = R.drawable.ic_play_pause_animated
         @DrawableRes val Crop = R.drawable.ic_crop_animated
         @DrawableRes val ArrowUp = R.drawable.ic_arrow_up_animated
+        @DrawableRes val Clock = R.drawable.ic_clock_animated
     }
 
     /**
@@ -64,7 +65,6 @@ object LibertyFlowIcons {
         @DrawableRes val PieChart = R.drawable.ic_pie_chart
         @DrawableRes val Colour = R.drawable.ic_colour
         @DrawableRes val Tablet = R.drawable.ic_tablet
-        @DrawableRes val Clock = R.drawable.ic_clock
         @DrawableRes val Crop = R.drawable.ic_crop
     }
 

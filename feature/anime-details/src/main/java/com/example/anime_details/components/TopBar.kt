@@ -17,10 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,6 +34,7 @@ import com.example.common.ui_helpers.effects.UiEffect
 import com.example.common.vm_helpers.models.LoadingState
 import com.example.data.models.auth.UserAuthState
 import com.example.data.models.common.request.request_parameters.Collection
+import com.example.design_system.components.icons.LibertyFlowAnimatedIcon
 import com.example.design_system.containers.DownUpAnimatedContent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
@@ -153,11 +156,11 @@ internal fun TopBar(
                     CollectionState.Empty -> LibertyFlowIcons.Outlined.ListArrowDown to {
                         onIntent(AnimeDetailsIntent.ToggleCollectionsBSVisible)
                     }
-                    CollectionState.Loading -> LibertyFlowIcons.Outlined.Clock to { /* Empty */ }
+                    CollectionState.Loading -> LibertyFlowIcons.Animated.Clock to { /* Empty */ }
                     CollectionState.Error -> LibertyFlowIcons.Outlined.DangerCircle to { /* Empty */ }
                 }
 
-                TopBarIconButton(icon = icon, onClick = onClick)
+                TopBarIconButton(icon = icon, onClick = onClick, animated = target == CollectionState.Loading)
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -225,17 +228,33 @@ private const val ICON_SIZE = 22
 
 @Composable
 private fun TopBarIconButton(
+    animated: Boolean = false,
     icon: Int,
     onClick: () -> Unit
 ) {
     IconButton(
         onClick = onClick
     ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            modifier = Modifier.size(ICON_SIZE.dp)
-        )
+        if (animated) {
+            val isRunning = remember { mutableStateOf(false) }
+
+            LaunchedEffect(true) {
+                if (animated) isRunning.value = true
+            }
+
+            LibertyFlowAnimatedIcon(
+                colorFilter = ColorFilter.tint(mColors.onBackground),
+                iconRes = icon,
+                modifier = Modifier.size(ICON_SIZE.dp),
+                isRunning = isRunning.value
+            )
+        } else {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                modifier = Modifier.size(ICON_SIZE.dp)
+            )
+        }
     }
 }
 

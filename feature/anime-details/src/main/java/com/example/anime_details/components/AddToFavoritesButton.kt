@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.anime_details.screen.AnimeDetailsState
@@ -19,6 +18,7 @@ import com.example.data.models.auth.UserAuthState
 import com.example.design_system.components.buttons.ActionButtonState
 import com.example.design_system.components.buttons.RainbowActionButtonWithIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
+import com.example.design_system.theme.theme.mDimens
 
 // String resource used as the button label
 private val AddToFavoritesLabelRes = R.string.add_to_favorites_button_label
@@ -30,22 +30,19 @@ private val AuthorizeLabel = R.string.authorize_label
 // Key used for item animations inside Lazy layouts.
 internal const val ADD_TO_FAVORITE_BUTTON_KEY = "ADD_TO_FAVORITE_BUTTON_KEY"
 
-private val ButtonPadding = 16.dp
-
-/**
- * Composable button displayed inside a LazyItemScope.
- * Shows an animated gradient border when [showAnimation] is true.
- */
 @Composable
-internal fun LazyItemScope.AddToFavoritesButton(
-    animeId: Int,
+private fun rememberFavoritesButtonState(
     favoritesState: AnimeDetailsState.FavoritesState,
     userAuthState: UserAuthState,
-    showAnimation: Boolean,
+    animeId: Int,
     onIntent: (AnimeDetailsIntent) -> Unit,
     onRefreshEffect: (RefreshEffect) -> Unit
-) {
-    val buttonState = remember(favoritesState, userAuthState, animeId) {
+): ActionButtonState {
+    val state = remember(
+        key1 = favoritesState,
+        key2 = userAuthState,
+        key3 = animeId
+    ) {
         when {
             favoritesState.loadingState.isError -> ActionButtonState(
                 LibertyFlowIcons.Outlined.DangerCircle, ErrorFavoritesLabelRes
@@ -75,13 +72,38 @@ internal fun LazyItemScope.AddToFavoritesButton(
         }
     }
 
+    return state
+}
+
+
+/**
+ * Composable button displayed inside a LazyItemScope.
+ * Shows an animated gradient border when [showAnimation] is true.
+ */
+@Composable
+internal fun LazyItemScope.AddToFavoritesButton(
+    animeId: Int,
+    favoritesState: AnimeDetailsState.FavoritesState,
+    userAuthState: UserAuthState,
+    showAnimation: Boolean,
+    onIntent: (AnimeDetailsIntent) -> Unit,
+    onRefreshEffect: (RefreshEffect) -> Unit
+) {
+    val buttonState = rememberFavoritesButtonState(
+        favoritesState = favoritesState,
+        userAuthState = userAuthState,
+        animeId = animeId,
+        onIntent = onIntent,
+        onRefreshEffect = onRefreshEffect
+    )
+
     RainbowActionButtonWithIcon(
         state = buttonState,
         showBorderAnimation = showAnimation,
         modifier = Modifier
             .animateItem()
             .fillParentMaxWidth()
-            .padding(horizontal = ButtonPadding)
+            .padding(horizontal = mDimens.paddingMedium)
     )
 }
 

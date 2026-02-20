@@ -3,6 +3,7 @@ package com.example.anime_details.screen
 import androidx.compose.runtime.Immutable
 import com.example.common.vm_helpers.auth.models.AuthState
 import com.example.common.vm_helpers.models.LoadingState
+import com.example.data.models.auth.UserAuthState
 import com.example.data.models.collections.collection.AnimeCollection
 import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.data.models.common.request.request_parameters.Collection
@@ -37,7 +38,7 @@ data class AnimeDetailsState(
     val collectionsState: CollectionsState = CollectionsState(),
 
     // Auth Bottom Sheet & Form (Grouped to isolate frequent updates)
-    val authState: AuthState = AuthState(),
+    val authState: AuthState = AuthState(userAuthState = UserAuthState.LoggedIn), // TODO: Crutch rewrite!!!
 
     // UI Toggles
     val isDescriptionExpanded: Boolean = false,
