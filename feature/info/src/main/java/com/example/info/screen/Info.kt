@@ -80,14 +80,14 @@ private enum class InfoType { Version, Api, OriginalSite, Git }
 /**
  * Data model representing a single row in the Information list.
  *
- * @property title String resource for the primary label.
+ * @property titleRes String resource for the primary label.
  * @property description String resource for the secondary supporting text.
  * @property iconRes Drawable resource for the leading icon.
  * @property type The [InfoType] category used to determine click behavior.
  * @property url The destination link (required for all types except [InfoType.Version]).
  */
 private data class InfoItem(
-    @param:StringRes val title: Int,
+    @param:StringRes val titleRes: Int,
     @param:StringRes val description: Int,
     @param:DrawableRes val iconRes: Int,
     val type: InfoType,
@@ -107,45 +107,45 @@ private fun LazyListScope.header() {
     }
 }
 
-private val VersionLabel = R.string.version_label
-private val VersionDescription = R.string.version_description_label
+private val VersionLabelRes = R.string.version_label
+private val VersionDescriptionRes = R.string.version_description_label
 
-private val ApiLabel = R.string.api_label
-private val ApiDescription = R.string.api_description_label
+private val ApiLabelRes = R.string.api_label
+private val ApiDescriptionRes = R.string.api_description_label
 private const val AniLibertyApiDocsLink = "https://aniliberty.top/api/docs/v1#/"
 
-private val AniLibertyLabel = R.string.ani_liberty_label
-private val AniLibertyDescription = R.string.ani_liberty_description_label
+private val AniLibertyLabelRes = R.string.ani_liberty_label
+private val AniLibertyDescriptionRes = R.string.ani_liberty_description_label
 private const val AniLibertyLink = "https://aniliberty.top/"
 
-private val GitHubLabel = R.string.git_label
-private val GitHubDescription = R.string.git_description_label
+private val GitHubLabelRes = R.string.git_label
+private val GitHubDescriptionRes = R.string.git_description_label
 private const val BRBXGitHubLink = "https://github.com/BRBXGIT"
 
 private val infoItems = listOf(
     InfoItem(
-        title = VersionLabel,
-        description = VersionDescription,
+        titleRes = VersionLabelRes,
+        description = VersionDescriptionRes,
         iconRes = LibertyFlowIcons.Outlined.Layers,
         type = InfoType.Version
     ),
     InfoItem(
-        title = ApiLabel,
-        description = ApiDescription,
+        titleRes = ApiLabelRes,
+        description = ApiDescriptionRes,
         iconRes = LibertyFlowIcons.Outlined.PieChart,
         type = InfoType.Api,
         url = AniLibertyApiDocsLink
     ),
     InfoItem(
-        title = GitHubLabel,
-        description = GitHubDescription,
+        titleRes = GitHubLabelRes,
+        description = GitHubDescriptionRes,
         iconRes = LibertyFlowIcons.Outlined.GitHub,
         type = InfoType.Git,
         url = BRBXGitHubLink
     ),
     InfoItem(
-        title = AniLibertyLabel,
-        description = AniLibertyDescription,
+        titleRes = AniLibertyLabelRes,
+        description = AniLibertyDescriptionRes,
         iconRes = LibertyFlowIcons.Multicolored.AniLiberty,
         type = InfoType.OriginalSite,
         url = AniLibertyLink
@@ -167,7 +167,7 @@ private fun LazyListScope.infoItems(
         key = { infoItem -> infoItem.type }
     ) { infoItem ->
         M3ListItem(
-            title = stringResource(infoItem.title),
+            title = stringResource(infoItem.titleRes),
             icon = infoItem.iconRes,
             description = stringResource(infoItem.description),
             onClick = {

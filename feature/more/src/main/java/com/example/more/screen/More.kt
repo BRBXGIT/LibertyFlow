@@ -89,19 +89,19 @@ internal fun More(
     }
 }
 
-private val InfoLabel = R.string.info_label
-private val SettingsLabel = R.string.settings_label
+private val InfoLabelRes = R.string.info_label
+private val SettingsLabelRes = R.string.settings_label
 
 private val appItems = listOf(
     MoreItem(
         iconRes = LibertyFlowIcons.Outlined.Settings,
-        labelRes = SettingsLabel,
+        labelRes = SettingsLabelRes,
         originalColor = false,
         effect = UiEffect.Navigate(SettingsRoute)
     ),
     MoreItem(
         iconRes = LibertyFlowIcons.Outlined.Info,
-        labelRes = InfoLabel,
+        labelRes = InfoLabelRes,
         originalColor = false,
         effect = UiEffect.Navigate(InfoRoute)
     )
@@ -125,12 +125,12 @@ private fun LazyListScope.appItems(onEffect: (UiEffect) -> Unit) {
     }
 }
 
-private val VKLabel = R.string.vk_label
-private val YouTubeLabel = R.string.youtube_label
-private val PatreonLabel = R.string.patreon_label
-private val TelegramLabel = R.string.telegram_label
-private val DiscordLabel = R.string.discord_label
-private val AniLibertyLabel = R.string.aniliberty_label
+private val VKLabelRes = R.string.vk_label
+private val YouTubeLabelRes = R.string.youtube_label
+private val PatreonLabelRes = R.string.patreon_label
+private val TelegramLabelRes = R.string.telegram_label
+private val DiscordLabelRes = R.string.discord_label
+private val AniLibertyLabelRes = R.string.aniliberty_label
 
 private const val VKLink = "https://vk.com/anilibria"
 private const val YouTubeLink = "https://www.youtube.com/@anilibriatv"
@@ -142,7 +142,7 @@ private const val AniLibertyLink = "https://aniliberty.top"
 private val linkItems = listOf(
     MoreItem(
         iconRes = LibertyFlowIcons.Multicolored.VK,
-        labelRes = VKLabel,
+        labelRes = VKLabelRes,
         effect = UiEffect.IntentTo(
             Intent(
                 Intent.ACTION_VIEW,
@@ -152,7 +152,7 @@ private val linkItems = listOf(
     ),
     MoreItem(
         iconRes = LibertyFlowIcons.Multicolored.YouTube,
-        labelRes = YouTubeLabel,
+        labelRes = YouTubeLabelRes,
         effect = UiEffect.IntentTo(
             Intent(
                 Intent.ACTION_VIEW,
@@ -162,7 +162,7 @@ private val linkItems = listOf(
     ),
     MoreItem(
         iconRes = LibertyFlowIcons.Multicolored.Patreon,
-        labelRes = PatreonLabel,
+        labelRes = PatreonLabelRes,
         effect = UiEffect.IntentTo(
             Intent(
                 Intent.ACTION_VIEW,
@@ -172,7 +172,7 @@ private val linkItems = listOf(
     ),
     MoreItem(
         iconRes = LibertyFlowIcons.Multicolored.Telegram,
-        labelRes = TelegramLabel,
+        labelRes = TelegramLabelRes,
         effect = UiEffect.IntentTo(
             Intent(
                 Intent.ACTION_VIEW,
@@ -182,7 +182,7 @@ private val linkItems = listOf(
     ),
     MoreItem(
         iconRes = LibertyFlowIcons.Multicolored.Discord,
-        labelRes = DiscordLabel,
+        labelRes = DiscordLabelRes,
         effect = UiEffect.IntentTo(
             Intent(
                 Intent.ACTION_VIEW,
@@ -192,7 +192,7 @@ private val linkItems = listOf(
     ),
     MoreItem(
         iconRes = LibertyFlowIcons.Multicolored.AniLiberty,
-        labelRes = AniLibertyLabel,
+        labelRes = AniLibertyLabelRes,
         effect = UiEffect.IntentTo(
             Intent(
                 Intent.ACTION_VIEW,

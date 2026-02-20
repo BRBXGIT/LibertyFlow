@@ -47,10 +47,10 @@ fun Onboarding(
         containerColor = mColors.background,
         bottomBar = {
             BottomBar(
+                triedToAskPermission = state.triedToAskPermission,
                 currentPage = pagerState.currentPage,
                 totalPages = onboardingPages.size,
                 pagerState = pagerState,
-                state = state,
                 onIntent = onIntent,
             )
         }

@@ -53,9 +53,9 @@ private const val LAST_PAGE = 2
  * 3. **Forward/Finish Logic**: Advances the pager or dispatches [OnboardingIntent.SaveOnboardingCompleted]
  * when the final page is reached.
  *
+ * @param triedToAskPermission Was the requestActivityLauncher runed by the user
  * @param currentPage The current active page index from the Pager.
  * @param totalPages The total number of pages in the onboarding sequence.
- * @param state The current [OnboardingState] to check business logic (e.g., permission status).
  * @param pagerState The state object controlling the [androidx.compose.foundation.pager.HorizontalPager].
  * @param onIntent Callback to dispatch [OnboardingIntent] actions to the ViewModel.
  */
@@ -63,8 +63,8 @@ private const val LAST_PAGE = 2
 fun BottomBar(
     currentPage: Int,
     totalPages: Int,
-    state: OnboardingState,
     pagerState: PagerState,
+    triedToAskPermission: Boolean,
     onIntent: (OnboardingIntent) -> Unit
 ) {
     val targetProgress by remember(currentPage, totalPages) {
@@ -113,7 +113,7 @@ fun BottomBar(
                 trackColor = mColors.primary.copy(alpha = INDICATOR_ALPHA)
             )
 
-            val enabled = currentPage != LAST_PAGE || state.triedToAskPermission
+            val enabled = currentPage != LAST_PAGE || triedToAskPermission
             IconButton(
                 enabled = enabled,
                 modifier = Modifier.weight(ICON_WEIGHT),
@@ -145,9 +145,9 @@ fun PreviewBottomBar() {
         BottomBar(
             currentPage = 0,
             totalPages = 3,
-            state = OnboardingState(triedToAskPermission = false),
             pagerState = rememberPagerState { 3 },
-            onIntent = {}
+            onIntent = {},
+            triedToAskPermission = true
         )
     }
 }

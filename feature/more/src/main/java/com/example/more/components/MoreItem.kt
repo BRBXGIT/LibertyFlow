@@ -118,19 +118,22 @@ private fun getClipShape(item: MoreItem): Shape {
     }
 }
 
+private val SettingsLabelRes = R.string.settings_label
+private val InfoLabelRes = R.string.info_label
+
 @Preview
 @Composable
 private fun MoreItemPreview() {
     val appItems = listOf(
         MoreItem(
             iconRes = LibertyFlowIcons.Outlined.Settings,
-            labelRes = R.string.settings_label,
+            labelRes = SettingsLabelRes,
             originalColor = false,
             effect = UiEffect.Navigate(SettingsRoute)
         ),
         MoreItem(
             iconRes = LibertyFlowIcons.Outlined.Info,
-            labelRes = R.string.info_label,
+            labelRes = InfoLabelRes,
             originalColor = false,
             effect = UiEffect.Navigate(InfoRoute)
         )

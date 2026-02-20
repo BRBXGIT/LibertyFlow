@@ -26,8 +26,8 @@ import com.example.design_system.theme.theme.mTypography
 import com.example.more.R
 import com.example.more.screen.MoreIntent
 
-private val SureWantLogoutLabel = R.string.sure_want_logout_label
-private val LogoutLabel = R.string.logout_label
+private val SureWantLogoutLabelRes = R.string.sure_want_logout_label
+private val LogoutLabelRes = R.string.logout_label
 
 /**
  * A confirmation dialog displayed when a user attempts to log out.
@@ -53,14 +53,14 @@ internal fun LogoutDialog(onIntent: (MoreIntent) -> Unit) {
         ) {
             // Header
             Text(
-                text = stringResource(LogoutLabel),
+                text = stringResource(LogoutLabelRes),
                 style = mTypography.titleMedium,
                 color = mColors.onSurface
             )
 
             // Content
             Text(
-                text = stringResource(SureWantLogoutLabel),
+                text = stringResource(SureWantLogoutLabelRes),
                 style = mTypography.bodyLarge,
                 color = mColors.onSurfaceVariant,
                 textAlign = TextAlign.Center
@@ -100,7 +100,7 @@ private fun DialogActionButtons(onIntent: (MoreIntent) -> Unit) {
                 onIntent(MoreIntent.ToggleLogoutDialog)
             }
         ) {
-            Text(stringResource(LogoutLabel))
+            Text(stringResource(LogoutLabelRes))
         }
     }
 }
