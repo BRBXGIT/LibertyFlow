@@ -51,7 +51,12 @@ internal fun FullScreenPlayerContainer(
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        Player(player, playerState, pipManager)
+        Player(
+            uiPlayerState = playerState.uiPlayerState,
+            isCropped = playerState.playerSettings.isCropped,
+            player = player,
+            pipManager = pipManager
+        )
 
         FullScreenPlayerController(playerState, onPlayerEffect, onPlayerIntent)
     }

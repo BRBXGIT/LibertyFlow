@@ -8,7 +8,20 @@ import android.graphics.Rect
 import android.util.Rational
 import com.example.common.ui_helpers.utils.findActivity
 
+/**
+ * A helper class that encapsulates the logic for entering and configuring
+ * Picture-in-Picture (PiP) mode.
+ *
+ * This manager bridges the gap between the Compose layout (which provides visual bounds)
+ * and the Android Activity (which handles the system-level transition).
+ */
 internal class PipManager {
+    /**
+     * Stores the global coordinates of the video player view.
+     * * This is used as a "Source Rect Hint" to provide a smooth, continuous
+     * scaling animation when the video transitions from the app into the
+     * floating PiP window.
+     */
     var videoViewBounce = Rect()
 
     fun isPipSupported(context: Context): Boolean {

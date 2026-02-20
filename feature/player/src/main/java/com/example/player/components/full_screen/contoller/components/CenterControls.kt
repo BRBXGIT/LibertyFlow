@@ -61,7 +61,7 @@ internal fun BoxScope.CenterControls(
             )
         } else {
             ButtonWithAnimatedIcon(
-                iconId = LibertyFlowIcons.Animated.PlayPause,
+                icon = LibertyFlowIcons.Animated.PlayPause,
                 atEnd = isPlaying,
                 modifier = Modifier.size(CenterControlsDefaults.PlayPauseIconSize * CenterControlsDefaults.TOUCH_TARGET_MULTIPLAYER),
                 onClick = {

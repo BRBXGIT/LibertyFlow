@@ -130,7 +130,7 @@ private fun ActionsRow(
             )
 
             ButtonWithAnimatedIcon(
-                iconId = LibertyFlowIcons.Animated.Crop,
+                icon = LibertyFlowIcons.Animated.Crop,
                 atEnd = !playerState.playerSettings.isCropped,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleCropped) }
             ) { painter ->

@@ -28,7 +28,6 @@ import com.example.player.components.full_screen.contoller.components.Footer
 import com.example.player.components.full_screen.contoller.components.Header
 import com.example.player.components.full_screen.contoller.components.SkipOpeningButton
 import com.example.player.components.full_screen.contoller.components.UnlockOverlay
-import com.example.player.components.full_screen.pip.PipManager
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState

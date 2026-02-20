@@ -37,7 +37,6 @@ import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarS
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mShapes
 import com.example.player.components.player.Player
-import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
 import com.example.player.player.PlayerState
 import kotlinx.coroutines.CoroutineScope
@@ -48,18 +47,30 @@ import kotlin.math.roundToInt
 private const val WIDTH = 200
 private const val HEIGHT = 120
 private const val MARGIN = 16
-private const val CENTER_DIVIDER = 2
-private const val ZERO = 0
 
 /**
- * The main container for the Mini Player.
- * Handles the layout, gesture detection, and coordination between player state and UI.
+ * A floating mini-player container that supports drag-to-reposition and corner-snapping.
+ *
+ * This component acts as an overlay that stays visible while the user navigates other parts
+ * of the app. It calculates safe boundaries based on system bars (Status/Navigation)
+ * to prevent the player from being obscured or intercepting system gestures.
+ *
+ * @param isCropped User preference for video aspect ratio.
+ * @param uiPlayerState Controls the internal rendering mode of the [Player].
+ * @param isControllerVisible Whether playback controls (play/pause) are visible on the mini player.
+ * @param episodeState Current playback status (Loading, Playing, etc.).
+ * @param navBarVisible Crucial for calculating the bottom boundary; updates player position when toggled.
+ * @param player The [ExoPlayer] instance to render.
+ * @param onPlayerIntent Entry point for UI interactions (e.g., clicking the mini player to expand).
  */
 @Composable
 internal fun MiniPlayerContainer(
+    isCropped: Boolean,
+    uiPlayerState: PlayerState.UiPlayerState,
+    isControllerVisible: Boolean,
+    episodeState: PlayerState.EpisodeState,
     navBarVisible: Boolean,
     player: ExoPlayer,
-    playerState: PlayerState,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val density = LocalDensity.current
@@ -108,8 +119,16 @@ internal fun MiniPlayerContainer(
                 }
         ) {
             // Render the control overlay and the actual Video surface
-            MiniPlayerController(playerState, onPlayerIntent)
-            Player(player, playerState)
+            MiniPlayerController(
+                episodeState = episodeState,
+                isControllerVisible = isControllerVisible,
+                onPlayerIntent = onPlayerIntent
+            )
+            Player(
+                uiPlayerState = uiPlayerState,
+                isCropped = isCropped,
+                player = player
+            )
         }
     }
 }
@@ -133,7 +152,7 @@ private class PlayerConstraints(
 
     // Bottom boundary: Accounts for navigation bar visibility
     val bottomMarginPx = with(density) {
-        (MARGIN.dp + if (navBarVisible) navBarSize else ZERO.dp).toPx()
+        (MARGIN.dp + if (navBarVisible) navBarSize else 0.dp).toPx()
     }
 
     // Utility function for DP to PX conversion
@@ -166,7 +185,15 @@ private fun rememberMiniPlayerState(
 }
 
 /**
- * State holder that manages the physics and movement of the mini player.
+ * Manages the spatial constraints and physics of the mini player.
+ * * Uses [Animatable] to handle smooth transitions between screen corners and reactive
+ * movement when the software navigation bar visibility changes.
+ *
+ * @property scope The [CoroutineScope] used for triggering animations.
+ * @property screenWidth The total available width of the parent container.
+ * @property screenHeight The total available height of the parent container.
+ * @property config Encapsulates density-aware pixel boundaries and margins.
+ * @property motionScheme Provides standardized animation specs for movement.
  */
 private class MiniPlayerStateHolder(
     private val scope: CoroutineScope,
@@ -205,12 +232,12 @@ private class MiniPlayerStateHolder(
      * Animates the player to the nearest corner of the screen when released.
      */
     fun snapToCorner() {
-        val centerX = offset.value.x + config.widthPx / CENTER_DIVIDER
-        val centerY = offset.value.y + config.heightPx / CENTER_DIVIDER
+        val centerX = offset.value.x + config.widthPx / 2
+        val centerY = offset.value.y + config.heightPx / 2
 
         // Determine target corner based on which quadrant the center point is in
-        val targetX = if (centerX < screenWidth / CENTER_DIVIDER) config.marginPx else limitXMax
-        val targetY = if (centerY < screenHeight / CENTER_DIVIDER) config.topLimitPx else limitYMax
+        val targetX = if (centerX < screenWidth / 2) config.marginPx else limitXMax
+        val targetY = if (centerY < screenHeight / 2) config.topLimitPx else limitYMax
 
         scope.launch {
             offset.animateTo(
@@ -225,7 +252,7 @@ private class MiniPlayerStateHolder(
      * Only triggers if the player is currently in the bottom half of the screen.
      */
     suspend fun onNavBarVisibilityChanged() {
-        val isInBottomHalf = offset.value.y > (screenHeight / CENTER_DIVIDER)
+        val isInBottomHalf = offset.value.y > (screenHeight / 2)
 
         if (isInBottomHalf) {
             offset.animateTo(

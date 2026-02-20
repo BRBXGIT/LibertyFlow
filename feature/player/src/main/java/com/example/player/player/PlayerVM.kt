@@ -30,6 +30,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and playback logic of the video player.
+ * * It acts as a bridge between the [MediaController] (Media3) and the Compose UI,
+ * handling playback intents, progress tracking, and dynamic quality switching.
+ *
+ * @property uiPlayer An [ExoPlayer] instance used strictly for UI binding in the AndroidView.
+ * @property controllerFuture A future providing the [MediaController] for media control.
+ * @property playerSettingsRepo Repository for persisting and fetching user playback preferences.
+ */
 @HiltViewModel
 class PlayerVM @Inject constructor(
     val uiPlayer: ExoPlayer, // Inject only for passing to ui
@@ -109,7 +118,13 @@ class PlayerVM @Inject constructor(
     fun sendEffect(effect: PlayerEffect) =
         viewModelScope.launch { _playerEffects.send(effect) }
 
+
     // --- Logic Implementation ---
+    /**
+     * Initializes the player with a list of episodes, configures the media items
+     * based on user quality settings, and begins playback.
+     * @param intent Contains the episode list and the starting index.
+     */
     private fun setUpPlayer(intent: PlayerIntent.SetUpPlayer) {
         viewModelScope.launch(dispatcherMain) {
             val controller = mediaController ?: controllerFuture.asDeferred().await().also { mediaController = it }
@@ -176,6 +191,10 @@ class PlayerVM @Inject constructor(
         }
     }
 
+    /**
+     * Updates the video quality while maintaining the current playback position.
+     * Reconstructs the [MediaItem] list and updates the [MediaController].
+     */
     private suspend fun changeQualityOnTheFly(controller: MediaController, quality: VideoQuality) = withContext(dispatcherMain) {
         val currentPos = controller.currentPosition
         val currentIndex = controller.currentMediaItemIndex
@@ -190,6 +209,10 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Progress Tracking (Reading from Controller) ---
+    /**
+     * A polling-based tracker that updates the [playerState] with the current
+     * playback position every 500ms. Also handles "Auto-Skip" opening logic.
+     */
     private fun startProgressTracker(controller: MediaController) {
         progressJob?.cancel()
         progressJob = viewModelScope.launch(dispatcherMain) {
@@ -205,6 +228,10 @@ class PlayerVM @Inject constructor(
         }
     }
 
+    /**
+     * Checks if the current playback position falls within the defined "Opening"
+     * timestamps and triggers auto-skip or UI button visibility accordingly.
+     */
     private fun checkOpeningLogic(controller: MediaController, currentPos: Long) {
         val episode = currentState.currentEpisode ?: return
         val opening = episode.opening
@@ -228,6 +255,12 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Listeners ---
+    /**
+     * Implementation of [Player.Listener] that syncs the [MediaController]
+     * events back into the [PlayerState].
+     * * This ensures that when the user interacts with the player (e.g., skips an episode)
+     * or the media finishes buffering, the UI state reflects these changes immediately.
+     */
     private val playerListener = object : Player.Listener {
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             mediaController?.let { ctrl ->

@@ -3,6 +3,12 @@ package com.example.player.player
 import com.example.data.models.player.VideoQuality
 import com.example.data.models.releases.anime_details.Episode
 
+/**
+ * Represents all possible user actions or system events that can modify the [PlayerState]
+ * or control the MediaController.
+ * * Intents are processed by the [PlayerVM.sendIntent] method, ensuring that the UI
+ * remains a "passive" observer of the state.
+ */
 sealed interface PlayerIntent {
     // --- Player ---
     data class SetUpPlayer(
@@ -19,15 +25,18 @@ sealed interface PlayerIntent {
     data object StopPlayer: PlayerIntent
     data object SkipOpening: PlayerIntent
 
+
     // --- Controller ---
     data object ToggleControllerVisible: PlayerIntent
     data object TurnOffController: PlayerIntent
+
 
     // --- Player settings ---
     data class SaveQuality(val quality: VideoQuality): PlayerIntent
     data object ToggleShowSkipOpeningButton: PlayerIntent
     data object ToggleAutoSkipOpening: PlayerIntent
     data object ToggleAutoPlay: PlayerIntent
+
 
     // --- Ui ---
     data object ToggleFullScreen: PlayerIntent

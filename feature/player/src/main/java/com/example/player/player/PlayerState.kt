@@ -4,6 +4,21 @@ import androidx.compose.runtime.Immutable
 import com.example.data.models.player.PlayerSettings
 import com.example.data.models.releases.anime_details.Episode
 
+/**
+ * Represents the entire UI and playback state for the video player.
+ * * This class is [Immutable], ensuring that every state change results in a new instance,
+ * which is a requirement for efficient recomposition in Jetpack Compose.
+ *
+ * @property animeName The title of the anime currently being played.
+ * @property uiPlayerState The visual scale/mode of the player (Closed, Mini, or Full).
+ * @property episodes The list of available episodes for the current series.
+ * @property currentEpisodeIndex The index of the episode currently loaded in the player.
+ * @property playerSettings User-defined preferences like quality and auto-skip.
+ * @property episodeState The current playback status (Loading, Playing, or Paused).
+ * @property episodeTime Precise timing information, including current position and total duration.
+ * @property isControllerVisible Whether the playback controls overlay is currently shown.
+ * @property isLocked When true, interaction with the UI controls is disabled to prevent accidental touches.
+ */
 @Immutable
 data class PlayerState(
     // Content & Settings

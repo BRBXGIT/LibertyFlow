@@ -20,20 +20,33 @@ import androidx.media3.ui.PlayerView
 import com.example.player.components.full_screen.pip.PipManager
 import com.example.player.player.PlayerState
 
-private const val zIndex = 0f
-
+/**
+ * A composable that integrates an [ExoPlayer] instance with the Compose UI hierarchy
+ * using an [AndroidView].
+ *
+ * This component handles the rendering of video content and dynamically adjusts
+ * the [PlayerView.resizeMode] based on the current UI state and user preferences.
+ * @param uiPlayerState The visual mode of the player (Mini, Full, Closed).
+ * When in [PlayerState.UiPlayerState.Mini], the video defaults to a zoom/crop fill.
+ * @param isCropped A user preference flag. If true, the video will fill the screen
+ * by cropping; if false, it will fit within the bounds (letterboxing).
+ * @param player The [ExoPlayer] instance providing the media stream.
+ * @param pipManager An optional manager used to track the global coordinates of the
+ * video view. These coordinates are used for the Picture-in-Picture transition animation.
+ */
 @OptIn(UnstableApi::class)
 @Composable
 internal fun BoxScope.Player(
+    uiPlayerState: PlayerState.UiPlayerState,
+    isCropped: Boolean,
     player: ExoPlayer,
-    playerState: PlayerState,
     pipManager: PipManager? = null
 ) {
     AndroidView(
         factory = { context ->
             PlayerView(context).apply {
                 this.player = player
-                resizeMode = getResizeMode(playerState.playerSettings.isCropped, playerState.uiPlayerState)
+                resizeMode = getResizeMode(isCropped, uiPlayerState)
                 useController = false
                 layoutParams = FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -41,10 +54,10 @@ internal fun BoxScope.Player(
                 )
             }
         },
-        update = { it.resizeMode = getResizeMode(playerState.playerSettings.isCropped, playerState.uiPlayerState) },
+        update = { it.resizeMode = getResizeMode(isCropped, uiPlayerState) },
         modifier = Modifier
             .align(Alignment.Center)
-            .zIndex(zIndex)
+            .zIndex(0f)
             .fillMaxSize()
             .onGloballyPositioned {
                 if (pipManager != null) {

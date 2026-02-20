@@ -37,12 +37,26 @@ private const val MAIN_BOX_Z_INDEX = 1f
 
 private const val CONTROLLER_PADDING = 4
 
+/**
+ * An interactive overlay for the Mini Player that provides quick access to transport controls.
+ *
+ * This controller handles:
+ * 1. Visual feedback for the loading state via a [CircularWavyProgressIndicator].
+ * 2. Media controls (Rewind, Play/Pause, Fast Forward).
+ * 3. Expansion to Full Screen or closing the player entirely.
+ *
+ * @param episodeState The current playback status, used to toggle between the play/pause
+ * icon and the loading indicator.
+ * @param isControllerVisible Determines the opacity and interactivity of the buttons.
+ * @param onPlayerIntent The callback used to dispatch [PlayerIntent]s back to the ViewModel.
+ */
 @Composable
 internal fun BoxScope.MiniPlayerController(
-    playerState: PlayerState,
+    episodeState: PlayerState.EpisodeState,
+    isControllerVisible: Boolean,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
-    val visibility = rememberControllerVisibility(playerState.isControllerVisible)
+    val visibility = rememberControllerVisibility(isControllerVisible)
     Box(
         modifier = Modifier
             .align(Alignment.Center)
@@ -56,7 +70,7 @@ internal fun BoxScope.MiniPlayerController(
     ) {
         ControllerButton(
             icon = LibertyFlowIcons.Outlined.FullScreen,
-            visible = playerState.isControllerVisible,
+            visible = isControllerVisible,
             modifier = Modifier.align(Alignment.TopStart),
             onClick = { onPlayerIntent(PlayerIntent.ToggleFullScreen) }
         )
@@ -65,7 +79,7 @@ internal fun BoxScope.MiniPlayerController(
         ControllerButton(
             icon = LibertyFlowIcons.Outlined.CrossCircle,
             onClick = { onPlayerIntent(PlayerIntent.StopPlayer) },
-            visible = playerState.isControllerVisible,
+            visible = isControllerVisible,
             modifier = Modifier.align(Alignment.TopEnd)
         )
 
@@ -80,18 +94,18 @@ internal fun BoxScope.MiniPlayerController(
             ControllerButton(
                 icon = LibertyFlowIcons.Outlined.RewindBack,
                 onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(false)) },
-                visible = playerState.isControllerVisible
+                visible = isControllerVisible
             )
 
-            if (playerState.episodeState == PlayerState.EpisodeState.Loading) {
+            if (episodeState == PlayerState.EpisodeState.Loading) {
                 CircularWavyProgressIndicator(modifier = Modifier.size(ICON_SIZE.dp))
             } else {
                 ButtonWithAnimatedIcon(
-                    iconId = LibertyFlowIcons.Animated.PlayPause,
-                    atEnd = playerState.episodeState == PlayerState.EpisodeState.Playing,
+                    icon = LibertyFlowIcons.Animated.PlayPause,
+                    atEnd = episodeState == PlayerState.EpisodeState.Playing,
                     modifier = Modifier.size((ICON_SIZE * 2).dp),
                     onClick = {
-                        if (playerState.isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause)
+                        if (isControllerVisible) onPlayerIntent(PlayerIntent.TogglePlayPause)
                     }
                 ) { painter ->
                     Image(
@@ -106,7 +120,7 @@ internal fun BoxScope.MiniPlayerController(
             ControllerButton(
                 icon = LibertyFlowIcons.Outlined.Rewind,
                 onClick = { onPlayerIntent(PlayerIntent.SeekForFiveSeconds(true)) },
-                visible = playerState.isControllerVisible
+                visible = isControllerVisible
             )
         }
     }
@@ -115,8 +129,15 @@ internal fun BoxScope.MiniPlayerController(
 private const val ICON_SIZE = 24
 
 /**
- * A reusable icon button for player controls.
- * Uses a conditional click action based on visibility to prevent accidental triggers.
+ * A specialized wrapper for player control icons.
+ *
+ * It ensures consistency in icon sizing and includes a safety check that prevents
+ * click events from being dispatched if the button is currently invisible to the user.
+ *
+ * @param icon The drawable resource ID or icon object to display.
+ * @param onClick The action to perform when the button is tapped.
+ * @param visible If false, the button will ignore click events.
+ * @param modifier Additional layout modifiers.
  */
 @Composable
 private fun ControllerButton(

@@ -18,6 +18,19 @@ import com.example.player.components.full_screen.pip.PipManager
 import com.example.player.components.mini.MiniPlayerContainer
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * The top-level orchestrator for the player UI.
+ * * Based on the [PlayerState.uiPlayerState], it switches between a full-screen experience
+ * and a mini-player (floating/bottom-bar) experience. It also initializes the
+ * [PipManager] to ensure the lifecycle of Picture-in-Picture is handled correctly.
+ *
+ * @param playerEffects A stream of one-time events from the ViewModel.
+ * @param playerState The current state of playback and UI visibility.
+ * @param player The [ExoPlayer] instance to be rendered.
+ * @param navBarVisible Whether the app's bottom navigation bar is currently shown (relevant for Mini player layout).
+ * @param onPlayerEffect Callback to handle effects at the Activity/Screen level.
+ * @param onPlayerIntent The single entry point for sending user actions back to the ViewModel.
+ */
 @Composable
 fun PlayerContainer(
     playerEffects: Flow<PlayerEffect>,
@@ -47,17 +60,26 @@ fun PlayerContainer(
 
         PlayerState.UiPlayerState.Mini -> {
             MiniPlayerContainer(
-                player = player,
+                isCropped = playerState.playerSettings.isCropped,
+                uiPlayerState = playerState.uiPlayerState,
+                isControllerVisible = playerState.isControllerVisible,
+                episodeState = playerState.episodeState,
                 navBarVisible = navBarVisible,
-                playerState = playerState,
+                player = player,
                 onPlayerIntent = onPlayerIntent
             )
         }
 
-        PlayerState.UiPlayerState.Closed -> {}
+        PlayerState.UiPlayerState.Closed -> {} // Nothing
     }
 }
 
+/**
+ * A side-effect handler that manages the physical device orientation and system UI.
+ * * When entering [PlayerState.UiPlayerState.Full], it forces the Activity into
+ * landscape mode and hides the status/navigation bars. When moving to other states,
+ * it restores portrait orientation and shows the system bars.
+ */
 @Composable
 private fun HandleLandscape(uiPlayerState: PlayerState.UiPlayerState) {
     val context = LocalContext.current
@@ -98,6 +120,11 @@ private fun toggleSystemBars(window: Window, hide: Boolean) {
     }
 }
 
+/**
+ * Collects and executes [PlayerEffect]s within the Composable lifecycle.
+ * * Specifically, it handles the [PlayerEffect.TryPipEnterPip] by delegating
+ * the request to the provided [pipManager].
+ */
 @Composable
 private fun HandlePlayerEffects(
     effects: Flow<PlayerEffect>,
