@@ -29,22 +29,20 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mTypography
 
-private val NO_DESCRIPTION_PROVIDED_STRING =
+private val NoDescriptionProvidedLabelRes =
     R.string.no_description_provided_label
 
-private const val ANIMATED_COLOR_LABEL = "Animated color"
 private const val HIDDEN_LINES = 5
-private const val HORIZONTAL_PADDING = 16
 
-internal const val DESCRIPTION_KEY = "DESCRIPTION_KEY"
+internal const val DescriptionKey = "DescriptionKey"
 
 /**
  * Displays an optional description with expandable behavior.
@@ -67,7 +65,7 @@ internal fun LazyItemScope.Description(
     val animatedGradientColor by animateColorAsState(
         animationSpec = mMotionScheme.fastEffectsSpec(),
         targetValue = if (isExpanded) mColors.onBackground else mColors.background,
-        label = ANIMATED_COLOR_LABEL
+        label = "Animated gradient color that covers description"
     )
 
     Column(
@@ -75,7 +73,7 @@ internal fun LazyItemScope.Description(
         modifier = Modifier
             .animateItem()
             .animateContentSize()
-            .padding(horizontal = HORIZONTAL_PADDING.dp)
+            .padding(horizontal = mDimens.paddingMedium)
     ) {
         // Description text or fallback
         if (annotatedDescription != null) {
@@ -86,7 +84,7 @@ internal fun LazyItemScope.Description(
             )
         } else {
             Text(
-                text = stringResource(NO_DESCRIPTION_PROVIDED_STRING),
+                text = stringResource(NoDescriptionProvidedLabelRes),
                 style = mTypography.bodyLarge
             )
         }

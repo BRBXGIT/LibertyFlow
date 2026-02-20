@@ -13,27 +13,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mTypography
 
-// Horizontal padding for the genres row
-private const val HORIZONTAL_PADDING = 16
-
-// Spacing between genre chips
-private const val SPACED_BY = 8
-
 // Lazy item animation key
-internal const val GENRES_LR_KEY = "GENRES_LR_KEY"
+internal const val GenresLRKey = "GenresLRKey"
 
+/**
+ * A horizontally scrollable row of genre tags (chips) for an anime.
+ * * This component is designed to be used as an item within a [LazyColumn] or similar
+ * parent container using [LazyItemScope].
+ * * **Behavior:**
+ * - The chips are rendered using [SuggestionChip] but are set to `enabled = false`
+ * to serve as static informational tags rather than interactive buttons.
+ * - It uses Modifier.animateItem to support smooth transitions when the list
+ * content changes or reorders.
+ *
+ * @param genres A list of strings representing the names of the anime genres (e.g., 'Action', 'Sci-Fi').
+ */
 @Composable
 internal fun LazyItemScope.Genres(
     genres: List<String>
 ) {
     LazyRow(
-        contentPadding = PaddingValues(horizontal = HORIZONTAL_PADDING.dp),
+        contentPadding = PaddingValues(horizontal = mDimens.paddingMedium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(SPACED_BY.dp),
+        horizontalArrangement = Arrangement.spacedBy(mDimens.spacingSmall),
         modifier = Modifier.animateItem()
     ) {
         // Genre chips

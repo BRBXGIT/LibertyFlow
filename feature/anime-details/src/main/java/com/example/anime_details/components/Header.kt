@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.design_system.components.async_images.LibertyFlowAsyncImage
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
 import dev.chrisbanes.haze.HazeState
@@ -36,7 +37,17 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 
-// UI model for header content
+/**
+ * UI model representing the essential header information for an anime details screen.
+ *
+ * @property type The format of the anime (e.g., 'TV', 'OVA').
+ * @property episodes Total number of episodes available.
+ * @property posterPath URL or local path to the anime's poster image.
+ * @property russianName The localized Russian title of the anime.
+ * @property season The release season (e.g., 'Winter', 'Spring').
+ * @property year The release year.
+ * @property isOngoing Whether the anime is currently airing.
+ */
 @Immutable
 data class HeaderData(
     val type: String? = null,
@@ -71,14 +82,6 @@ private const val DEFAULT_YEAR = 0
 private const val POSTER_HEIGHT_DP = 140
 private const val POSTER_WIDTH_DP = 100
 
-// Padding values
-private const val HORIZONTAL_PADDING_DP = 16
-private const val VERTICAL_PADDING_DP = 16
-
-// Spacing between layout elements
-private const val ROW_SPACING_DP = 16
-private const val COLUMN_SPACING_DP = 4
-
 // Gradient overlay height
 private const val GRADIENT_HEIGHT_FRACTION = 0.7f
 
@@ -89,8 +92,20 @@ private const val BLUR_RADIUS_DP = 8
 private const val BLUR_ALPHA = 0.5f
 
 // Lazy item animation key
-internal const val HEADER_KEY = "HEADER_KEY"
+internal const val HeaderKey = "HeaderKey"
 
+/**
+ * A complex header component for the Anime Details screen.
+ * * Features a multi-layered design:
+ * 1. **Background:** Full-bleed poster image with a [HazeState] blur effect.
+ * 2. **Overlay:** A vertical gradient that fades the background into the surface color.
+ * 3. **Foreground:** A [Row] containing a sharp [PosterImage] and a [Column] of metadata
+ * (Title, Season, Year, Type, and Status).
+ *
+ * @param headerData The data to be displayed in the header.
+ * @param topInnerPadding Extra padding for the top of the content, usually to avoid
+ * overlap with a transparent Status Bar or TopAppBar.
+ */
 @Composable
 internal fun LazyItemScope.Header(
     headerData: HeaderData,
@@ -149,14 +164,14 @@ internal fun LazyItemScope.Header(
         // Foreground content
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(ROW_SPACING_DP.dp),
+            horizontalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     top = topInnerPadding,
-                    start = HORIZONTAL_PADDING_DP.dp,
-                    end = HORIZONTAL_PADDING_DP.dp,
-                    bottom = VERTICAL_PADDING_DP.dp
+                    start = mDimens.paddingMedium,
+                    end = mDimens.paddingMedium,
+                    bottom = mDimens.paddingMedium
                 )
         ) {
             PosterImage(headerData.posterPath, posterHeight)
@@ -174,7 +189,7 @@ internal fun LazyItemScope.Header(
                 )
 
                 // Metadata
-                Column(verticalArrangement = Arrangement.spacedBy(COLUMN_SPACING_DP.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(mDimens.spacingExtraSmall)) {
                     Text("${headerData.season} ${headerData.year}", style = mTypography.bodyLarge)
                     Text(typeText, style = mTypography.bodyLarge)
                     Text(
@@ -187,6 +202,12 @@ internal fun LazyItemScope.Header(
     }
 }
 
+/**
+ * Displays the primary, non-blurred poster image with rounded corners.
+ *
+ * @param path The image source path.
+ * @param height The fixed height of the poster.
+ */
 @Composable
 private fun PosterImage(
     path: String,

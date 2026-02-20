@@ -30,6 +30,7 @@ import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
 import com.example.data.models.releases.anime_details.Episode
 import com.example.design_system.theme.theme.mColors
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
@@ -38,14 +39,20 @@ import com.example.player.player.PlayerIntent
 // Rounded corner size for the top of the episodes container
 private const val COLUMN_SHAPE = 16
 
-// Vertical spacing between episode items
-private const val COLUMN_ARRANGEMENT = 16
-
 // Lazy item animation key
-internal const val EPISODES_KEY = "EPISODES_KEY"
+internal const val EpisodesKey = "EpisodesKey"
 
-private const val COLUMN_VERTICAL_PADDING = 16
-
+/**
+ * A container composable that displays a list of episodes for a specific anime.
+ * * This component is designed to be used within a [LazyItemScope]. It renders a
+ * styled column with a rounded top surface containing all available episodes.
+ *
+ * @param animeName The title of the anime, used when setting up the video player.
+ * @param episodes The list of [Episode] data objects to be displayed.
+ * @param watchedEps A list of indices representing episodes the user has already watched.
+ * @param onIntent Callback to handle UI actions, such as marking an episode as watched.
+ * @param onPlayerIntent Callback to trigger video player actions, such as starting playback.
+ */
 @Composable
 internal fun LazyItemScope.Episodes(
     animeName: String,
@@ -55,7 +62,7 @@ internal fun LazyItemScope.Episodes(
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(COLUMN_ARRANGEMENT.dp),
+        verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
         modifier = Modifier
             .animateItem()
             .fillMaxWidth()
@@ -63,7 +70,7 @@ internal fun LazyItemScope.Episodes(
                 color = mColors.surfaceContainerLow,
                 shape = RoundedCornerShape(topStart = COLUMN_SHAPE.dp, topEnd = COLUMN_SHAPE.dp)
             )
-            .padding(vertical = COLUMN_VERTICAL_PADDING.dp)
+            .padding(vertical = mDimens.paddingMedium)
     ) {
         // Episode list
         episodes.forEachIndexed { index, episode ->
@@ -82,28 +89,28 @@ internal fun LazyItemScope.Episodes(
     }
 }
 
-// Horizontal padding for each episode row
-private const val HORIZONTAL_PADDING = 16
-
 // Episode text configuration
 private const val EPISODE_TEXT_MAX_LINES = 1
 private const val EPISODE_TEXT_HORIZONTAL_PADDING = 12
 private const val EPISODE_TEXT_VERTICAL_PADDING = 20
 
-// Used to convert zero-based index to display index
-private const val ADD_TO_INDEX = 1
-
 // Fallback title when episode name is missing
-private val NO_TITLE_PROVIDED_STRING =
+private val NoTitleProvidedLabelRes =
     R.string.to_episode_title_provided_label
 
 // Label for episode animated color
-private const val EPISODE_ANIMATED_ALPHA_LABEL = "Episode animated alpha label"
-private const val DOT = "•"
+private const val DOT_SEPARATOR = "•"
 
-private const val UNWATCHED_ALPHA = 1f
-private const val WATCHED_ALPHA = 0.5f
-
+/**
+ * A private component representing a single episode row.
+ * * Features an animated alpha state; episodes that have been watched are dimmed
+ * to 50% opacity to provide visual feedback of progress.
+ *
+ * @param index The positional index of the episode (0-based).
+ * @param episode The data model containing episode details like the name.
+ * @param watchedEps The list of indices marked as watched to determine visual state.
+ * @param onClick Triggered when the user taps the episode row.
+ */
 @Composable
 private fun Episode(
     index: Int,
@@ -112,26 +119,26 @@ private fun Episode(
     onClick: () -> Unit
 ) {
     val alpha by animateFloatAsState(
-        targetValue = if (index in watchedEps) WATCHED_ALPHA else UNWATCHED_ALPHA,
+        targetValue = if (index in watchedEps) 0.5f else 1f,
         animationSpec = mMotionScheme.slowEffectsSpec(),
-        label = EPISODE_ANIMATED_ALPHA_LABEL,
+        label = "Episode animated alpha",
     )
 
     Box(
         contentAlignment = Alignment.CenterStart,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = HORIZONTAL_PADDING.dp)
+            .padding(horizontal = mDimens.paddingMedium)
             .clip(mShapes.small)
             .clickable(onClick = onClick)
             .background(mColors.surfaceContainerHigh)
             .alpha(alpha)
     ) {
         // Episode title or fallback text
-        val name = episode.name ?: stringResource(NO_TITLE_PROVIDED_STRING)
+        val name = episode.name ?: stringResource(NoTitleProvidedLabelRes)
 
         Text(
-            text = "${index + ADD_TO_INDEX}  $DOT  $name",
+            text = "${index + 1}  $DOT_SEPARATOR  $name",
             maxLines = EPISODE_TEXT_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
             style = mTypography.bodyLarge,

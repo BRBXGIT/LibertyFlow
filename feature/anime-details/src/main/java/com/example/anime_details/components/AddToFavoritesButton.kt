@@ -25,11 +25,25 @@ private val AddToFavoritesLabelRes = R.string.add_to_favorites_button_label
 private val RemoveFromFavoritesLabelRes = R.string.remove_from_favorites_button_label
 private val LoadingFavoritesLabelRes = R.string.favorites_loading_label
 private val ErrorFavoritesLabelRes = R.string.error_label
-private val AuthorizeLabel = R.string.authorize_label
+private val AuthorizeLabelRes = R.string.authorize_label
 
 // Key used for item animations inside Lazy layouts.
-internal const val ADD_TO_FAVORITE_BUTTON_KEY = "ADD_TO_FAVORITE_BUTTON_KEY"
+internal const val AddToFavoritesButtonKey = "AddToFavoritesButtonKey"
 
+/**
+ * Remembers and computes the appropriate [ActionButtonState] for the favorites button.
+ *
+ * This function evaluates the current loading status, user authentication state, and whether
+ * the anime is already in the user's favorites to determine the correct icon, label,
+ * loading status, and click behavior (onClick lambda).
+ *
+ * @param favoritesState The current state of the user's favorite list, including loading/error flags and cached IDs.
+ * @param userAuthState The current authentication state of the user (e.g., LoggedOut, LoggedIn).
+ * @param animeId The unique identifier of the currently displayed anime.
+ * @param onIntent Callback used to dispatch MVI intents (like showing the Auth bottom sheet or toggling favorites).
+ * @param onRefreshEffect Callback used to trigger data refresh side effects.
+ * @return An [ActionButtonState] that dictates how the button should render and behave.
+ */
 @Composable
 private fun rememberFavoritesButtonState(
     favoritesState: AnimeDetailsState.FavoritesState,
@@ -53,7 +67,7 @@ private fun rememberFavoritesButtonState(
             ) { /* Nothing here */ }
 
             userAuthState is UserAuthState.LoggedOut -> ActionButtonState(
-                LibertyFlowIcons.Outlined.User, AuthorizeLabel
+                LibertyFlowIcons.Outlined.User, AuthorizeLabelRes
             ) { onIntent(AnimeDetailsIntent.ToggleIsAuthBSVisible) }
 
             animeId in favoritesState.ids -> ActionButtonState(

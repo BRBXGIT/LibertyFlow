@@ -43,6 +43,9 @@ import com.example.design_system.theme.theme.mMotionScheme
 import com.example.design_system.theme.theme.mTypography
 import kotlinx.coroutines.delay
 
+/**
+ * Represents the possible UI states for the TopBar title.
+ */
 private sealed interface TitleState {
     data object Loading: TitleState
     data object Error: TitleState
@@ -50,6 +53,9 @@ private sealed interface TitleState {
     data object Empty: TitleState
 }
 
+/**
+ * Represents the possible UI states for the collection action button in the TopBar.
+ */
 private sealed interface CollectionState {
     data object Loading: CollectionState
     data object Error: CollectionState
@@ -67,6 +73,13 @@ private const val TOP_BAR_ALPHA = 0f
 // IconButton * 2
 private val CollectionBoxSize = 48.dp
 
+/**
+ * Computes the [CollectionState] based on user authentication and loading status.
+ *
+ * @param userAuthState Current user login status.
+ * @param collectionsLoadingState The loading status of the user's collections.
+ * @param activeCollection The specific collection the current item belongs to, if any.
+ */
 @Composable
 private fun rememberCollectionState(
     userAuthState: UserAuthState,
@@ -90,6 +103,12 @@ private fun rememberCollectionState(
     return state
 }
 
+/**
+ * Computes the [TitleState] based on the primary content loading status.
+ *
+ * @param loadingState Loading status of the anime details.
+ * @param englishName The English title to display as the TopBar title.
+ */
 @Composable
 private fun rememberTitleState(
     loadingState: LoadingState,
@@ -110,6 +129,24 @@ private fun rememberTitleState(
     return state
 }
 
+/**
+ * A highly dynamic [TopAppBar] that adapts its title and actions based on the screen's state.
+ *
+ * * **Title:** Shows an animated loading text, an error label, or the anime's English title.
+ * * **Actions:** Displays different icons depending on whether the user is authorized,
+ * already has the item in a collection, or if data is still loading.
+ * * **Animations:** Uses [DownUpAnimatedContent] to provide smooth vertical transitions
+ * between different states.
+ *
+ * @param activeCollection The collection the anime currently belongs to.
+ * @param collectionsLoadingState State of the collections request.
+ * @param userAuthState Current user authentication status.
+ * @param englishName The title text to display when loaded.
+ * @param loadingState Overall screen loading state.
+ * @param scrollBehavior Behavior for collapsing/expanding the bar on scroll.
+ * @param onEffect Callback for navigation effects.
+ * @param onIntent Callback for UI actions like showing bottom sheets.
+ */
 @Composable
 internal fun TopBar(
     activeCollection: Collection?,
@@ -177,6 +214,11 @@ private const val DOT = "."
 // Loading animation timing
 private const val DELAY = 200L
 
+/**
+ * A specialized loading indicator for the TopBar title.
+ * * Displays the "Loading" text followed by three dots that fade in sequentially
+ * to create a rhythmic pulse effect.
+ */
 @Composable
 private fun AnimatedLoadingText() {
     // Controls how many dots are visible
@@ -213,6 +255,9 @@ private fun AnimatedLoadingText() {
 // Title text configuration
 private const val TEXT_MAX_LINES = 1
 
+/**
+ * Simple wrapper for TopBar title text to ensure consistent styling and ellipsis behavior.
+ */
 @Composable
 private fun TopBarText(text: String) {
     Text(
@@ -226,6 +271,14 @@ private fun TopBarText(text: String) {
 // Navigation icon size
 private const val ICON_SIZE = 22
 
+/**
+ * Custom [IconButton] that supports both static [Icon] resources and
+ * [LibertyFlowAnimatedIcon] for active states like loading.
+ *
+ * @param animated Whether to use the animated icon implementation.
+ * @param icon The drawable resource ID for the icon.
+ * @param onClick The action to perform when clicked.
+ */
 @Composable
 private fun TopBarIconButton(
     animated: Boolean = false,

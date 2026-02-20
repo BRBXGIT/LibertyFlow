@@ -16,11 +16,11 @@ import androidx.compose.runtime.Immutable
  */
 @Immutable
 data class Torrent(
-    val filename: String,
-    val leechers: Int,
-    val seeders: Int,
-    val size: Int,
-    val magnet: String
+    val filename: String = "",
+    val leechers: Int = 0,
+    val seeders: Int = 0,
+    val size: Int = 0,
+    val magnet: String = ""
 ) {
     /**
      * Extracts and joins all content found within square brackets `[...]` from the [filename].

@@ -21,16 +21,16 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
-import com.example.anime_details.components.ADD_TO_FAVORITE_BUTTON_KEY
+import com.example.anime_details.components.AddToFavoritesButtonKey
 import com.example.anime_details.components.AddToFavoritesButton
 import com.example.anime_details.components.ContinueWatchFAB
-import com.example.anime_details.components.DESCRIPTION_KEY
+import com.example.anime_details.components.DescriptionKey
 import com.example.anime_details.components.Description
-import com.example.anime_details.components.EPISODES_KEY
+import com.example.anime_details.components.EpisodesKey
 import com.example.anime_details.components.Episodes
-import com.example.anime_details.components.GENRES_LR_KEY
+import com.example.anime_details.components.GenresLRKey
 import com.example.anime_details.components.Genres
-import com.example.anime_details.components.HEADER_KEY
+import com.example.anime_details.components.HeaderKey
 import com.example.anime_details.components.Header
 import com.example.anime_details.components.HeaderData
 import com.example.anime_details.components.TopBar
@@ -212,7 +212,7 @@ private fun LazyListScope.header(
     topInnerPadding: Dp
 ) {
     // Maps UI model to header UI data
-    item(key = HEADER_KEY) {
+    item(key = HeaderKey) {
         Header(headerData, topInnerPadding)
     }
 }
@@ -232,7 +232,7 @@ private fun LazyListScope.addToFavoriteButton(
     userAuthState: UserAuthState,
     showAnimation: Boolean
 ) {
-    item(key = ADD_TO_FAVORITE_BUTTON_KEY) {
+    item(key = AddToFavoritesButtonKey) {
         AddToFavoritesButton(animeId, favoritesState, userAuthState, showAnimation, onIntent, onRefreshEffect)
     }
 }
@@ -242,7 +242,7 @@ private fun LazyListScope.addToFavoriteButton(
  * @param genres List of genre names associated with the anime.
  */
 private fun LazyListScope.genres(genres: List<String>) {
-    item(key = GENRES_LR_KEY) {
+    item(key = GenresLRKey) {
         Genres(genres)
     }
 }
@@ -257,7 +257,7 @@ private fun LazyListScope.description(
     isExpanded: Boolean,
     onIntent: (AnimeDetailsIntent) -> Unit
 ) {
-    item(key = DESCRIPTION_KEY) {
+    item(key = DescriptionKey) {
         Description(description, isExpanded, onIntent)
     }
 }
@@ -293,7 +293,7 @@ private fun LazyListScope.episodes(
     onIntent: (AnimeDetailsIntent) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
-    item(key = EPISODES_KEY) {
+    item(key = EpisodesKey) {
         Episodes(
             animeName = animeName,
             episodes = episodes,
