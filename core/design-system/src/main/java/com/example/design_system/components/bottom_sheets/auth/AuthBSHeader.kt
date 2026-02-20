@@ -1,9 +1,5 @@
 package com.example.design_system.components.bottom_sheets.auth
 
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
-import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +22,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.design_system.R
+import com.example.design_system.components.icons.LibertyFlowAnimatedIcon
 import com.example.design_system.components.icons.LibertyFlowIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
@@ -103,13 +100,10 @@ internal fun AuthBSHeader(
                 IconButton(
                     onClick = { isPasswordVisible = !isPasswordVisible }
                 ) {
-                    val animatedImage = AnimatedImageVector.animatedVectorResource(LibertyFlowIcons.Animated.Eye)
-                    val animatedPainter = rememberAnimatedVectorPainter(animatedImageVector = animatedImage, atEnd = isPasswordVisible)
-
-                    Image(
-                        painter = animatedPainter,
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(mColors.onSurfaceVariant)
+                    LibertyFlowAnimatedIcon(
+                        colorFilter = ColorFilter.tint(mColors.onSurfaceVariant),
+                        isRunning = isPasswordVisible,
+                        iconRes = LibertyFlowIcons.Animated.Eye,
                     )
                 }
             },

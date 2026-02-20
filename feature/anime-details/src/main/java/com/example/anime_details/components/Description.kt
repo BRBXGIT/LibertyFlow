@@ -4,10 +4,6 @@ package com.example.anime_details.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
-import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -31,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
+import com.example.design_system.components.icons.LibertyFlowAnimatedIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.mColors
 import com.example.design_system.theme.theme.mDimens
@@ -137,19 +134,10 @@ private fun ExpandCollapseArrow(
     isExpanded: Boolean,
     onClick: () -> Unit
 ) {
-    val animatedImage = AnimatedImageVector.animatedVectorResource(
-        LibertyFlowIcons.Animated.ArrowUp
-    )
-
-    val painter = rememberAnimatedVectorPainter(
-        animatedImageVector = animatedImage,
-        atEnd = !isExpanded
-    )
-
-    Image(
-        painter = painter,
-        contentDescription = null,
+    LibertyFlowAnimatedIcon(
+        iconRes = LibertyFlowIcons.Animated.ArrowUp,
         colorFilter = ColorFilter.tint(mColors.onBackground),
+        isRunning = !isExpanded,
         modifier = Modifier.clickable(
             indication = null,
             interactionSource = remember { MutableInteractionSource() },
