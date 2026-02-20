@@ -71,12 +71,9 @@ private fun Title() {
         horizontalArrangement = Arrangement.spacedBy(TITLE_SPACED_BY.dp)
     ) {
         LibertyFlowIcon(
-            icon = LibertyFlowIcons.Multicolored.LibertyFlow
-        )
-        LibertyFlowIcon(
             icon = LibertyFlowIcons.Multicolored.LibertyFlow,
+            tint = Color.Unspecified,
             modifier = Modifier.size(ICON_SIZE.dp),
-            tint = Color.Unspecified
         )
 
         Text(
