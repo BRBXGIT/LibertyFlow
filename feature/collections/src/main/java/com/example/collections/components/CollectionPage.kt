@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.example.collections.screen.CollectionsState
 import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.sections.ErrorSection
 import com.example.design_system.containers.PagingAnimeItemsLazyVerticalGrid
@@ -24,7 +23,8 @@ import com.example.design_system.containers.VibratingContainer
  */
 @Composable
 internal fun CollectionPage(
-    state: CollectionsState,
+    isSearching: Boolean,
+    query: String,
     items: LazyPagingItems<AnimeItem>,
     onItemClick: (Int) -> Unit,
 ) {
@@ -33,19 +33,19 @@ internal fun CollectionPage(
     val pageState by remember(
         key1 = items.loadState.refresh,
         key2 = items.itemCount,
-        key3 = state.filtersState.requestParameters.search
+        key3 = query
     ) {
         derivedStateOf {
             calculatePageState(
                 loadState = items.loadState.refresh,
                 itemCount = items.itemCount,
-                query = state.filtersState.requestParameters.search
+                query = query
             )
         }
     }
 
     VibratingContainer(
-        isSearching = state.filtersState.isSearching,
+        isSearching = isSearching,
         isRefreshing = pageState == PageState.Loading,
         onRefresh = items::refresh
     ) {

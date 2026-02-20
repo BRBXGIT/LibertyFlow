@@ -12,18 +12,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.common.vm_helpers.models.LoadingState
 import com.example.design_system.components.buttons.ActionButtonState
 import com.example.design_system.components.buttons.RainbowActionButtonWithIcon
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.home.R
 import com.example.home.screen.HomeIntent
-import com.example.home.screen.HomeState
 
-internal const val RANDOM_BUTTON_KEY = "RANDOM_BUTTON_KEY"
+internal const val RANDOM_BUTTON_KEY = "RandomButtonKey"
 
-private val ErrorLabel = R.string.random_anime_button_error_label
-private val LoadingLabel = R.string.random_anime_button_loading_label
-private val RandomAnimeLabel = R.string.random_button_label
+private val ErrorLabelRes = R.string.random_anime_button_error_label
+private val LoadingLabelRes = R.string.random_anime_button_loading_label
+private val RandomAnimeLabelRes = R.string.random_button_label
 
 /**
  * A specialized grid item that allows users to request a random anime selection.
@@ -40,27 +40,27 @@ private val RandomAnimeLabel = R.string.random_button_label
  * - **Optimization:** Utilizes [remember] keyed to the loading and error states to
  * avoid unnecessary re-allocation of the [ActionButtonState] during recomposition.
  *
- * @param state The global [HomeState] providing the current status of the random anime request.
+ * @param randomAnimeState The current [LoadingState] for random anime.
  * @param onIntent Lambda for dispatching [HomeIntent] actions back to the ViewModel.
  */
 @Composable
 internal fun LazyGridItemScope.RandomAnimeButton(
-    state: HomeState,
+    randomAnimeState: LoadingState,
     onIntent: (HomeIntent) -> Unit
 ) {
-    val buttonState by remember(state.randomAnimeState.isLoading, state.randomAnimeState.isError) {
+    val buttonState by remember(randomAnimeState.isLoading, randomAnimeState.isError) {
         mutableStateOf(
             when {
-                state.randomAnimeState.isError -> ActionButtonState(
-                    LibertyFlowIcons.Outlined.DangerCircle, ErrorLabel
+                randomAnimeState.isError -> ActionButtonState(
+                    LibertyFlowIcons.Outlined.DangerCircle, ErrorLabelRes
                 ) { /* Nothing here */ }
 
-                state.randomAnimeState.isLoading -> ActionButtonState(
-                    LibertyFlowIcons.Outlined.Cat, LoadingLabel, isLoading = true
+                randomAnimeState.isLoading -> ActionButtonState(
+                    LibertyFlowIcons.Outlined.Cat, LoadingLabelRes, isLoading = true
                 ) { /* Nothing here */ }
 
                 else -> ActionButtonState(
-                    LibertyFlowIcons.Outlined.FunnyCube, RandomAnimeLabel
+                    LibertyFlowIcons.Outlined.FunnyCube, RandomAnimeLabelRes
                 ) { onIntent(HomeIntent.GetRandomAnime) }
             }
         )
@@ -68,7 +68,7 @@ internal fun LazyGridItemScope.RandomAnimeButton(
 
     RainbowActionButtonWithIcon(
         state = buttonState,
-        showBorderAnimation = state.randomAnimeState.isLoading,
+        showBorderAnimation = randomAnimeState.isLoading,
         modifier = Modifier.animateItem()
     )
 }
@@ -81,7 +81,7 @@ private fun RandomAnimeButtonPreview() {
     ) {
         item {
             RandomAnimeButton(
-                state = HomeState(),
+                randomAnimeState = LoadingState(),
                 onIntent = {}
             )
         }

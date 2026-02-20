@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.LazyPagingItems
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.common.vm_helpers.models.LoadingState
 import com.example.data.models.common.anime_item.AnimeItem
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
@@ -39,7 +40,7 @@ import com.example.home.components.FiltersFAB
 import com.example.home.components.RANDOM_BUTTON_KEY
 import com.example.home.components.RandomAnimeButton
 
-private val TopBarLabel = R.string.home_top_bar_label
+private val TopBarLabelRes = R.string.home_top_bar_label
 
 /**
  * The primary entry point for the Home screen UI.
@@ -106,7 +107,7 @@ internal fun Home(
             SearchingTopBar(
                 isSearching = state.filtersState.isSearching,
                 query = state.filtersState.requestParameters.search,
-                text = stringResource(TopBarLabel),
+                text = stringResource(TopBarLabelRes),
                 scrollBehavior = scrollBehavior,
                 onToggleSearch = { onIntent(HomeIntent.ToggleSearching) },
                 onQueryChange = { onIntent(HomeIntent.UpdateQuery(it)) },
@@ -136,8 +137,9 @@ internal fun Home(
                 )
         ) {
             MainContent(
+                isError = state.loadingState.isError,
                 listState = lazyGridState,
-                state = state,
+                randomAnimeState = state.randomAnimeState,
                 anime = anime,
                 onIntent = onIntent,
                 onEffect = onEffect
@@ -147,25 +149,30 @@ internal fun Home(
 }
 
 /**
- * Manages the main content area of the Home screen, switching between error
- * states and the anime grid.
+ * The primary layout for the Home screen, responsible for displaying the anime grid
+ * and a featured randomizer interaction.
  *
- * It injects a [RandomAnimeButton] as a full-span header item at the top
- * of the [PagingAnimeItemsLazyVerticalGrid].
+ * This component uses a [androidx.compose.foundation.lazy.grid.LazyVerticalGrid] to handle large datasets of [AnimeItem]
+ * via Paging 3 integration.
  *
- * @param listState The scroll state of the grid, used for positioning and
- * visibility logic.
+ * @param listState The [LazyGridState] used to control and observe the grid's scroll position.
+ * @param isError Flag indicating if the screen is in a global error state.
+ * @param randomAnimeState The current [LoadingState] of the random anime fetcher.
+ * @param anime The paginated list of [AnimeItem] to be rendered in the grid.
+ * @param onIntent Callback to dispatch [HomeIntent] actions (e.g., refreshing or randomizing).
+ * @param onEffect Callback to trigger one-time [UiEffect] events (e.g., navigation).
  */
 @Composable
 private fun MainContent(
     listState: LazyGridState,
-    state: HomeState,
+    isError: Boolean,
+    randomAnimeState: LoadingState,
     anime: LazyPagingItems<AnimeItem>,
     onIntent: (HomeIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
     // Early return for error state to keep indentation low
-    if (state.loadingState.isError) {
+    if (isError) {
         ErrorSection()
         return
     }
@@ -180,7 +187,7 @@ private fun MainContent(
             key = RANDOM_BUTTON_KEY,
             span = { GridItemSpan(maxLineSpan) }
         ) {
-            RandomAnimeButton(state, onIntent)
+            RandomAnimeButton(randomAnimeState, onIntent)
         }
     }
 }

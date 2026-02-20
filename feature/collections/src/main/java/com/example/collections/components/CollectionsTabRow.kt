@@ -12,7 +12,6 @@ import com.example.data.models.common.mappers.toLabelRes
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.theme.TabType
 import com.example.design_system.components.tabs.LibertyFlowTab
-import com.example.design_system.theme.logic.ThemeState
 import com.example.design_system.theme.theme.LibertyFlowTheme
 import com.example.design_system.theme.theme.mDimens
 
@@ -21,14 +20,14 @@ import com.example.design_system.theme.theme.mDimens
  * * * This component maps the [Collection] enum entries to individual tabs, handling
  * both the selection logic and the visual styling based on the current theme.
  *
- * @param themeState The current application theme state, used to determine
+ * @param tabType The current application tab type, used to show special design for tab
  * the specific tab indicator style (e.g., [TabType.M3]).
  * @param selectedCollection The currently active collection category to highlight.
  * @param onTabClick Callback triggered when a user selects a different collection tab.
  */
 @Composable
 internal fun CollectionsTabRow(
-    themeState: ThemeState,
+    tabType: TabType,
     selectedCollection: Collection,
     onTabClick: (Collection) -> Unit
 ) {
@@ -36,7 +35,7 @@ internal fun CollectionsTabRow(
 
     SecondaryScrollableTabRow(
         indicator = {
-            if (themeState.tabType == TabType.M3) {
+            if (tabType == TabType.M3) {
                 TabRowDefaults.SecondaryIndicator(
                     Modifier.tabIndicatorOffset(selectedCollection.toIndex(), matchContentSize = false)
                 )
@@ -52,7 +51,7 @@ internal fun CollectionsTabRow(
             val selected = selectedCollection == collection
 
             LibertyFlowTab(
-                tabType = themeState.tabType,
+                tabType = tabType,
                 onClick = { onTabClick(collection) },
                 selected = selected,
                 text = stringResource(collection.toLabelRes())
@@ -65,6 +64,6 @@ internal fun CollectionsTabRow(
 @Composable
 private fun CollectionsTabRowPreview() {
     LibertyFlowTheme {
-        CollectionsTabRow(selectedCollection = Collection.PLANNED, themeState = ThemeState()) { }
+        CollectionsTabRow(selectedCollection = Collection.PLANNED, tabType = TabType.Chips) { }
     }
 }

@@ -31,6 +31,7 @@ import com.example.common.ui_helpers.effects.UiEffect
 import com.example.data.models.auth.UserAuthState
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.data.models.common.anime_item.AnimeItem
+import com.example.data.models.theme.TabType
 import com.example.design_system.components.bars.bottom_nav_bar.calculateNavBarSize
 import com.example.design_system.components.bars.searching_top_bar.SearchingTopBar
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
@@ -41,7 +42,7 @@ import com.example.design_system.theme.theme.mColors
 import com.example.design_system.utils.CommonStrings
 import kotlinx.coroutines.launch
 
-private val TopBarLabel = R.string.collections_top_bar_label
+private val TopBarLabelRes = R.string.collections_top_bar_label
 
 /**
  * The primary UI layout for the Collections screen.
@@ -79,7 +80,7 @@ internal fun Collections(
         topBar = {
             SearchingTopBar(
                 enterAlways = true,
-                text = stringResource(TopBarLabel),
+                text = stringResource(TopBarLabelRes),
                 scrollBehavior = topBarScrollBehavior,
                 isSearching = state.filtersState.isSearching,
                 query = state.filtersState.requestParameters.search,
@@ -113,11 +114,13 @@ internal fun Collections(
         ) {
             when (state.authState.userAuthState) {
                 UserAuthState.LoggedIn -> LoggedInContent(
-                    state = state,
+                    selectedCollection = state.selectedCollection,
                     themeState = themeState,
                     pagingItemsMap = pagingItemsMap,
                     onIntent = onIntent,
-                    onEffect = onEffect
+                    onEffect = onEffect,
+                    query = state.filtersState.requestParameters.search,
+                    isSearching = state.filtersState.isSearching,
                 )
                 UserAuthState.LoggedOut -> LoggedOutSection(
                     onAuthClick = { onIntent(CollectionsIntent.ToggleIsAuthBSVisible) }
@@ -135,14 +138,16 @@ internal fun Collections(
  */
 @Composable
 private fun LoggedInContent(
-    state: CollectionsState,
+    query: String,
+    isSearching: Boolean,
+    selectedCollection: Collection,
     themeState: ThemeState,
     pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
     // Observe LoadState for current collection to handle errors (SnackBar)
-    val currentItems = pagingItemsMap[state.selectedCollection]!!
+    val currentItems = pagingItemsMap[selectedCollection]!!
     PagingStatesContainer(
         items = currentItems,
         onRetryRequest = { messageRes, retry ->
@@ -157,11 +162,13 @@ private fun LoggedInContent(
     )
 
     CollectionsPagerContent(
-        themeState = themeState,
-        state = state,
+        tabType = themeState.tabType,
         pagingItemsMap = pagingItemsMap,
         onIntent = onIntent,
-        onEffect = onEffect
+        onEffect = onEffect,
+        selectedCollection = selectedCollection,
+        isSearching = isSearching,
+        query = query,
     )
 }
 
@@ -174,15 +181,17 @@ private fun LoggedInContent(
  */
 @Composable
 private fun CollectionsPagerContent(
-    themeState: ThemeState,
-    state: CollectionsState,
+    isSearching: Boolean,
+    query: String,
+    tabType: TabType,
+    selectedCollection: Collection,
     pagingItemsMap: Map<Collection, LazyPagingItems<AnimeItem>>,
     onIntent: (CollectionsIntent) -> Unit,
     onEffect: (UiEffect) -> Unit
 ) {
     val pagerScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
-        initialPage = state.selectedCollection.toIndex()
+        initialPage = selectedCollection.toIndex()
     ) { Collection.entries.size }
 
     Column {
@@ -192,8 +201,8 @@ private fun CollectionsPagerContent(
         }
 
         CollectionsTabRow(
-            themeState = themeState,
-            selectedCollection = state.selectedCollection,
+            tabType = tabType,
+            selectedCollection = selectedCollection,
             onTabClick = { collection ->
                 onIntent(CollectionsIntent.SetCollection(collection))
                 pagerScope.launch { pagerState.animateScrollToPage(collection.toIndex()) }
@@ -211,7 +220,8 @@ private fun CollectionsPagerContent(
             CollectionPage(
                 items = pagingItems,
                 onItemClick = { onEffect(UiEffect.Navigate(AnimeDetailsRoute(it))) },
-                state = state
+                isSearching = isSearching,
+                query = query
             )
         }
     }
