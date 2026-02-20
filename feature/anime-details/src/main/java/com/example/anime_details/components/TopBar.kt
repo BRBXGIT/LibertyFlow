@@ -15,7 +15,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -29,9 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
-import com.example.anime_details.screen.AnimeDetailsState
 import com.example.common.ui_helpers.effects.UiEffect
+import com.example.common.vm_helpers.models.LoadingState
 import com.example.data.models.auth.UserAuthState
+import com.example.data.models.common.request.request_parameters.Collection
 import com.example.design_system.containers.DownUpAnimatedContent
 import com.example.design_system.theme.icons.LibertyFlowIcons
 import com.example.design_system.theme.theme.LibertyFlowTheme
@@ -64,49 +64,62 @@ private const val TOP_BAR_ALPHA = 0f
 // IconButton * 2
 private val CollectionBoxSize = 48.dp
 
-// Loading animation timing
-private const val DELAY = 200L
+@Composable
+private fun rememberCollectionState(
+    userAuthState: UserAuthState,
+    collectionsLoadingState: LoadingState,
+    activeCollection: Collection?
+): CollectionState {
+    val state = remember(
+        key1 = userAuthState,
+        key2 = collectionsLoadingState,
+        key3 = activeCollection
+    ) {
+        when {
+            userAuthState !is UserAuthState.LoggedOut && collectionsLoadingState.isLoading -> CollectionState.Loading
+            collectionsLoadingState.isError -> CollectionState.Error
+            activeCollection != null -> CollectionState.Added
+            userAuthState is UserAuthState.LoggedOut -> CollectionState.Unauthorized
+            else -> CollectionState.Empty
+        }
+    }
 
-// Dot animation configuration
-private const val PLUS_DOT_COUNT = 1
-private const val START_DOT_COUNT = 0
-private const val DIVIDER = 4
-private const val LIST_SIZE = 3
-
-// Alpha values for dot visibility
-private const val VISIBLE_ALPHA = 1f
-private const val INVISIBLE_ALPHA = 0f
-
-// Loading text content
-private val LOADING_TEXT = R.string.loading_label
-private const val DOT = "."
-
-private const val ANIMATION_LABEL = "Dot alpha animation"
-
-private fun AnimeDetailsState.toTitleState(): TitleState = when {
-    loadingState.isLoading -> TitleState.Loading
-    loadingState.isError -> TitleState.Error
-    anime?.name?.english != null -> TitleState.Content(anime.name.english)
-    else -> TitleState.Empty
+    return state
 }
 
-private fun AnimeDetailsState.toCollectionState(): CollectionState = when {
-    authState.userAuthState !is UserAuthState.LoggedOut && collectionsState.loadingState.isLoading -> CollectionState.Loading
-    collectionsState.loadingState.isError -> CollectionState.Error
-    activeCollection != null -> CollectionState.Added
-    authState.userAuthState is UserAuthState.LoggedOut -> CollectionState.Unauthorized
-    else -> CollectionState.Empty
+@Composable
+private fun rememberTitleState(
+    loadingState: LoadingState,
+    englishName: String?
+): TitleState {
+    val state = remember(
+        key1 = loadingState,
+        key2 = englishName
+    ) {
+        when {
+            loadingState.isLoading -> TitleState.Loading
+            loadingState.isError -> TitleState.Error
+            englishName != null -> TitleState.Content(englishName)
+            else -> TitleState.Empty
+        }
+    }
+
+    return state
 }
 
 @Composable
 internal fun TopBar(
-    state: AnimeDetailsState,
+    activeCollection: Collection?,
+    collectionsLoadingState: LoadingState,
+    userAuthState: UserAuthState,
+    englishName: String?,
+    loadingState: LoadingState,
     scrollBehavior: TopAppBarScrollBehavior,
     onEffect: (UiEffect) -> Unit,
     onIntent: (AnimeDetailsIntent) -> Unit
 ) {
-    val titleState by remember(state) { derivedStateOf { state.toTitleState() } }
-    val collectionState by remember(state) { derivedStateOf { state.toCollectionState() } }
+    val collectionState = rememberCollectionState(userAuthState, collectionsLoadingState, activeCollection)
+    val titleState = rememberTitleState(loadingState, englishName)
 
     TopAppBar(
         title = {
@@ -154,30 +167,37 @@ internal fun TopBar(
     )
 }
 
+// Loading text content
+private val LoadingLabelRes = R.string.loading_label
+private const val DOT = "."
+
+// Loading animation timing
+private const val DELAY = 200L
+
 @Composable
 private fun AnimatedLoadingText() {
     // Controls how many dots are visible
-    var dotCount by remember { mutableIntStateOf(START_DOT_COUNT) }
+    var dotCount by remember { mutableIntStateOf(0) }
 
     // Cycles dot visibility
     LaunchedEffect(Unit) {
         while (true) {
             delay(DELAY)
-            dotCount = (dotCount + PLUS_DOT_COUNT) % DIVIDER
+            dotCount = (dotCount + 1) % 4
         }
     }
 
     // Animates alpha for each dot
-    val animatedDots = List(LIST_SIZE) { index ->
+    val animatedDots = List(3) { index ->
         animateFloatAsState(
-            targetValue = if (index < dotCount) VISIBLE_ALPHA else INVISIBLE_ALPHA,
+            targetValue = if (index < dotCount) 1f else 0f,
             animationSpec = mMotionScheme.fastEffectsSpec(),
-            label = ANIMATION_LABEL
+            label = "Title dots loading animation"
         )
     }
 
     Row {
-        Text(text = stringResource(LOADING_TEXT), style = mTypography.titleLarge)
+        Text(text = stringResource(LoadingLabelRes), style = mTypography.titleLarge)
         animatedDots.forEach { alpha ->
             Text(
                 text = DOT,
@@ -235,7 +255,11 @@ private fun AnimeScreenTopBarPreview() {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
         TopBar(
-            state = AnimeDetailsState(),
+            activeCollection = null,
+            collectionsLoadingState = LoadingState(),
+            userAuthState = UserAuthState.LoggedIn,
+            englishName = "Name",
+            loadingState = LoadingState(),
             scrollBehavior = scrollBehavior,
             onEffect = {},
             onIntent = {},

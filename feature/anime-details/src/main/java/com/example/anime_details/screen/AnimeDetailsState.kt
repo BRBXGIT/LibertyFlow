@@ -7,6 +7,20 @@ import com.example.data.models.collections.collection.AnimeCollection
 import com.example.data.models.releases.anime_details.AnimeDetails
 import com.example.data.models.common.request.request_parameters.Collection
 
+/**
+ * Represents the complete, immutable UI state for the Anime Details screen.
+ * * This state is designed to be the "Single Source of Truth" for the view,
+ * grouping related properties into nested data classes to maintain clarity
+ * and reduce the complexity of the top-level object.
+ *
+ * @property loadingState General loading and error status for the main anime content.
+ * @property anime The detailed information of the anime, or null if not yet loaded.
+ * @property watchedEps A list of indices representing the episodes the user has watched.
+ * @property favoritesState State related to the user's favorite list and its sync status.
+ * @property collectionsState State for the user's personal collections (e.g., 'Watching', 'Dropped').
+ * @property authState State for the authentication bottom sheet and login form inputs.
+ * @property isDescriptionExpanded Controls the expansion toggle for the anime description text.
+ */
 @Immutable
 data class AnimeDetailsState(
     // Screen Loading/Error States
@@ -35,6 +49,12 @@ data class AnimeDetailsState(
         val ids: List<Int> = emptyList()
     )
 
+    /**
+     * Encapsulates state for the Collections bottom sheet and its data.
+     * @property collectionBSVisible Visibility toggle for the collections bottom sheet.
+     * @property loadingState Loading status for fetching or updating collections.
+     * @property collections The list of [AnimeCollection] items associated with the user.
+     */
     @Immutable
     data class CollectionsState(
         val collectionBSVisible: Boolean = false,
@@ -42,11 +62,6 @@ data class AnimeDetailsState(
         val collections: List<AnimeCollection> = emptyList()
     ) {
         fun toggleBS() = copy(collectionBSVisible = !collectionBSVisible)
-    }
-
-    // Auth
-    fun updateAuthForm(transformer: (AuthState) -> AuthState): AnimeDetailsState {
-        return copy(authState = transformer(authState))
     }
 
     // Favorites

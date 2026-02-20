@@ -44,13 +44,10 @@ import com.example.data.models.releases.anime_details.Torrent
 import com.example.design_system.components.bottom_sheets.auth.AuthBS
 import com.example.design_system.components.bottom_sheets.collections_bs.CollectionsBS
 import com.example.design_system.components.dividers.dividerWithLabel
+import com.example.design_system.theme.theme.mDimens
 import com.example.design_system.utils.ScrollDirection
 import com.example.design_system.utils.rememberDirectionalScrollState
 import com.example.player.player.PlayerIntent
-
-// Vertical spacing between LazyColumn items
-private const val LC_ARRANGEMENT = 16
-private const val LC_BOTTOM_PADDING = 16
 
 // Label for torrents section
 private val TORRENTS_LABEL_RES = R.string.torrents_label
@@ -58,6 +55,20 @@ private val TORRENTS_LABEL_RES = R.string.torrents_label
 // Extra top padding below the top app bar
 private const val PLUS_TOP_PADDING = 12
 
+/**
+ * The primary entry point for the Anime Details screen.
+ * * This composable uses a [Scaffold] to provide standard Material Design layouts,
+ * including a pinned [TopBar], a [ContinueWatchFAB], and a [LazyColumn] for
+ * scrollable content. It handles the display of Modal Bottom Sheets for
+ * authentication and collection management based on the [state].
+ *
+ * @param state The current UI state containing anime data, loading status, and UI toggles.
+ * @param snackbarHostState Manages the display of snackbars for errors or feedback.
+ * @param onEffect Lambda to handle one-time side effects (e.g., external navigation).
+ * @param onIntent Lambda to dispatch user actions (Intents) to the ViewModel.
+ * @param onRefreshEffect Lambda to trigger data invalidation/refreshing in other screen parts.
+ * @param onPlayerIntent Lambda to handle actions related to video playback.
+ */
 @Composable
 internal fun AnimeDetails(
     state: AnimeDetailsState,
@@ -87,10 +98,14 @@ internal fun AnimeDetails(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopBar(
-                state = state,
                 scrollBehavior = topBarScrollBehavior,
                 onEffect = onEffect,
                 onIntent = onIntent,
+                activeCollection = state.activeCollection,
+                collectionsLoadingState = state.collectionsState.loadingState,
+                userAuthState = state.authState.userAuthState,
+                englishName = state.anime?.name?.english,
+                loadingState = state.loadingState,
             )
         },
         modifier = Modifier
@@ -138,8 +153,8 @@ internal fun AnimeDetails(
             }
 
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(LC_ARRANGEMENT.dp),
-                contentPadding = PaddingValues(bottom = LC_BOTTOM_PADDING.dp),
+                verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
+                contentPadding = PaddingValues(bottom = mDimens.paddingMedium),
                 state = lazyListState
             ) {
                 // Header section
@@ -187,6 +202,11 @@ internal fun AnimeDetails(
     }
 }
 
+/**
+ * Renders the anime's visual header, including the poster and metadata.
+ * @param headerData Prepared data containing title, season, year, and poster path.
+ * @param topInnerPadding Extra padding to ensure the header starts below the TopAppBar.
+ */
 private fun LazyListScope.header(
     headerData: HeaderData,
     topInnerPadding: Dp
@@ -197,6 +217,13 @@ private fun LazyListScope.header(
     }
 }
 
+/**
+ * Renders the button used to add or remove an anime from the user's favorites.
+ * @param animeId The unique identifier of the anime.
+ * @param favoritesState The current favorite status and loading state.
+ * @param userAuthState Current login status (to determine if the action is allowed).
+ * @param showAnimation Whether the button should display a loading/shimmer state.
+ */
 private fun LazyListScope.addToFavoriteButton(
     animeId: Int,
     onIntent: (AnimeDetailsIntent) -> Unit,
@@ -210,12 +237,21 @@ private fun LazyListScope.addToFavoriteButton(
     }
 }
 
+/**
+ * Renders a horizontal list or flow of genre tags.
+ * @param genres List of genre names associated with the anime.
+ */
 private fun LazyListScope.genres(genres: List<String>) {
     item(key = GENRES_LR_KEY) {
         Genres(genres)
     }
 }
 
+/**
+ * Renders the anime description text with an expandable/collapsible toggle.
+ * @param description The plot summary text.
+ * @param isExpanded Whether the full description is currently visible.
+ */
 private fun LazyListScope.description(
     description: String?,
     isExpanded: Boolean,
@@ -226,6 +262,11 @@ private fun LazyListScope.description(
     }
 }
 
+/**
+ * Renders a list of downloadable torrents for the current anime.
+ * @param torrents List of torrent metadata (file size, seeds, etc.).
+ * @param onEffect Used to trigger file-related side effects (e.g., opening a magnet link).
+ */
 private fun LazyListScope.torrents(
     torrents: List<Torrent>,
     onEffect: (UiEffect) -> Unit
@@ -238,6 +279,13 @@ private fun LazyListScope.torrents(
     }
 }
 
+/**
+ * Renders the episode list or grid.
+ * @param animeName Title used for player context.
+ * @param episodes Full list of available episodes.
+ * @param watchedEps List of indices marking which episodes the user has already viewed.
+ * @param onPlayerIntent Triggered when an episode is selected for playback.
+ */
 private fun LazyListScope.episodes(
     animeName: String,
     episodes: List<Episode>,
