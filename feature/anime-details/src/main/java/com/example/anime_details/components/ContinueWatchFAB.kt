@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.example.anime_details.R
 import com.example.anime_details.screen.AnimeDetailsIntent
@@ -43,8 +44,13 @@ fun ContinueWatchFAB(
     onIntent: (AnimeDetailsIntent) -> Unit,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
+    val episodes = state.anime?.episodes ?: return
+    val nextToWatch = remember(state.watchedEps, episodes) {
+        (episodes.indices).firstOrNull { it !in state.watchedEps }
+    }
+
     AnimatedVisibility(
-        visible = state.anime!!.episodes.isNotEmpty() && state.watchedEps.size != state.anime.episodes.size,
+        visible = nextToWatch != null,
         enter = fadeIn(tween(mAnimationTokens.short)),
         exit = fadeOut(tween(mAnimationTokens.short))
     ) {
@@ -53,22 +59,12 @@ fun ContinueWatchFAB(
             icon = LibertyFlowIcons.Filled.Play,
             expanded = expanded,
             onClick = {
-                if (state.watchedEps.isEmpty()) {
+                nextToWatch?.let { index ->
                     onPlayerIntent(
                         PlayerIntent.SetUpPlayer(
                             animeName = state.anime.name.russian,
-                            startIndex = 0,
-                            episodes = state.anime.episodes,
-                            animeId = state.anime.id
-                        )
-                    )
-                } else {
-                    val startWith = state.watchedEps.last() + 1
-                    onPlayerIntent(
-                        PlayerIntent.SetUpPlayer(
-                            episodes = state.anime.episodes,
-                            startIndex = startWith,
-                            animeName = state.anime.name.russian,
+                            startIndex = index,
+                            episodes = episodes,
                             animeId = state.anime.id
                         )
                     )

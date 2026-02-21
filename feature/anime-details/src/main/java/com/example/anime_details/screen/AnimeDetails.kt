@@ -191,6 +191,7 @@ internal fun AnimeDetails(
 
                 // Episodes list
                 episodes(
+                    animeId = anime.id,
                     animeName = anime.name.russian,
                     episodes = anime.episodes,
                     watchedEps = state.watchedEps,
@@ -287,6 +288,7 @@ private fun LazyListScope.torrents(
  * @param onPlayerIntent Triggered when an episode is selected for playback.
  */
 private fun LazyListScope.episodes(
+    animeId: Int,
     animeName: String,
     episodes: List<Episode>,
     watchedEps: List<Int>,
@@ -295,6 +297,7 @@ private fun LazyListScope.episodes(
 ) {
     item(key = EpisodesKey) {
         Episodes(
+            animeId = animeId,
             animeName = animeName,
             episodes = episodes,
             watchedEps = watchedEps,

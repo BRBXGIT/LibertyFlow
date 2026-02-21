@@ -47,6 +47,7 @@ internal const val EpisodesKey = "EpisodesKey"
  * * This component is designed to be used within a [LazyItemScope]. It renders a
  * styled column with a rounded top surface containing all available episodes.
  *
+ * @param animeId The id of the anime, used when setting up the video player.
  * @param animeName The title of the anime, used when setting up the video player.
  * @param episodes The list of [Episode] data objects to be displayed.
  * @param watchedEps A list of indices representing episodes the user has already watched.
@@ -55,6 +56,7 @@ internal const val EpisodesKey = "EpisodesKey"
  */
 @Composable
 internal fun LazyItemScope.Episodes(
+    animeId: Int,
     animeName: String,
     episodes: List<Episode>,
     watchedEps: List<Int>,
@@ -80,7 +82,7 @@ internal fun LazyItemScope.Episodes(
                     episode = episode,
                     watchedEps = watchedEps,
                     onClick = {
-                        onPlayerIntent(PlayerIntent.SetUpPlayer(episodes, index, animeName))
+                        onPlayerIntent(PlayerIntent.SetUpPlayer(episodes, index, animeName, animeId))
                     },
                 )
             }
@@ -155,6 +157,7 @@ private fun EpisodePreview() {
     LazyColumn {
         item {
             Episodes(
+                animeId = 1,
                 animeName = "Some name",
                 episodes = emptyList(),
                 watchedEps = emptyList(),
