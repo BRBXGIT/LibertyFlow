@@ -23,6 +23,7 @@ data class AnimeEntity(
  *
  * @property animeId The ID of the parent anime (Part of Composite Primary Key).
  * @property episodeIndex The specific episode number/index (Part of Composite Primary Key).
+ * @property lastPosition Position when the user stop watching.
  */
 @Entity(
     primaryKeys = [
@@ -44,5 +45,6 @@ data class AnimeEntity(
 
 data class EpisodeEntity(
     val animeId: Int,
-    val episodeIndex: Int
+    val episodeIndex: Int,
+    val lastPosition: Long
 )

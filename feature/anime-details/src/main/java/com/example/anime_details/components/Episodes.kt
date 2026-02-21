@@ -80,7 +80,6 @@ internal fun LazyItemScope.Episodes(
                     episode = episode,
                     watchedEps = watchedEps,
                     onClick = {
-                        onIntent(AnimeDetailsIntent.AddEpisodeToWatched(index))
                         onPlayerIntent(PlayerIntent.SetUpPlayer(episodes, index, animeName))
                     },
                 )

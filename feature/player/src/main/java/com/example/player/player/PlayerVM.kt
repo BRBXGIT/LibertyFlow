@@ -12,6 +12,7 @@ import com.example.common.dispatchers.LibertyFlowDispatcher
 import com.example.common.vm_helpers.player.BasePlayerSettingsVM
 import com.example.common.vm_helpers.utils.toLazily
 import com.example.data.domain.PlayerSettingsRepo
+import com.example.data.domain.WatchedEpsRepo
 import com.example.data.models.player.VideoQuality
 import com.example.data.models.releases.anime_details.Episode
 import com.google.common.util.concurrent.ListenableFuture
@@ -44,6 +45,7 @@ class PlayerVM @Inject constructor(
     val uiPlayer: ExoPlayer, // Inject only for passing to ui
     private val controllerFuture: ListenableFuture<MediaController>,
     private val playerSettingsRepo: PlayerSettingsRepo,
+    private val watchedEpsRepo: WatchedEpsRepo,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
     @param:Dispatcher(LibertyFlowDispatcher.Main) private val dispatcherMain: CoroutineDispatcher
 ): BasePlayerSettingsVM(playerSettingsRepo, dispatcherIo) {
@@ -118,7 +120,6 @@ class PlayerVM @Inject constructor(
     fun sendEffect(effect: PlayerEffect) =
         viewModelScope.launch { _playerEffects.send(effect) }
 
-
     // --- Logic Implementation ---
     /**
      * Initializes the player with a list of episodes, configures the media items
@@ -131,9 +132,15 @@ class PlayerVM @Inject constructor(
 
             val settings = playerSettingsRepo.playerSettings.first()
 
+            // Get the saved progress
+            val savedProgress = withContext(dispatcherIo) {
+                watchedEpsRepo.getEpisodeProgress(intent.animeId, intent.startIndex)
+            }
+
             // UI Update
             updateState {
                 it.copy(
+                    animeId = intent.animeId,
                     animeName = intent.animeName,
                     uiPlayerState = PlayerState.UiPlayerState.Mini,
                     episodes = intent.episodes,
@@ -147,7 +154,9 @@ class PlayerVM @Inject constructor(
             withContext(dispatcherMain) {
                 val mediaItems = intent.episodes.map { it.toMediaItem(settings.quality, intent.animeName) }
 
-                controller.setMediaItems(mediaItems, intent.startIndex, 0L)
+                controller.repeatMode = Player.REPEAT_MODE_OFF
+
+                controller.setMediaItems(mediaItems, intent.startIndex, savedProgress)
                 controller.prepare()
                 controller.playWhenReady = settings.autoPlay
 
@@ -160,6 +169,8 @@ class PlayerVM @Inject constructor(
         if (controller.isPlaying) controller.pause() else controller.play()
 
     private fun stopPlayer(controller: MediaController) {
+        saveCurrentProgress()
+        controllerVisibilityJob?.cancel()
         progressJob?.cancel()
         controller.stop()
         controller.clearMediaItems()
@@ -169,8 +180,21 @@ class PlayerVM @Inject constructor(
     private fun seekRelative(controller: MediaController, offsetMs: Long) =
         controller.seekTo(controller.currentPosition + offsetMs)
 
-    private fun changeMediaItem(controller: MediaController, offset: Int) =
-        if (offset > 0) controller.seekToNextMediaItem() else controller.seekToPreviousMediaItem()
+    private fun changeMediaItem(controller: MediaController, offset: Int) {
+        val currentIndex = controller.currentMediaItemIndex
+        val currentPos = (controller.currentPosition - 5000L).coerceAtLeast(0L)
+
+        viewModelScope.launch(dispatcherIo) {
+            val animeId = currentState.animeId
+            watchedEpsRepo.upsertWatchedEpisode(animeId, currentIndex, currentPos)
+        }
+
+        if (offset > 0) {
+            if (controller.hasNextMediaItem()) controller.seekToNextMediaItem()
+        } else {
+            if (controller.hasPreviousMediaItem()) controller.seekToPreviousMediaItem()
+        }
+    }
 
     private fun skipOpening(controller: MediaController) {
         val endMs = (currentState.currentEpisode?.opening?.end?.toLong() ?: 0L) * 1000
@@ -254,6 +278,47 @@ class PlayerVM @Inject constructor(
         }
     }
 
+    // Progress saving
+    private fun saveCurrentProgress() {
+        val controller = mediaController ?: return
+        val animeId = currentState.animeId
+        val currentIndex = controller.currentMediaItemIndex
+
+        // Current - 5 seconds
+        val lastPos = (controller.currentPosition - 5000L).coerceAtLeast(0L)
+
+        viewModelScope.launch(dispatcherIo) {
+            watchedEpsRepo.insertTitle(animeId)
+            watchedEpsRepo.upsertWatchedEpisode(animeId, currentIndex, lastPos)
+        }
+    }
+
+    private fun saveSpecificEpisodeProgress(index: Int, position: Long = 0L) {
+        val animeId = currentState.animeId
+
+        viewModelScope.launch(dispatcherIo) {
+            watchedEpsRepo.insertTitle(animeId)
+            watchedEpsRepo.upsertWatchedEpisode(animeId, index, position)
+        }
+    }
+
+    private fun loadAndSeekProgressForIndex(index: Int) {
+        val animeId = currentState.animeId
+        val controller = mediaController ?: return
+
+        viewModelScope.launch(dispatcherMain) {
+            val progress = withContext(dispatcherIo) {
+                watchedEpsRepo.getEpisodeProgress(animeId, index)
+            }
+
+            if (progress > 0) {
+                if (controller.currentMediaItemIndex == index) {
+                    controller.seekTo(index, progress)
+                }
+            }
+        }
+    }
+
     // --- Listeners ---
     /**
      * Implementation of [Player.Listener] that syncs the [MediaController]
@@ -263,12 +328,26 @@ class PlayerVM @Inject constructor(
      */
     private val playerListener = object : Player.Listener {
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            val oldIndex = currentState.currentEpisodeIndex
+            val newIndex = mediaController?.currentMediaItemIndex ?: return
+
+            if (oldIndex != newIndex) {
+                saveSpecificEpisodeProgress(currentState.animeId)
+                loadAndSeekProgressForIndex(newIndex)
+            }
+
             mediaController?.let { ctrl ->
                 updateState { it.copy(currentEpisodeIndex = ctrl.currentMediaItemIndex) }
             }
         }
 
         override fun onPlaybackStateChanged(state: Int) {
+            val controller = mediaController ?: return
+
+            if (state == Player.STATE_ENDED) {
+                saveSpecificEpisodeProgress(controller.currentMediaItemIndex)
+            }
+
             val isPlaying = mediaController?.isPlaying == true
             val newState = when (state) {
                 Player.STATE_BUFFERING -> PlayerState.EpisodeState.Loading
@@ -315,6 +394,7 @@ class PlayerVM @Inject constructor(
     }
 
     override fun onCleared() {
+        saveCurrentProgress()
         super.onCleared()
         mediaController?.release()
         MediaController.releaseFuture(controllerFuture)

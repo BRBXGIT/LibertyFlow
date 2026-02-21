@@ -23,12 +23,18 @@ class WatchedEpsRepoImpl @Inject constructor(
     /**
      * Records a specific episode as watched for the given [animeId].
      */
-    override suspend fun insertWatchedEpisode(animeId: Int, episodeIndex: Int) =
-        dao.insertWatchedEpisode(EpisodeEntity(animeId, episodeIndex))
+    override suspend fun upsertWatchedEpisode(animeId: Int, episodeIndex: Int, lastPosition: Long) =
+        dao.upsertWatchedEpisode(EpisodeEntity(animeId, episodeIndex, lastPosition))
 
     /**
      * Returns a Flow containing the indices of all watched episodes for a specific anime.
      */
     override fun getWatchedEpisodes(animeId: Int) =
         dao.getWatchedEpisodes(animeId)
+
+    /**
+     * Returns a Flow through the suspend function the last position of current episode for a specific anime.
+     */
+    override suspend fun getEpisodeProgress(animeId: Int, episodeIndex: Int): Long =
+        dao.getEpisodeProgress(animeId, episodeIndex) ?: 0L
 }

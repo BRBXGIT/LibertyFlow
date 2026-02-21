@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -23,18 +24,26 @@ interface WatchedEpsDao {
 
     /**
      * Records a specific episode as "watched" by inserting it into the database.
-     * Uses [OnConflictStrategy.IGNORE] to prevent errors if the episode is already recorded.
+     * Uses [Upsert] to prevent errors if the episode is already recorded.
      *
      * @param episode The [EpisodeEntity] containing animeId and episodeIndex.
      */
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertWatchedEpisode(episode: EpisodeEntity)
+    @Upsert
+    suspend fun upsertWatchedEpisode(episode: EpisodeEntity)
 
     /**
      * Retrieves a reactive stream of watched episode indices for a specific anime.
-     * * @param animeId The unique identifier of the anime.
+     * @param animeId The unique identifier of the anime.
      * @return A [Flow] emitting a list of episode indices whenever the data changes.
      */
     @Query(" SELECT episodeIndex FROM EpisodeEntity WHERE animeId = :animeId")
     fun getWatchedEpisodes(animeId: Int): Flow<List<Int>>
+
+    /**
+     * Retrieves a reactive stream through the suspend function of watched episode last time for the specific anime.
+     * @param animeId The unique identifier of the anime.
+     * @param episodeIndex The index of episode.
+     */
+    @Query("SELECT lastPosition FROM EpisodeEntity WHERE animeId = :animeId AND episodeIndex = :episodeIndex")
+    suspend fun getEpisodeProgress(animeId: Int, episodeIndex: Int): Long?
 }

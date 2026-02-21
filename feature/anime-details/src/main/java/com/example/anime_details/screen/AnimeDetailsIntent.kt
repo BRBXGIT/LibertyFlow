@@ -12,8 +12,6 @@ import com.example.data.models.common.request.request_parameters.Collection
 sealed interface AnimeDetailsIntent {
     // --- Data Operations ---
     data class FetchAnime(val id: Int) : AnimeDetailsIntent
-    data class ObserveWatchedEps(val id: Int) : AnimeDetailsIntent
-    data class AddEpisodeToWatched(val episodeIndex: Int): AnimeDetailsIntent
     data object GetTokens: AnimeDetailsIntent
 
     // --- Favorites Operations ---

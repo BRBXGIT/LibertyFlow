@@ -14,7 +14,8 @@ sealed interface PlayerIntent {
     data class SetUpPlayer(
         val episodes: List<Episode>,
         val startIndex: Int,
-        val animeName: String
+        val animeName: String,
+        val animeId: Int
     ): PlayerIntent
     data class SetIsScrubbing(val value: Boolean): PlayerIntent
     data class SeekForFiveSeconds(val forward: Boolean): PlayerIntent

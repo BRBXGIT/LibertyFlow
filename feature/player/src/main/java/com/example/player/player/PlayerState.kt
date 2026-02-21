@@ -23,6 +23,7 @@ import com.example.data.models.releases.anime_details.Episode
 data class PlayerState(
     // Content & Settings
     val animeName: String = "",
+    val animeId: Int = 0,
     val uiPlayerState: UiPlayerState = UiPlayerState.Closed,
     val episodes: List<Episode> = emptyList(),
     val currentEpisodeIndex: Int = 0,

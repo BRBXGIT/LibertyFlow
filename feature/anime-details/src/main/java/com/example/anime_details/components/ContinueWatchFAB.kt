@@ -54,22 +54,22 @@ fun ContinueWatchFAB(
             expanded = expanded,
             onClick = {
                 if (state.watchedEps.isEmpty()) {
-                    onIntent(AnimeDetailsIntent.AddEpisodeToWatched(0)) // TODO: Remove this functionality to player
                     onPlayerIntent(
                         PlayerIntent.SetUpPlayer(
                             animeName = state.anime.name.russian,
                             startIndex = 0,
-                            episodes = state.anime.episodes
+                            episodes = state.anime.episodes,
+                            animeId = state.anime.id
                         )
                     )
                 } else {
                     val startWith = state.watchedEps.last() + 1
-                    onIntent(AnimeDetailsIntent.AddEpisodeToWatched(startWith))
                     onPlayerIntent(
                         PlayerIntent.SetUpPlayer(
                             episodes = state.anime.episodes,
                             startIndex = startWith,
-                            animeName = state.anime.name.russian
+                            animeName = state.anime.name.russian,
+                            animeId = state.anime.id
                         )
                     )
                 }

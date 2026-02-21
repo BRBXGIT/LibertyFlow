@@ -109,8 +109,6 @@ class AnimeDetailsVM @Inject constructor(
         when (intent) {
             // Main data
             is AnimeDetailsIntent.FetchAnime -> fetchAnime(intent.id)
-            is AnimeDetailsIntent.ObserveWatchedEps -> observeWatchedEpisodes(intent.id)
-            is AnimeDetailsIntent.AddEpisodeToWatched -> addEpisodeToWatched(intent.episodeIndex)
 
             // Favorites
             AnimeDetailsIntent.AddToFavorite -> toggleFavorite(shouldAdd = true)
@@ -163,18 +161,6 @@ class AnimeDetailsVM @Inject constructor(
             watchedEpsRepo.getWatchedEpisodes(animeId).collect { episodes ->
                 _state.update { it.copy(watchedEps = episodes) }
             }
-        }
-    }
-
-    private fun addEpisodeToWatched(episodeIndex: Int) {
-        // Safe call: operate only if anime data is loaded
-        val animeId = _state.value.anime?.id ?: return
-
-        viewModelScope.launch(dispatcherIo) {
-            watchedEpsRepo.insertWatchedEpisode(
-                animeId = animeId,
-                episodeIndex = episodeIndex
-            )
         }
     }
 
