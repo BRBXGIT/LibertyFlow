@@ -1,5 +1,6 @@
 package com.example.data.player
 
+import android.content.Intent
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -22,6 +23,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PlaybackService: MediaSessionService() {
 
+    companion object {
+        const val ACTION_STOP_BY_SLEEP_TIMER = "STOP_BY_SLEEP_TIMER"
+    }
+
     @Inject
     lateinit var player: ExoPlayer
 
@@ -33,6 +38,15 @@ class PlaybackService: MediaSessionService() {
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_STOP_BY_SLEEP_TIMER) {
+            mediaSession?.run {
+                player.pause()
+            }
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
 
     override fun onDestroy() {
         mediaSession?.run {

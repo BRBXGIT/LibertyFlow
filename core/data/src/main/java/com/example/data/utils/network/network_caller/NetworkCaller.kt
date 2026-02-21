@@ -6,6 +6,7 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Utility class for executing network requests safely within a [try-catch] block.
@@ -13,6 +14,7 @@ import javax.inject.Inject
  * This class handles the conversion of standard Retrofit [Response] objects and
  * platform exceptions into a unified [NetworkResult].
  */
+@Singleton
 class NetworkCaller @Inject constructor() {
 
     /**
