@@ -1,5 +1,8 @@
 package com.example.data.player
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.Intent
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
@@ -25,12 +28,14 @@ class PlaybackService: MediaSessionService() {
 
     companion object {
         const val ACTION_STOP_BY_SLEEP_TIMER = "STOP_BY_SLEEP_TIMER"
+        private const val FADE_OUT_DURATION = 5000L
     }
 
     @Inject
     lateinit var player: ExoPlayer
 
     private var mediaSession: MediaSession? = null
+    private var fadeAnimator: ValueAnimator? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -40,7 +45,9 @@ class PlaybackService: MediaSessionService() {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_STOP_BY_SLEEP_TIMER) player.pause()
+        if (intent?.action == ACTION_STOP_BY_SLEEP_TIMER) {
+            fadeOutAndPause()
+        }
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -49,5 +56,25 @@ class PlaybackService: MediaSessionService() {
         mediaSession?.release()
         mediaSession = null
         super.onDestroy()
+    }
+
+    private fun fadeOutAndPause() {
+        fadeAnimator?.cancel()
+
+        val startVolume = player.volume
+
+        fadeAnimator = ValueAnimator.ofFloat(startVolume, 0f).apply {
+            duration = FADE_OUT_DURATION
+            addUpdateListener { animator ->
+                player.volume = animator.animatedValue as Float
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    player.pause()
+                    player.volume = startVolume
+                }
+            })
+            start()
+        }
     }
 }

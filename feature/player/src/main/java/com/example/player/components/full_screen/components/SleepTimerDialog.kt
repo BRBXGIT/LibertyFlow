@@ -52,7 +52,7 @@ internal fun SleepTimerDialog(
                 } else {
                     LibertyFlowListItemTrailingType.Navigation
                 },
-                onClick = { onPlayerIntent(PlayerIntent.SetSleepTimer(time.toMinutes())) },
+                onClick = { onPlayerIntent(PlayerIntent.SetSleepTimer(1)) },
                 time = time.toMinutes()
             )
         }
