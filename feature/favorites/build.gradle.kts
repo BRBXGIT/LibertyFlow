@@ -65,8 +65,5 @@ dependencies {
 
     // --- Testing ---
     // Unit tests
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.turbine)
+    testImplementation(project(":shared-test:feature-testing"))
 }
