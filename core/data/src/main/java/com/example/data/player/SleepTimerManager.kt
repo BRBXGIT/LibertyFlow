@@ -24,29 +24,32 @@ class SleepTimerManager @Inject constructor(
 ) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    fun setTimer(minutes: Int) {
-        val triggerTime = SystemClock.elapsedRealtime() + (minutes * 60 * 1000L)
+    private fun getTimerIntent(): PendingIntent? {
         val intent = Intent(context, SleepTimerReceiver::class.java)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            triggerTime,
-            pendingIntent
+        return PendingIntent.getBroadcast(
+            /* context = */ context,
+            /* requestCode = */ 0,
+            /* intent = */ intent,
+            /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
+    fun setTimer(minutes: Int, seconds: Int) {
+        val totalDelayMillis = (minutes * 60 * 1000L) + (seconds * 1000L)
+        val triggerTime = SystemClock.elapsedRealtime() + totalDelayMillis
+
+        val pendingIntent = getTimerIntent()
+        if (pendingIntent != null) {
+            alarmManager.setExactAndAllowWhileIdle(
+                /* type = */ AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                /* triggerAtMillis = */ triggerTime,
+                /* operation = */ pendingIntent
+            )
+        }
+    }
+
     fun cancelTimer() {
-        val intent = Intent(context, SleepTimerReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, 0, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
-        )
+        val pendingIntent = getTimerIntent()
         if (pendingIntent != null) {
             alarmManager.cancel(pendingIntent)
             pendingIntent.cancel()

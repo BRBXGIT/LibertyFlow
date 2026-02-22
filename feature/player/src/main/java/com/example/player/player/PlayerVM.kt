@@ -15,6 +15,7 @@ import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.domain.WatchedEpsRepo
 import com.example.data.models.player.VideoQuality
 import com.example.data.models.releases.anime_details.Episode
+import com.example.data.player.SleepTimerManager
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,21 +32,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-/**
- * ViewModel responsible for managing the state and playback logic of the video player.
- * * It acts as a bridge between the [MediaController] (Media3) and the Compose UI,
- * handling playback intents, progress tracking, and dynamic quality switching.
- *
- * @property uiPlayer An [ExoPlayer] instance used strictly for UI binding in the AndroidView.
- * @property controllerFuture A future providing the [MediaController] for media control.
- * @property playerSettingsRepo Repository for persisting and fetching user playback preferences.
- */
+// TODO: Add doc
 @HiltViewModel
 class PlayerVM @Inject constructor(
     val uiPlayer: ExoPlayer, // Inject only for passing to ui
     private val controllerFuture: ListenableFuture<MediaController>,
     private val playerSettingsRepo: PlayerSettingsRepo,
     private val watchedEpsRepo: WatchedEpsRepo,
+    private val sleepTimerManager: SleepTimerManager,
     @param:Dispatcher(LibertyFlowDispatcher.IO) private val dispatcherIo: CoroutineDispatcher,
     @param:Dispatcher(LibertyFlowDispatcher.Main) private val dispatcherMain: CoroutineDispatcher
 ): BasePlayerSettingsVM(playerSettingsRepo, dispatcherIo) {
@@ -94,6 +88,9 @@ class PlayerVM @Inject constructor(
             PlayerIntent.TogglePlayPause -> togglePlayPause(controller)
             PlayerIntent.StopPlayer -> stopPlayer(controller)
             PlayerIntent.SkipOpening -> skipOpening(controller)
+
+            // Sleep timer
+            is PlayerIntent.SetSleepTimer -> setSleepTimer(intent.minutes, intent.seconds)
 
             // Settings affecting Playback
             is PlayerIntent.SaveQuality -> saveVideoQuality(intent.quality)
@@ -199,6 +196,15 @@ class PlayerVM @Inject constructor(
     private fun skipOpening(controller: MediaController) {
         val endMs = (currentState.currentEpisode?.opening?.end?.toLong() ?: 0L) * 1000
         controller.seekTo(endMs)
+    }
+
+    // --- Sleep time ---
+    private fun setSleepTimer(minutes: Int, seconds: Int) {
+        if (minutes > 0) {
+            sleepTimerManager.setTimer(minutes, seconds)
+        } else {
+            sleepTimerManager.cancelTimer()
+        }
     }
 
     // --- Settings & Quality Change ---

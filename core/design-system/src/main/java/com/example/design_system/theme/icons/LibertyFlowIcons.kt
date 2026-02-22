@@ -30,6 +30,7 @@ object LibertyFlowIcons {
      * Standard monochromatic outlined icons typically used for navigation and actions.
      */
     object Outlined {
+        @DrawableRes val AlarmSleep = R.drawable.ic_alarm_sleep
         @DrawableRes val Magnifier = R.drawable.ic_magnifier
         @DrawableRes val CrossCircle = R.drawable.ic_cross_circle
         @DrawableRes val User = R.drawable.ic_user

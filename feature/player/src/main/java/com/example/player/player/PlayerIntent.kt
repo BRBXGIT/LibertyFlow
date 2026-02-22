@@ -27,6 +27,10 @@ sealed interface PlayerIntent {
     data object SkipOpening: PlayerIntent
 
 
+    // --- Sleep timer ---
+    data class SetSleepTimer(val minutes: Int, val seconds: Int): PlayerIntent
+
+
     // --- Controller ---
     data object ToggleControllerVisible: PlayerIntent
     data object TurnOffController: PlayerIntent

@@ -40,20 +40,14 @@ class PlaybackService: MediaSessionService() {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_STOP_BY_SLEEP_TIMER) {
-            mediaSession?.run {
-                player.pause()
-            }
-        }
+        if (intent?.action == ACTION_STOP_BY_SLEEP_TIMER) player.pause()
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
-        mediaSession?.run {
-            player.release()
-            release()
-            mediaSession = null
-        }
+        player.release()
+        mediaSession?.release()
+        mediaSession = null
         super.onDestroy()
     }
 }

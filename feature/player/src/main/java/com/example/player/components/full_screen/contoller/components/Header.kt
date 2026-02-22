@@ -23,24 +23,7 @@ private object HeaderDefaults {
     const val MAX_TITLE_LINES = 1
 }
 
-/**
- * A specialized [IconButton] for video player controls that supports conditional availability.
- *
- * This component distinguishes between two states of inactivity:
- * 1. **Enabled/Disabled**: Controlled by [isEnabled], typically used to prevent interaction
- * when the player UI is fading out or locked.
- * 2. **Available/Unavailable**: Controlled by [isAvailable], used when an action doesn't
- * exist in the current context (e.g., 'Previous' button on the first episode).
- * Unavailable buttons are tinted gray to signify they cannot be used.
- *
- * @param icon The resource ID of the icon to be rendered.
- * @param onClick The action to execute when the button is tapped.
- * @param modifier Modifiers applied to the outer [IconButton].
- * @param iconSize Optional specific size for the inner icon. If [Dp.Unspecified],
- * the icon will use its own default sizing.
- * @param isEnabled If false, the button will be non-interactive but may keep its color.
- * @param isAvailable If false, the button will be tinted gray and will not trigger [onClick].
- */
+// TODO: Kdoc
 @Composable
 internal fun BoxScope.Header(
     title: String,
@@ -84,6 +67,11 @@ internal fun BoxScope.Header(
 
         // Right Section: Supplementary Controls (Playlist and Settings)
         Row(horizontalArrangement = Arrangement.spacedBy(mDimens.spacingExtraSmall)) {
+            PlayerIconButton(
+                icon = LibertyFlowIcons.Outlined.AlarmSleep,
+                onClick = { onPlayerIntent(PlayerIntent.SetSleepTimer(1, 1)) },
+                isEnabled = isControllerVisible
+            )
             PlayerIconButton(
                 icon = LibertyFlowIcons.Outlined.Checklist,
                 onClick = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },
