@@ -101,8 +101,8 @@ class PlayerVM @Inject constructor(
             PlayerIntent.TurnOffController -> updateState { it.setControllerVisible(false) }
             PlayerIntent.ToggleFullScreen -> toggleFullScreen()
             PlayerIntent.ToggleEpisodesDialog -> updateState { it.toggleEpisodesDialog() }
-            PlayerIntent.ToggleSettingsBS -> updateState { it.toggleSettingsBS() }
-            PlayerIntent.ToggleQualityBS -> updateState { it.toggleQualityBS() }
+            PlayerIntent.ToggleSettingsDialog -> updateState { it.toggleSettingsBS() }
+            PlayerIntent.ToggleQualityDialog -> updateState { it.toggleQualityBS() }
             PlayerIntent.ToggleIsLocked -> updateState { it.toggleIsLocked() }
 
             // Preferences Toggles

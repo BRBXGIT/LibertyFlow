@@ -23,7 +23,6 @@ import com.example.data.models.theme.LibertyFlowTheme
 import com.example.data.models.theme.TabType
 import com.example.data.models.theme.ThemeValue
 import com.example.design_system.components.bars.basic_top_bar.LibertyFlowBasicTopBar
-import com.example.design_system.components.bottom_sheets.quality_bs.VideoQualityBS
 import com.example.design_system.components.dividers.dividerWithLabel
 import com.example.design_system.components.list_tems.M3ListItem
 import com.example.design_system.theme.icons.LibertyFlowIcons
@@ -31,6 +30,7 @@ import com.example.design_system.theme.theme.mDimens
 import com.example.settings.R
 import com.example.settings.components.ColorSchemesLR
 import com.example.settings.components.SegmentedThemeButton
+import com.example.settings.components.VideoQualityBS
 
 private val SettingsLabelRes = R.string.settings_label
 

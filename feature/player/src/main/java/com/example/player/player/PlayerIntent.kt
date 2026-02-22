@@ -48,6 +48,6 @@ sealed interface PlayerIntent {
     data object ToggleCropped: PlayerIntent
     data object ToggleIsLocked: PlayerIntent
     data object ToggleEpisodesDialog: PlayerIntent
-    data object ToggleSettingsBS: PlayerIntent
-    data object ToggleQualityBS: PlayerIntent
+    data object ToggleSettingsDialog: PlayerIntent
+    data object ToggleQualityDialog: PlayerIntent
 }

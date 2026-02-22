@@ -7,35 +7,31 @@ import androidx.compose.runtime.remember
 import com.example.data.models.common.mappers.toLabelRes
 import com.example.data.models.common.request.request_parameters.Collection
 import com.example.design_system.components.bottom_sheets.bs_list.BSList
-import com.example.design_system.components.bottom_sheets.bs_list.BSListModel
-import com.example.design_system.components.bottom_sheets.bs_list.BSTrailingType
+import com.example.design_system.components.list_tems.LibertyFlowListItemModel
+import com.example.design_system.components.list_tems.LibertyFlowListItemTrailingType
 
 /**
- * An implementation of [BSListModel] used specifically for the Collections
- * selection list.
- *
- * @property text The string resource for the collection name.
- * @property leadingIcon Optional icon for the collection (defaults to null).
- * @property onClick The action to perform when this specific collection is tapped.
- * @property trailingType The visual indicator (Checkmark if selected, Chevron if not).
+ * A private implementation of [LibertyFlowListItemModel] specifically for collection items.
+ * @property text The string resource ID for the collection name.
+ * @property leadingIcon Optional icon for the collection type.
+ * @property onClick The action to perform when this collection is selected.
+ * @property trailingType The visual state (Toggle for selected, Navigation for others).
  */
 private data class CollectionsItem(
     @param:StyleRes override val text: Int,
     @param:DrawableRes override val leadingIcon: Int? = null,
     override val onClick: () -> Unit,
-    override val trailingType: BSTrailingType,
-): BSListModel
+    override val trailingType: LibertyFlowListItemTrailingType,
+): LibertyFlowListItemModel
 
 /**
- * A Bottom Sheet that allows users to select a specific collection from a list.
- * * This component maps the [Collection] enum entries to [CollectionsItem]s.
- * It identifies the [selectedCollection] by displaying a [BSTrailingType.Toggle]
- * (active) for the current selection and a [BSTrailingType.Navigation] (chevron)
- * for other available options.
+ * A specialized BottomSheet for selecting a [Collection].
+ * * This Composable transforms the [Collection] entries into a list of [LibertyFlowListItemModel]
+ * and displays them using the generic [BSList].
  *
- * @param selectedCollection The currently active collection, used to highlight the
- * relevant list item.
- * @param onDismissRequest Callback to close the bottom sheet.
+ * @param selectedCollection The currently active collection, used to determine which item
+ * shows the 'Enabled' toggle state.
+ * @param onDismissRequest Callback to close the BottomSheet.
  * @param onItemClick Callback triggered when a collection is selected.
  */
 @Composable
@@ -50,9 +46,9 @@ fun CollectionsBS(
                 text = collection.toLabelRes(),
                 onClick = { onItemClick(collection) },
                 trailingType = if (collection == selectedCollection) {
-                    BSTrailingType.Toggle(isEnabled = true)
+                    LibertyFlowListItemTrailingType.Toggle(isEnabled = true)
                 } else {
-                    BSTrailingType.Navigation
+                    LibertyFlowListItemTrailingType.Navigation
                 },
             )
         }

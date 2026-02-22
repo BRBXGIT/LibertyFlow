@@ -79,7 +79,7 @@ internal fun BoxScope.Header(
             )
             PlayerIconButton(
                 icon = LibertyFlowIcons.Outlined.Settings,
-                onClick = { onPlayerIntent(PlayerIntent.ToggleSettingsBS) },
+                onClick = { onPlayerIntent(PlayerIntent.ToggleSettingsDialog) },
                 isEnabled = isControllerVisible
             )
         }

@@ -11,11 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.design_system.components.bottom_sheets.quality_bs.VideoQualityBS
 import com.example.player.components.full_screen.components.EpisodeDialog
 import com.example.player.components.full_screen.contoller.controller.FullScreenPlayerController
 import com.example.player.components.full_screen.pip.PipManager
-import com.example.player.components.full_screen.components.SettingsBS
+import com.example.player.components.full_screen.components.SettingsDialog
+import com.example.player.components.full_screen.components.VideoQualityDialog
 import com.example.player.components.player.Player
 import com.example.player.player.PlayerEffect
 import com.example.player.player.PlayerIntent
@@ -36,13 +36,13 @@ internal fun FullScreenPlayerContainer(
 
     if (playerState.isEpisodesDialogVisible) EpisodeDialog(onPlayerIntent, playerState)
 
-    if (playerState.isSettingsBSVisible) SettingsBS(playerState.playerSettings, onPlayerIntent)
+    if (playerState.isSettingsDialogVisible) SettingsDialog(playerState.playerSettings, onPlayerIntent)
 
-    if (playerState.isQualityBSVisible) {
-        VideoQualityBS(
+    if (playerState.isQualityDialogVisible) {
+        VideoQualityDialog(
             onItemClick = { quality -> onPlayerIntent(PlayerIntent.SaveQuality(quality)) },
             selectedQuality = playerState.playerSettings.quality,
-            onDismissRequest = { onPlayerIntent(PlayerIntent.ToggleQualityBS) }
+            onDismissRequest = { onPlayerIntent(PlayerIntent.ToggleQualityDialog) }
         )
     }
 

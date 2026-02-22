@@ -37,8 +37,8 @@ data class PlayerState(
     val isControllerVisible: Boolean = false,
     val isSkipOpeningButtonVisible: Boolean = false,
     val isEpisodesDialogVisible: Boolean = false,
-    val isSettingsBSVisible: Boolean = false,
-    val isQualityBSVisible: Boolean = false,
+    val isSettingsDialogVisible: Boolean = false,
+    val isQualityDialogVisible: Boolean = false,
 
     // View Modifiers
     val isLocked: Boolean = false
@@ -63,8 +63,8 @@ data class PlayerState(
     )
 
     fun toggleEpisodesDialog() = copy(isEpisodesDialogVisible = !isEpisodesDialogVisible)
-    fun toggleSettingsBS() = copy(isSettingsBSVisible = !isSettingsBSVisible)
-    fun toggleQualityBS() = copy(isQualityBSVisible = !isQualityBSVisible)
+    fun toggleSettingsBS() = copy(isSettingsDialogVisible = !isSettingsDialogVisible)
+    fun toggleQualityBS() = copy(isQualityDialogVisible = !isQualityDialogVisible)
 
     fun setControllerVisible(value: Boolean) = copy(isControllerVisible = value)
     fun setIsScrubbing(value: Boolean) = copy(episodeTime = episodeTime.copy(isScrubbing = value))
