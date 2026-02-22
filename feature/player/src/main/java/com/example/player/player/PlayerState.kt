@@ -18,6 +18,7 @@ import com.example.data.models.releases.anime_details.Episode
  * @property episodeTime Precise timing information, including current position and total duration.
  * @property isControllerVisible Whether the playback controls overlay is currently shown.
  * @property isLocked When true, interaction with the UI controls is disabled to prevent accidental touches.
+ * @property currentSleepTime Current sleep time if sleep mode i enabled.
  */
 @Immutable
 data class PlayerState(
@@ -32,6 +33,7 @@ data class PlayerState(
     // Playback Progress
     val episodeState: EpisodeState = EpisodeState.Loading,
     val episodeTime: EpisodeTime = EpisodeTime(),
+    val currentSleepTime: Int? = null,
 
     // UI Overlays
     val isControllerVisible: Boolean = false,
@@ -39,6 +41,7 @@ data class PlayerState(
     val isEpisodesDialogVisible: Boolean = false,
     val isSettingsDialogVisible: Boolean = false,
     val isQualityDialogVisible: Boolean = false,
+    val isSleepDialogVisible: Boolean = false,
 
     // View Modifiers
     val isLocked: Boolean = false
@@ -65,6 +68,7 @@ data class PlayerState(
     fun toggleEpisodesDialog() = copy(isEpisodesDialogVisible = !isEpisodesDialogVisible)
     fun toggleSettingsBS() = copy(isSettingsDialogVisible = !isSettingsDialogVisible)
     fun toggleQualityBS() = copy(isQualityDialogVisible = !isQualityDialogVisible)
+    fun toggleSleepDialog() = copy(isSleepDialogVisible = !isSleepDialogVisible)
 
     fun setControllerVisible(value: Boolean) = copy(isControllerVisible = value)
     fun setIsScrubbing(value: Boolean) = copy(episodeTime = episodeTime.copy(isScrubbing = value))

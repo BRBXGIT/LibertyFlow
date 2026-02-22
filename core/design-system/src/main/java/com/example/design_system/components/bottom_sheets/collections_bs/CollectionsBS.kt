@@ -1,7 +1,7 @@
 package com.example.design_system.components.bottom_sheets.collections_bs
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StyleRes
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.example.data.models.common.mappers.toLabelRes
@@ -18,7 +18,7 @@ import com.example.design_system.components.list_tems.LibertyFlowListItemTrailin
  * @property trailingType The visual state (Toggle for selected, Navigation for others).
  */
 private data class CollectionsItem(
-    @param:StyleRes override val text: Int,
+    @param:StringRes override val text: Int,
     @param:DrawableRes override val leadingIcon: Int? = null,
     override val onClick: () -> Unit,
     override val trailingType: LibertyFlowListItemTrailingType,

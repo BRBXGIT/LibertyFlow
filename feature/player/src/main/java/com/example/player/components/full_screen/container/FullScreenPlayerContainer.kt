@@ -15,6 +15,7 @@ import com.example.player.components.full_screen.components.EpisodeDialog
 import com.example.player.components.full_screen.contoller.controller.FullScreenPlayerController
 import com.example.player.components.full_screen.pip.PipManager
 import com.example.player.components.full_screen.components.SettingsDialog
+import com.example.player.components.full_screen.components.SleepTimerDialog
 import com.example.player.components.full_screen.components.VideoQualityDialog
 import com.example.player.components.player.Player
 import com.example.player.player.PlayerEffect
@@ -40,9 +41,15 @@ internal fun FullScreenPlayerContainer(
 
     if (playerState.isQualityDialogVisible) {
         VideoQualityDialog(
-            onItemClick = { quality -> onPlayerIntent(PlayerIntent.SaveQuality(quality)) },
             selectedQuality = playerState.playerSettings.quality,
-            onDismissRequest = { onPlayerIntent(PlayerIntent.ToggleQualityDialog) }
+            onPlayerIntent = onPlayerIntent
+        )
+    }
+
+    if (playerState.isSleepDialogVisible) {
+        SleepTimerDialog(
+            currentSleepTime = playerState.currentSleepTime,
+            onPlayerIntent = onPlayerIntent
         )
     }
 

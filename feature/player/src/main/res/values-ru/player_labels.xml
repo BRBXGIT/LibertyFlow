@@ -15,4 +15,11 @@
     <string name="autoplay_label">Автовоспроизведение</string>
 
     <string name="skip_opening_label">Пропустить</string>
+
+    <string name="ten_minutes">10 минут</string>
+    <string name="twenty_minutes">20 минут</string>
+    <string name="thirty_minutes">30 минут</string>
+    <string name="forty_minutes">40 минут</string>
+    <string name="fifty_minutes">50 минут</string>
+    <string name="sixty_minutes">60 минут</string>
 </resources>

@@ -90,7 +90,7 @@ class PlayerVM @Inject constructor(
             PlayerIntent.SkipOpening -> skipOpening(controller)
 
             // Sleep timer
-            is PlayerIntent.SetSleepTimer -> setSleepTimer(intent.minutes, intent.seconds)
+            is PlayerIntent.SetSleepTimer -> setSleepTimer(intent.minutes)
 
             // Settings affecting Playback
             is PlayerIntent.SaveQuality -> saveVideoQuality(intent.quality)
@@ -104,6 +104,7 @@ class PlayerVM @Inject constructor(
             PlayerIntent.ToggleSettingsDialog -> updateState { it.toggleSettingsBS() }
             PlayerIntent.ToggleQualityDialog -> updateState { it.toggleQualityBS() }
             PlayerIntent.ToggleIsLocked -> updateState { it.toggleIsLocked() }
+            PlayerIntent.ToggleSleepTimeDialog -> updateState { it.toggleSleepDialog() }
 
             // Preferences Toggles
             PlayerIntent.ToggleAutoPlay -> toggleAutoPlay(!currentState.playerSettings.autoPlay)
@@ -199,9 +200,10 @@ class PlayerVM @Inject constructor(
     }
 
     // --- Sleep time ---
-    private fun setSleepTimer(minutes: Int, seconds: Int) {
+    private fun setSleepTimer(minutes: Int) {
+        _playerState.update { it.copy(currentSleepTime = minutes) }
         if (minutes > 0) {
-            sleepTimerManager.setTimer(minutes, seconds)
+            sleepTimerManager.setTimer(minutes)
         } else {
             sleepTimerManager.cancelTimer()
         }

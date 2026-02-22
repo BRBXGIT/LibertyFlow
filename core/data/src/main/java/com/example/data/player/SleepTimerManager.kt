@@ -34,8 +34,8 @@ class SleepTimerManager @Inject constructor(
         )
     }
 
-    fun setTimer(minutes: Int, seconds: Int) {
-        val totalDelayMillis = (minutes * 60 * 1000L) + (seconds * 1000L)
+    fun setTimer(minutes: Int) {
+        val totalDelayMillis = (minutes * 60 * 1000L)
         val triggerTime = SystemClock.elapsedRealtime() + totalDelayMillis
 
         val pendingIntent = getTimerIntent()

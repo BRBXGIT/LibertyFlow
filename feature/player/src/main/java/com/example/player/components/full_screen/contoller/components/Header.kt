@@ -69,7 +69,7 @@ internal fun BoxScope.Header(
         Row(horizontalArrangement = Arrangement.spacedBy(mDimens.spacingExtraSmall)) {
             PlayerIconButton(
                 icon = LibertyFlowIcons.Outlined.AlarmSleep,
-                onClick = { onPlayerIntent(PlayerIntent.SetSleepTimer(1, 1)) },
+                onClick = { onPlayerIntent(PlayerIntent.ToggleSleepTimeDialog) },
                 isEnabled = isControllerVisible
             )
             PlayerIconButton(

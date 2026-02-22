@@ -15,4 +15,11 @@
     <string name="autoplay_label">Autoplay</string>
 
     <string name="skip_opening_label">Skip</string>
+
+    <string name="ten_minutes">10 minutes</string>
+    <string name="twenty_minutes">20 minutes</string>
+    <string name="thirty_minutes">30 minutes</string>
+    <string name="forty_minutes">40 minutes</string>
+    <string name="fifty_minutes">50 minutes</string>
+    <string name="sixty_minutes">60 minutes</string>
 </resources>

@@ -9,6 +9,7 @@ import com.example.design_system.R
 import com.example.design_system.components.dialogs.dialog_list.DialogList
 import com.example.design_system.components.list_tems.LibertyFlowListItemModel
 import com.example.design_system.components.list_tems.LibertyFlowListItemTrailingType
+import com.example.player.player.PlayerIntent
 
 /**
  * A private data implementation of [LibertyFlowListItemModel] specifically for video resolution options.
@@ -29,15 +30,13 @@ private data class QualityItem(
  * * This Composable maps all available [VideoQuality] entries into a list of items,
  * highlighting the [selectedQuality] with an active toggle state.
  *
- * @param onItemClick Callback invoked with the specific [VideoQuality] chosen by the user.
  * @param selectedQuality The currently active video quality used to drive the UI selection state.
- * @param onDismissRequest Callback to close the dialog.
+ * @param onPlayerIntent Callback which send to vm
  */
 @Composable
-fun VideoQualityDialog(
-    onItemClick: (VideoQuality) -> Unit,
+internal fun VideoQualityDialog(
     selectedQuality: VideoQuality,
-    onDismissRequest: () -> Unit
+    onPlayerIntent: (PlayerIntent) -> Unit
 ) {
     val items = remember(selectedQuality) {
         VideoQuality.entries.map { quality ->
@@ -48,13 +47,13 @@ fun VideoQualityDialog(
                 } else {
                     LibertyFlowListItemTrailingType.Navigation
                 },
-                onClick = { onItemClick(quality) }
+                onClick = { onPlayerIntent(PlayerIntent.SaveQuality(quality)) }
             )
         }
     }
 
     DialogList(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { onPlayerIntent(PlayerIntent.ToggleQualityDialog) },
         items = items
     )
 }

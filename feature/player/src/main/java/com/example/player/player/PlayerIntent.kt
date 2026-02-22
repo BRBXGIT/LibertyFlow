@@ -28,7 +28,7 @@ sealed interface PlayerIntent {
 
 
     // --- Sleep timer ---
-    data class SetSleepTimer(val minutes: Int, val seconds: Int): PlayerIntent
+    data class SetSleepTimer(val minutes: Int): PlayerIntent
 
 
     // --- Controller ---
@@ -50,4 +50,5 @@ sealed interface PlayerIntent {
     data object ToggleEpisodesDialog: PlayerIntent
     data object ToggleSettingsDialog: PlayerIntent
     data object ToggleQualityDialog: PlayerIntent
+    data object ToggleSleepTimeDialog: PlayerIntent
 }
