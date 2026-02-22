@@ -1,9 +1,11 @@
 package com.example.player.components.full_screen.components
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import com.example.design_system.components.dialogs.dialog_list.DialogList
 import com.example.design_system.components.list_tems.LibertyFlowListItemModel
 import com.example.design_system.components.list_tems.LibertyFlowListItemTrailingType
@@ -43,6 +45,7 @@ internal fun SleepTimerDialog(
     currentSleepTime: Int? = null,
     onPlayerIntent: (PlayerIntent) -> Unit
 ) {
+    val context = LocalContext.current
     val items = remember(currentSleepTime) {
         SleepTime.entries.map { time ->
             SleepItemModel(
@@ -52,7 +55,14 @@ internal fun SleepTimerDialog(
                 } else {
                     LibertyFlowListItemTrailingType.Navigation
                 },
-                onClick = { onPlayerIntent(PlayerIntent.SetSleepTimer(1)) },
+                onClick = {
+                    onPlayerIntent(PlayerIntent.SetSleepTimer(time.toMinutes()))
+                    Toast.makeText(
+                        /* context = */ context,
+                        /* text = */ "Timer set upped to ${time.toMinutes()} minutes",
+                        /* duration = */ Toast.LENGTH_LONG
+                    ).show()
+                },
                 time = time.toMinutes()
             )
         }
