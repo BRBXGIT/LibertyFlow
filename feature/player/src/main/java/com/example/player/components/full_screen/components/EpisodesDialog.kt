@@ -45,14 +45,11 @@ import com.example.design_system.theme.theme.mShapes
 import com.example.design_system.theme.theme.mTypography
 import com.example.player.R
 import com.example.player.player.PlayerIntent
-import com.example.player.player.PlayerState
 
 // --- Dimens ---
-private val SelectionIconSize = 16.dp
+private val SelectionIconSize = 22.dp
 
 private const val WEIGHT = 1f
-
-private val ChooseEpisodeLabelRes = R.string.choose_episode_label
 
 /**
  * A dialog that allows the user to browse and select a different episode from the playlist.
@@ -63,17 +60,18 @@ private val ChooseEpisodeLabelRes = R.string.choose_episode_label
  *
  * @param onPlayerIntent The entry point for dispatching [PlayerIntent.ChangeEpisode]
  * and visibility toggles.
- * @param playerState The current state providing the list of [Episode]s and the
- * currently active index.
+ * @param currentEpisodeIndex Index of episode currently playing.
+ * @param episodes All episodes of title.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun EpisodeDialog(
     onPlayerIntent: (PlayerIntent) -> Unit,
-    playerState: PlayerState
+    currentEpisodeIndex: Int,
+    episodes: List<Episode>,
 ) {
     // Local state to track selection before user confirms
-    var selectedIndex by rememberSaveable { mutableIntStateOf(playerState.currentEpisodeIndex) }
+    var selectedIndex by rememberSaveable { mutableIntStateOf(currentEpisodeIndex) }
 
     BasicAlertDialog(
         onDismissRequest = { onPlayerIntent(PlayerIntent.ToggleEpisodesDialog) },
@@ -85,17 +83,15 @@ internal fun EpisodeDialog(
             )
     ) {
         Column(
-            modifier = Modifier.padding(mDimens.paddingMedium),
-            verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium)
-        ) {
-            Text(
-                text = stringResource(ChooseEpisodeLabelRes),
-                style = mTypography.bodyLarge.copy(color = mColors.onSurface),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+            verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium),
+            modifier = Modifier.padding(
+                bottom = mDimens.paddingMedium,
+                start = mDimens.paddingMedium,
+                end = mDimens.paddingMedium
             )
-
+        ) {
             EpisodesList(
-                episodes = playerState.episodes,
+                episodes = episodes,
                 selectedId = selectedIndex,
                 onSelect = { selectedIndex = it }
             )
@@ -122,8 +118,6 @@ private fun ColumnScope.EpisodesList(
     onSelect: (Int) -> Unit,
 ) {
     Column(modifier = Modifier.weight(WEIGHT)) {
-        HorizontalDivider()
-
         LazyColumn(
             contentPadding = PaddingValues(vertical = mDimens.paddingMedium),
             verticalArrangement = Arrangement.spacedBy(mDimens.spacingMedium)
@@ -170,13 +164,13 @@ private fun EpisodeItem(
             .fillMaxWidth()
             .clip(mShapes.extraSmall)
             .clickable(onClick = onClick)
-            .padding(mDimens.paddingExtraSmall),
+            .padding(mDimens.paddingSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = "$episodeNumber $DOT_DIVIDER $episodeTitle",
-            style = mTypography.bodyMedium.copy(color = mColors.onSurface),
+            style = mTypography.bodyLarge.copy(color = mColors.onSurface),
             modifier = Modifier.weight(WEIGHT),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -235,7 +229,8 @@ private fun EpisodesDialogPreview() {
     if (true) {
         EpisodeDialog(
             onPlayerIntent = {},
-            playerState = PlayerState()
+            currentEpisodeIndex = 1,
+            episodes = emptyList(),
         )
     }
 }

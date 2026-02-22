@@ -35,8 +35,6 @@ internal fun FullScreenPlayerContainer(
         if (playerState.isLocked) onPlayerIntent(PlayerIntent.ToggleIsLocked)
     }
 
-    if (playerState.isEpisodesDialogVisible) EpisodeDialog(onPlayerIntent, playerState)
-
     if (playerState.isSettingsDialogVisible) SettingsDialog(playerState.playerSettings, onPlayerIntent)
 
     if (playerState.isQualityDialogVisible) {
@@ -50,6 +48,14 @@ internal fun FullScreenPlayerContainer(
         SleepTimerDialog(
             currentSleepTime = playerState.currentSleepTime,
             onPlayerIntent = onPlayerIntent
+        )
+    }
+
+    if (playerState.isEpisodesDialogVisible) {
+        EpisodeDialog(
+            onPlayerIntent = onPlayerIntent,
+            currentEpisodeIndex = playerState.currentEpisodeIndex,
+            episodes = playerState.episodes
         )
     }
 
