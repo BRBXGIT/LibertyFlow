@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private val SuccessLogoutLabel = R.string.success_logout_label
+private val SuccessLogoutLabelRes = R.string.success_logout_label
 
 /**
  * ViewModel for the 'More' (Settings/Profile) screen.
@@ -73,7 +73,7 @@ internal class MoreVM @Inject constructor(
                     authRepo.clearToken()
                     sendEffect(
                         effect = UiEffect.ShowSimpleSnackbar(
-                            messageRes = SuccessLogoutLabel
+                            messageRes = SuccessLogoutLabelRes
                         )
                     )
                 }

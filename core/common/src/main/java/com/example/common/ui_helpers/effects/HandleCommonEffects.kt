@@ -7,6 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 /**
  * A global observer for [UiEffect] streams.
@@ -30,20 +31,24 @@ fun HandleCommonEffects(
             when (effect) {
                 // Snackbars
                 is UiEffect.ShowSnackbarWithAction -> {
-                    val result = snackbarHostState!!.showSnackbar(
-                        message = context.getString(effect.messageRes),
-                        actionLabel = effect.actionLabel,
-                    )
+                    launch {
+                        val result = snackbarHostState!!.showSnackbar(
+                            message = context.getString(effect.messageRes),
+                            actionLabel = effect.actionLabel,
+                        )
 
-                    if (result == SnackbarResult.ActionPerformed) {
-                        effect.action?.invoke()
+                        if (result == SnackbarResult.ActionPerformed) {
+                            effect.action?.invoke()
+                        }
                     }
                 }
                 is UiEffect.ShowSimpleSnackbar -> {
-                    snackbarHostState!!.showSnackbar(
-                        withDismissAction = true,
-                        message = context.getString(effect.messageRes)
-                    )
+                    launch {
+                        snackbarHostState!!.showSnackbar(
+                            withDismissAction = true,
+                            message = context.getString(effect.messageRes)
+                        )
+                    }
                 }
 
                 // Navigation
