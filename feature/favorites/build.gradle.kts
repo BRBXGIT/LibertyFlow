@@ -62,8 +62,4 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     // Paging
     implementation(libs.androidx.paging.compose)
-
-    // --- Testing ---
-    // Unit tests
-    testImplementation(project(":shared-test:feature-testing"))
 }

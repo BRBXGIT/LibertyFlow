@@ -54,5 +54,5 @@ dependencies {
     api(libs.androidx.media3.session) // Api cause dagger need 'Service' class for playback
 
     // --- Testing ---
-    testImplementation(project(":shared-test:core-testing"))
+    testImplementation(project(":shared-test"))
 }

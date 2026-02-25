@@ -94,6 +94,5 @@ dependencies {
     implementation(libs.navigation.compose)
 
     // --- Testing ---
-    // Unit tests
-    testImplementation(project(":shared-test:feature-testing"))
+    testImplementation(project(":shared-test"))
 }

@@ -1,5 +1,6 @@
 package com.example.common.ui_helpers.effects
 
+import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
@@ -17,22 +18,23 @@ import kotlinx.coroutines.launch
  * @param navController The controller used for [UiEffect.Navigate] actions.
  * @param snackbarHostState The state used to display snackbars. Can be null if
  * the screen doesn't support snackbars.
+ * @param context [Context] for starting activities and getting string resources
+ * passed as parameter for testing
  */
 @Composable
 fun HandleCommonEffects(
     effects: Flow<UiEffect>,
     navController: NavController,
     snackbarHostState: SnackbarHostState? = null,
+    context: Context = LocalContext.current
 ) {
-    val context = LocalContext.current
-
     LaunchedEffect(Unit) {
         effects.collect { effect ->
             when (effect) {
                 // Snackbars
                 is UiEffect.ShowSnackbarWithAction -> {
                     launch {
-                        val result = snackbarHostState!!.showSnackbar(
+                        val result = snackbarHostState?.showSnackbar(
                             message = context.getString(effect.messageRes),
                             actionLabel = effect.actionLabel,
                         )
@@ -44,7 +46,7 @@ fun HandleCommonEffects(
                 }
                 is UiEffect.ShowSimpleSnackbar -> {
                     launch {
-                        snackbarHostState!!.showSnackbar(
+                        snackbarHostState?.showSnackbar(
                             withDismissAction = true,
                             message = context.getString(effect.messageRes)
                         )

@@ -61,7 +61,6 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // --- Testing ---
-    // Unit tests
-    testImplementation(project(":shared-test:feature-testing"))
+    // --- Testing
+    testImplementation(project(":shared-test"))
 }

@@ -17,7 +17,10 @@ android {
     namespace = "com.example.common"
     compileSdk = 36
 
-    defaultConfig { minSdk = 28 }
+    defaultConfig {
+        minSdk = 28
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -54,4 +57,8 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+
+    // --- Testing ---
+    testImplementation(project(":shared-test"))
+    androidTestImplementation(project(":shared-test"))
 }
