@@ -81,7 +81,7 @@ class AuthComponentImpl @Inject constructor(
                 }
                 .onError { error, msgRes ->
                     when(error) {
-                        NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD ->
+                        NetworkErrors.INCORRECT_CREDENTIALS ->
                             _authState.update { it.copy(isAuthBSVisible = true, isError = true) }
                         else -> onError(msgRes) { login(scope, onError) }
                     }

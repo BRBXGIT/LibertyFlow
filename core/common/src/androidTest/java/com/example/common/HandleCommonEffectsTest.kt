@@ -5,29 +5,29 @@ import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.navigation.NavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.common.navigation.AnimeDetailsRoute
 import com.example.common.ui_helpers.effects.HandleCommonEffects
 import com.example.common.ui_helpers.effects.UiEffect
-import io.mockk.Awaits
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+// TODO: Add helpers
 @RunWith(AndroidJUnit4::class)
 class HandleCommonEffectsTest {
 
@@ -37,6 +37,11 @@ class HandleCommonEffectsTest {
     private val navController = mockk<NavController>()
     private val snackbarHostState = mockk<SnackbarHostState>()
     private val effectsFlow = Channel<UiEffect>(Channel.BUFFERED)
+
+    @After
+    fun tearDown() {
+        unmockkAll()
+    }
 
     // --- Navigation ---
     @Test

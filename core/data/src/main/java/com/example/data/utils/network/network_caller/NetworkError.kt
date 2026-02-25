@@ -16,7 +16,7 @@ enum class NetworkErrors: NetworkError {
     TOO_MANY_REQUESTS,
     PAYLOAD_TOO_LARGE,
     SERVER_ERROR,
-    INCORRECT_EMAIL_OR_PASSWORD,
+    INCORRECT_CREDENTIALS,
     UNAUTHORIZED,
     NO_EMAIL_OR_PASSWORD,
     // --- Local / Connectivity Errors ---

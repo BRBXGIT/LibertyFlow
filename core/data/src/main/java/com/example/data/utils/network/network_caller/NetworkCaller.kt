@@ -79,7 +79,7 @@ class NetworkCaller @Inject constructor() {
      */
     private fun getErrorByCode(statusCode: Int): NetworkError {
         return when (statusCode) {
-            401 -> NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD
+            401 -> NetworkErrors.INCORRECT_CREDENTIALS
             403 -> NetworkErrors.UNAUTHORIZED
             422 -> NetworkErrors.NO_EMAIL_OR_PASSWORD
             408 -> NetworkErrors.REQUEST_TIMEOUT
@@ -107,7 +107,7 @@ class NetworkCaller @Inject constructor() {
             NetworkErrors.INTERNET -> R.string.internet_message
             NetworkErrors.SERIALIZATION -> R.string.serialization_message
             NetworkErrors.NO_EMAIL_OR_PASSWORD -> R.string.no_email_or_password_message
-            NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> R.string.incorrect_email_or_password_message
+            NetworkErrors.INCORRECT_CREDENTIALS -> R.string.incorrect_email_or_password_message
             else -> R.string.unknown_message
         }
     }

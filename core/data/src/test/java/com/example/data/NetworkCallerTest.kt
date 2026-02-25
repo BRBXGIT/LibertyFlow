@@ -40,7 +40,7 @@ class NetworkCallerTest {
     @Test
     fun `safeApiCall returns Error and throw resId when response is error with code`() = runTest {
         val errorsMap = mapOf(
-            401 to NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD,
+            401 to NetworkErrors.INCORRECT_CREDENTIALS,
             403 to NetworkErrors.UNAUTHORIZED,
             422 to NetworkErrors.NO_EMAIL_OR_PASSWORD,
             408 to NetworkErrors.REQUEST_TIMEOUT,
@@ -70,7 +70,7 @@ class NetworkCallerTest {
                 NetworkErrors.TOO_MANY_REQUESTS -> R.string.too_many_requests_message
                 NetworkErrors.PAYLOAD_TOO_LARGE -> R.string.payload_too_large_message
                 NetworkErrors.SERVER_ERROR -> R.string.server_error_message
-                NetworkErrors.INCORRECT_EMAIL_OR_PASSWORD -> R.string.incorrect_email_or_password_message
+                NetworkErrors.INCORRECT_CREDENTIALS -> R.string.incorrect_email_or_password_message
                 NetworkErrors.UNAUTHORIZED -> R.string.unauthoried_message
                 NetworkErrors.NO_EMAIL_OR_PASSWORD -> R.string.no_email_or_password_message
                 NetworkErrors.REQUEST_TIMEOUT -> R.string.request_timeout_message
