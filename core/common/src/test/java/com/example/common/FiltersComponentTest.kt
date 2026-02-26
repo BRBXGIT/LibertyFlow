@@ -2,13 +2,14 @@
 
 package com.example.common
 
-import app.cash.turbine.test
 import com.example.common.vm_helpers.filters.component.FiltersComponentImpl
 import com.example.common.vm_helpers.filters.models.FiltersState
 import com.example.data.models.common.common.Genre
 import com.example.data.models.common.request.request_parameters.PublishStatus
 import com.example.data.models.common.request.request_parameters.Season
 import com.example.data.models.common.request.request_parameters.Sorting
+import com.example.unit.base.base.BaseUnitTest
+import com.example.unit.base.flow.testState
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
@@ -19,7 +20,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class FiltersComponentTest {
+class FiltersComponentTest: BaseUnitTest() {
 
     private lateinit var filtersComponent: FiltersComponentImpl
 
@@ -30,28 +31,22 @@ class FiltersComponentTest {
 
     @Test
     fun `toggleIsSearching should flip boolean flag`() = runTest {
-        filtersComponent.filtersState.test {
-            skipItems(1)
+        filtersComponent.filtersState.testState {
 
             filtersComponent.toggleIsSearching()
             assertTrue(awaitItem().isSearching)
 
             filtersComponent.toggleIsSearching()
             assertFalse(awaitItem().isSearching)
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
     fun `updateQuery should update search parameter`() = runTest {
         val query = "Naruto"
-        filtersComponent.filtersState.test {
-            skipItems(1)
+        filtersComponent.filtersState.testState {
             filtersComponent.updateQuery(query)
             assertEquals(query, awaitItem().requestParameters.search)
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -59,8 +54,7 @@ class FiltersComponentTest {
     fun `addGenre and removeGenre should update genres list`() = runTest {
         val genre = Genre(id = 1, name = "Action")
 
-        filtersComponent.filtersState.test {
-            skipItems(1)
+        filtersComponent.filtersState.testState {
 
             filtersComponent.addGenre(genre)
             val stateWithGenre = awaitItem()
@@ -70,14 +64,12 @@ class FiltersComponentTest {
             val stateWithoutGenre = awaitItem()
             assertFalse(stateWithoutGenre.requestParameters.genres.contains(genre))
 
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
     fun `handleToggleOngoing should toggle IS_ONGOING status`() = runTest {
-        filtersComponent.filtersState.test {
-            skipItems(1)
+        filtersComponent.filtersState.testState {
 
             filtersComponent.toggleIsOngoing()
             val stateEnabled = awaitItem()
@@ -87,15 +79,12 @@ class FiltersComponentTest {
             val stateDisabled = awaitItem()
             assertTrue(stateDisabled.requestParameters.publishStatuses.isEmpty())
 
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
     fun `updateFromYear and updateToYear should update only respective fields`() = runTest {
-        filtersComponent.filtersState.test {
-            skipItems(1)
-
+        filtersComponent.filtersState.testState {
             filtersComponent.updateFromYear(2000)
             assertEquals(2000, awaitItem().requestParameters.years.from)
 
@@ -103,8 +92,6 @@ class FiltersComponentTest {
             val state = awaitItem()
             assertEquals(2000, state.requestParameters.years.from)
             assertEquals(2024, state.requestParameters.years.to)
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -112,16 +99,13 @@ class FiltersComponentTest {
     fun `addSeason and removeSeason should manage seasons collection`() = runTest {
         val winter = Season.WINTER
 
-        filtersComponent.filtersState.test {
-            skipItems(1)
+        filtersComponent.filtersState.testState {
 
             filtersComponent.addSeason(winter)
             assertTrue(awaitItem().requestParameters.seasons.contains(winter))
 
             filtersComponent.removeSeason(winter)
             assertFalse(awaitItem().requestParameters.seasons.contains(winter))
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -146,12 +130,10 @@ class FiltersComponentTest {
     fun `updateSorting should change sorting criteria`() = runTest {
         val newSorting = Sorting.CREATED_AT_ASC
 
-        filtersComponent.filtersState.test {
-            skipItems(1)
+        filtersComponent.filtersState.testState {
+
             filtersComponent.updateSorting(newSorting)
             assertEquals(newSorting, awaitItem().requestParameters.sorting)
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 }

@@ -5,24 +5,18 @@ import com.example.data.data.impl.OnboardingRepoImpl
 import com.example.data.domain.OnboardingRepo
 import com.example.data.models.onboarding.OnboardingState
 import com.example.local.onboarding.OnboardingPrefsManager
+import com.example.unit.base.base.BaseUnitTest
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.unmockkAll
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Test
 
-class OnboardingRepoImplTest {
+class OnboardingRepoImplTest: BaseUnitTest() {
 
     private val onboardingPrefsManager = mockk<OnboardingPrefsManager>()
     private lateinit var repo: OnboardingRepo
-
-    @After
-    fun tearDown() {
-        unmockkAll()
-    }
 
     @Test
     fun `onboardingState emits correct states based on prefs`() = runTest {

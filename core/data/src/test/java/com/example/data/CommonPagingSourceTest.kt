@@ -9,6 +9,7 @@ import com.example.network.common.common_pagination_models.meta.LinksDto
 import com.example.network.common.common_pagination_models.meta.MetaDto
 import com.example.network.common.common_pagination_models.meta.PaginationDto
 import com.example.network.common.common_request_models.common_request.CommonRequestDto
+import com.example.unit.base.base.BaseUnitTest
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
@@ -20,7 +21,7 @@ import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
 
-class CommonPagingSourceTest {
+class CommonPagingSourceTest: BaseUnitTest() {
 
     private val networkCaller = NetworkCaller()
     private val api = mockk<CatalogApi>()

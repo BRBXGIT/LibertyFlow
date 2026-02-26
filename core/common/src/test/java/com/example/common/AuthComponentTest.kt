@@ -7,27 +7,26 @@ import com.example.data.models.auth.Token
 import com.example.data.models.auth.UserAuthState
 import com.example.data.utils.network.network_caller.NetworkErrors
 import com.example.data.utils.network.network_caller.NetworkResult
+import com.example.unit.base.base.BaseUnitTest
+import com.example.unit.base.flow.testState
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.unmockkAll
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class AuthComponentTest {
+class AuthComponentTest: BaseUnitTest() {
 
     private val authRepo: AuthRepo = mockk(relaxed = true)
-    private val testDispatcher = UnconfinedTestDispatcher()
+    private val testDispatcher = mainDispatcherRule.testDispatcher
 
     private lateinit var authComponent: AuthComponentImpl
 
@@ -37,11 +36,6 @@ class AuthComponentTest {
             authRepo = authRepo,
             dispatcherIo = testDispatcher
         )
-    }
-
-    @After
-    fun tearDown() {
-        unmockkAll()
     }
 
     @Test
@@ -60,34 +54,26 @@ class AuthComponentTest {
 
     @Test
     fun `onLoginChanged should update state`() = runTest {
-        authComponent.authState.test {
-            skipItems(1)
-
+        authComponent.authState.testState {
             authComponent.onLoginChanged("new_user")
 
             val state = awaitItem()
             assertEquals("new_user", state.login)
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
     fun `onPasswordChanged should update state`() = runTest {
-        authComponent.authState.test {
-            skipItems(1)
-
+        authComponent.authState.testState {
             authComponent.onPasswordChanged("secret_123")
 
             assertEquals("secret_123", awaitItem().password)
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
     fun `toggleAuthBS should change visibility`() = runTest {
-        authComponent.authState.test {
+        authComponent.authState.testState(skipInitial = false) {
             val initial = awaitItem()
             assertFalse(initial.isAuthBSVisible)
 
@@ -96,8 +82,6 @@ class AuthComponentTest {
 
             authComponent.toggleAuthBS()
             assertFalse(awaitItem().isAuthBSVisible)
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -113,10 +97,8 @@ class AuthComponentTest {
         coVerify(exactly = 1) { authRepo.getToken(any()) }
         coVerify(exactly = 1) { authRepo.saveToken(testToken) }
 
-        authComponent.authState.test {
+        authComponent.authState.testState(skipInitial = false) {
             assertFalse(awaitItem().isError)
-
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -129,12 +111,10 @@ class AuthComponentTest {
 
         authComponent.login(backgroundScope) { _, _ -> }
 
-        authComponent.authState.test {
+        authComponent.authState.testState(skipInitial = false) {
             val state = awaitItem()
             assertTrue(state.isError)
             assertTrue(state.isAuthBSVisible)
-
-            cancelAndIgnoreRemainingEvents()
         }
 
         coVerify(exactly = 0) { authRepo.saveToken(any()) }

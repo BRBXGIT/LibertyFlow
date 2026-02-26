@@ -1,15 +1,17 @@
 plugins {
-    // Android
-    alias(libs.plugins.android.library)
     // Kotlin
     alias(libs.plugins.kotlin.android)
+    // Android
+    alias(libs.plugins.android.library)
 }
 
 android {
-    namespace = "com.example.shared_test"
+    namespace = "com.example.unit"
     compileSdk = 36
 
-    defaultConfig { minSdk = 28 }
+    defaultConfig {
+        minSdk = 28
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -27,15 +29,9 @@ android {
 dependencies {
 
     // --- Testing ---
-    // Unit tests
+    // Unit
     api(libs.mockk)
     api(libs.junit)
     api(libs.coroutines.test)
     api(libs.turbine)
-    // Android tests
-    api(libs.androidx.espresso.core)
-    api(libs.androidx.ui.test.junit4)
-    api(libs.androidx.ui.test.manifest)
-    api(libs.androidx.test.ext.junit)
-    api(libs.mockk.android)
 }

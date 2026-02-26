@@ -62,5 +62,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
 
     // --- Testing
-    testImplementation(project(":shared-test"))
 }

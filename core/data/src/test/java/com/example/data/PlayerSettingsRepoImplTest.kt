@@ -5,25 +5,19 @@ import com.example.data.data.impl.PlayerSettingsRepoImpl
 import com.example.data.domain.PlayerSettingsRepo
 import com.example.data.models.player.VideoQuality
 import com.example.local.player_settings.PlayerSettingsPrefsManager
+import com.example.unit.base.base.BaseUnitTest
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.unmockkAll
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Test
 
-class PlayerSettingsRepoImplTest {
+class PlayerSettingsRepoImplTest: BaseUnitTest() {
 
     private val playerSettingsPrefsManager = mockk<PlayerSettingsPrefsManager>()
     private lateinit var repo: PlayerSettingsRepo
-
-    @After
-    fun tearDown() {
-        unmockkAll()
-    }
 
     @Test
     fun `playerSettings emits combined data with default values`() = runTest {

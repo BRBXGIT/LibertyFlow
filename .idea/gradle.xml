@@ -28,6 +28,8 @@
             <option value="$PROJECT_DIR$/feature/player" />
             <option value="$PROJECT_DIR$/feature/settings" />
             <option value="$PROJECT_DIR$/shared-test" />
+            <option value="$PROJECT_DIR$/shared-test/android" />
+            <option value="$PROJECT_DIR$/shared-test/unit" />
           </set>
         </option>
       </GradleProjectSettings>

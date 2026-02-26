@@ -59,6 +59,8 @@ dependencies {
     ksp(libs.hilt.android.compiler)
 
     // --- Testing ---
-    testImplementation(project(":shared-test"))
-    androidTestImplementation(project(":shared-test"))
+    // Unit
+    testImplementation(project(":shared-test:unit"))
+    // Android
+    androidTestImplementation(project(":shared-test:android"))
 }

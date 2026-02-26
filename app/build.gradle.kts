@@ -92,7 +92,4 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     // Nav
     implementation(libs.navigation.compose)
-
-    // --- Testing ---
-    testImplementation(project(":shared-test"))
 }

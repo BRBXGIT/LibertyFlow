@@ -4,6 +4,7 @@ import com.example.data.utils.network.network_caller.NetworkCaller
 import com.example.data.utils.network.network_caller.NetworkErrors
 import com.example.data.utils.network.network_caller.NetworkResult
 import com.example.network.auth.api.AuthApi
+import com.example.unit.base.base.BaseUnitTest
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
@@ -18,7 +19,7 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-class NetworkCallerTest {
+class NetworkCallerTest: BaseUnitTest() {
 
     private val networkCaller = NetworkCaller()
 

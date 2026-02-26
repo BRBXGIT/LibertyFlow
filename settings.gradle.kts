@@ -20,15 +20,20 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "LibertyFlow"
-include(":app")
-include("core")
-include("feature")
 
+// App
+include(":app")
+
+// Core
+include("core")
 include(":core:network")
 include(":core:local")
 include(":core:design-system")
 include(":core:data")
 include(":core:common")
+
+// Feature
+include("feature")
 include(":feature:home")
 include(":feature:favorites")
 include(":feature:collections")
@@ -38,4 +43,8 @@ include(":feature:settings")
 include(":feature:player")
 include(":feature:info")
 include(":feature:onboarding")
-include(":shared-test")
+
+// Testing
+include("shared-test")
+include(":shared-test:unit")
+include(":shared-test:android")

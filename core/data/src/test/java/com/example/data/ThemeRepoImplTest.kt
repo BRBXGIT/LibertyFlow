@@ -7,26 +7,20 @@ import com.example.data.models.theme.ColorSchemeValue
 import com.example.data.models.theme.TabType
 import com.example.data.models.theme.ThemeValue
 import com.example.local.theme.ThemePrefsManager
+import com.example.unit.base.base.BaseUnitTest
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.unmockkAll
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Test
 
-class ThemeRepoImplTest {
+class ThemeRepoImplTest: BaseUnitTest() {
 
     private val themePrefsManager = mockk<ThemePrefsManager>()
     private lateinit var repo: ThemeRepo
-
-    @After
-    fun tearDown() {
-        unmockkAll()
-    }
 
     @Test
     fun `libertyFlowTheme returns correct values when prefs are null`() = runTest {
