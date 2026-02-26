@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.example.common
 
 import app.cash.turbine.test
@@ -10,7 +12,9 @@ import com.example.data.models.common.request.request_parameters.Sorting
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -125,19 +129,17 @@ class FiltersComponentTest {
     fun `observeFilters should emit updates to callback`() = runTest {
         val updates = MutableStateFlow(FiltersState())
 
-        updates.test {
-            filtersComponent.updateQuery("Bleach")
-            filtersComponent.toggleFiltersBS()
+        filtersComponent.updateQuery("Bleach")
+        filtersComponent.toggleFiltersBS()
 
-            filtersComponent.observeFilters(backgroundScope) {
-                updates.value = it
-            }
-
-            assertEquals("Bleach", updates.value.requestParameters.search)
-            assertTrue(updates.value.isFiltersBSVisible)
-
-            cancelAndIgnoreRemainingEvents()
+        filtersComponent.observeFilters(backgroundScope) {
+            updates.value = it
         }
+
+        runCurrent()
+
+        assertEquals("Bleach", updates.value.requestParameters.search)
+        assertTrue(updates.value.isFiltersBSVisible)
     }
 
     @Test
