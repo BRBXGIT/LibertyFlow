@@ -101,8 +101,8 @@ class SettingsVM @Inject constructor(
     private fun observePrefs() {
         viewModelScope.launch(dispatcherIo) {
             combine(
-                themeRepo.libertyFlowTheme,
-                playerSettingsRepo.playerSettings
+                flow = themeRepo.libertyFlowTheme,
+                flow2 = playerSettingsRepo.playerSettings
             ) { theme, playerSettings ->
                 theme to playerSettings
             }.collect { (theme, playerSettings) ->

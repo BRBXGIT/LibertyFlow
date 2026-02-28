@@ -21,7 +21,7 @@ composeBom = "2026.01.01"
 runtime = "1.10.2"
 
 # Material 3
-material3Android = "1.5.0-alpha13"
+material3Android = "1.5.0-alpha15"
 
 # Hilt
 hiltAndroid = "2.58"

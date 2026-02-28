@@ -38,11 +38,13 @@ android {
 
 dependencies {
 
-    // Core modules
+    // --- Modules ---
+    // Core
     implementation(project(":core:common"))
     implementation(project(":core:design-system"))
     implementation(project(":core:data"))
 
+    // --- Libraries ---
     // Navigation
     implementation(libs.navigation.compose)
     // Material 3
@@ -58,4 +60,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    // --- Testing ---
+    // Unit
+    testImplementation(project(":shared-test:unit"))
 }
