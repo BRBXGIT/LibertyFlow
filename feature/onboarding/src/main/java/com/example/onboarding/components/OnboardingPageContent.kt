@@ -1,6 +1,8 @@
 package com.example.onboarding.components
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -102,6 +104,7 @@ private val PermissionDeniedLabel = R.string.permission_denied_label
  *
  * @param isVisible Controls the [AnimatedVisibility] of this section.
  */
+@SuppressLint("InlinedApi")
 @Composable
 private fun PermissionSection(
     isVisible: Boolean,
@@ -122,7 +125,7 @@ private fun PermissionSection(
     )
 
     AnimatedVisibility(
-        visible = isVisible,
+        visible = isVisible && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU,
         enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
         exit = fadeOut() + shrinkVertically()
     ) {
