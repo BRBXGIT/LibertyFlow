@@ -2,11 +2,13 @@ package com.example.common.ui_helpers.effects
 
 import com.example.common.navigation.NavigationBase
 import android.content.Intent
+import androidx.compose.runtime.Immutable
 
 /**
  * Defines one-time UI events that are not part of the persistent state.
  * [UiEffect] represents 'what just happened' (e.g., navigation, showing a snackbar).
  */
+@Immutable
 sealed interface UiEffect {
 
     // Snackbars
