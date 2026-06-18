@@ -33,7 +33,13 @@ include(":app")
 
 // Core
 include(":core")
+include(":core:network")
+include(":core:preferences")
+include(":core:local-dbs")
+include(":core:domain")
+include(":core:data")
+include(":core:design-system")
+include(":core:common")
 
 // Features
 include(":feature")
-include(":core:network")
