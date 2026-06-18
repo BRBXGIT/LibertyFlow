@@ -36,3 +36,4 @@ include(":core")
 
 // Features
 include(":feature")
+include(":core:network")

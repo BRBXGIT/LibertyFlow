@@ -54,5 +54,6 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 
 # build-logic
 libertyflow-android-application = { id = "libertyflow.android.application" }
+libertyflow-kotlin-library = { id = "libertyflow.kotlin.library" }
 libertyflow-android-library = { id = "libertyflow.android.library" }
 libertyflow-compose-android-library = { id = "libertyflow.compose.android.library" }

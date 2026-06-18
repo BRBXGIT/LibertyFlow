@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LibertyFlow">
         <activity
-            android:name=".MainActivity"
+            android:name="com.brbx.libertyflow.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.LibertyFlow"
             android:windowSoftInputMode="adjustResize">
