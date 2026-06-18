@@ -17,6 +17,9 @@ solar = "2.1.0"
 # Koin
 koin = "4.2.2"
 
+# Ktor
+ktorClientCore = "3.5.0"
+
 [libraries]
 # Core-kx
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -27,6 +30,14 @@ brbx-mvi-compose = { module = "com.github.BRBXGIT.BRBXDevKit:mvi-compose", versi
 # Solar icons
 solar = { module = "dev.chiksmedina.solar:solar", version.ref = "solar" }
 
+# Ktor
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientCore" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCore" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorClientCore" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorClientCore" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientCore" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClientCore" }
+
 # Koin
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -35,6 +46,16 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", versi
 # build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
+[bundles]
+ktor-core = [
+    "ktor-client-content-negotiation",
+    "ktor-client-core",
+    "ktor-client-logging",
+    "ktor-serialization-kotlinx-json",
+    "ktor-client-okhttp",
+    "ktor-client-auth",
+]
 
 [plugins]
 # Application
