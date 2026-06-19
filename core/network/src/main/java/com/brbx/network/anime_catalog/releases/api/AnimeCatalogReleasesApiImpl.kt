@@ -18,13 +18,10 @@ internal class AnimeCatalogReleasesApiImpl(
         request: Request.Complex,
     ): RequestResult<PaginatedAnimeItems> =
         apiCallExecutor.execute {
-            apiClientProvider.client.post(urlString = ReleasesEndPoint) {
+            apiClientProvider.client.post(
+                urlString = AnimeCatalogReleasesApiDefaults.ReleasesEndPoint,
+            ) {
                 setBody(request)
             }.body()
         }
-
-    private companion object {
-
-        const val ReleasesEndPoint = "anime/catalog/releases"
-    }
 }

@@ -20,16 +20,13 @@ internal class AnimeReleasesRecommendedApiImpl(
         limit: Int,
     ): RequestResult<List<AnimeItem>> =
         apiCallExecutor.execute {
-            apiClientProvider.client.get(urlString = RecommendationsEndPoint) {
+            apiClientProvider.client.get(
+                urlString = AnimeReleasesRecommendedDefaults.RecommendationsEndPoint,
+            ) {
                 parameter(RequestParameters.Include, RequestDefaults.Include)
                 parameter(RequestParameters.Exclude, RequestDefaults.Exclude)
                 parameter(RequestParameters.Limit, limit)
                 parameter(RequestParameters.ReleaseId, releaseId)
             }.body()
         }
-
-    private companion object {
-
-        const val RecommendationsEndPoint = "/anime/releases/recommended"
-    }
 }

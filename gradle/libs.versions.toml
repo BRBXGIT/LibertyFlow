@@ -17,6 +17,9 @@ solar = "2.1.0"
 # Koin
 koin = "4.2.2"
 
+# Datastore
+datastorePreferences = "1.2.1"
+
 # Ktor
 ktorClientCore = "3.5.0"
 
@@ -42,6 +45,9 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorCli
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+
+# Datastore
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 # build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

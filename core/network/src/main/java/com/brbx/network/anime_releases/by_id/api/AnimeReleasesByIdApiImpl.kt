@@ -17,7 +17,9 @@ internal class AnimeReleasesByIdApiImpl(
 
     override suspend fun getRelease(id: Int): RequestResult<AnimeItemById> =
         apiCallExecutor.execute {
-            apiClientProvider.client.get(urlString = "$ByIdEndPoint/$id") {
+            apiClientProvider.client.get(
+                urlString = "${AnimeReleasesByIdDefaults.ByIdEndPoint}ByIdEndPoint/$id",
+            ) {
                 parameter(RequestParameters.Include, Include)
                 parameter(RequestParameters.Exclude, RequestDefaults.Exclude)
             }.body()
@@ -25,7 +27,6 @@ internal class AnimeReleasesByIdApiImpl(
 
     private companion object {
 
-        const val ByIdEndPoint = "/anime/releases"
         const val Include = "poster.optimized," +
                 "name," +
                 "season.description," +

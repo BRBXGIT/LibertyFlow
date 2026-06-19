@@ -17,7 +17,7 @@ internal class AnimeReleasesRandomApiImpl(
 
     override suspend fun getReleases(limit: Int): RequestResult<RandomAnime> =
         apiCallExecutor.execute {
-            apiClientProvider.client.get(urlString = RandomEndPoint) {
+            apiClientProvider.client.get(urlString = AnimeReleasesRandomDefaults.RandomEndPoint) {
                 parameter(RequestParameters.Include, Include)
                 parameter(RequestParameters.Exclude, RequestDefaults.Exclude)
                 parameter(RequestParameters.Limit, limit)
@@ -26,7 +26,6 @@ internal class AnimeReleasesRandomApiImpl(
 
     private companion object {
 
-        const val RandomEndPoint = "/anime/releases/random"
         const val Include = "id"
     }
 }
