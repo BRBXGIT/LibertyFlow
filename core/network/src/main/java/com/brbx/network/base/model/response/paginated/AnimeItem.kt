@@ -1,0 +1,16 @@
+package com.brbx.network.base.model.response.paginated
+
+import com.brbx.network.base.model.response.common.Genre
+import com.brbx.network.base.model.response.common.Name
+import com.brbx.network.base.model.response.common.Poster
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class AnimeItem(
+    @SerialName("added_in_users_favorites") val addedInUsersFavorites: Int,
+    val genres: List<Genre>,
+    val id: Int,
+    val name: Name,
+    val poster: Poster,
+)

@@ -1,4 +1,4 @@
-package com.brbx.network.api_client
+package com.brbx.network.base.client
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -17,15 +17,16 @@ import java.util.concurrent.TimeUnit
 
 internal class ApiClientProviderImpl : ApiClientProvider {
 
-    companion object {
+    private companion object {
         const val ConnectTimeout: Long = 30
         const val ReadTimeout: Long = 30
         const val WriteTimeout: Long = 30
-        const val ApiUrl: String = "https://anilibria.top/api/v1/"
+        const val ApiUrl: String = "https://aniliberty.top/api/v1/"
     }
 
-    override fun getApiClient(): HttpClient =
+    override val client by lazy {
         HttpClient(engineFactory = OkHttp) {
+            expectSuccess = true
             engine {
                 config {
                     connectTimeout(ConnectTimeout, unit = TimeUnit.SECONDS)
@@ -51,4 +52,5 @@ internal class ApiClientProviderImpl : ApiClientProvider {
                 level = LogLevel.ALL // TODO make NONE in release
             }
         }
+    }
 }
