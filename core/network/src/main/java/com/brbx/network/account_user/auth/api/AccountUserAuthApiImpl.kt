@@ -18,8 +18,6 @@ internal class AccountUserAuthApiImpl(
         apiCallExecutor.execute {
             apiClientProvider.client.post(
                 urlString = AccountUserAuthApiDefaults.AuthEndPoint,
-            ) {
-                setBody(authForm)
-            }.body()
+            ) { setBody(authForm) }.body()
         }
 }

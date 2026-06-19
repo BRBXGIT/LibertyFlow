@@ -1,7 +1,7 @@
-package com.brbx.network.anime_releases
+package com.brbx.network.anime_releases.recommened
 
-import com.brbx.network.anime_releases.by_id.api.animeReleasesByIdApiModule
-import com.brbx.network.anime_releases.random.api.animeReleasesRandomApiModule
+import com.brbx.network.anime_releases.by_id.animeReleasesByIdApiModule
+import com.brbx.network.anime_releases.random.animeReleasesRandomApiModule
 import com.brbx.network.anime_releases.recommened.api.animeReleasesRecommendedApiModule
 import org.koin.dsl.module
 

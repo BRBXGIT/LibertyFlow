@@ -1,5 +1,7 @@
-package com.brbx.network.account_user.auth.api
+package com.brbx.network.account_user.auth
 
+import com.brbx.network.account_user.auth.api.AccountUserAuthApi
+import com.brbx.network.account_user.auth.api.AccountUserAuthApiImpl
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

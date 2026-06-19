@@ -5,7 +5,7 @@ import com.brbx.network.base.model.result.RequestResult
 
 interface AnimeReleasesRandomApi {
 
-    suspend fun getReleases(limit: Int = Limit): RequestResult<RandomAnime>
+    suspend fun getReleases(limit: Int = Limit): RequestResult<List<RandomAnime>>
 
     private companion object {
 

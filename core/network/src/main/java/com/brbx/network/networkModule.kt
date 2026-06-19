@@ -2,7 +2,7 @@ package com.brbx.network
 
 import com.brbx.network.account_user.accountUserModule
 import com.brbx.network.anime_catalog.animeCatalogModule
-import com.brbx.network.anime_releases.animeReleasesModule
+import com.brbx.network.anime_releases.recommened.animeReleasesModule
 import com.brbx.network.base.apiModule
 import org.koin.dsl.module
 
