@@ -4,7 +4,6 @@ import com.brbx.network.account_user.lists.model.UserListItem
 import com.brbx.network.base.api.ApiCallExecutor
 import com.brbx.network.base.client.ApiClientProvider
 import com.brbx.network.base.model.result.RequestResult
-import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -18,7 +17,7 @@ internal class AccountUserCollectionsApiImpl(
         apiCallExecutor.execute {
             apiClientProvider.client.post(urlString = CollectionsEndPoint) {
                 setBody(items)
-            }.body()
+            }
         }
 
     override suspend fun deleteFromCollection(items: List<UserListItem.Collection>):
@@ -26,7 +25,7 @@ internal class AccountUserCollectionsApiImpl(
             apiCallExecutor.execute {
                 apiClientProvider.client.delete(urlString = CollectionsEndPoint) {
                     setBody(items)
-                }.body()
+                }
             }
 
     private companion object {
