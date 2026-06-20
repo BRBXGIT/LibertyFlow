@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface CatalogAnimeReleasesRepository {
 
-    suspend fun getReleases(request: DomainRequest): Flow<PagingData<DomainAnimeItem>>
+    fun getReleases(request: DomainRequest): Flow<PagingData<DomainAnimeItem>>
 }

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 class GetCatalogAnimeReleasesUseCase(
     private val repository: CatalogAnimeReleasesRepository,
 ) {
-    suspend operator fun invoke(
+    operator fun invoke(
         parameters: CatalogReleasesParameters
     ): Flow<PagingData<DomainAnimeItem>> {
         val publishStatuses = if (parameters.isOngoing) {
