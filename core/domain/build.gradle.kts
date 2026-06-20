@@ -5,6 +5,8 @@ plugins {
 
 dependencies {
 
+    // Paging
+    implementation(libs.androidx.paging.common)
     // Koin
     implementation(libs.koin.core)
 }

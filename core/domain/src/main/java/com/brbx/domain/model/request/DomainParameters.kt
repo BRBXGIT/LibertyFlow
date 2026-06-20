@@ -1,23 +1,15 @@
 package com.brbx.domain.model.request
 
+import com.brbx.domain.model.common.AgeRating
 import com.brbx.domain.model.common.DomainGenre
+import com.brbx.domain.model.common.ProductionStatus
 import com.brbx.domain.model.common.PublishStatus
 import com.brbx.domain.model.common.Season
+import com.brbx.domain.model.common.Sorting
 import com.brbx.domain.model.common.Type
-import java.time.LocalDateTime
+import com.brbx.domain.model.common.DomainYears
 
 sealed interface DomainParameters {
-
-    enum class AgeRating {
-        R6Plus, R12Plus, R16Plus, R18Plus, R21Plus;
-    }
-
-    enum class Sorting {
-        CreatedAtDesc, CreatedAtAsc,
-        FreshAtDesc, FreshAtAsc,
-        RatingDesc, RatingAsc,
-        YearDesc, YearAsc;
-    }
 
     val ageRatings: List<AgeRating>
     val search: String
@@ -53,17 +45,7 @@ sealed interface DomainParameters {
         val publishStatuses: List<PublishStatus> = emptyList(),
         val seasons: List<Season> = emptyList(),
         val sorting: Sorting = Sorting.CreatedAtDesc,
-        val years: Years = Years(),
+        val years: DomainYears = DomainYears(),
         val productionStatuses: List<ProductionStatus> = emptyList(),
-    ) : DomainParameters {
-
-        enum class ProductionStatus {
-            InProduction, Finished;
-        }
-
-        data class Years(
-            val fromYear: Int = 0,
-            val toYear: Int = LocalDateTime.now().year,
-        )
-    }
+    ) : DomainParameters
 }

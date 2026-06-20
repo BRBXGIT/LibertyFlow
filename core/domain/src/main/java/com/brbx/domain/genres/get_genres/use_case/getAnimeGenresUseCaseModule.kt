@@ -1,4 +1,4 @@
-package com.brbx.domain.genres.use_case
+package com.brbx.domain.genres.get_genres.use_case
 
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
