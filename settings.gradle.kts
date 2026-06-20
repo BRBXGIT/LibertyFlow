@@ -28,6 +28,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "LibertyFlow"
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 // App
 include(":app")
 

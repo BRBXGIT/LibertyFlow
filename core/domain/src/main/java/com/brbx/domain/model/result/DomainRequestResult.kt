@@ -2,10 +2,9 @@ package com.brbx.domain.model.result
 
 interface DomainRequestResult<out T> {
 
-    data class Success<T>(val data: T) : DomainRequestResult<T>
+    @JvmInline
+    value class Success<T>(val data: T) : DomainRequestResult<T>
 
-    data class Error(
-        val exception: DomainRequestException,
-        val message: String,
-    ) : DomainRequestResult<Nothing>
+    @JvmInline
+    value class Error(val exception: DomainRequestException) : DomainRequestResult<Nothing>
 }

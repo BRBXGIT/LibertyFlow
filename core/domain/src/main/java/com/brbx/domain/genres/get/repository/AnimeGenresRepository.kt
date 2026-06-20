@@ -1,4 +1,4 @@
-package com.brbx.domain.genres.get_genres.repository
+package com.brbx.domain.genres.get.repository
 
 import com.brbx.domain.model.common.DomainGenre
 import com.brbx.domain.model.result.DomainRequestResult
