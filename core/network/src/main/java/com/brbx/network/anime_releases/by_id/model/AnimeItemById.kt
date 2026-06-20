@@ -11,7 +11,7 @@ data class AnimeItemById(
     @SerialName("is_ongoing") val isOngoing: Boolean,
     val description: String,
     val episodes: List<Episode>,
-    val genres: List<Genre>,
+    val genres: List<Genre.Simple>,
     val id: Int,
     val members: List<Member>,
     val name: Name,

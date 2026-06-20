@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AnimeItem(
     @SerialName("added_in_users_favorites") val addedInUsersFavorites: Int,
-    val genres: List<Genre>,
+    val genres: List<Genre.Simple>,
     val id: Int,
     val name: Name,
     val poster: Poster,

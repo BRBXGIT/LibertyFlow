@@ -2,6 +2,7 @@ package com.brbx.network.base.client
 
 import com.brbx.network.account_user.auth.api.AccountUserAuthApiDefaults
 import com.brbx.network.anime_catalog.releases.api.AnimeCatalogReleasesApiDefaults
+import com.brbx.network.anime_genres.genres.api.AnimeGenresApiDefaults
 import com.brbx.network.anime_releases.by_id.api.AnimeReleasesByIdDefaults
 import com.brbx.network.anime_releases.random.api.AnimeReleasesRandomDefaults
 import com.brbx.network.anime_releases.recommened.api.AnimeReleasesRecommendedDefaults
@@ -80,6 +81,7 @@ internal class ApiClientProviderImpl(
                             AnimeReleasesRandomDefaults.RandomEndPoint,
                             AnimeReleasesRecommendedDefaults.RecommendationsEndPoint,
                             AccountUserAuthApiDefaults.AuthEndPoint,
+                            AnimeGenresApiDefaults.GenresEndPoint,
                         )
                     }
                 }
