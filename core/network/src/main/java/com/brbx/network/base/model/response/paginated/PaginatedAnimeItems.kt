@@ -1,5 +1,6 @@
 package com.brbx.network.base.model.response.paginated
 
+import com.brbx.network.base.model.response.common.AnimeItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

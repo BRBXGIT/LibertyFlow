@@ -1,6 +1,6 @@
 package com.brbx.network.anime_releases.recommened.api
 
-import com.brbx.network.base.model.response.paginated.AnimeItem
+import com.brbx.network.base.model.response.common.AnimeItem
 import com.brbx.network.base.model.result.RequestResult
 
 interface AnimeReleasesRecommendedApi {

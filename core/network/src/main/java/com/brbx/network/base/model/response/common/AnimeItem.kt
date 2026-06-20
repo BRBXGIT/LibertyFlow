@@ -1,8 +1,6 @@
-package com.brbx.network.base.model.response.paginated
+package com.brbx.network.base.model.response.common
 
 import com.brbx.network.base.model.common.Genre
-import com.brbx.network.base.model.response.common.Name
-import com.brbx.network.base.model.response.common.Poster
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -1,16 +1,15 @@
 package com.brbx.domain.model.request
 
 import com.brbx.domain.model.common.DomainGenre
+import com.brbx.domain.model.common.PublishStatus
+import com.brbx.domain.model.common.Season
+import com.brbx.domain.model.common.Type
 import java.time.LocalDateTime
 
 sealed interface DomainParameters {
 
     enum class AgeRating {
         R6Plus, R12Plus, R16Plus, R18Plus, R21Plus;
-    }
-
-    enum class Type {
-        TV, ONA, Web, OVA, OAD, Movie, Dorama, Special;
     }
 
     enum class Sorting {
@@ -57,14 +56,6 @@ sealed interface DomainParameters {
         val years: Years = Years(),
         val productionStatuses: List<ProductionStatus> = emptyList(),
     ) : DomainParameters {
-
-        enum class PublishStatus {
-            Ongoing, Finished;
-        }
-
-        enum class Season {
-            Winter, Spring, Summer, Fall;
-        }
 
         enum class ProductionStatus {
             InProduction, Finished;
