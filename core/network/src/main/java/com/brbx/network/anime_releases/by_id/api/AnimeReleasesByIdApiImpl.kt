@@ -35,6 +35,7 @@ internal class AnimeReleasesByIdApiImpl(
                 "is_ongoing," +
                 "description," +
                 "genres.name," +
+                "genres.id" +
                 "members.role.description,members.nickname," +
                 "episodes.opening,episodes.ending,episodes.hls_480,episodes.hls_720,episodes.hls_1080,episodes.name," +
                 "torrents.filename,torrents.leechers,torrents.seeders,torrents.size,torrents.magnet," +

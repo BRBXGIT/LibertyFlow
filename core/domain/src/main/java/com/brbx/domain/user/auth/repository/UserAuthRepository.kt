@@ -1,6 +1,6 @@
-package com.brbx.domain.user.auth.contract
+package com.brbx.domain.user.auth.repository
 
-import com.brbx.domain.model.DomainRequestResult
+import com.brbx.domain.model.result.DomainRequestResult
 import com.brbx.domain.user.auth.model.DomainAuthForm
 import com.brbx.domain.user.auth.model.DomainToken
 

@@ -1,4 +1,4 @@
-package com.brbx.domain.model
+package com.brbx.domain.model.result
 
 enum class DomainRequestException {
     // --- Http Errors (4xx, 5xx) ---

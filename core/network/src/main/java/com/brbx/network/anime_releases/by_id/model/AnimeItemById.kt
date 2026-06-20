@@ -1,6 +1,6 @@
 package com.brbx.network.anime_releases.by_id.model
 
-import com.brbx.network.base.model.response.common.Genre
+import com.brbx.network.base.model.common.Genre
 import com.brbx.network.base.model.response.common.Name
 import com.brbx.network.base.model.response.common.Poster
 import kotlinx.serialization.SerialName
@@ -11,7 +11,7 @@ data class AnimeItemById(
     @SerialName("is_ongoing") val isOngoing: Boolean,
     val description: String,
     val episodes: List<Episode>,
-    val genres: List<Genre.Simple>,
+    val genres: List<Genre>,
     val id: Int,
     val members: List<Member>,
     val name: Name,

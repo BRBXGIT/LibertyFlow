@@ -36,26 +36,22 @@ sealed interface Parameters {
     }
 
     @Serializable
-    sealed interface Complex : Parameters {
+    data class Complex(
+        @SerialName("age_ratings") override val ageRatings: List<String> = emptyList(),
+        override val search: String = "",
+        override val types: List<String> = emptyList(),
+        val genres: List<Int> = emptyList(),
+        @SerialName("publish_statuses") val publishStatuses: List<String> = emptyList(),
+        val seasons: List<String> = emptyList(),
+        val sorting: String = "",
+        val years: Years = Years(),
+        @SerialName("production_statuses") val productionStatuses: List<String> = emptyList(),
+    ) : Parameters {
 
         @Serializable
-        data class Default(
-            @SerialName("age_ratings") override val ageRatings: List<String> = emptyList(),
-            override val search: String = "",
-            override val types: List<String> = emptyList(),
-            val genres: List<Int> = emptyList(),
-            @SerialName("publish_statuses") val publishStatuses: List<String> = emptyList(),
-            val seasons: List<String> = emptyList(),
-            val sorting: String = "",
-            val years: Years = Years(),
-            @SerialName("production_statuses") val productionStatuses: List<String> = emptyList(),
-        ) : Complex {
-
-            @Serializable
-            data class Years(
-                @SerialName("from_year") val fromYear: Int = 0,
-                @SerialName("to_year") val toYear: Int = LocalDateTime.now().year,
-            )
-        }
+        data class Years(
+            @SerialName("from_year") val fromYear: Int = 0,
+            @SerialName("to_year") val toYear: Int = LocalDateTime.now().year,
+        )
     }
 }

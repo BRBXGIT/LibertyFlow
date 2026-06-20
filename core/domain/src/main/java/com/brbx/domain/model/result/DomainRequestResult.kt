@@ -1,4 +1,4 @@
-package com.brbx.domain.model
+package com.brbx.domain.model.result
 
 interface DomainRequestResult<out T> {
 

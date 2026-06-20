@@ -18,7 +18,8 @@ sealed interface Request {
         override val include: String = RequestDefaults.Include,
         override val limit: Int = RequestDefaults.Limit,
         override val page: Int,
-        @SerialName("f") override val parameters: Parameters.Simple.Default
+        @SerialName("f") override val parameters: Parameters.Simple.Default =
+            Parameters.Simple.Default(),
     ) : Request
 
     @Serializable
@@ -27,7 +28,8 @@ sealed interface Request {
         override val include: String = RequestDefaults.Include,
         override val limit: Int = RequestDefaults.Limit,
         override val page: Int,
-        @SerialName("f") override val parameters: Parameters.Simple.WithoutSorting,
+        @SerialName("f") override val parameters: Parameters.Simple.WithoutSorting =
+            Parameters.Simple.WithoutSorting(),
         @SerialName("type_of_collection") val collection: String,
     ) : Request
 
@@ -37,6 +39,7 @@ sealed interface Request {
         override val include: String = RequestDefaults.Include,
         override val limit: Int = RequestDefaults.Limit,
         override val page: Int,
-        @SerialName("f") override val parameters: Parameters.Complex
+        @SerialName("f") override val parameters: Parameters.Complex =
+            Parameters.Complex(),
     ) : Request
 }
