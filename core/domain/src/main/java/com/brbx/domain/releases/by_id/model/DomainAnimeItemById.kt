@@ -6,48 +6,60 @@ import com.brbx.domain.model.common.Season
 import com.brbx.domain.model.common.Type
 import com.brbx.domain.model.response.common.DomainName
 import com.brbx.domain.model.response.common.DomainPoster
+import java.util.Locale
+import kotlin.math.ln
+import kotlin.math.pow
 
 data class DomainAnimeItemById(
     val publishStatus: PublishStatus,
     val description: String,
-    val episodes: List<Episode>,
+    val episodes: List<DomainEpisode>,
     val genres: List<DomainGenre>,
     val id: Int,
-    val members: List<Member>,
+    val members: List<DomainMember>,
     val name: DomainName,
     val poster: DomainPoster,
     val season: Season,
-    val torrents: List<Torrent>,
+    val torrents: List<DomainTorrent>,
     val type: Type,
-    val year: Int
+    val year: Int,
 ) {
-    data class Episode(
+    data class DomainEpisode(
         val hls1080: String?,
         val hls480: String,
         val hls720: String,
-        val ending: Segment,
+        val ending: DomainSegment,
         val name: String,
-        val opening: Segment,
+        val opening: DomainSegment,
     ) {
-        data class Segment(
+        data class DomainSegment(
             val start: Int?,
             val stop: Int?,
         )
     }
 
-    data class Member(
+    data class DomainMember(
         val nickname: String,
-        val role: Role,
-    ) {
-        @JvmInline
-        value class Role(val description: String)
-    }
+        val role: String,
+    )
 
-    data class Torrent(
+    data class DomainTorrent(
         val filename: String,
         val leechers: Int,
         val magnet: String,
         val seeders: Int,
         val size: Long,
-    )
+    ) {
+        fun formatSize(sizeInBytes: Long): String {
+            if (sizeInBytes <= 0) return "0 B"
+
+            val units = arrayOf("B", "KB", "MB", "GB", "TB", "PB")
+
+            val digitGroups = (ln(x = sizeInBytes.toDouble()) / ln(x = 1024.0)).toInt()
+
+            val value = sizeInBytes / 1024.0.pow(x = digitGroups.toDouble())
+
+            return String.format(Locale.US, format = "%.2f %s", value, units[digitGroups])
+        }
+    }
 }

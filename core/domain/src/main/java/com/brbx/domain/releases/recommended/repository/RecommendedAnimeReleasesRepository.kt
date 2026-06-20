@@ -5,5 +5,5 @@ import com.brbx.domain.model.result.DomainRequestResult
 
 interface RecommendedAnimeReleasesRepository {
 
-    suspend fun getReleases(id: Int): DomainRequestResult<List<DomainAnimeItem>>
+    suspend fun getReleases(releaseId: Int): DomainRequestResult<List<DomainAnimeItem>>
 }

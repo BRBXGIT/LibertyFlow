@@ -1,4 +1,4 @@
-package com.brbx.data.genres.get
+package com.brbx.data.genres.get.repository
 
 import com.brbx.domain.genres.get.repository.AnimeGenresRepository
 import org.koin.core.module.dsl.bind

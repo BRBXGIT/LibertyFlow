@@ -1,6 +1,6 @@
 package com.brbx.data.genres
 
-import com.brbx.data.genres.get.animeGenresRepositoryModule
+import com.brbx.data.genres.get.repository.animeGenresRepositoryModule
 import org.koin.dsl.module
 
 internal val genresModule = module {
