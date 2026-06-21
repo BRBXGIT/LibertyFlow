@@ -2,17 +2,17 @@ package com.brbx.domain.model.result
 
 enum class DomainRequestException {
     // --- Http Errors (4xx, 5xx) ---
-    CONFLICT,
-    TOO_MANY_REQUESTS,
-    PAYLOAD_TOO_LARGE,
-    SERVER_ERROR,
-    INCORRECT_CREDENTIALS,
-    UNAUTHORIZED,
-    NO_EMAIL_OR_PASSWORD,
+    Conflict,
+    TooManyRequests,
+    PayloadTooLarge,
+    ServerError,
+    IncorrectCredentials,
+    Unauthorized,
+    NoEmailOrPassword,
     // --- Local / Connectivity Errors ---
-    REQUEST_TIMEOUT,
-    INTERNET,
-    SERIALIZATION,
+    RequestTimeout,
+    Internet,
+    Serialization,
     // --- Fallback ---
-    UNKNOWN,
+    Unknown,
 }

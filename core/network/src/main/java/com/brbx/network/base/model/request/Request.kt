@@ -17,7 +17,7 @@ sealed interface Request {
         override val exclude: String = RequestDefaults.Exclude,
         override val include: String = RequestDefaults.Include,
         override val limit: Int = RequestDefaults.Limit,
-        override val page: Int,
+        override val page: Int = RequestDefaults.Page,
         @SerialName("f") override val parameters: Parameters.Simple.Default =
             Parameters.Simple.Default(),
     ) : Request
@@ -27,7 +27,7 @@ sealed interface Request {
         override val exclude: String = RequestDefaults.Exclude,
         override val include: String = RequestDefaults.Include,
         override val limit: Int = RequestDefaults.Limit,
-        override val page: Int,
+        override val page: Int = RequestDefaults.Page,
         @SerialName("f") override val parameters: Parameters.Simple.WithoutSorting =
             Parameters.Simple.WithoutSorting(),
         @SerialName("type_of_collection") val collection: String,
@@ -38,7 +38,7 @@ sealed interface Request {
         override val exclude: String = RequestDefaults.Exclude,
         override val include: String = RequestDefaults.Include,
         override val limit: Int = RequestDefaults.Limit,
-        override val page: Int,
+        override val page: Int = RequestDefaults.Page,
         @SerialName("f") override val parameters: Parameters.Complex =
             Parameters.Complex(),
     ) : Request

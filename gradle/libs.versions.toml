@@ -24,7 +24,7 @@ datastorePreferences = "1.2.1"
 ktorClientCore = "3.5.0"
 
 # Paging
-pagingCommon = "3.5.0"
+paging = "3.5.0"
 
 [libraries]
 # Core-kx
@@ -45,7 +45,9 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClientCore" }
 
 # Paging
-androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "pagingCommon" }
+androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 
 # Koin
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

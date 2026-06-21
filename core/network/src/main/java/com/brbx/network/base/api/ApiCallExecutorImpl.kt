@@ -22,22 +22,22 @@ internal class ApiCallExecutorImpl : ApiCallExecutor {
     }
 
     private fun Int.toRequestException(): RequestException = when (this) {
-        401 -> RequestException.INCORRECT_CREDENTIALS
-        403 -> RequestException.UNAUTHORIZED
-        422 -> RequestException.NO_EMAIL_OR_PASSWORD
-        408 -> RequestException.REQUEST_TIMEOUT
-        409 -> RequestException.CONFLICT
-        413 -> RequestException.PAYLOAD_TOO_LARGE
-        429 -> RequestException.TOO_MANY_REQUESTS
-        in 500..599 -> RequestException.SERVER_ERROR
-        else -> RequestException.UNKNOWN
+        401 -> RequestException.IncorrectCredentials
+        403 -> RequestException.Unauthorized
+        422 -> RequestException.NoEmailOrPassword
+        408 -> RequestException.RequestTimeout
+        409 -> RequestException.Conflict
+        413 -> RequestException.PayloadTooLarge
+        429 -> RequestException.TooManyRequests
+        in 500..599 -> RequestException.ServerError
+        else -> RequestException.Unknown
     }
 
     private fun Exception.toRequestException(): RequestException = when (this) {
-        is UnknownHostException -> RequestException.INTERNET
-        is SocketException -> RequestException.INTERNET
-        is SocketTimeoutException -> RequestException.REQUEST_TIMEOUT
-        is SerializationException -> RequestException.SERIALIZATION
-        else -> RequestException.UNKNOWN
+        is UnknownHostException -> RequestException.Internet
+        is SocketException -> RequestException.Internet
+        is SocketTimeoutException -> RequestException.RequestTimeout
+        is SerializationException -> RequestException.Serialization
+        else -> RequestException.Unknown
     }
 }

@@ -4,4 +4,5 @@ internal object RequestDefaults {
     const val Include = "id,poster.optimized,genres.name,genres.id,name,added_in_users_favorites"
     const val Exclude = ""
     const val Limit = 20
+    const val Page = 1
 }
