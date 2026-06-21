@@ -12,4 +12,6 @@ dependencies {
 
     // Koin
     implementation(libs.koin.core)
+    // Paging
+    implementation(libs.androidx.paging.common)
 }

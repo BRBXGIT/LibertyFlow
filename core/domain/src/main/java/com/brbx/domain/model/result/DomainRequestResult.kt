@@ -1,6 +1,6 @@
 package com.brbx.domain.model.result
 
-interface DomainRequestResult<out T> {
+sealed interface DomainRequestResult<out T> {
 
     @JvmInline
     value class Success<T>(val data: T) : DomainRequestResult<T>
