@@ -110,3 +110,12 @@ internal fun String.toCollection(): Collection =
         "ABANDONED" -> Collection.Abandoned
         else -> Collection.Abandoned
     }
+
+internal fun Collection.toData(): String =
+    when (this) {
+        Collection.Planned -> "PLANNED"
+        Collection.Watched -> "WATCHED"
+        Collection.Watching -> "WATCHING"
+        Collection.Postponed -> "POSTPONED"
+        Collection.Abandoned -> "ABANDONED"
+    }

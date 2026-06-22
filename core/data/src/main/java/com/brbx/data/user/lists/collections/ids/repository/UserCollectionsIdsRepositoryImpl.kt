@@ -21,6 +21,19 @@ internal class UserCollectionsIdsRepositoryImpl(
         flow {
             if (source.ids.value == null) {
                 val result = api.getIds().toDomain { it.toDomain() }
+                when (result) {
+                    is DomainRequestResult.Success -> interactor.update(ids = result.data)
+                    is DomainRequestResult.Error -> {
+                        emit(value = result)
+                        return@flow
+                    }
+                }
+            }
+            source.ids.collect { cachedIds ->
+                if (cachedIds != null) {
+                    emit(value = DomainRequestResult.Success(data = cachedIds))
+                }
             }
         }
+
 }

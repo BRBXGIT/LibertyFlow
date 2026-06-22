@@ -42,6 +42,12 @@ internal fun DomainRequest.Simple.toData(): Request.Simple =
         parameters = this.parameters.toData(),
     )
 
+internal fun DomainRequest.Collection.toData(): Request.Collection =
+    Request.Collection(
+        parameters = this.parameters.toData(),
+        collection = this.collection.toData(),
+    )
+
 internal fun DomainRequest.Complex.toData(): Request.Complex =
     Request.Complex(
         parameters = this.parameters.toData()

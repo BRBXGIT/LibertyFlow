@@ -32,11 +32,11 @@ internal class UserFavoritesRepositoryImpl(
         apiCall: suspend (List<UserListItem.Favorite>) -> RequestResult<List<Int>>
     ): DomainRequestResult<Unit> {
         val dataItems = items.map { it.toData() }
-        val result = apiCall(dataItems).toDomain { it }
+        val result = apiCall(dataItems).toDomain { it.toDomain() }
 
         return when (result) {
             is DomainRequestResult.Success -> {
-                interactor.update(ids = result.data.toDomain())
+                interactor.update(ids = result.data)
                 DomainRequestResult.Success(data = Unit)
             }
             is DomainRequestResult.Error -> result
