@@ -1,4 +1,4 @@
-package com.brbx.data.releases.random
+package com.brbx.data.releases.random.repository
 
 import com.brbx.domain.releases.random.repository.RandomAnimeReleaseRepository
 import org.koin.core.module.dsl.bind

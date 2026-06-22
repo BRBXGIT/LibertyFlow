@@ -1,4 +1,4 @@
-package com.brbx.data.releases.recommended
+package com.brbx.data.releases.recommended.repository
 
 import com.brbx.data.common.map.toDomain
 import com.brbx.domain.model.response.common.DomainAnimeItem

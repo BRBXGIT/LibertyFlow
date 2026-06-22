@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.brbx.data.common.map.toData
 import com.brbx.data.common.map.toDomain
-import com.brbx.data.paging.anime_item.createAnimeItemsPager
+import com.brbx.data.paging.anime_item.createAnimeItemsPagingFlow
 import com.brbx.domain.catalog.releases.repository.CatalogAnimeReleasesRepository
 import com.brbx.domain.model.request.DomainRequest
 import com.brbx.domain.model.response.common.DomainAnimeItem
@@ -18,7 +18,7 @@ internal class CatalogAnimeReleasesRepositoryImpl(
 
     override fun getReleases(request: DomainRequest.Complex): Flow<PagingData<DomainAnimeItem>> {
         val dataRequest = request.toData()
-        return createAnimeItemsPager(
+        return createAnimeItemsPagingFlow(
             limit = dataRequest.limit,
             call = { page ->
                 val withPage = dataRequest.copy(page = page)

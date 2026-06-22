@@ -1,6 +1,6 @@
 package com.brbx.network.account_user.lists.collections.collection_ids.api
 
-import com.brbx.network.account_user.lists.collections.collection_ids.model.CollectionsIds
+import com.brbx.network.account_user.lists.collections.model.CollectionIds
 import com.brbx.network.base.api.ApiCallExecutor
 import com.brbx.network.base.client.ApiClientProvider
 import com.brbx.network.base.model.result.RequestResult
@@ -12,7 +12,7 @@ internal class AccountUserCollectionsIdsApiImpl(
     private val apiClientProvider: ApiClientProvider,
 ) : AccountUserCollectionsIdsApi {
 
-    override suspend fun getIds(): RequestResult<List<CollectionsIds>> =
+    override suspend fun getIds(): RequestResult<List<CollectionIds>> =
         apiCallExecutor.execute {
             apiClientProvider.client.get(urlString = CollectionsIdsEndPoint).body()
         }

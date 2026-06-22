@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
-internal inline fun createAnimeItemsPager(
+internal inline fun createAnimeItemsPagingFlow(
     limit: Int,
     invalidateTrigger: Flow<Any?>,
     crossinline call: suspend (page: Int) -> RequestResult<PaginatedAnimeItems>,
@@ -44,7 +44,7 @@ internal inline fun createAnimeItemsPager(
     }
 }
 
-internal inline fun createAnimeItemsPager(
+internal inline fun createAnimeItemsPagingFlow(
     limit: Int,
     crossinline call: suspend (page: Int) -> RequestResult<PaginatedAnimeItems>,
 ): Flow<PagingData<AnimeItem>> =

@@ -1,8 +1,8 @@
-package com.brbx.domain.user.lists.collections.collections_ids.model
+package com.brbx.domain.user.lists.collections.model
 
 import com.brbx.domain.model.common.Collection
 
-data class CollectionIds(
+data class DomainCollectionIds(
     val ids: List<Int>,
     val collection: Collection,
 )

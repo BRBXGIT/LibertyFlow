@@ -1,6 +1,7 @@
 package com.brbx.data.common.map
 
 import com.brbx.domain.model.common.AgeRating
+import com.brbx.domain.model.common.Collection
 import com.brbx.domain.model.common.ProductionStatus
 import com.brbx.domain.model.common.PublishStatus
 import com.brbx.domain.model.common.Season
@@ -98,4 +99,14 @@ internal fun PublishStatus.toData(): String =
     when (this) {
         PublishStatus.Ongoing -> "IS_ONGOING"
         PublishStatus.Finished -> "IS_NOT_ONGOING"
+    }
+
+internal fun String.toCollection(): Collection =
+    when (this) {
+        "PLANNED" -> Collection.Planned
+        "POSTPONED" -> Collection.Postponed
+        "WATCHED" -> Collection.Watched
+        "WATCHING" -> Collection.Watching
+        "ABANDONED" -> Collection.Abandoned
+        else -> Collection.Abandoned
     }

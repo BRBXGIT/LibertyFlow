@@ -1,4 +1,4 @@
-package com.brbx.data.releases.random
+package com.brbx.data.releases.random.repository
 
 import com.brbx.data.common.map.toDomain
 import com.brbx.domain.model.result.DomainRequestResult

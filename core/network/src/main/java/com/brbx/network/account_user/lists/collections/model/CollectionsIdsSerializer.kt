@@ -1,4 +1,4 @@
-package com.brbx.network.account_user.lists.collections.collection_ids.model
+package com.brbx.network.account_user.lists.collections.model
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -13,12 +13,12 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
 
-internal object CollectionsIdsSerializer : KSerializer<CollectionsIds> {
+internal object CollectionsIdsSerializer : KSerializer<CollectionIds> {
     
     override val descriptor: SerialDescriptor = 
         buildClassSerialDescriptor("CollectionIdsSerializer")
 
-    override fun deserialize(decoder: Decoder): CollectionsIds {
+    override fun deserialize(decoder: Decoder): CollectionIds {
         val jsonDecoder = decoder as? JsonDecoder 
             ?: error("This deserializer only supports JSON")
             
@@ -30,13 +30,13 @@ internal object CollectionsIdsSerializer : KSerializer<CollectionsIds> {
         val status = array.last().jsonPrimitive.content
         val ids = array.dropLast(n = 1).map { it.jsonPrimitive.int }
         
-        return CollectionsIds(
+        return CollectionIds(
             ids = ids,
-            status = status,
+            collection = status,
         )
     }
 
-    override fun serialize(encoder: Encoder, value: CollectionsIds) {
+    override fun serialize(encoder: Encoder, value: CollectionIds) {
         val jsonEncoder = encoder as? JsonEncoder 
             ?: error("This serializer only supports JSON")
             
@@ -44,7 +44,7 @@ internal object CollectionsIdsSerializer : KSerializer<CollectionsIds> {
             value.ids.forEach { id ->
                 add(JsonPrimitive(id)) 
             }
-            add(JsonPrimitive(value.status))
+            add(JsonPrimitive(value.collection))
         }
         jsonEncoder.encodeJsonElement(array)
     }

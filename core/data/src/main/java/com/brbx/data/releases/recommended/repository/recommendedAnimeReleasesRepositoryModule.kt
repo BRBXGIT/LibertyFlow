@@ -1,4 +1,4 @@
-package com.brbx.data.releases.recommended
+package com.brbx.data.releases.recommended.repository
 
 import com.brbx.domain.releases.recommended.repository.RecommendedAnimeReleasesRepository
 import org.koin.core.module.dsl.bind
