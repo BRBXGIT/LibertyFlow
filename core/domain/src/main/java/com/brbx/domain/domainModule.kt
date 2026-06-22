@@ -1,5 +1,6 @@
 package com.brbx.domain
 
+import com.brbx.domain.appearance.appearanceModule
 import com.brbx.domain.catalog.catalogModule
 import com.brbx.domain.genres.genresModule
 import com.brbx.domain.releases.releasesModule
@@ -12,5 +13,6 @@ val domainModule = module {
         catalogModule,
         releasesModule,
         userModule,
+        appearanceModule,
     )
 }
