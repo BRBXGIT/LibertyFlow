@@ -26,7 +26,7 @@ import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
 
 internal class ApiClientProviderImpl(
-    private val tokenProvider: TokenProvider,
+    private val apiClientTokenProvider: ApiClientTokenProvider,
 ) : ApiClientProvider {
 
     private companion object {
@@ -62,7 +62,7 @@ internal class ApiClientProviderImpl(
             install(plugin = Auth) {
                 bearer {
                     loadTokens {
-                        val token = tokenProvider.getToken()
+                        val token = apiClientTokenProvider.getToken()
                         token?.let {
                             BearerTokens(
                                 accessToken = token,
@@ -71,7 +71,7 @@ internal class ApiClientProviderImpl(
                         }
                     }
                     refreshTokens {
-                        tokenProvider.clearToken()
+                        apiClientTokenProvider.clearToken()
                         null
                     }
                     sendWithoutRequest { request ->
