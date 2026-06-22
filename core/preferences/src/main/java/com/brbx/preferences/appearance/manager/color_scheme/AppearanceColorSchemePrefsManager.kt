@@ -1,10 +1,5 @@
 package com.brbx.preferences.appearance.manager.color_scheme
 
-import kotlinx.coroutines.flow.Flow
+import com.brbx.preferences.base.PrefsProvider
 
-interface AppearanceColorSchemePrefsManager {
-
-    val colorScheme: Flow<String?>
-
-    suspend fun saveColorScheme(colorScheme: String)
-}
+interface AppearanceColorSchemePrefsManager : PrefsProvider<String>

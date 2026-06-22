@@ -7,6 +7,6 @@ class SetColorSchemeUseCase(
     private val repository: ColorSchemeRepository,
 ) {
     suspend operator fun invoke(scheme: ColorScheme) {
-        repository.setColorScheme(scheme)
+        repository.set(scheme)
     }
 }

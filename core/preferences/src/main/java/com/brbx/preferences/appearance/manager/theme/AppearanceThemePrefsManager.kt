@@ -1,10 +1,5 @@
 package com.brbx.preferences.appearance.manager.theme
 
-import kotlinx.coroutines.flow.Flow
+import com.brbx.preferences.base.PrefsProvider
 
-interface AppearanceThemePrefsManager {
-
-    val theme: Flow<String?>
-
-    suspend fun saveTheme(theme: String)
-}
+interface AppearanceThemePrefsManager : PrefsProvider<String>

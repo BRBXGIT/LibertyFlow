@@ -10,10 +10,10 @@ internal class AppearanceThemePrefsManagerImpl(
     dataStore: DataStore<Preferences>
 ) : BasePrefsManager(dataStore), AppearanceThemePrefsManager {
 
-    override val theme: Flow<String?> = getValue(ThemeKey)
+    override val value: Flow<String?> = getValue(ThemeKey)
 
-    override suspend fun saveTheme(theme: String) {
-        setValue(ThemeKey, theme)
+    override suspend fun save(value: String) {
+        setValue(ThemeKey, value)
     }
 
     private companion object {

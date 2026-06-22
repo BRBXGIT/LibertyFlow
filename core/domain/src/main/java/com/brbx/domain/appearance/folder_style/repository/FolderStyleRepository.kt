@@ -1,11 +1,6 @@
 package com.brbx.domain.appearance.folder_style.repository
 
 import com.brbx.domain.appearance.folder_style.model.FolderStyle
-import kotlinx.coroutines.flow.Flow
+import com.brbx.domain.common.provider.ValueProvider
 
-interface FolderStyleRepository {
-
-    val folderStyle: Flow<FolderStyle>
-
-    suspend fun setFolderStyle(folderStyle: FolderStyle)
-}
+interface FolderStyleRepository : ValueProvider<FolderStyle>

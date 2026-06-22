@@ -1,10 +1,5 @@
 package com.brbx.preferences.player.manager.fullscreen
 
-import kotlinx.coroutines.flow.Flow
+import com.brbx.preferences.base.PrefsProvider
 
-interface PlayerFullScreenPrefsManager {
-
-    val fullScreen: Flow<Boolean?>
-
-    suspend fun saveFullScreen(fullScreen: Boolean)
-}
+interface PlayerFullScreenPrefsManager : PrefsProvider<Boolean>

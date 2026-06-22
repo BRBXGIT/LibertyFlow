@@ -1,10 +1,5 @@
 package com.brbx.preferences.player.manager.auto_play
 
-import kotlinx.coroutines.flow.Flow
+import com.brbx.preferences.base.PrefsProvider
 
-interface PlayerAutoPlayPrefsManager {
-
-    val autoPlay: Flow<Boolean?>
-
-    suspend fun saveAutoPlay(autoPlay: Boolean)
-}
+interface PlayerAutoPlayPrefsManager : PrefsProvider<Boolean>

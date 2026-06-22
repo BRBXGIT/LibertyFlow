@@ -10,10 +10,10 @@ internal class PlayerFullScreenPrefsManagerImpl(
     dataStore: DataStore<Preferences>,
 ) : BasePrefsManager(dataStore), PlayerFullScreenPrefsManager {
 
-    override val fullScreen: Flow<Boolean?> = getValue(FullScreenKey)
+    override val value: Flow<Boolean?> = getValue(FullScreenKey)
 
-    override suspend fun saveFullScreen(fullScreen: Boolean) {
-        setValue(FullScreenKey, fullScreen)
+    override suspend fun save(value: Boolean) {
+        setValue(FullScreenKey, value)
     }
 
     private companion object {

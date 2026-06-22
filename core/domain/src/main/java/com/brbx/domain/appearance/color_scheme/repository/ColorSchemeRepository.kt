@@ -1,11 +1,6 @@
 package com.brbx.domain.appearance.color_scheme.repository
 
 import com.brbx.domain.appearance.color_scheme.model.ColorScheme
-import kotlinx.coroutines.flow.Flow
+import com.brbx.domain.common.provider.ValueProvider
 
-interface ColorSchemeRepository {
-
-    val colorScheme: Flow<ColorScheme>
-
-    suspend fun setColorScheme(colorScheme: ColorScheme)
-}
+interface ColorSchemeRepository : ValueProvider<ColorScheme>

@@ -1,4 +1,4 @@
-package com.brbx.data.user.auth.repository
+package com.brbx.data.user.auth.auth.repository
 
 import com.brbx.data.common.map.toDomain
 import com.brbx.domain.model.result.DomainRequestResult

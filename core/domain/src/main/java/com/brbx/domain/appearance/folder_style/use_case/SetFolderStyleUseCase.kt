@@ -7,6 +7,6 @@ class SetFolderStyleUseCase(
     private val repository: FolderStyleRepository,
 ) {
     suspend operator fun invoke(style: FolderStyle) {
-        repository.setFolderStyle(style)
+        repository.set(style)
     }
 }

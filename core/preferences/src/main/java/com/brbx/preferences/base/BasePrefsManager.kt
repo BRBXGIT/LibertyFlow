@@ -12,8 +12,12 @@ internal abstract class BasePrefsManager(
     protected fun <T> getValue(key: Preferences.Key<T>): Flow<T?> =
         dataStore.data.map { preferences -> preferences[key] }
 
-    protected suspend fun <T> setValue(key: Preferences.Key<T>, value: T) {
-        dataStore.edit { preferences -> preferences[key] = value }
+    protected suspend fun <T> setValue(key: Preferences.Key<T>, value: T?) {
+        if (value == null) {
+            clearValue(key)
+        } else {
+            dataStore.edit { preferences -> preferences[key] = value }
+        }
     }
 
     protected suspend fun <T> clearValue(key: Preferences.Key<T>) {

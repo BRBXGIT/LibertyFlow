@@ -1,4 +1,4 @@
-package com.brbx.data.user.auth.auth_state_repository
+package com.brbx.data.user.auth.auth_state.repository
 
 import com.brbx.domain.user.auth_state.model.UserAuthState
 import com.brbx.domain.user.auth_state.repository.UserAuthStateRepository

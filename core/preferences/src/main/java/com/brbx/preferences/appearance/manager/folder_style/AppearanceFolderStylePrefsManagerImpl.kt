@@ -10,10 +10,10 @@ internal class AppearanceFolderStylePrefsManagerImpl(
     dataStore: DataStore<Preferences>
 ) : BasePrefsManager(dataStore), AppearanceFolderStylePrefsManager {
 
-    override val folderStyle: Flow<String?> = getValue(FolderStyleKey)
+    override val value: Flow<String?> = getValue(FolderStyleKey)
 
-    override suspend fun saveFolderStyle(folderStyle: String) {
-        setValue(FolderStyleKey, folderStyle)
+    override suspend fun save(value: String) {
+        setValue(FolderStyleKey, value)
     }
 
     private companion object {

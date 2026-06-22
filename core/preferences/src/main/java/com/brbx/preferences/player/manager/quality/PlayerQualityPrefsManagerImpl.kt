@@ -10,10 +10,10 @@ internal class PlayerQualityPrefsManagerImpl(
     dataStore: DataStore<Preferences>
 ) : BasePrefsManager(dataStore), PlayerQualityPrefsManager {
 
-    override val quality: Flow<String?> = getValue(QualityKey)
+    override val value: Flow<String?> = getValue(QualityKey)
 
-    override suspend fun saveQuality(quality: String) {
-        setValue(QualityKey, quality)
+    override suspend fun save(value: String) {
+        setValue(QualityKey, value)
     }
 
     private companion object {

@@ -10,10 +10,10 @@ internal class PlayerAutoPlayPrefsManagerImpl(
     dataStore: DataStore<Preferences>
 ) : BasePrefsManager(dataStore), PlayerAutoPlayPrefsManager {
 
-    override val autoPlay: Flow<Boolean?> = getValue(AutoPlayKey)
+    override val value: Flow<Boolean?> = getValue(AutoPlayKey)
 
-    override suspend fun saveAutoPlay(autoPlay: Boolean) {
-        setValue(AutoPlayKey, autoPlay)
+    override suspend fun save(value: Boolean) {
+        setValue(AutoPlayKey, value)
     }
 
     private companion object {

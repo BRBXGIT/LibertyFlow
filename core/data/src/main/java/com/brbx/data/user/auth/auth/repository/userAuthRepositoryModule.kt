@@ -1,4 +1,4 @@
-package com.brbx.data.user.auth.repository
+package com.brbx.data.user.auth.auth.repository
 
 import com.brbx.domain.user.auth.repository.UserAuthRepository
 import org.koin.core.module.dsl.bind

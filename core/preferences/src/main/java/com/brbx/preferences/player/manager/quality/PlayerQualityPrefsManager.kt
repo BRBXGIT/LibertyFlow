@@ -1,10 +1,5 @@
 package com.brbx.preferences.player.manager.quality
 
-import kotlinx.coroutines.flow.Flow
+import com.brbx.preferences.base.PrefsProvider
 
-interface PlayerQualityPrefsManager {
-
-    val quality: Flow<String?>
-
-    suspend fun saveQuality(quality: String)
-}
+interface PlayerQualityPrefsManager : PrefsProvider<String>

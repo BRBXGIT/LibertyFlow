@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetFolderStyleUseCase(
     private val repository: FolderStyleRepository,
 ) {
-    operator fun invoke(): Flow<FolderStyle> = repository.folderStyle
+    operator fun invoke(): Flow<FolderStyle> = repository.value
 }

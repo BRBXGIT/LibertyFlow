@@ -1,10 +1,5 @@
 package com.brbx.preferences.appearance.manager.folder_style
 
-import kotlinx.coroutines.flow.Flow
+import com.brbx.preferences.base.PrefsProvider
 
-interface AppearanceFolderStylePrefsManager {
-
-    val folderStyle: Flow<String?>
-
-    suspend fun saveFolderStyle(folderStyle: String)
-}
+interface AppearanceFolderStylePrefsManager : PrefsProvider<String>

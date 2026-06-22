@@ -7,6 +7,6 @@ class SetThemeUseCase(
     private val repository: ThemeRepository,
 ) {
     suspend operator fun invoke(theme: Theme) {
-        repository.setTheme(theme)
+        repository.set(theme)
     }
 }

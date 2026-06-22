@@ -8,5 +8,5 @@ class GetColorSchemeUseCase(
     private val repository: ColorSchemeRepository,
 ) {
     operator fun invoke(): Flow<ColorScheme> =
-        repository.colorScheme
+        repository.value
 }

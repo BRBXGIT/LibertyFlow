@@ -10,10 +10,10 @@ internal class AppearanceColorSchemePrefsManagerImpl(
     dataStore: DataStore<Preferences>
 ) : BasePrefsManager(dataStore), AppearanceColorSchemePrefsManager {
 
-    override val colorScheme: Flow<String?> = getValue(ColorSchemeKey)
+    override val value: Flow<String?> = getValue(ColorSchemeKey)
 
-    override suspend fun saveColorScheme(colorScheme: String) {
-        setValue(ColorSchemeKey, colorScheme)
+    override suspend fun save(value: String) {
+        setValue(ColorSchemeKey, value)
     }
 
     private companion object {
