@@ -1,5 +1,6 @@
 package com.brbx.network.account_user.lists.favorites.favorites_ids.api
 
+import com.brbx.network.account_user.lists.favorites.model.FavoritesIds
 import com.brbx.network.base.api.ApiCallExecutor
 import com.brbx.network.base.client.ApiClientProvider
 import com.brbx.network.base.model.result.RequestResult
@@ -11,7 +12,7 @@ internal class AccountUserFavoritesIdsApiImpl(
     private val apiClientProvider: ApiClientProvider,
 ) : AccountUserFavoritesIdsApi {
 
-    override suspend fun getIds(): RequestResult<List<Int>> =
+    override suspend fun getIds(): RequestResult<FavoritesIds> =
         apiCallExecutor.execute {
             apiClientProvider.client.get(urlString = FavoritesIdsEndPoint).body()
         }

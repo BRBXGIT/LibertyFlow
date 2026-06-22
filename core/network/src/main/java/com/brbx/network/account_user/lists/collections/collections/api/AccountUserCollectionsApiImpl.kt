@@ -1,14 +1,16 @@
 package com.brbx.network.account_user.lists.collections.collections.api
 
-import com.brbx.network.account_user.lists.collections.model.CollectionIds
+import com.brbx.network.account_user.lists.collections.model.CollectionsIds
+import com.brbx.network.account_user.lists.collections.model.CollectionsIdsSerializer
 import com.brbx.network.account_user.lists.model.UserListItem
 import com.brbx.network.base.api.ApiCallExecutor
 import com.brbx.network.base.client.ApiClientProvider
 import com.brbx.network.base.model.result.RequestResult
-import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.json.Json
 
 internal class AccountUserCollectionsApiImpl(
     private val apiCallExecutor: ApiCallExecutor,
@@ -17,18 +19,26 @@ internal class AccountUserCollectionsApiImpl(
 
     override suspend fun addToCollection(
         items: List<UserListItem.Collection>
-    ): RequestResult<List<CollectionIds>> = apiCallExecutor.execute {
-        apiClientProvider.client.post(urlString = CollectionsEndPoint) {
+    ): RequestResult<CollectionsIds> = apiCallExecutor.execute {
+        val result = apiClientProvider.client.post(urlString = CollectionsEndPoint) {
             setBody(items)
-        }.body()
+        }
+        Json.decodeFromString(
+            deserializer = CollectionsIdsSerializer,
+            string = result.bodyAsText(),
+        )
     }
 
     override suspend fun deleteFromCollection(
         items: List<UserListItem.Collection>
-    ): RequestResult<List<CollectionIds>> = apiCallExecutor.execute {
-        apiClientProvider.client.delete(urlString = CollectionsEndPoint) {
+    ): RequestResult<CollectionsIds> = apiCallExecutor.execute {
+        val result = apiClientProvider.client.delete(urlString = CollectionsEndPoint) {
             setBody(items)
-        }.body()
+        }
+        Json.decodeFromString(
+            deserializer = CollectionsIdsSerializer,
+            string = result.bodyAsText(),
+        )
     }
 
     private companion object {

@@ -13,39 +13,53 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
 
-internal object CollectionsIdsSerializer : KSerializer<CollectionIds> {
-    
-    override val descriptor: SerialDescriptor = 
-        buildClassSerialDescriptor("CollectionIdsSerializer")
+internal object CollectionsIdsSerializer : KSerializer<Map<String, List<Int>>> {
 
-    override fun deserialize(decoder: Decoder): CollectionIds {
-        val jsonDecoder = decoder as? JsonDecoder 
+    override val descriptor: SerialDescriptor =
+        buildClassSerialDescriptor("CollectionsMapSerializer")
+
+    override fun deserialize(decoder: Decoder): Map<String, List<Int>> {
+        val jsonDecoder = decoder as? JsonDecoder
             ?: error("This deserializer only supports JSON")
-            
-        val array = jsonDecoder.decodeJsonElement() as JsonArray
-        if (array.isEmpty()) {
-            error("Received an empty array, cannot parse TitleItemDto")
+
+        val rootArray = jsonDecoder.decodeJsonElement() as? JsonArray
+            ?: error("Expected root element to be a JsonArray")
+
+        val resultMap = mutableMapOf<String, List<Int>>()
+
+        for (element in rootArray) {
+            val innerArray = element as? JsonArray
+                ?: error("Expected inner element to be a JsonArray")
+
+            if (innerArray.isEmpty()) {
+                error("Received an empty array, cannot parse collection")
+            }
+
+            val collectionName = innerArray.last().jsonPrimitive.content
+
+            val ids = innerArray.dropLast(n = 1).map { it.jsonPrimitive.int }
+
+            resultMap[collectionName] = ids
         }
-        
-        val status = array.last().jsonPrimitive.content
-        val ids = array.dropLast(n = 1).map { it.jsonPrimitive.int }
-        
-        return CollectionIds(
-            ids = ids,
-            collection = status,
-        )
+
+        return resultMap
     }
 
-    override fun serialize(encoder: Encoder, value: CollectionIds) {
-        val jsonEncoder = encoder as? JsonEncoder 
+    override fun serialize(encoder: Encoder, value: Map<String, List<Int>>) {
+        val jsonEncoder = encoder as? JsonEncoder
             ?: error("This serializer only supports JSON")
-            
-        val array = buildJsonArray {
-            value.ids.forEach { id ->
-                add(JsonPrimitive(id)) 
+
+        val rootArray = buildJsonArray {
+            value.forEach { (collection, ids) ->
+                add(buildJsonArray {
+                    // Сначала добавляем все ID
+                    ids.forEach { id -> add(JsonPrimitive(id)) }
+                    // В конец всегда добавляем название коллекции
+                    add(JsonPrimitive(collection))
+                })
             }
-            add(JsonPrimitive(value.collection))
         }
-        jsonEncoder.encodeJsonElement(array)
+
+        jsonEncoder.encodeJsonElement(rootArray)
     }
 }

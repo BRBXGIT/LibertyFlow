@@ -1,10 +1,10 @@
 package com.brbx.domain.user.lists.collections.collections_ids.repository
 
 import com.brbx.domain.model.result.DomainRequestResult
-import com.brbx.domain.user.lists.collections.model.DomainCollectionIds
+import com.brbx.domain.user.lists.collections.model.DomainCollectionsIds
 import kotlinx.coroutines.flow.Flow
 
 interface UserCollectionsIdsRepository {
 
-    fun getIds(): Flow<DomainRequestResult<List<DomainCollectionIds>>>
+    fun getIds(): Flow<DomainRequestResult<DomainCollectionsIds>>
 }

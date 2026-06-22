@@ -1,5 +1,6 @@
 package com.brbx.network.account_user.lists.favorites.favorites.api
 
+import com.brbx.network.account_user.lists.favorites.model.FavoritesIds
 import com.brbx.network.account_user.lists.model.UserListItem
 import com.brbx.network.base.api.ApiCallExecutor
 import com.brbx.network.base.client.ApiClientProvider
@@ -15,7 +16,7 @@ internal class AccountUserFavoritesApiImpl(
 ) : AccountUserFavoritesApi {
 
     override suspend fun addToFavorites(items: List<UserListItem.Favorite>):
-        RequestResult<List<Int>> =
+        RequestResult<FavoritesIds> =
             apiCallExecutor.execute {
                 apiClientProvider.client.post(
                     urlString = FavoritesEndPoint,
@@ -23,7 +24,7 @@ internal class AccountUserFavoritesApiImpl(
             }
 
     override suspend fun deleteFromFavorites(items: List<UserListItem.Favorite>):
-        RequestResult<List<Int>> =
+        RequestResult<FavoritesIds> =
             apiCallExecutor.execute {
                 apiClientProvider.client.delete(
                     urlString = FavoritesEndPoint,

@@ -2,6 +2,7 @@ package com.brbx.data.user.lists.favorites.favorites.repository
 
 import com.brbx.data.common.map.toDomain
 import com.brbx.data.user.lists.favorites.interactor.FavoritesIdsInteractor
+import com.brbx.data.user.lists.favorites.map.toDomain
 import com.brbx.domain.model.result.DomainRequestResult
 import com.brbx.domain.user.lists.favorites.favorites.repository.UserFavoritesRepository
 import com.brbx.domain.user.lists.model.DomainUserListItem
@@ -35,7 +36,7 @@ internal class UserFavoritesRepositoryImpl(
 
         return when (result) {
             is DomainRequestResult.Success -> {
-                interactor.update(ids = result.data)
+                interactor.update(ids = result.data.toDomain())
                 DomainRequestResult.Success(data = Unit)
             }
             is DomainRequestResult.Error -> result
