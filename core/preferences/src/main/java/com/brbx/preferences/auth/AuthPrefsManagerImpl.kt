@@ -10,8 +10,7 @@ internal class AuthPrefsManagerImpl(
     dataStore: DataStore<Preferences>
 ) : BasePrefsManager(dataStore), AuthPrefsManager {
 
-    override val token: Flow<String?>
-        get() = getValue(SessionTokenKey)
+    override val token: Flow<String?> = getValue(SessionTokenKey)
 
     override suspend fun saveToken(token: String) {
         setValue(SessionTokenKey, token)

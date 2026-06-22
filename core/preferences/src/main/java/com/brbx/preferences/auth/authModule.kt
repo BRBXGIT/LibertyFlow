@@ -10,8 +10,13 @@ private const val AuthStoreName = "liberty_flow_auth_store"
 
 private val Context.authStore by preferencesDataStore(AuthStoreName)
 
-internal val authDataStoreModule = module {
+internal val authModule = module {
     single(qualifier = DataStoreQualifier.Auth) {
         androidContext().authStore
+    }
+    single<AuthPrefsManager> {
+        AuthPrefsManagerImpl(
+            dataStore = get(qualifier = DataStoreQualifier.Auth),
+        )
     }
 }
