@@ -1,6 +1,7 @@
 package com.brbx.data
 
 import com.brbx.data.api.apiModule
+import com.brbx.data.appearance.appearanceModule
 import com.brbx.data.catalog.catalogModule
 import com.brbx.data.genres.genresModule
 import com.brbx.data.releases.releasesModule
@@ -14,5 +15,6 @@ val dataModule = module {
         genresModule,
         releasesModule,
         userModule,
+        appearanceModule,
     )
 }
