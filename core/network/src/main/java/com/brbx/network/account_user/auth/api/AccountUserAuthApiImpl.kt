@@ -2,7 +2,7 @@ package com.brbx.network.account_user.auth.api
 
 import com.brbx.network.account_user.auth.model.AuthForm
 import com.brbx.network.account_user.auth.model.Token
-import com.brbx.network.base.api.ApiCallExecutor
+import com.brbx.network.base.executor.ApiCallExecutor
 import com.brbx.network.base.client.ApiClientProvider
 import com.brbx.network.base.model.result.RequestResult
 import io.ktor.client.call.body

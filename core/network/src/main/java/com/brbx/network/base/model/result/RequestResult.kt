@@ -6,5 +6,5 @@ sealed interface RequestResult<out T> {
     value class Success<out T>(val data: T) : RequestResult<T>
 
     @JvmInline
-    value class Error(val exception: RequestException) : RequestResult<Nothing>
+    value class Error(val code: Int) : RequestResult<Nothing>
 }

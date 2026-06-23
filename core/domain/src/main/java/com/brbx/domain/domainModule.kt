@@ -1,18 +1,12 @@
 package com.brbx.domain
 
-import com.brbx.domain.appearance.appearanceModule
-import com.brbx.domain.catalog.catalogModule
-import com.brbx.domain.genres.genresModule
-import com.brbx.domain.releases.releasesModule
-import com.brbx.domain.user.userModule
+import com.brbx.domain.network.networkModule
+import com.brbx.domain.preferences.preferencesModule
 import org.koin.dsl.module
 
 val domainModule = module {
     includes(
-        genresModule,
-        catalogModule,
-        releasesModule,
-        userModule,
-        appearanceModule,
+        networkModule,
+        preferencesModule,
     )
 }

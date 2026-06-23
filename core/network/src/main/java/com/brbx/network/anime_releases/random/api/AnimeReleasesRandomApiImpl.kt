@@ -1,7 +1,7 @@
 package com.brbx.network.anime_releases.random.api
 
 import com.brbx.network.anime_releases.random.model.RandomAnime
-import com.brbx.network.base.api.ApiCallExecutor
+import com.brbx.network.base.executor.ApiCallExecutor
 import com.brbx.network.base.client.ApiClientProvider
 import com.brbx.network.base.common.RequestDefaults
 import com.brbx.network.base.common.RequestParameters

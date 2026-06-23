@@ -1,6 +1,6 @@
 package com.brbx.network.anime_genres.genres.api
 
-import com.brbx.network.base.api.ApiCallExecutor
+import com.brbx.network.base.executor.ApiCallExecutor
 import com.brbx.network.base.client.ApiClientProvider
 import com.brbx.network.base.common.RequestParameters
 import com.brbx.network.base.model.common.Genre

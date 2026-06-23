@@ -1,6 +1,6 @@
 package com.brbx.network.base
 
-import com.brbx.network.base.api.apiCallExecutorModule
+import com.brbx.network.base.executor.apiCallExecutorModule
 import com.brbx.network.base.client.apiClientModule
 import org.koin.dsl.module
 
