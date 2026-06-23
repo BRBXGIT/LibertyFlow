@@ -1,5 +1,6 @@
 package com.brbx.data.appearance.color_scheme.repository
 
+import com.brbx.data.common.map.toEnumOrDefault
 import com.brbx.domain.appearance.color_scheme.model.ColorScheme
 import com.brbx.domain.appearance.color_scheme.repository.ColorSchemeRepository
 import com.brbx.preferences.appearance.manager.color_scheme.AppearanceColorSchemePrefsManager
@@ -11,20 +12,10 @@ internal class ColorSchemeRepositoryImpl(
 ) : ColorSchemeRepository {
 
     override val value: Flow<ColorScheme> = prefs.value.map {
-        it.toColorScheme()
+        it.toEnumOrDefault(defaultValue = ColorScheme.Lavender)
     }
 
     override suspend fun set(value: ColorScheme) {
-        prefs.save(value.toData())
+        prefs.save(value.name)
     }
-
-    private fun ColorScheme.toData(): String =
-        this.name
-
-    private fun String?.toColorScheme(): ColorScheme =
-        if (this == null) {
-            ColorScheme.valueOf(ColorScheme.Lavender.name)
-        } else {
-            ColorScheme.valueOf(this)
-        }
 }

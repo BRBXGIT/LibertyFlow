@@ -1,6 +1,5 @@
 package com.brbx.data.user.lists.collections.collections.repository
 
-import com.brbx.data.common.map.toData
 import com.brbx.data.common.map.toDomain
 import com.brbx.data.user.lists.collections.interactor.CollectionsIdsInteractor
 import com.brbx.data.user.lists.collections.map.toDomain
@@ -49,6 +48,6 @@ internal class UserCollectionsRepositoryImpl(
     private fun DomainUserListItem.Collection.toData(): UserListItem.Collection =
         UserListItem.Collection(
             id = this.id,
-            collection = this.collection.toData(),
+            collection = this.collection.dataValue,
         )
 }

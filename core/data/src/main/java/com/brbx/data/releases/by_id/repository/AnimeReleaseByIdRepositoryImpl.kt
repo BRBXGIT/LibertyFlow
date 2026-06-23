@@ -1,9 +1,9 @@
 package com.brbx.data.releases.by_id.repository
 
 import com.brbx.data.common.map.toDomain
-import com.brbx.data.common.map.toPublishStatus
-import com.brbx.data.common.map.toSeason
-import com.brbx.data.common.map.toType
+import com.brbx.domain.model.common.PublishStatus
+import com.brbx.domain.model.common.Season
+import com.brbx.domain.model.common.Type
 import com.brbx.domain.model.result.DomainRequestResult
 import com.brbx.domain.releases.by_id.model.DomainAnimeItemById
 import com.brbx.domain.releases.by_id.repository.AnimeReleaseByIdRepository
@@ -19,7 +19,7 @@ internal class AnimeReleaseByIdRepositoryImpl(
 
     private fun AnimeItemById.toDomain(): DomainAnimeItemById =
         DomainAnimeItemById(
-            publishStatus = this.isOngoing.toPublishStatus(),
+            publishStatus = PublishStatus.fromData(isOngoing = this.isOngoing),
             description = this.description,
             episodes = this.episodes.map { it.toDomain() },
             genres = this.genres.map { it.toDomain() },
@@ -27,9 +27,9 @@ internal class AnimeReleaseByIdRepositoryImpl(
             members = this.members.map { it.toDomain() },
             name = this.name.toDomain(),
             poster = this.poster.toDomain(),
-            season = this.season.description.toSeason(),
+            season = Season.fromData(value = this.season.description),
             torrents = this.torrents.map { it.toDomain() },
-            type = this.type.description.toType(),
+            type = Type.fromData(value = this.type.description),
             year = this.year,
         )
 

@@ -1,5 +1,6 @@
 package com.brbx.data.appearance.folder_style.repository
 
+import com.brbx.data.common.map.toEnumOrDefault
 import com.brbx.domain.appearance.folder_style.model.FolderStyle
 import com.brbx.domain.appearance.folder_style.repository.FolderStyleRepository
 import com.brbx.preferences.appearance.manager.folder_style.AppearanceFolderStylePrefsManager
@@ -11,20 +12,10 @@ class FolderStyleRepositoryImpl(
 ) : FolderStyleRepository {
 
     override val value: Flow<FolderStyle> = prefs.value.map {
-        it.toFolderStyle()
+        it.toEnumOrDefault(defaultValue = FolderStyle.M3)
     }
 
     override suspend fun set(value: FolderStyle) {
-        prefs.save(value.toData())
+        prefs.save(value.name)
     }
-
-    internal fun FolderStyle.toData(): String =
-        this.name
-
-    internal fun String?.toFolderStyle(): FolderStyle =
-        if (this == null) {
-            FolderStyle.valueOf(FolderStyle.M3.name)
-        } else {
-            FolderStyle.valueOf(this)
-        }
 }

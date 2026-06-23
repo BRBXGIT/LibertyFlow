@@ -8,6 +8,7 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
+// TODO move to repository layer later, this layer should just throw exceptions
 internal class ApiCallExecutorImpl : ApiCallExecutor {
 
     override suspend fun <T> execute(call: suspend () -> T): RequestResult<T> {
