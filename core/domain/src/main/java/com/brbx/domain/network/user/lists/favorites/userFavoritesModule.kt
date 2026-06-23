@@ -1,13 +1,13 @@
 package com.brbx.domain.network.user.lists.favorites
 
-import com.brbx.domain.network.user.lists.favorites.favorites.use_case.userFavoritesInteractingModule
+import com.brbx.domain.network.user.lists.favorites.favorites.use_case.userFavoritesUseCaseModule
 import com.brbx.domain.network.user.lists.favorites.favorites_ids.use_case.getUserFavoritesIdsUseCaseModule
 import com.brbx.domain.network.user.lists.favorites.favorites_releases.use_case.getUserFavoritesReleasesUseCaseModule
 import org.koin.dsl.module
 
 internal val userFavoritesModule = module {
     includes(
-        userFavoritesInteractingModule,
+        userFavoritesUseCaseModule,
         getUserFavoritesIdsUseCaseModule,
         getUserFavoritesReleasesUseCaseModule,
     )

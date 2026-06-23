@@ -11,7 +11,7 @@ internal class PlayerOpeningPrefsManagerImpl(
 ) : BasePrefsManager(dataStore), PlayerOpeningPrefsManager {
 
     override val showSkipButton: Flow<Boolean?> = getValue(ShowSkipButtonKey)
-    override val authSkip: Flow<Boolean?> = getValue(AutoSkipKey)
+    override val autoSkip: Flow<Boolean?> = getValue(AutoSkipKey)
 
     override suspend fun saveShowSkipButton(showSkipButton: Boolean) {
         setValue(ShowSkipButtonKey, showSkipButton)
