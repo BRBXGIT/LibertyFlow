@@ -9,6 +9,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.network)
     implementation(projects.core.preferences)
+    implementation(projects.core.localDbs)
 
     // Koin
     implementation(libs.koin.core)

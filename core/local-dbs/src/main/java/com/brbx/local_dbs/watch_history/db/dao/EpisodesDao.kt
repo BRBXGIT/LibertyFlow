@@ -1,23 +1,19 @@
-package com.brbx.local_dbs.watched_episodes.db
+package com.brbx.local_dbs.watch_history.db.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
+import com.brbx.local_dbs.watch_history.db.model.EpisodeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EpisodesDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAnime(anime: AnimeEntity)
+    @Query(value = "SELECT episodeIndex FROM EpisodeEntity WHERE animeId = :animeId")
+    fun getWatchedEpisodesIndexes(animeId: Int): Flow<List<Int>>
 
     @Upsert
     suspend fun upsertWatchedEpisode(episode: EpisodeEntity)
-
-    @Query(value = "SELECT episodeIndex FROM EpisodeEntity WHERE animeId = :animeId")
-    fun getWatchedEpisodes(animeId: Int): Flow<List<Int>>
 
     @Query(
         value = "SELECT lastPosition " +
