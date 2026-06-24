@@ -2,6 +2,9 @@
 # Kotlin
 kotlin = "2.4.0"
 
+# Ksp
+kspPlugin = "2.3.9"
+
 # Agp
 agp = "9.2.0"
 
@@ -23,6 +26,9 @@ datastorePreferences = "1.2.1"
 # Ktor
 ktorClientCore = "3.5.0"
 
+# Room
+roomKtx = "2.8.4"
+
 # Paging
 paging = "3.5.0"
 
@@ -32,6 +38,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 
 # BRBX
 brbx-mvi-compose = { module = "com.github.BRBXGIT.BRBXDevKit:mvi-compose", version.ref = "brbx" }
+brbx-ui-compose = { module = "com.github.BRBXGIT.BRBXDevKit:ui-compose", version.ref = "brbx" }
 
 # Solar icons
 solar = { module = "dev.chiksmedina.solar:solar", version.ref = "solar" }
@@ -43,6 +50,10 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorClientCore" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientCore" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClientCore" }
+
+# Room
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 
 # Paging
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
@@ -71,6 +82,11 @@ ktor-core = [
     "ktor-client-auth",
 ]
 
+room-core = [
+    "androidx-room-compiler",
+    "androidx-room-ktx"
+]
+
 [plugins]
 # Application
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -86,6 +102,9 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 
 # Android library
 android-library = { id = "com.android.library", version.ref = "agp" }
+
+# Ksp
+ksp = { id = "com.google.devtools.ksp", version.ref = "kspPlugin" }
 
 # build-logic
 libertyflow-android-application = { id = "libertyflow.android.application" }
