@@ -8,6 +8,9 @@ import com.brbx.domain.network.user.auth.repository.UserAuthRepository
 class UserAuthUseCase(
     private val repository: UserAuthRepository,
 ) {
-    suspend operator fun invoke(form: DomainAuthForm): DomainRequestResult<DomainToken> =
-        repository.auth(form)
+    suspend operator fun invoke(
+        login: String,
+        password: String,
+    ): DomainRequestResult<DomainToken> =
+        repository.auth(form = DomainAuthForm(login, password))
 }

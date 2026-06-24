@@ -7,6 +7,6 @@ import com.brbx.domain.network.releases.recommended.repository.RecommendedAnimeR
 class GetRecommendedAnimeReleasesUseCase(
     private val repository: RecommendedAnimeReleasesRepository,
 ) {
-    suspend operator fun invoke(id: Int): DomainRequestResult<List<DomainAnimeItem>> =
-        repository.getReleases(id)
+    suspend operator fun invoke(animeId: Int): DomainRequestResult<List<DomainAnimeItem>> =
+        repository.getReleases(releaseId = animeId)
 }

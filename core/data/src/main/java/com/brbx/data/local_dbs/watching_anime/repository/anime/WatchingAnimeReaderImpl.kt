@@ -7,7 +7,7 @@ import com.brbx.local_dbs.watch_history.provider.WatchHistoryDaoProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class WatchingAnimeReaderImpl(
+internal class WatchingAnimeReaderImpl(
     private val dbDaoProvider: WatchHistoryDaoProvider,
 ) : WatchingAnimeReader {
 

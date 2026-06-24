@@ -5,7 +5,7 @@ import com.brbx.domain.local_dbs.watching_anime.repository.WatchedEpisodesWriter
 import com.brbx.local_dbs.watch_history.db.model.EpisodeEntity
 import com.brbx.local_dbs.watch_history.provider.WatchHistoryDaoProvider
 
-class WatchedEpisodesWriterImpl(
+internal class WatchedEpisodesWriterImpl(
     private val dbDaoProvider: WatchHistoryDaoProvider,
 ) : WatchedEpisodesWriter {
 
