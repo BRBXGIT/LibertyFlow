@@ -44,3 +44,12 @@ include(":core:common")
 
 // Features
 include(":feature")
+include(":feature:home")
+include(":feature:favorites")
+include(":feature:collections")
+include(":feature:more")
+include(":feature:settings")
+include(":feature:anime-details")
+include(":feature:player")
+include(":feature:common")
+include(":feature:information")
