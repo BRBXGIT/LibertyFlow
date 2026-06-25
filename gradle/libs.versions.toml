@@ -15,7 +15,7 @@ coreKtx = "1.19.0"
 kotlinxCoroutinesCore = "1.11.0"
 
 # BRBX
-brbx = "1.1.31"
+brbx = "1.1.32"
 
 # Optics
 arrowOptics = "2.2.3"

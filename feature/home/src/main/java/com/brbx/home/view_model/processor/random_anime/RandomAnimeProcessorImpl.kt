@@ -34,7 +34,7 @@ internal class RandomAnimeProcessorImpl(
 
     private fun BrbxMviScope<State, BrbxEffect, Unit>.getRandomAnime() {
         coroutineScope.launch(context = dispatcherIo) {
-            state.copy { State.randomAnime.loadingState.isLoading set true }
+            updateState { copy { State.randomAnime.loadingState.isLoading set true } }
             randomAnimeUseCase()
                 .onSuccess {
                     // TODO Make navigation to details screen
@@ -49,7 +49,7 @@ internal class RandomAnimeProcessorImpl(
                         )
                     )
                 }
-            state.copy { State.randomAnime.loadingState.isLoading set false }
+            updateState { copy { State.randomAnime.loadingState.isLoading set false } }
         }
     }
 }

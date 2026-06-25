@@ -1,10 +1,7 @@
-package com.brbx.common.model.anime_item.model
+package com.brbx.common.model.common.model
 
 import androidx.compose.runtime.Immutable
 import arrow.optics.optics
-import com.brbx.common.model.common.model.Genre
-import com.brbx.common.model.common.model.Name
-import com.brbx.common.model.common.model.Poster
 
 @Immutable
 @optics

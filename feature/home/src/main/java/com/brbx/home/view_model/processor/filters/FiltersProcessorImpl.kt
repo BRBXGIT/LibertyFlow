@@ -21,34 +21,34 @@ internal class FiltersProcessorImpl : FiltersProcessor {
         when (intent) {
             Intent.Filters.ToggleSheet -> {
                 updateState {
-                    state.copy { State.filtersSheet.isVisible transform { !it } }
+                    copy { State.filtersSheet.isVisible transform { !it } }
                 }
             }
             Intent.Filters.ToggleOngoing -> {
                 updateState {
-                    state.copy { State.filtersSheet.filers.isOngoing transform { !it } }
+                    copy { State.filtersSheet.filers.isOngoing transform { !it } }
                 }
             }
             is Intent.Filters.UpdateYears -> {
                 updateState {
-                    state.copy { State.filtersSheet.filers.years set Years(intent.from, intent.to) }
+                    copy { State.filtersSheet.filers.years set Years(intent.from, intent.to) }
                 }
             }
             is Intent.Filters.UpdateSorting -> {
                 updateState {
-                    state.copy { State.filtersSheet.filers.sorting set intent.sorting }
+                    copy { State.filtersSheet.filers.sorting set intent.sorting }
                 }
             }
             is Intent.Filters.ToggleGenre -> {
                 updateState {
-                    state.copy { State.filtersSheet.filers.genres transform {
+                    copy { State.filtersSheet.filers.genres transform {
                         it.toggle(element = intent.genre) }
                     }
                 }
             }
             is Intent.Filters.ToggleSeason -> {
                 updateState {
-                    state.copy { State.filtersSheet.filers.seasons transform {
+                    copy { State.filtersSheet.filers.seasons transform {
                         it.toggle(element = intent.season) }
                     }
                 }

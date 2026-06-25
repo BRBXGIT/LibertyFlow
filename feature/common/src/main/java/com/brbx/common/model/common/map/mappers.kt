@@ -1,11 +1,13 @@
 package com.brbx.common.model.common.map
 
+import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Name
 import com.brbx.common.model.common.model.Poster
 import com.brbx.common.model.common.model.Years
 import com.brbx.domain.network.model.common.DomainGenre
 import com.brbx.domain.network.model.common.DomainYears
+import com.brbx.domain.network.model.response.common.DomainAnimeItem
 import com.brbx.domain.network.model.response.common.DomainName
 import com.brbx.domain.network.model.response.common.DomainPoster
 
@@ -33,4 +35,25 @@ fun DomainYears.toUi(): Years =
     Years(
         from = this.fromYear,
         to = this.toYear,
+    )
+
+fun Genre.toDomain(): DomainGenre =
+    DomainGenre(
+        id = this.id,
+        name = this.name,
+    )
+
+fun Years.toDomain(): DomainYears =
+    DomainYears(
+        fromYear = this.from,
+        toYear = this.to,
+    )
+
+fun DomainAnimeItem.toUi(): AnimeItem =
+    AnimeItem(
+        favoritesCount = this.favoritesCount,
+        genres = this.genres.map { it.toUi() },
+        id = this.id,
+        name = this.name.toUi(),
+        poster = this.poster.toUi(),
     )

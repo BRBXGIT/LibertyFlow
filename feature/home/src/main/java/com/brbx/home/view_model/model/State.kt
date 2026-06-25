@@ -3,13 +3,15 @@ package com.brbx.home.view_model.model
 import androidx.compose.runtime.Immutable
 import androidx.paging.PagingData
 import arrow.optics.optics
-import com.brbx.common.model.anime_item.model.AnimeItem
+import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.model.loading_state.LoadingState
 import com.brbx.common.model.search_state.SearchState
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Immutable
 @optics
@@ -22,9 +24,9 @@ internal data class State(
     @Immutable
     @optics
     data class Catalog(
-        val loadingState: LoadingState = LoadingState(),
-        val refreshingState: LoadingState = LoadingState(),
-        val catalog: PagingData<AnimeItem> = PagingData.empty(),
+        val loading: LoadingState = LoadingState(),
+        val refreshing: LoadingState = LoadingState(),
+        val catalog: Flow<PagingData<AnimeItem>> = emptyFlow(),
     ) { companion object }
 
     @Immutable

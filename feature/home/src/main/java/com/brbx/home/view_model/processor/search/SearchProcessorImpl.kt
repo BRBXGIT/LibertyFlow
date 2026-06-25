@@ -14,9 +14,9 @@ internal class SearchProcessorImpl : SearchProcessor {
     override fun BrbxMviScope<State, BrbxEffect, Unit>.process(intent: Intent.Searching) {
         when (intent) {
             Intent.Searching.ToggleSearching ->
-                state.copy { State.search.isSearching transform { !it } }
+                updateState { copy { State.search.isSearching transform { !it } } }
             is Intent.Searching.UpdateSearch ->
-                state.copy { State.search.search set intent.search }
+                updateState { copy { State.search.search set intent.search } }
         }
     }
 }
