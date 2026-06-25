@@ -1,4 +1,4 @@
-package com.brbx.domain.local_dbs.watching_anime.use_case.anime
+package com.brbx.domain.local_dbs.watching_anime.use_case.anime.use_case
 
 import com.brbx.domain.local_dbs.watching_anime.model.DomainWatchingAnime
 import com.brbx.domain.local_dbs.watching_anime.repository.WatchingAnimeWriter

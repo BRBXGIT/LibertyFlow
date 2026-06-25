@@ -20,6 +20,7 @@ internal data class State(
     val randomAnime: RandomAnime = RandomAnime(),
     val search: SearchState = SearchState(),
     val filtersSheet: FiltersSheet = FiltersSheet(),
+    val latestWatchingAnime: LatestWatchingAnime? = null,
 ) {
     @Immutable
     @optics
@@ -53,6 +54,14 @@ internal data class State(
 
         companion object
     }
+
+    @Immutable
+    @optics
+    data class LatestWatchingAnime(
+        val animeId: Int,
+        val title: String,
+        val lastEpisode: Int,
+    ) { companion object }
 
     companion object
 }

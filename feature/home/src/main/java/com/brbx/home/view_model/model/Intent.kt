@@ -8,6 +8,8 @@ internal sealed interface Intent {
 
     data object GetRandomAnime : Intent
 
+    data object GetLatestWatchingAnime : Intent
+
     sealed interface Catalog : Intent {
         data object SetUpPaging : Catalog
 
@@ -25,7 +27,6 @@ internal sealed interface Intent {
 
     sealed interface Filters : Intent {
         @JvmInline value class UpdateSorting(val sorting: Sorting) : Filters
-
         data class UpdateYears(val from: Int, val to: Int) : Filters
 
         @JvmInline value class ToggleSeason(val season: Season) : Filters
