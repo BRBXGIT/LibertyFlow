@@ -4,6 +4,8 @@
 
 # LibertyFlow
 
+# Version 2 Developing in orphan LibertyFlowV2 branch
+
 ### Неофициальный андроид клиент для [AniLiberty](https://anilibria.top/)
 
 <img src="docs/app_logo.png">
