@@ -44,5 +44,10 @@ gradlePlugin {
             id = libs.plugins.libertyflow.compose.android.library.get().pluginId
             implementationClass = "com.brbx.convention.ComposeAndroidLibraryConventionPlugin"
         }
+
+        register("navigateableFeature") {
+            id = libs.plugins.libertyflow.navigateable.feature.get().pluginId
+            implementationClass = "com.brbx.convention.NavigateableFeatureConventionPlugin"
+        }
     }
 }

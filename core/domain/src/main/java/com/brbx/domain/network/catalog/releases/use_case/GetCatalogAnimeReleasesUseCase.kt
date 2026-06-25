@@ -25,6 +25,7 @@ class GetCatalogAnimeReleasesUseCase(
                 years = parameters.years,
                 seasons = parameters.seasons,
                 genres = parameters.genres,
+                search = parameters.search,
             )
         )
 

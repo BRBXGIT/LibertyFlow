@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="request_exception_conflict">Данные на сервере изменились, пожалуйста перезагрузите (⩾﹏⩽)</string>
+    <string name="request_exception_many_requests">Слишком много запросов, пожалуйста дайте AniLiberty немного отдохнуть (⩾﹏⩽)</string>
+    <string name="request_exception_payload_large">Слишком много данных, пожалуйста удалите некоторые элементы (⩾﹏⩽)</string>
+    <string name="request_exception_server">Ошибка, что пошло не так на сервере (⩾﹏⩽)</string>
+    <string name="request_exception_timeout">Таймаут, мы ждали слишком долго, пожалуйста перезагрузите (⩾﹏⩽)</string>
+    <string name="request_exception_internet">Ничего серьезного, пожалуйста включите интернет (⩾ᴗ⩽)</string>
+    <string name="request_exception_unknown">Неизвестная ошибка, пожалуйста перезагрузите (⩾﹏⩽)</string>
+    <string name="request_exception_credentials">Введенные данные некорректны (⩾﹏⩽)</string>
+    <string name="request_exception_unauthorized">Вы не авторизованы (⩾﹏⩽)</string>
+    <string name="request_exception_no_email_or_pwassword">Пожалуйста введите email и пароль (⩾﹏⩽)</string>
+</resources>

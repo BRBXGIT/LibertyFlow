@@ -6,6 +6,7 @@ import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 
 data class CatalogReleasesParameters(
+    val search: String,
     val isOngoing: Boolean,
     val sorting: Sorting,
     val years: DomainYears,

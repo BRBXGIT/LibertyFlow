@@ -11,8 +11,14 @@ agp = "9.2.0"
 # Core
 coreKtx = "1.19.0"
 
+# Coroutines
+kotlinxCoroutinesCore = "1.11.0"
+
 # BRBX
-brbx = "1.1.3"
+brbx = "1.1.31"
+
+# Optics
+arrowOptics = "2.2.3"
 
 # Solar icons
 solar = "2.1.0"
@@ -36,9 +42,16 @@ paging = "3.5.0"
 # Core-kx
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
+# Coroutines
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+
 # BRBX
 brbx-mvi-compose = { module = "com.github.BRBXGIT.BRBXDevKit:mvi-compose", version.ref = "brbx" }
 brbx-ui-compose = { module = "com.github.BRBXGIT.BRBXDevKit:ui-compose", version.ref = "brbx" }
+
+# Optics
+arrow-optics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrowOptics" }
+arrow-optics-ksp = { module = "io.arrow-kt:arrow-optics-ksp-plugin", version.ref = "arrowOptics" }
 
 # Solar icons
 solar = { module = "dev.chiksmedina.solar:solar", version.ref = "solar" }
@@ -111,3 +124,4 @@ libertyflow-android-application = { id = "libertyflow.android.application" }
 libertyflow-kotlin-library = { id = "libertyflow.kotlin.library" }
 libertyflow-android-library = { id = "libertyflow.android.library" }
 libertyflow-compose-android-library = { id = "libertyflow.compose.android.library" }
+libertyflow-navigateable-feature = { id = "libertyflow.navigateable.feature" }

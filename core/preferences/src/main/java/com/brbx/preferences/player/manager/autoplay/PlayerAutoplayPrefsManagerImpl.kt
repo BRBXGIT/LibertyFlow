@@ -12,7 +12,7 @@ internal class PlayerAutoplayPrefsManagerImpl(
 
     override val value: Flow<Boolean?> = getValue(AutoPlayKey)
 
-    override suspend fun save(value: Boolean) {
+    override suspend fun save(value: Boolean?) {
         setValue(AutoPlayKey, value)
     }
 

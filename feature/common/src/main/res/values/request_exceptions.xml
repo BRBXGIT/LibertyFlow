@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="request_exception_conflict">Server data has changed, please retry (⩾﹏⩽)</string>
+    <string name="request_exception_many_requests">Too many requests, please give AniLiberty a little rest (⩾﹏⩽)</string>
+    <string name="request_exception_payload_large">Payload too large, please add fewer items (⩾﹏⩽)</string>
+    <string name="request_exception_server">Server error, something wrong on server (⩾﹏⩽)</string>
+    <string name="request_exception_timeout">Timeout, we were waiting too long, please retry (⩾﹏⩽)</string>
+    <string name="request_exception_internet">Nothing serious, please connect to internet (⩾ᴗ⩽)</string>
+    <string name="request_exception_unknown">Unknown error, please retry (⩾﹏⩽)</string>
+    <string name="request_exception_credentials">Credentials are incorrect (⩾﹏⩽)</string>
+    <string name="request_exception_unauthorized">You are unauthorized (⩾﹏⩽)</string>
+    <string name="request_exception_no_email_or_pwassword">Please enter email and password (⩾﹏⩽)</string>
+</resources>

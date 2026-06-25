@@ -1,4 +1,4 @@
 plugins {
-    // Compose Android Library
-    alias(libs.plugins.libertyflow.compose.android.library)
+    // Navigateable Compose Feature
+    alias(libs.plugins.libertyflow.navigateable.feature)
 }
