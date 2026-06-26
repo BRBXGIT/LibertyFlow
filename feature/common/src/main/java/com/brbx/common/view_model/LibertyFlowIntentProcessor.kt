@@ -4,4 +4,4 @@ import com.brbx.mvi.processor.BrbxIntentProcessor
 import com.brbx.mvi_compose.effects.BrbxEffect
 
 interface LibertyFlowIntentProcessor<State, in Intent : Any> :
-    BrbxIntentProcessor<State, Intent, BrbxEffect, Unit>
+    BrbxIntentProcessor<LibertyFlowMviScope<State>, State, Intent, BrbxEffect, Unit>

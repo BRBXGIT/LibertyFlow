@@ -6,8 +6,8 @@ import arrow.optics.optics
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
-import com.brbx.common.model.loading_state.LoadingState
-import com.brbx.common.model.search_state.SearchState
+import com.brbx.common.model.state.LoadingState
+import com.brbx.common.model.state.SearchState
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 import kotlinx.coroutines.flow.Flow

@@ -15,8 +15,8 @@ internal sealed interface Intent {
 
         data class SetLoading(val loading: Boolean) : Catalog
         data class SetRefreshing(val refreshing: Boolean) : Catalog
-        data class SetLoadingError(val error: Boolean) : Catalog
-        data class SetRefreshingError(val error: Boolean) : Catalog
+        data class SetLoadingException(val exception: Boolean) : Catalog
+        data class SetRefreshingException(val exception: Boolean) : Catalog
     }
 
     sealed interface Searching : Intent {

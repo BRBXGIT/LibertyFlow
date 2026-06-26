@@ -1,11 +1,42 @@
 package com.brbx.common.view_model
 
-import com.brbx.mvi.view_model.BrbxMviScope
+import com.brbx.common.model.alias.CommonStrings
 import com.brbx.mvi_compose.effects.BrbxEffect
-import com.brbx.ui_compose.components.complex.snackbar.config.BrbxSnackbarConfig
+import com.brbx.ui_compose.common.BrbxText
+import com.brbx.ui_compose.common.toBrbxText
+import com.brbx.ui_compose.components.complex.snackbar.config.BrbxSnackbarDuration
+import com.brbx.ui_compose.components.complex.snackbar.config.DefaultBrbxSnackbarConfig
 
-fun <State> BrbxMviScope<State, BrbxEffect, Unit>.postSnackbarEffect(
-    config: BrbxSnackbarConfig,
+fun LibertyFlowMviScope<*>.postNetworkExceptionSnackbar(
+    exception: BrbxText,
+    onButtonClick: () -> Unit,
 ) {
-    postCommonEffect(BrbxEffect.ShowSnackbar(config))
+    postCommonEffect(
+        BrbxEffect.ShowSnackbar(
+            config = DefaultBrbxSnackbarConfig(
+                text = exception,
+                duration = BrbxSnackbarDuration.Infinite,
+                isDismissable = false,
+                buttonText = CommonStrings.retry.toBrbxText(),
+                onButtonClick = onButtonClick,
+            )
+        )
+    )
+}
+
+fun LibertyFlowViewModel<*, *>.postNetworkExceptionSnackbar(
+    exception: BrbxText,
+    onButtonClick: () -> Unit,
+) {
+    dispatchCommonEffect(
+        BrbxEffect.ShowSnackbar(
+            config = DefaultBrbxSnackbarConfig(
+                text = exception,
+                duration = BrbxSnackbarDuration.Infinite,
+                isDismissable = false,
+                buttonText = CommonStrings.retry.toBrbxText(),
+                onButtonClick = onButtonClick,
+            )
+        )
+    )
 }

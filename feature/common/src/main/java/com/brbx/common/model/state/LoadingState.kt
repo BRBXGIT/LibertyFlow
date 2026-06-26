@@ -1,4 +1,4 @@
-package com.brbx.common.model.loading_state
+package com.brbx.common.model.state
 
 import androidx.compose.runtime.Immutable
 import arrow.optics.optics

@@ -1,6 +1,7 @@
 package com.brbx.home.view_model.processor.latest_watching_anime
 
 import arrow.optics.copy
+import com.brbx.common.view_model.LibertyFlowMviScope
 import com.brbx.domain.local_dbs.watching_anime.use_case.anime.model.DomainLatestWatchingAnime
 import com.brbx.domain.local_dbs.watching_anime.use_case.anime.use_case.GetLatestWatchingAnimeUseCase
 import com.brbx.home.view_model.model.Intent
@@ -16,9 +17,7 @@ internal class LatestWatchingAnimeProcessorImpl(
     private val dispatcherIo: CoroutineDispatcher,
 ) : LatestWatchingAnimeProcessor {
 
-    override fun BrbxMviScope<State, BrbxEffect, Unit>.process(
-        intent: Intent.GetLatestWatchingAnime
-    ) {
+    override fun LibertyFlowMviScope<State>.process(intent: Intent.GetLatestWatchingAnime) {
         when (intent) {
             is Intent.GetLatestWatchingAnime -> {
                 coroutineScope.launch(context = dispatcherIo) {

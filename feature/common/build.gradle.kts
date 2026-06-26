@@ -10,4 +10,6 @@ dependencies {
 
     // BRBX
     implementation(libs.brbx.mvi.compose)
+    // Paging
+    implementation(libs.androidx.paging.compose)
 }

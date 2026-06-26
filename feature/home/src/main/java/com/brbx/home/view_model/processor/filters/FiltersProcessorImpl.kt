@@ -2,6 +2,7 @@ package com.brbx.home.view_model.processor.filters
 
 import arrow.optics.copy
 import com.brbx.common.model.common.model.Years
+import com.brbx.common.view_model.LibertyFlowMviScope
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.model.State
 import com.brbx.home.view_model.model.filers
@@ -12,12 +13,10 @@ import com.brbx.home.view_model.model.isVisible
 import com.brbx.home.view_model.model.seasons
 import com.brbx.home.view_model.model.sorting
 import com.brbx.home.view_model.model.years
-import com.brbx.mvi.view_model.BrbxMviScope
-import com.brbx.mvi_compose.effects.BrbxEffect
 
 internal class FiltersProcessorImpl : FiltersProcessor {
 
-    override fun BrbxMviScope<State, BrbxEffect, Unit>.process(intent: Intent.Filters) {
+    override fun LibertyFlowMviScope<State>.process(intent: Intent.Filters) {
         when (intent) {
             Intent.Filters.ToggleSheet -> {
                 updateState {

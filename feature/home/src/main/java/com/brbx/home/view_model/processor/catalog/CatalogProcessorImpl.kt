@@ -5,16 +5,15 @@ import androidx.paging.map
 import arrow.optics.copy
 import com.brbx.common.model.common.map.toDomain
 import com.brbx.common.model.common.map.toUi
-import com.brbx.common.model.loading_state.isError
-import com.brbx.common.model.loading_state.isLoading
+import com.brbx.common.model.state.isError
+import com.brbx.common.model.state.isLoading
+import com.brbx.common.view_model.LibertyFlowMviScope
 import com.brbx.domain.network.catalog.releases.model.CatalogReleasesParameters
 import com.brbx.domain.network.catalog.releases.use_case.GetCatalogAnimeReleasesUseCase
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.model.State
 import com.brbx.home.view_model.model.catalog
 import com.brbx.home.view_model.model.loading
-import com.brbx.mvi.view_model.BrbxMviScope
-import com.brbx.mvi_compose.effects.BrbxEffect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -25,16 +24,16 @@ internal class CatalogProcessorImpl(
 ) : CatalogProcessor {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun BrbxMviScope<State, BrbxEffect, Unit>.process(intent: Intent.Catalog) {
+    override fun LibertyFlowMviScope<State>.process(intent: Intent.Catalog) {
         when (intent) {
             is Intent.Catalog.SetLoading ->
                 updateState { copy { State.catalog.loading.isLoading set intent.loading } }
-            is Intent.Catalog.SetLoadingError ->
-                updateState { copy { State.catalog.loading.isError set intent.error } }
+            is Intent.Catalog.SetLoadingException ->
+                updateState { copy { State.catalog.loading.isError set intent.exception } }
             is Intent.Catalog.SetRefreshing ->
                 updateState { copy { State.catalog.loading.isLoading set intent.refreshing } }
-            is Intent.Catalog.SetRefreshingError ->
-                updateState { copy { State.catalog.loading.isError set intent.error } }
+            is Intent.Catalog.SetRefreshingException ->
+                updateState { copy { State.catalog.loading.isError set intent.exception } }
             Intent.Catalog.SetUpPaging -> {
                 val parameters = state
                     .map { state ->

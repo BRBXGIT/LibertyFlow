@@ -2,7 +2,7 @@ package com.brbx.data.network.paging.map
 
 import com.brbx.data.network.common.toDomain
 import com.brbx.data.network.paging.model.DomainPaginatedAnimeItems
-import com.brbx.data.network.paging.model.PagingException
+import com.brbx.domain.network.paging.model.PagingException
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.network.base.model.response.paginated.PaginatedAnimeItems
 
