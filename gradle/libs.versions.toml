@@ -95,11 +95,6 @@ ktor-core = [
     "ktor-client-auth",
 ]
 
-room-core = [
-    "androidx-room-compiler",
-    "androidx-room-ktx"
-]
-
 [plugins]
 # Application
 android-application = { id = "com.android.application", version.ref = "agp" }

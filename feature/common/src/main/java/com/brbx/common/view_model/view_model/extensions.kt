@@ -23,20 +23,3 @@ fun LibertyFlowMviScope<*>.postNetworkExceptionSnackbar(
         )
     )
 }
-
-fun LibertyFlowViewModel<*, *>.postNetworkExceptionSnackbar(
-    exception: BrbxText,
-    onButtonClick: () -> Unit,
-) {
-    dispatchCommonEffect(
-        BrbxEffect.ShowSnackbar(
-            config = DefaultBrbxSnackbarConfig(
-                text = exception,
-                duration = BrbxSnackbarDuration.Infinite,
-                isDismissable = false,
-                buttonText = CommonStrings.retry.toBrbxText(),
-                onButtonClick = onButtonClick,
-            )
-        )
-    )
-}

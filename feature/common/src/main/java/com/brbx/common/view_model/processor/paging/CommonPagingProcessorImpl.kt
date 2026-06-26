@@ -3,9 +3,11 @@ package com.brbx.common.view_model.processor.paging
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import arrow.optics.Lens
+import com.brbx.common.strings.asBrbxText
 import com.brbx.common.view_model.model.intent.CommonPagingIntent
 import com.brbx.common.view_model.model.state.CommonPagingState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
+import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -53,9 +55,15 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
                                     pagingLens.modify(source = this) {
                                         it.copy(
                                             loading =
-                                                it.loading.copy(isException = intent.exception)
+                                                it.loading.copy(isException = intent.isException)
                                         )
                                     }
+                                }
+                                val exception = intent.exception
+                                if (exception != null) {
+                                    postNetworkExceptionSnackbar(
+                                        exception = exception.asBrbxText(),
+                                    ) { process(intent) }
                                 }
                             }
                         }
@@ -67,9 +75,15 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
                                     pagingLens.modify(source = this) {
                                         it.copy(
                                             refreshing =
-                                                it.refreshing.copy(isException = intent.exception)
+                                                it.refreshing.copy(isException = intent.isException)
                                         )
                                     }
+                                }
+                                val exception = intent.exception
+                                if (exception != null) {
+                                    postNetworkExceptionSnackbar(
+                                        exception = exception.asBrbxText(),
+                                    ) { process(intent) }
                                 }
                             }
                             is CommonPagingIntent.Loading.RefreshIntent.SetRefreshing -> {

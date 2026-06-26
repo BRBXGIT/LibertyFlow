@@ -12,7 +12,8 @@ configurations.all {
 dependencies {
 
     // Room
-    implementation(libs.bundles.room.core)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
     // Koin
     implementation(libs.koin.core)
     implementation(libs.koin.android)

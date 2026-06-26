@@ -9,6 +9,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.paging.LoadState
 import com.brbx.common.view_model.model.intent.CommonPagingIntent
+import com.brbx.domain.network.paging.model.PagingException
 
 @Stable
 data class PagingHandler(
@@ -35,7 +36,8 @@ internal fun PagingStatesHandler(handler: PagingHandler) {
                 }
                 is LoadState.Error -> {
                     dispatch(CommonPagingIntent.Loading.LoadingIntent.SetLoading(false))
-                    dispatch(CommonPagingIntent.Loading.LoadingIntent.SetException(true))
+                    val exception = loadState.error as PagingException
+                    dispatch(CommonPagingIntent.Loading.LoadingIntent.SetException(true, exception))
                 }
             }
         } else {
@@ -49,7 +51,8 @@ internal fun PagingStatesHandler(handler: PagingHandler) {
                 }
                 is LoadState.Error -> {
                     dispatch(CommonPagingIntent.Loading.RefreshIntent.SetRefreshing(false))
-                    dispatch(CommonPagingIntent.Loading.RefreshIntent.SetException(true))
+                    val exception = loadState.error as PagingException
+                    dispatch(CommonPagingIntent.Loading.RefreshIntent.SetException(true, exception))
                 }
             }
         }

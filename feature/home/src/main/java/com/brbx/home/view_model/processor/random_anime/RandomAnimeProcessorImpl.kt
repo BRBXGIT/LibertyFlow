@@ -22,21 +22,18 @@ internal class RandomAnimeProcessorImpl(
 
     override fun LibertyFlowMviScope<State>.process(intent: Intent.GetRandomAnime) {
         when (intent) {
-            is Intent.GetRandomAnime ->
-                getRandomAnime()
-        }
-    }
-
-    private fun LibertyFlowMviScope<State>.getRandomAnime() {
-        coroutineScope.launch(context = dispatcherIo) {
-            updateState { copy { State.randomAnime.commonLoadingState.isLoading set true } }
-            randomAnimeUseCase()
-                .onSuccess {
-                    // TODO Make navigation to details screen
-                } onError { exception ->
-                    postNetworkExceptionSnackbar(exception.asBrbxText()) { getRandomAnime() }
+            is Intent.GetRandomAnime -> {
+                coroutineScope.launch(context = dispatcherIo) {
+                    updateState { copy { State.randomAnime.commonLoadingState.isLoading set true } }
+                    randomAnimeUseCase()
+                        .onSuccess {
+                            // TODO Make navigation to details screen
+                        } onError { exception ->
+                            postNetworkExceptionSnackbar(exception.asBrbxText()) { process(intent) }
+                        }
+                    updateState { copy { State.randomAnime.commonLoadingState.isLoading set false } }
                 }
-            updateState { copy { State.randomAnime.commonLoadingState.isLoading set false } }
+            }
         }
     }
 }
