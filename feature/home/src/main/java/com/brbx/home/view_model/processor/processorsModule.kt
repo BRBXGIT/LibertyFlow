@@ -1,8 +1,6 @@
 package com.brbx.home.view_model.processor
 
 import com.brbx.common.dispatchers.DispatcherQualifier
-import com.brbx.home.view_model.processor.catalog.CatalogProcessor
-import com.brbx.home.view_model.processor.catalog.CatalogProcessorImpl
 import com.brbx.home.view_model.processor.filters.FiltersProcessor
 import com.brbx.home.view_model.processor.filters.FiltersProcessorImpl
 import com.brbx.home.view_model.processor.latest_watching_anime.LatestWatchingAnimeProcessor
@@ -16,7 +14,6 @@ import org.koin.dsl.module
 internal val processorsModule = module {
     singleOf(constructor = ::FiltersProcessorImpl) { bind<FiltersProcessor>() }
     singleOf(constructor = ::RandomAnimeProcessorImpl) { bind<RandomAnimeProcessor>() }
-    singleOf(constructor = ::CatalogProcessorImpl) { bind<CatalogProcessor>() }
     single<LatestWatchingAnimeProcessor> {
         LatestWatchingAnimeProcessorImpl(
             latestWatchedAnimeUseCase = get(),

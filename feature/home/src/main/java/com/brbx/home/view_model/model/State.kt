@@ -1,35 +1,25 @@
 package com.brbx.home.view_model.model
 
 import androidx.compose.runtime.Immutable
-import androidx.paging.PagingData
 import arrow.optics.optics
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.view_model.model.state.CommonLoadingState
+import com.brbx.common.view_model.model.state.CommonPagingState
 import com.brbx.common.view_model.model.state.CommonSearchState
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 
 @Immutable
 @optics
 internal data class State(
-    val catalog: Catalog = Catalog(),
+    val catalog: CommonPagingState<AnimeItem> = CommonPagingState(),
     val randomAnime: RandomAnime = RandomAnime(),
     val search: CommonSearchState = CommonSearchState(),
     val filtersSheet: FiltersSheet = FiltersSheet(),
     val latestWatchingAnime: LatestWatchingAnime? = null,
 ) {
-    @Immutable
-    @optics
-    data class Catalog(
-        val loading: CommonLoadingState = CommonLoadingState(),
-        val refreshing: CommonLoadingState = CommonLoadingState(),
-        val catalog: Flow<PagingData<AnimeItem>> = emptyFlow(),
-    ) { companion object }
-
     @Immutable
     @optics
     data class RandomAnime(val commonLoadingState: CommonLoadingState = CommonLoadingState()) {
@@ -39,7 +29,7 @@ internal data class State(
     @Immutable
     @optics
     data class FiltersSheet(
-        val isVisible: Boolean = false, // TODO Maybe make reusable
+        val isVisible: Boolean = false,
         val filers: Filers = Filers(),
     ) {
         @Immutable

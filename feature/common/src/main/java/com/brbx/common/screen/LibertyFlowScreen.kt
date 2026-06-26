@@ -17,12 +17,12 @@ fun <State, Intent : Any> LibertyFlowScreen(
     ) -> Unit,
 ) {
     if (pagingHandler != null) {
-        PagingStatesHandler(pagingHandler)
+        PagingStatesHandler(handler = pagingHandler)
     }
 
     BrbxMviScreen(
         navController = navController,
-        viewModel = viewModel
+        viewModel = viewModel,
     ) { dispatchIntent, dispatchBrbxEffect, _ ->
         content(dispatchIntent, dispatchBrbxEffect)
     }

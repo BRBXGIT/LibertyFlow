@@ -1,8 +1,8 @@
 package com.brbx.home.view_model.processor.random_anime
 
 import arrow.optics.copy
-import com.brbx.common.model.loading_state.isLoading
 import com.brbx.common.strings.asBrbxText
+import com.brbx.common.view_model.model.state.isLoading
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar
 import com.brbx.domain.network.model.result.onError

@@ -7,5 +7,5 @@ import arrow.optics.optics
 @optics
 data class CommonLoadingState(
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val isException: Boolean = false,
 ) { companion object }

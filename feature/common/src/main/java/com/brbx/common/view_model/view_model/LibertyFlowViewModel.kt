@@ -1,11 +1,13 @@
 package com.brbx.common.view_model.view_model
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import com.brbx.mvi.view_model.BrbxMviViewModel
 import com.brbx.mvi_compose.effects.BrbxEffect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
+@Stable
 abstract class LibertyFlowViewModel<State, in Intent : Any>(
     initialState: State,
 ) : BrbxMviViewModel<LibertyFlowMviScope<State> ,State, Intent, BrbxEffect, Unit>(initialState) {
