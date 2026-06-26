@@ -1,11 +1,11 @@
-package com.brbx.common.model.state
+package com.brbx.common.view_model.model.state
 
 import androidx.compose.runtime.Immutable
 import arrow.optics.optics
 
 @Immutable
 @optics
-data class LoadingState(
+data class CommonLoadingState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
 ) { companion object }

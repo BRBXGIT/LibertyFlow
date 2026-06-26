@@ -2,7 +2,7 @@ package com.brbx.common.screen
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.brbx.common.view_model.LibertyFlowViewModel
+import com.brbx.common.view_model.view_model.LibertyFlowViewModel
 import com.brbx.mvi_compose.base_screen.BrbxMviScreen
 import com.brbx.mvi_compose.effects.BrbxEffect
 

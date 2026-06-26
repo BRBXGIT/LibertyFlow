@@ -1,6 +1,7 @@
 package com.brbx.home.view_model.model
 
 import com.brbx.common.model.common.model.Genre
+import com.brbx.common.view_model.model.intent.CommonSearchIntent
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 
@@ -19,11 +20,7 @@ internal sealed interface Intent {
         data class SetRefreshingException(val exception: Boolean) : Catalog
     }
 
-    sealed interface Searching : Intent {
-        data object ToggleSearching : Searching
-
-        @JvmInline value class UpdateSearch(val search: String) : Searching
-    }
+    @JvmInline value class Search(val action: CommonSearchIntent) : Intent
 
     sealed interface Filters : Intent {
         @JvmInline value class UpdateSorting(val sorting: Sorting) : Filters

@@ -10,7 +10,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.brbx.common.screen.LibertyFlowScreen
 import com.brbx.common.screen.PagingHandler
 import com.brbx.common.strings.asBrbxText
-import com.brbx.common.view_model.postNetworkExceptionSnackbar
+import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.view_model.ViewModel
 import org.koin.compose.viewmodel.koinViewModel

@@ -1,4 +1,4 @@
-package com.brbx.common.view_model
+package com.brbx.common.view_model.view_model
 
 import com.brbx.mvi.processor.BrbxIntentProcessor
 import com.brbx.mvi_compose.effects.BrbxEffect

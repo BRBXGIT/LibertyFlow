@@ -6,8 +6,8 @@ import arrow.optics.optics
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
-import com.brbx.common.model.state.LoadingState
-import com.brbx.common.model.state.SearchState
+import com.brbx.common.view_model.model.state.CommonLoadingState
+import com.brbx.common.view_model.model.state.CommonSearchState
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 import kotlinx.coroutines.flow.Flow
@@ -18,21 +18,21 @@ import kotlinx.coroutines.flow.emptyFlow
 internal data class State(
     val catalog: Catalog = Catalog(),
     val randomAnime: RandomAnime = RandomAnime(),
-    val search: SearchState = SearchState(),
+    val search: CommonSearchState = CommonSearchState(),
     val filtersSheet: FiltersSheet = FiltersSheet(),
     val latestWatchingAnime: LatestWatchingAnime? = null,
 ) {
     @Immutable
     @optics
     data class Catalog(
-        val loading: LoadingState = LoadingState(),
-        val refreshing: LoadingState = LoadingState(),
+        val loading: CommonLoadingState = CommonLoadingState(),
+        val refreshing: CommonLoadingState = CommonLoadingState(),
         val catalog: Flow<PagingData<AnimeItem>> = emptyFlow(),
     ) { companion object }
 
     @Immutable
     @optics
-    data class RandomAnime(val loadingState: LoadingState = LoadingState()) {
+    data class RandomAnime(val commonLoadingState: CommonLoadingState = CommonLoadingState()) {
         companion object
     }
 

@@ -2,7 +2,7 @@ package com.brbx.home.view_model.processor.filters
 
 import arrow.optics.copy
 import com.brbx.common.model.common.model.Years
-import com.brbx.common.view_model.LibertyFlowMviScope
+import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.model.State
 import com.brbx.home.view_model.model.filers

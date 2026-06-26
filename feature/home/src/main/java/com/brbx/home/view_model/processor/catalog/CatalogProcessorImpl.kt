@@ -7,7 +7,7 @@ import com.brbx.common.model.common.map.toDomain
 import com.brbx.common.model.common.map.toUi
 import com.brbx.common.model.state.isError
 import com.brbx.common.model.state.isLoading
-import com.brbx.common.view_model.LibertyFlowMviScope
+import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.domain.network.catalog.releases.model.CatalogReleasesParameters
 import com.brbx.domain.network.catalog.releases.use_case.GetCatalogAnimeReleasesUseCase
 import com.brbx.home.view_model.model.Intent
