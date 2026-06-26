@@ -2,9 +2,8 @@ package com.brbx.network.base.model.response.common
 
 import kotlinx.serialization.Serializable
 
-@JvmInline
 @Serializable
-value class Poster(
+data class Poster(
     val optimized: Optimized,
 ) {
     @Serializable

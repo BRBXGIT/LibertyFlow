@@ -42,14 +42,12 @@ data class AnimeItemById(
         val nickname: String,
         val role: Role,
     ) {
-        @JvmInline
         @Serializable
-        value class Role(val description: String)
+        data class Role(val description: String)
     }
 
-    @JvmInline
     @Serializable
-    value class Season(val description: String)
+    data class Season(val description: String)
 
     @Serializable
     data class Torrent(
@@ -60,7 +58,6 @@ data class AnimeItemById(
         val size: Long,
     )
 
-    @JvmInline
     @Serializable
-    value class Type(val description: String)
+    data class Type(val description: String)
 }

@@ -9,9 +9,8 @@ data class PaginatedAnimeItems(
     @SerialName("data") val items: List<AnimeItem>,
     val meta: Meta,
 ) {
-    @JvmInline
     @Serializable
-    value class Meta(
+    data class Meta(
         val pagination: Pagination,
     ) {
         @Serializable
@@ -23,9 +22,8 @@ data class PaginatedAnimeItems(
             val links: Links,
             val count: Int,
         ) {
-            @JvmInline
             @Serializable
-            value class Links(val next: String)
+            data class Links(val next: String)
         }
     }
 }

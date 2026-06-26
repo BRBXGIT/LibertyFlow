@@ -7,9 +7,9 @@ import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.components.complex.snackbar.config.BrbxSnackbarDuration
 import com.brbx.ui_compose.components.complex.snackbar.config.DefaultBrbxSnackbarConfig
 
-fun LibertyFlowMviScope<*>.postNetworkExceptionSnackbar(
+inline fun LibertyFlowMviScope<*>.postNetworkExceptionSnackbar(
     exception: BrbxText,
-    onButtonClick: () -> Unit,
+    crossinline onButtonClick: () -> Unit,
 ) {
     postCommonEffect(
         BrbxEffect.ShowSnackbar(
@@ -18,7 +18,7 @@ fun LibertyFlowMviScope<*>.postNetworkExceptionSnackbar(
                 duration = BrbxSnackbarDuration.Infinite,
                 isDismissable = false,
                 buttonText = CommonStrings.retry.toBrbxText(),
-                onButtonClick = onButtonClick,
+                onButtonClick = { onButtonClick() },
             )
         )
     )

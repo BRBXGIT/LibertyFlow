@@ -7,9 +7,8 @@ import kotlinx.serialization.Serializable
 sealed interface UserListItem {
     val id: Int
 
-    @JvmInline
     @Serializable
-    value class Favorite(@SerialName("release_id") override val id: Int) : UserListItem
+    data class Favorite(@SerialName("release_id") override val id: Int) : UserListItem
 
     @Serializable
     data class Collection(
