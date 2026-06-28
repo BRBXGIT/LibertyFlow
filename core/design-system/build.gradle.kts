@@ -11,6 +11,8 @@ dependencies {
     implementation(libs.brbx.coil.helpers)
     // Solar
     implementation(libs.solar)
+    // Lottie
+    implementation(libs.lottie)
     // Compose preview
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)

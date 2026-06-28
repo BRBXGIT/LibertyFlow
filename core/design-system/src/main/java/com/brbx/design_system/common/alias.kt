@@ -4,3 +4,4 @@ import com.brbx.core.design_system.R
 
 internal typealias DesignSystemStrings = R.string
 internal typealias DesignSystemFonts = R.font
+internal typealias DesignSystemRaw = R.raw

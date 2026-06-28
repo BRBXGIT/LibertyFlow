@@ -25,8 +25,9 @@ fun SearchableTopBar(
     title: BrbxText,
     search: String,
     onSearchChange: (String) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
     modifier: Modifier = Modifier,
+    searchIconEnabled: Boolean = true,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     placeholderText: BrbxText =
         DesignSystemStrings.searchable_top_bar_default_placeholder.toBrbxText(),
 ) =
@@ -41,7 +42,8 @@ fun SearchableTopBar(
         searchFieldPlaceholderText = placeholderText,
         searchIcon = {
             IconButton(
-                onClick = onSearchClick
+                onClick = onSearchClick,
+                enabled = searchIconEnabled,
             ) {
                 BrbxIcon(imageVector = OutlineSolar.Search.MinimalisticMagnifer)
             }

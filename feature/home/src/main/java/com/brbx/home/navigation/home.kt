@@ -37,8 +37,9 @@ fun NavGraphBuilder.home(
             dispatchBrbxEffect = dispatchBrbxEffect,
             dispatchIntent = dispatchIntent,
             searchState = state.search,
+            isError = state.catalog.loading.isException,
             isRefreshing = state.catalog.refreshing.isLoading,
-            isShimmering = state.catalog.loading.isLoading,
+            isLoading = state.catalog.loading.isLoading,
             tile = state.latestWatchingAnime,
             items = catalog,
             modifier = Modifier

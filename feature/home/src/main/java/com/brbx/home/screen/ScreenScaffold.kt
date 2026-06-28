@@ -14,13 +14,13 @@ import com.brbx.common.view_model.model.state.CommonSearchState
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.tile.TileModel
 import com.brbx.design_system.component.top_bar.SearchableTopBar
+import com.brbx.design_system.container.ShimmerScaffold
 import com.brbx.home.common.HomeStrings
 import com.brbx.home.screen.content.Content
 import com.brbx.home.screen.shimmer.ContentShimmer
 import com.brbx.home.view_model.model.Intent
 import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.toBrbxText
-import com.brbx.ui_compose.containers.complex.scaffold.BrbxShimmerScaffold
 import com.brbx.ui_compose.containers.complex.scaffold.BrbxShimmerScaffoldAppearances
 import com.brbx.ui_compose.containers.complex.scaffold.rememberCopy
 import com.brbx.ui_compose.containers.complex.snackbar_host.BrbxSnackbarHost
@@ -31,21 +31,23 @@ internal fun ScreenScaffold(
     dispatchBrbxEffect: (BrbxEffect) -> Unit,
     dispatchIntent: (Intent) -> Unit,
     searchState: CommonSearchState,
-    isShimmering: Boolean,
+    isLoading: Boolean,
     tile: TileModel?,
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
+    isError: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val appearance = BrbxShimmerScaffoldAppearances.default.rememberCopy(
         contentWindowInsets = { rememberInsetsWithNavBar() },
     )
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    BrbxShimmerScaffold(
+    ShimmerScaffold(
         appearance = appearance,
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        isShimmering = isShimmering,
+        isShimmering = isLoading,
         snackbarHost = { BrbxSnackbarHost() },
+        isError = isError,
         topBar = {
             SearchableTopBar(
                 onSearchClick =
@@ -55,6 +57,7 @@ internal fun ScreenScaffold(
                 onSearchChange =
                     { dispatchIntent(Intent.Search(action = CommonSearchIntent.UpdateSearch(it))) },
                 isSearching = searchState.isSearching,
+                searchIconEnabled = !isError && !isLoading,
                 title = HomeStrings.top_bar_title.toBrbxText(),
                 search = searchState.search,
                 scrollBehavior = scrollBehavior,
@@ -78,6 +81,5 @@ internal fun ScreenScaffold(
                     .padding(paddingValues),
             )
         },
-        errorContent = {}, // TODO
     )
 }

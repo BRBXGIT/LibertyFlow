@@ -17,6 +17,9 @@ kotlinxCoroutinesCore = "1.11.0"
 # BRBX
 brbx = "1.1.53"
 
+# Lottie
+lottie = "6.7.1"
+
 # Optics
 arrowOptics = "2.2.3"
 
@@ -49,6 +52,9 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 brbx-mvi-compose = { module = "com.github.BRBXGIT.BRBXDevKit:mvi-compose", version.ref = "brbx" }
 brbx-ui-compose = { module = "com.github.BRBXGIT.BRBXDevKit:ui-compose", version.ref = "brbx" }
 brbx-coil-helpers = { module = "com.github.BRBXGIT.BRBXDevKit:coil-helpers", version.ref = "brbx" }
+
+# Lottie
+lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
 # Compose preview
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }

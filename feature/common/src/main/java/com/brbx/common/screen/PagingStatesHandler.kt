@@ -24,6 +24,7 @@ internal fun PagingStatesHandler(handler: PagingHandler) {
     LaunchedEffect(key1 = handler.loadState) {
         val loadState = handler.loadState
         val dispatch = handler.dispatchIntent
+
         if (isFirstLoading) {
             when (loadState) {
                 is LoadState.Loading -> {

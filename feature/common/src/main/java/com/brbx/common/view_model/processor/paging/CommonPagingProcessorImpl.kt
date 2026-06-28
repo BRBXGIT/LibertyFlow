@@ -68,7 +68,7 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
                                 if (exception != null) {
                                     postNetworkExceptionSnackbar(
                                         exception = exception.asBrbxText(),
-                                    ) { process(intent) }
+                                    ) { process(intent = CommonPagingIntent.SetUpPaging) }
                                 }
                             }
                         }
@@ -88,7 +88,7 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
                                 if (exception != null) {
                                     postNetworkExceptionSnackbar(
                                         exception = exception.asBrbxText(),
-                                    ) { process(intent) }
+                                    ) { process(intent = CommonPagingIntent.SetUpPaging) }
                                 }
                             }
                             is CommonPagingIntent.Loading.RefreshIntent.SetRefreshing -> {

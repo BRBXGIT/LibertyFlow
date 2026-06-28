@@ -29,7 +29,9 @@ internal class RandomAnimeProcessorImpl(
                         .onSuccess {
                             // TODO Make navigation to details screen
                         } onError { exception ->
-                            postNetworkExceptionSnackbar(exception.asBrbxText()) { process(intent) }
+                            postNetworkExceptionSnackbar(exception.asBrbxText()) {
+                                process(Intent.GetRandomAnime)
+                            }
                         }
                     updateState { copy { State.randomAnime.commonLoadingState.isLoading set false } }
                 }
