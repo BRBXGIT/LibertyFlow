@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Poster(
-    val optimized: Optimized,
+    val optimized: Optimized = Optimized(),
 ) {
     @Serializable
     data class Optimized(
-        val preview: String?,
-        val src: String?,
-        val thumbnail: String?,
+        val preview: String? = null,
+        val src: String? = null,
+        val thumbnail: String? = null,
     )
 }

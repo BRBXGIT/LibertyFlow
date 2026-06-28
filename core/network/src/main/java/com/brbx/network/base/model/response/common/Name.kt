@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Name(
-    val alternative: String?,
-    val english: String?,
+    val alternative: String? = null,
+    val english: String? = null,
     val main: String,
 )
