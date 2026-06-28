@@ -1,4 +1,4 @@
-package com.brbx.libertyflow
+package com.brbx.libertyflow.app
 
 import android.app.Application
 import com.brbx.common.coreCommonModule
@@ -12,7 +12,7 @@ import com.brbx.preferences.preferencesModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-class KoinApp : Application() {
+internal class KoinApp : Application() {
 
     override fun onCreate() {
         super.onCreate()

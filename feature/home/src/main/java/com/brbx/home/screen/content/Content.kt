@@ -29,15 +29,17 @@ internal fun Content(
         minimalisticIndicator = isSearching,
     ) {
         AnimeItemsLazyVerticalGrid(Modifier.fillMaxSize()) {
-            item(
-                key = ContentKeys.Tile,
-                span = { GridItemSpan(currentLineSpan = maxLineSpan) },
-            ) {
-                tile?.let {
-                    Tile(
-                        model = tile,
-                        modifier = Modifier.brbxAnimateItem(scope = this)
-                    )
+            if (!isSearching) {
+                item(
+                    key = ContentKeys.Tile,
+                    span = { GridItemSpan(currentLineSpan = maxLineSpan) },
+                ) {
+                    tile?.let {
+                        Tile(
+                            model = tile,
+                            modifier = Modifier.brbxAnimateItem(scope = this)
+                        )
+                    }
                 }
             }
 

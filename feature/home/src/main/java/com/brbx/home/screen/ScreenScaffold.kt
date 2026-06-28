@@ -11,6 +11,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.view_model.model.intent.CommonSearchIntent
 import com.brbx.common.view_model.model.state.CommonSearchState
+import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.tile.TileModel
 import com.brbx.design_system.component.top_bar.SearchableTopBar
 import com.brbx.home.common.HomeStrings
@@ -20,6 +21,8 @@ import com.brbx.home.view_model.model.Intent
 import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.containers.complex.scaffold.BrbxShimmerScaffold
+import com.brbx.ui_compose.containers.complex.scaffold.BrbxShimmerScaffoldAppearances
+import com.brbx.ui_compose.containers.complex.scaffold.rememberCopy
 import com.brbx.ui_compose.containers.complex.snackbar_host.BrbxSnackbarHost
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,8 +37,15 @@ internal fun ScreenScaffold(
     isRefreshing: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val appearance = BrbxShimmerScaffoldAppearances.default.rememberCopy(
+        contentWindowInsets = { rememberInsetsWithNavBar() },
+    )
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     BrbxShimmerScaffold(
+        appearance = appearance,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        isShimmering = isShimmering,
+        snackbarHost = { BrbxSnackbarHost() },
         topBar = {
             SearchableTopBar(
                 onSearchClick =
@@ -50,9 +60,6 @@ internal fun ScreenScaffold(
                 scrollBehavior = scrollBehavior,
             )
         },
-        snackbarHost = { BrbxSnackbarHost() },
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        isShimmering = isShimmering,
         shimmerContent = { paddingValues ->
             ContentShimmer(
                 modifier = Modifier
@@ -60,7 +67,6 @@ internal fun ScreenScaffold(
                     .padding(paddingValues)
             )
         },
-        errorContent = {},
         content = { paddingValues ->
             Content(
                 isSearching = searchState.isSearching,
@@ -72,5 +78,6 @@ internal fun ScreenScaffold(
                     .padding(paddingValues),
             )
         },
+        errorContent = {}, // TODO
     )
 }

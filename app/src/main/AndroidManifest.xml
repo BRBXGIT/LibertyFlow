@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="com.brbx.libertyflow.KoinApp"
+        android:name="com.brbx.libertyflow.app.KoinApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LibertyFlow">
         <activity
-            android:name="com.brbx.libertyflow.MainActivity"
+            android:name="com.brbx.libertyflow.app.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.LibertyFlow"
             android:windowSoftInputMode="adjustResize">

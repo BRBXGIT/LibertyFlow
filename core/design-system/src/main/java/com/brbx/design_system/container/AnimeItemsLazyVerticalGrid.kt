@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.brbx.design_system.common.DesignConstants
 import com.brbx.design_system.component.anime_card.AnimeCardConstants
+import com.brbx.design_system.component.nav_bar.state.rememberNavBarHeight
 import com.brbx.ui_compose.theme.bDimens
 
 @Composable
@@ -27,7 +28,12 @@ fun AnimeItemsLazyVerticalGrid(
     columns: GridCells =
         GridCells.Adaptive(minSize = AnimeCardConstants.animeCardAppearance.containerWidth()),
     contentPadding: PaddingValues =
-        PaddingValues(all = bDimens.micro8 - DesignConstants.elevation),
+        PaddingValues(
+            top = bDimens.micro8 - DesignConstants.elevation,
+            start = bDimens.micro8 - DesignConstants.elevation,
+            end = bDimens.micro8 - DesignConstants.elevation,
+            bottom = bDimens.micro8 - DesignConstants.elevation + rememberNavBarHeight()
+        ),
     verticalArrangement: Arrangement.Vertical =
         Arrangement.spacedBy(bDimens.micro8 - DesignConstants.elevation),
     horizontalArrangement: Arrangement.Horizontal =
