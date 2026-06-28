@@ -22,7 +22,7 @@ internal val viewModelModule = module {
         ViewModel(
             randomAnimeProcessor = get(),
             filtersProcessor = get(),
-            latestWatchingAnimeProcessor = get(),
+            tileProcessor = get(),
             searchProcessor = getCommonSearchProcessor(lens = State.search),
             catalogProcessor = getCommonPagingProcessor(
                 lens = State.catalog,
@@ -34,7 +34,7 @@ internal val viewModelModule = module {
                         sorting = filters.sorting,
                         years = filters.years.toDomain(),
                         seasons = filters.seasons,
-                        genres = filters.genres.map { it.toDomain() }
+                        genres = filters.genres.map { it.toDomain() },
                     )
                 },
                 pagingDataFactory = { params ->

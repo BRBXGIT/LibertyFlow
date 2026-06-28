@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Name(
     val alternative: String?,
-    val english: String,
+    val english: String?,
     val main: String,
 )

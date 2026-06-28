@@ -1,12 +1,16 @@
 package com.brbx.common.model.common.model
 
 import androidx.compose.runtime.Immutable
-import arrow.optics.optics
 
 @Immutable
-@optics
 data class Poster(
-    val preview: String,
-    val src: String,
-    val thumbnail: String,
-) { companion object }
+    private val preview: String,
+    private val src: String,
+    private val thumbnail: String,
+) {
+    private val basePath = "https://aniliberty.top"
+
+    fun fullPreview(): String = basePath + preview
+    fun fullSrc(): String = basePath + src
+    fun fullThumbnail(): String = basePath + thumbnail
+}

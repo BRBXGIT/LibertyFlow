@@ -8,8 +8,8 @@ data class Poster(
 ) {
     @Serializable
     data class Optimized(
-        val preview: String,
-        val src: String,
-        val thumbnail: String,
+        val preview: String?,
+        val src: String?,
+        val thumbnail: String?,
     )
 }

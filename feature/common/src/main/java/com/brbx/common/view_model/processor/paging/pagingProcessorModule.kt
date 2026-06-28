@@ -13,7 +13,8 @@ internal val pagingProcessorModule = module {
         CommonPagingProcessorImpl<Any, Any, Any>(
             pagingLens = params[0],
             paramsSelector = params[1],
-            pagingDataFactory = params[2]
+            pagingDataFactory = params[2],
+            debounceMillis = params[3],
         )
     }
 }
@@ -21,6 +22,7 @@ internal val pagingProcessorModule = module {
 inline fun <reified State, reified PagingItem : Any, reified Params> Scope.getCommonPagingProcessor(
     lens: Lens<State, CommonPagingState<PagingItem>>,
     noinline paramsSelector: (State) -> Params,
+    debounceMillis: Long = 500L,
     noinline pagingDataFactory: (Params) -> Flow<PagingData<PagingItem>>
 ): CommonPagingProcessor<State> {
     @Suppress("UNCHECKED_CAST")
@@ -29,6 +31,7 @@ inline fun <reified State, reified PagingItem : Any, reified Params> Scope.getCo
             lens as Lens<Any, CommonPagingState<Any>>,
             paramsSelector as (Any) -> Any,
             pagingDataFactory as (Any) -> Flow<PagingData<Any>>,
+            debounceMillis,
         )
     } as CommonPagingProcessor<State>
 }

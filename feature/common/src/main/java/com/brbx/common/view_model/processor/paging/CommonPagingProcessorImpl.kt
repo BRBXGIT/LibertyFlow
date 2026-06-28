@@ -9,24 +9,29 @@ import com.brbx.common.view_model.model.state.CommonPagingState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
     private val pagingLens: Lens<State, CommonPagingState<PagingItem>>,
     private val paramsSelector: (State) -> Params,
-    private val pagingDataFactory: (Params) -> Flow<PagingData<PagingItem>>
+    private val pagingDataFactory: (Params) -> Flow<PagingData<PagingItem>>,
+    private val debounceMillis: Long,
 ) : CommonPagingProcessor<State> {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     override fun LibertyFlowMviScope<State>.process(intent: CommonPagingIntent) {
         when (intent) {
             CommonPagingIntent.SetUpPaging -> {
                 val pagingFlow = state
                     .map { paramsSelector(it) }
                     .distinctUntilChanged()
+                    .debounce(timeout = debounceMillis.milliseconds)
                     .flatMapLatest { params ->
                         pagingDataFactory(params)
                     }

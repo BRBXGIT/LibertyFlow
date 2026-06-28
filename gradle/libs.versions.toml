@@ -15,7 +15,7 @@ coreKtx = "1.19.0"
 kotlinxCoroutinesCore = "1.11.0"
 
 # BRBX
-brbx = "1.1.45"
+brbx = "1.1.53"
 
 # Optics
 arrowOptics = "2.2.3"
@@ -30,7 +30,7 @@ koin = "4.2.2"
 datastorePreferences = "1.2.1"
 
 # Ktor
-ktorClientCore = "3.5.0"
+ktorClientCore = "3.5.1"
 
 # Room
 roomKtx = "2.8.4"
@@ -48,8 +48,13 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 # BRBX
 brbx-mvi-compose = { module = "com.github.BRBXGIT.BRBXDevKit:mvi-compose", version.ref = "brbx" }
 brbx-ui-compose = { module = "com.github.BRBXGIT.BRBXDevKit:ui-compose", version.ref = "brbx" }
+brbx-coil-helpers = { module = "com.github.BRBXGIT.BRBXDevKit:coil-helpers", version.ref = "brbx" }
 
-# Optics
+# Compose preview
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+
+# Optics (used in convention plugin)
 arrow-optics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrowOptics" }
 arrow-optics-ksp = { module = "io.arrow-kt:arrow-optics-ksp-plugin", version.ref = "arrowOptics" }
 

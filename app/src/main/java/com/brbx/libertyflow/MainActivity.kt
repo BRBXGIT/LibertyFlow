@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import com.brbx.design_system.theme.Typography
 import com.brbx.ui_compose.theme.BrbxTheme
 
 class MainActivity : ComponentActivity() {
@@ -12,7 +15,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BrbxTheme(darkColorScheme()) {
+            val scheme = if (isSystemInDarkTheme()) {
+                darkColorScheme()
+            } else {
+                lightColorScheme()
+            }
+            BrbxTheme(
+                colorScheme = scheme,
+                typography = Typography,
+            ) {
                 NavGraph()
             }
         }

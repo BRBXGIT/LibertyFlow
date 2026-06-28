@@ -3,6 +3,7 @@ package com.brbx.data.network.api.executor
 import com.brbx.domain.network.model.result.DomainRequestResult
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.network.base.model.result.RequestResult
+import kotlinx.coroutines.CancellationException
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -17,6 +18,7 @@ internal class ApiCallExecutorImpl : ApiCallExecutor {
             val data = call()
             data.toDomain(transform = mapper)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             DomainRequestResult.Error(exception = e.toRequestException())
         }
 

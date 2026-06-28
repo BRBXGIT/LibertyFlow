@@ -13,7 +13,7 @@ import com.brbx.network.base.model.response.common.Poster
 
 internal fun AnimeItem.toDomain(): DomainAnimeItem =
     DomainAnimeItem(
-        favoritesCount = this.addedInUsersFavorites,
+        favoritesCount = this.addedInUsersFavorites ?: 0,
         genres = this.genres.map { it.toDomain() },
         id = this.id,
         name = this.name.toDomain(),
@@ -29,15 +29,15 @@ internal fun Genre.toDomain(): DomainGenre =
 internal fun Name.toDomain(): DomainName =
     DomainName(
         alternative = this.alternative,
-        english = this.english,
+        english = this.english ?: this.main,
         main = this.main,
     )
 
 internal fun Poster.toDomain(): DomainPoster =
     DomainPoster(
-        preview = this.optimized.preview,
-        src = this.optimized.src,
-        thumbnail = this.optimized.thumbnail,
+        preview = this.optimized.preview ?: "",
+        src = this.optimized.src ?: "",
+        thumbnail = this.optimized.thumbnail ?: "",
     )
 
 internal fun DomainYears.toData(): Parameters.Complex.Years =

@@ -1,5 +1,6 @@
 package com.brbx.home.view_model.view_model
 
+import androidx.compose.runtime.Stable
 import com.brbx.common.view_model.model.intent.CommonPagingIntent
 import com.brbx.common.view_model.processor.paging.CommonPagingProcessor
 import com.brbx.common.view_model.processor.search.CommonSearchProcessor
@@ -7,19 +8,20 @@ import com.brbx.common.view_model.view_model.LibertyFlowViewModel
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.model.State
 import com.brbx.home.view_model.processor.filters.FiltersProcessor
-import com.brbx.home.view_model.processor.latest_watching_anime.LatestWatchingAnimeProcessor
+import com.brbx.home.view_model.processor.tile_processor.TileProcessor
 import com.brbx.home.view_model.processor.random_anime.RandomAnimeProcessor
 
+@Stable
 internal class ViewModel(
     private val searchProcessor: CommonSearchProcessor<State>,
     private val randomAnimeProcessor: RandomAnimeProcessor,
     private val filtersProcessor: FiltersProcessor,
     private val catalogProcessor: CommonPagingProcessor<State>,
-    private val latestWatchingAnimeProcessor: LatestWatchingAnimeProcessor,
+    private val tileProcessor: TileProcessor,
 ) : LibertyFlowViewModel<State, Intent>(initialState = State()) {
 
     init {
-        dispatchIntent(Intent.GetLatestWatchingAnime)
+        dispatchIntent(Intent.GetActualTile)
         dispatchIntent(Intent.Catalog(action = CommonPagingIntent.SetUpPaging))
     }
 
@@ -37,7 +39,7 @@ internal class ViewModel(
             is Intent.Catalog -> with(receiver = catalogProcessor) {
                 mviScope.process(intent.action)
             }
-            is Intent.GetLatestWatchingAnime -> with(receiver = latestWatchingAnimeProcessor) {
+            is Intent.GetActualTile -> with(receiver = tileProcessor) {
                 mviScope.process(intent)
             }
         }

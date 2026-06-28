@@ -1,0 +1,61 @@
+package com.brbx.home.screen.content
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.paging.compose.LazyPagingItems
+import com.brbx.common.model.common.model.AnimeItem
+import com.brbx.design_system.component.anime_card.AnimeCard
+import com.brbx.design_system.component.tile.Tile
+import com.brbx.design_system.component.tile.TileModel
+import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
+import com.brbx.design_system.container.PullToRefreshContainer
+import com.brbx.ui_compose.common.toBrbxText
+import com.brbx.ui_compose.modifiers.brbxAnimateItem
+
+@Composable
+internal fun Content(
+    tile: TileModel?,
+    items: LazyPagingItems<AnimeItem>,
+    isRefreshing: Boolean,
+    isSearching: Boolean,
+    modifier: Modifier = Modifier
+) {
+    PullToRefreshContainer(
+        modifier = modifier,
+        isRefreshing = isRefreshing,
+        onRefresh = items::refresh,
+        minimalisticIndicator = isSearching,
+    ) {
+        AnimeItemsLazyVerticalGrid(Modifier.fillMaxSize()) {
+            item(
+                key = ContentKeys.Tile,
+                span = { GridItemSpan(currentLineSpan = maxLineSpan) },
+            ) {
+                tile?.let {
+                    Tile(
+                        model = tile,
+                        modifier = Modifier.brbxAnimateItem(scope = this)
+                    )
+                }
+            }
+
+            items(
+                count = items.itemCount,
+                key = { index -> index }
+            ) { index ->
+                val current = items[index]
+                current?.let { anime ->
+                    AnimeCard(
+                        modifier = Modifier.brbxAnimateItem(scope = this),
+                        title = anime.name.russian.toBrbxText(),
+                        description = anime.genresAsString().toBrbxText(),
+                        posterPath = anime.poster.fullPreview(),
+                        onClick = { /* TODO Navigate to details */ },
+                    )
+                }
+            }
+        }
+    }
+}

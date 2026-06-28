@@ -13,7 +13,7 @@ data class AnimeItem(
     val poster: Poster,
 ) {
     fun genresAsString(): String =
-        this.genres.joinToString(separator = " | ")
+        this.genres.joinToString(separator = " | ") { it.name }
 
     companion object
 }

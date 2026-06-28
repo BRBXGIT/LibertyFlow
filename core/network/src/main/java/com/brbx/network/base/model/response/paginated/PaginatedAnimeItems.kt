@@ -19,11 +19,11 @@ data class PaginatedAnimeItems(
             @SerialName("per_page") val perPage: Int,
             @SerialName("total_pages") val totalPages: Int,
             val total: Int,
-            val links: Links,
+            val links: Links?,
             val count: Int,
         ) {
             @Serializable
-            data class Links(val next: String)
+            data class Links(val next: String?)
         }
     }
 }

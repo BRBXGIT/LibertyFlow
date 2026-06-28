@@ -10,7 +10,7 @@ internal sealed interface Intent {
 
     data object GetRandomAnime : Intent
 
-    data object GetLatestWatchingAnime : Intent
+    data object GetActualTile : Intent
 
     @JvmInline value class Catalog(val action: CommonPagingIntent) : Intent
 

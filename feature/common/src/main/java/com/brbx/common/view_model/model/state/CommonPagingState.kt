@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.emptyFlow
 @Immutable
 @optics
 data class CommonPagingState<PagingItem : Any>(
-    val loading: CommonLoadingState = CommonLoadingState(),
+    val loading: CommonLoadingState = CommonLoadingState(isLoading = true),
     val refreshing: CommonLoadingState = CommonLoadingState(),
     val pagingData: Flow<PagingData<PagingItem>> = emptyFlow(),
 ) { companion object }

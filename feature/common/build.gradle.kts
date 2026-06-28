@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
 
-    // Modules
+    // Core
     implementation(projects.core.domain)
 
     // BRBX

@@ -8,6 +8,7 @@ import com.brbx.common.model.common.model.Years
 import com.brbx.common.view_model.model.state.CommonLoadingState
 import com.brbx.common.view_model.model.state.CommonPagingState
 import com.brbx.common.view_model.model.state.CommonSearchState
+import com.brbx.design_system.component.tile.TileModel
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 
@@ -18,7 +19,7 @@ internal data class State(
     val randomAnime: RandomAnime = RandomAnime(),
     val search: CommonSearchState = CommonSearchState(),
     val filtersSheet: FiltersSheet = FiltersSheet(),
-    val latestWatchingAnime: LatestWatchingAnime? = null,
+    val latestWatchingAnime: TileModel? = null,
 ) {
     @Immutable
     @optics
@@ -44,14 +45,6 @@ internal data class State(
 
         companion object
     }
-
-    @Immutable
-    @optics
-    data class LatestWatchingAnime(
-        val animeId: Int,
-        val title: String,
-        val lastEpisode: Int,
-    ) { companion object }
 
     companion object
 }
