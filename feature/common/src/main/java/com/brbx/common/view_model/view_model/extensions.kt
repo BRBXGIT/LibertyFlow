@@ -30,7 +30,7 @@ suspend inline fun <State, R> LibertyFlowMviScope<State>.makeNetworkCall(
     loadingLens: Lens<State, CommonLoadingState>,
     crossinline call: suspend () -> R,
 ): R {
-    updateState { loadingLens.modify(source = this) { it.copy(isLoading = true) } }
+    updateState { loadingLens.modify(source = this) { it.copy(isLoading = true, isException = false) } }
     val result = call()
     updateState { loadingLens.modify(source = this) { it.copy(isLoading = false) } }
     return result

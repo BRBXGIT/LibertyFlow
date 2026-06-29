@@ -1,9 +1,6 @@
 package com.brbx.home.view_model.processor.random_anime
 
-import arrow.optics.Lens
-import arrow.optics.copy
 import com.brbx.common.strings.asBrbxText
-import com.brbx.common.view_model.model.state.isLoading
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.makeNetworkCall
 import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar
