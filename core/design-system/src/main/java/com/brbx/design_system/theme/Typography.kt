@@ -5,117 +5,144 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import com.brbx.design_system.common.DesignSystemFonts
 
-private val fontFamily = FontFamily(
-    Font(DesignSystemFonts.manrope_variable)
+private const val GoogleSansFlexRond = 100f
+
+private val GoogleSansRounded = FontFamily(
+    Font(
+        resId = DesignSystemFonts.gsans_variable,
+        weight = FontWeight.Light,
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Light.weight),
+            FontVariation.Setting("ROND", GoogleSansFlexRond)
+        )
+    ),
+    Font(
+        resId = DesignSystemFonts.gsans_variable,
+        weight = FontWeight.Normal,
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Normal.weight),
+            FontVariation.Setting("ROND", GoogleSansFlexRond)
+        )
+    ),
+    Font(
+        resId = DesignSystemFonts.gsans_variable,
+        weight = FontWeight.Medium,
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Medium.weight),
+            FontVariation.Setting("ROND", GoogleSansFlexRond)
+        )
+    ),
+    Font(
+        resId = DesignSystemFonts.gsans_variable,
+        weight = FontWeight.SemiBold,
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.SemiBold.weight),
+            FontVariation.Setting("ROND", GoogleSansFlexRond)
+        )
+    ),
+    Font(
+        resId = DesignSystemFonts.gsans_variable,
+        weight = FontWeight.Bold,
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(FontWeight.Bold.weight),
+            FontVariation.Setting("ROND", GoogleSansFlexRond)
+        )
+    ),
 )
 
 val Typography = Typography(
     displayLarge = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 57.sp,
         lineHeight = 64.sp,
         letterSpacing = (-0.25).sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     displayMedium = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 45.sp,
         lineHeight = 52.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     displaySmall = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 36.sp,
         lineHeight = 44.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     headlineLarge = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 32.sp,
         lineHeight = 40.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     headlineMedium = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 28.sp,
         lineHeight = 36.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     headlineSmall = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 24.sp,
         lineHeight = 32.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     titleLarge = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 20.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     titleMedium = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 18.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     titleSmall = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     bodyLarge = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     bodyMedium = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     bodySmall = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     labelLarge = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     labelMedium = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     ),
     labelSmall = TextStyle(
-        fontWeight = FontWeight.W700,
         fontSize = 10.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.sp,
-        fontFamily = fontFamily
+        fontFamily = GoogleSansRounded
     )
 )
