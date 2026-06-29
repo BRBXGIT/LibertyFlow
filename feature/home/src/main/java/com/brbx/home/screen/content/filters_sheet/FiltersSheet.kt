@@ -82,7 +82,7 @@ internal fun FiltersSheet(
                 } else {
                     selectableFilterItems(
                         items = filters.filers.genresState.genres,
-                        isSelected = { genre -> genre in filters.filers.genresState.genres },
+                        isSelected = { genre -> genre in filters.filers.genresState.selectedGenres },
                         itemText = { genre -> genre.name.toBrbxText() },
                         itemKey = { genre -> genre.id },
                         onItemClick = { genre ->

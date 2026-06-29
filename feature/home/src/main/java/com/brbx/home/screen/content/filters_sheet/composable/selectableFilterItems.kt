@@ -1,6 +1,6 @@
 package com.brbx.home.screen.content.filters_sheet.composable
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.FilterChip
@@ -12,7 +12,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.asString
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
-import com.brbx.ui_compose.theme.bDimens
 import com.brbx.ui_compose.theme.mTypography
 
 internal fun <T> LazyGridScope.selectableFilterItems(
@@ -36,9 +35,9 @@ internal fun <T> LazyGridScope.selectableFilterItems(
                 Text(
                     text = itemText(item).asString(),
                     maxLines = 1,
+                    modifier = Modifier.fillMaxWidth(),
                     overflow = TextOverflow.Ellipsis,
                     style = mTypography.bodyMedium,
-                    modifier = Modifier.padding(all = bDimens.micro5),
                     textAlign = TextAlign.Center
                 )
             }

@@ -22,7 +22,7 @@ internal val pagingProcessorModule = module {
 inline fun <reified State, reified PagingItem : Any, reified Params> Scope.getCommonPagingProcessor(
     lens: Lens<State, CommonPagingState<PagingItem>>,
     noinline paramsSelector: (State) -> Params,
-    debounceMillis: Long = 500L,
+    debounceMillis: Long = 700L,
     noinline pagingDataFactory: (Params) -> Flow<PagingData<PagingItem>>
 ): CommonPagingProcessor<State> {
     @Suppress("UNCHECKED_CAST")

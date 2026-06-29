@@ -19,6 +19,7 @@ import com.brbx.home.view_model.model.isOngoing
 import com.brbx.home.view_model.model.isVisible
 import com.brbx.home.view_model.model.loading
 import com.brbx.home.view_model.model.seasons
+import com.brbx.home.view_model.model.selectedGenres
 import com.brbx.home.view_model.model.sorting
 import com.brbx.home.view_model.model.years
 import kotlinx.coroutines.CoroutineDispatcher
@@ -45,7 +46,7 @@ internal class FiltersProcessorImpl(
             }
             is Intent.Filters.ToggleGenre -> updateState {
                 copy {
-                    State.filtersSheet.filers.genresState.genres transform {
+                    State.filtersSheet.filers.genresState.selectedGenres transform {
                         it.toggle(element = intent.genre)
                     }
                 }

@@ -47,6 +47,7 @@ internal data class State(
             data class Genres(
                 val genres: List<Genre> = emptyList(),
                 val loading: CommonLoadingState = CommonLoadingState(),
+                val selectedGenres: List<Genre> = emptyList(),
             ) { companion object }
 
             companion object
