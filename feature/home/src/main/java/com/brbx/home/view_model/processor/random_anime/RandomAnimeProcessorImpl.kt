@@ -1,11 +1,13 @@
 package com.brbx.home.view_model.processor.random_anime
 
+import arrow.optics.Lens
 import arrow.optics.copy
 import com.brbx.common.strings.asBrbxText
 import com.brbx.common.view_model.model.state.isLoading
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
+import com.brbx.common.view_model.view_model.makeNetworkCall
 import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar
-import com.brbx.domain.network.model.result.onError
+import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.domain.network.releases.random.use_case.GetRandomAnimeReleaseUseCase
 import com.brbx.home.view_model.model.Intent
@@ -24,16 +26,16 @@ internal class RandomAnimeProcessorImpl(
         when (intent) {
             is Intent.GetRandomAnime -> {
                 coroutineScope.launch(context = dispatcherIo) {
-                    updateState { copy { State.randomAnime.commonLoadingState.isLoading set true } }
-                    randomAnimeUseCase()
-                        .onSuccess {
-                            // TODO Make navigation to details screen
-                        } onError { exception ->
-                            postNetworkExceptionSnackbar(exception.asBrbxText()) {
-                                process(Intent.GetRandomAnime)
-                            }
+                    makeNetworkCall(
+                        loadingLens = State.randomAnime.commonLoadingState,
+                        call = { randomAnimeUseCase() },
+                    ).onSuccess {
+                        // TODO Make navigation to details screen
+                    } onException { exception ->
+                        postNetworkExceptionSnackbar(exception.asBrbxText()) {
+                            process(Intent.GetRandomAnime)
                         }
-                    updateState { copy { State.randomAnime.commonLoadingState.isLoading set false } }
+                    }
                 }
             }
         }

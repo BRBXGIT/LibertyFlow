@@ -9,7 +9,7 @@ inline infix fun <T> DomainRequestResult<T>.onSuccess(
     return this
 }
 
-inline infix fun <T> DomainRequestResult<T>.onError(
+inline infix fun <T> DomainRequestResult<T>.onException(
     action: (RequestException) -> Unit
 ): DomainRequestResult<T> {
     if (this is DomainRequestResult.Error) {

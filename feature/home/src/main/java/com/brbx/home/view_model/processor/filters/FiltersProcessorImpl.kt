@@ -1,54 +1,76 @@
 package com.brbx.home.view_model.processor.filters
 
 import arrow.optics.copy
+import com.brbx.common.model.common.map.toUi
 import com.brbx.common.model.common.model.Years
+import com.brbx.common.view_model.model.state.isException
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
+import com.brbx.common.view_model.view_model.makeNetworkCall
+import com.brbx.domain.network.genres.get.use_case.GetAnimeGenresUseCase
+import com.brbx.domain.network.model.result.onException
+import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.model.State
 import com.brbx.home.view_model.model.filers
 import com.brbx.home.view_model.model.filtersSheet
 import com.brbx.home.view_model.model.genres
+import com.brbx.home.view_model.model.genresState
 import com.brbx.home.view_model.model.isOngoing
 import com.brbx.home.view_model.model.isVisible
+import com.brbx.home.view_model.model.loading
 import com.brbx.home.view_model.model.seasons
 import com.brbx.home.view_model.model.sorting
 import com.brbx.home.view_model.model.years
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 
-internal class FiltersProcessorImpl : FiltersProcessor {
+internal class FiltersProcessorImpl(
+    private val genresUseCase: GetAnimeGenresUseCase,
+    private val dispatcherIo: CoroutineDispatcher,
+) : FiltersProcessor {
 
     override fun LibertyFlowMviScope<State>.process(intent: Intent.Filters) {
         when (intent) {
-            Intent.Filters.ToggleSheet -> {
-                updateState {
-                    copy { State.filtersSheet.isVisible transform { !it } }
-                }
+            Intent.Filters.ToggleSheet -> updateState {
+                copy { State.filtersSheet.isVisible transform { !it } }
             }
-            Intent.Filters.ToggleOngoing -> {
-                updateState {
-                    copy { State.filtersSheet.filers.isOngoing transform { !it } }
-                }
+            Intent.Filters.ToggleOngoing -> updateState {
+                copy { State.filtersSheet.filers.isOngoing transform { !it } }
             }
-            is Intent.Filters.UpdateYears -> {
-                updateState {
-                    copy { State.filtersSheet.filers.years set Years(intent.from, intent.to) }
-                }
+            is Intent.Filters.UpdateYears -> updateState {
+                copy { State.filtersSheet.filers.years set Years(intent.from, intent.to) }
             }
-            is Intent.Filters.UpdateSorting -> {
-                updateState {
-                    copy { State.filtersSheet.filers.sorting set intent.sorting }
-                }
+            is Intent.Filters.UpdateSorting -> updateState {
+                copy { State.filtersSheet.filers.sorting set intent.sorting }
             }
-            is Intent.Filters.ToggleGenre -> {
-                updateState {
-                    copy { State.filtersSheet.filers.genres transform {
-                        it.toggle(element = intent.genre) }
+            is Intent.Filters.ToggleGenre -> updateState {
+                copy {
+                    State.filtersSheet.filers.genresState.genres transform {
+                        it.toggle(element = intent.genre)
                     }
                 }
             }
-            is Intent.Filters.ToggleSeason -> {
-                updateState {
-                    copy { State.filtersSheet.filers.seasons transform {
-                        it.toggle(element = intent.season) }
+            is Intent.Filters.ToggleSeason -> updateState {
+                copy {
+                    State.filtersSheet.filers.seasons transform {
+                        it.toggle(element = intent.season)
+                    }
+                }
+            }
+            is Intent.Filters.LoadGenres -> {
+                coroutineScope.launch(context = dispatcherIo) {
+                    makeNetworkCall(
+                        loadingLens = State.filtersSheet.filers.genresState.loading,
+                        call = { genresUseCase() },
+                    ).onSuccess { genres ->
+                        val mapped = genres.map { genre -> genre.toUi() }
+                        updateState {
+                            copy { State.filtersSheet.filers.genresState.genres set mapped }
+                        }
+                    } onException {
+                        updateState {
+                            copy { State.filtersSheet.filers.genresState.loading.isException set true }
+                        }
                     }
                 }
             }

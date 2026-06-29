@@ -34,7 +34,7 @@ internal val viewModelModule = module {
                         sorting = filters.sorting,
                         years = filters.years.toDomain(),
                         seasons = filters.seasons,
-                        genres = filters.genres.map { it.toDomain() },
+                        genres = filters.genresState.genres.map { it.toDomain() },
                     )
                 },
                 pagingDataFactory = { params ->

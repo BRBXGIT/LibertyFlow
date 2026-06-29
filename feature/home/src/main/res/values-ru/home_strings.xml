@@ -8,4 +8,20 @@
     <string name="theme_tile_precollection_text">Перейти</string>
 
     <string name="top_bar_title">Последние обновления</string>
+
+    <string name="filters_sheet_years">Года</string>
+    <string name="filters_sheet_from_year">От</string>
+    <string name="filters_sheet_to_year">До</string>
+    <string name="filters_sheet_seasons">Сезоны</string>
+    <string name="filters_sheet_genres">Жанры</string>
+    <string name="filters_sheet_sorting">Сортировка</string>
+    <string name="filters_sheet_is_ongoing">Релиз завершен</string>
+    <string name="filters_sheet_ongoing">Онгоинг</string>
+    <string name="filters_sheet_sorting_by_popularity">По популярности</string>
+    <string name="filters_sheet_sorting_by_novelty">По новизне</string>
+    <string name="filters_sheet_season_winter">Зима</string>
+    <string name="filters_sheet_season_autumn">Осень</string>
+    <string name="filters_sheet_season_spring">Весна</string>
+    <string name="filters_sheet_season_summer">Лето</string>
+    <string name="filters_sheet_season_unknown">Неизвестно</string>
 </resources>

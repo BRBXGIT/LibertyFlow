@@ -8,4 +8,20 @@
     <string name="theme_tile_precollection_text">Go to settings</string>
 
     <string name="top_bar_title">Latest updates</string>
+
+    <string name="filters_sheet_years">Years</string>
+    <string name="filters_sheet_from_year">From</string>
+    <string name="filters_sheet_to_year">To</string>
+    <string name="filters_sheet_seasons">Seasons</string>
+    <string name="filters_sheet_genres">Genres</string>
+    <string name="filters_sheet_sorting">Sorting</string>
+    <string name="filters_sheet_is_ongoing">Release ended</string>
+    <string name="filters_sheet_ongoing">Ongoing</string>
+    <string name="filters_sheet_sorting_by_popularity">By popularity</string>
+    <string name="filters_sheet_sorting_by_novelty">By novelty</string>
+    <string name="filters_sheet_season_winter">Winter</string>
+    <string name="filters_sheet_season_autumn">Fall</string>
+    <string name="filters_sheet_season_spring">Spring</string>
+    <string name="filters_sheet_season_summer">Summer</string>
+    <string name="filters_sheet_season_unknown">Unknown</string>
 </resources>

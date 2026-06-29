@@ -24,5 +24,6 @@ internal sealed interface Intent {
         @JvmInline value class ToggleGenre(val genre: Genre) : Filters
         data object ToggleSheet : Filters
         data object ToggleOngoing : Filters
+        data object LoadGenres : Filters
     }
 }

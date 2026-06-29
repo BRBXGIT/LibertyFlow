@@ -40,8 +40,17 @@ internal data class State(
             val sorting: Sorting = Sorting.CreatedAtDesc,
             val years: Years = Years(),
             val seasons: List<Season> = emptyList(),
-            val genres: List<Genre> = emptyList(),
-        ) { companion object }
+            val genresState: Genres = Genres(),
+        ) {
+            @Immutable
+            @optics
+            data class Genres(
+                val genres: List<Genre> = emptyList(),
+                val loading: CommonLoadingState = CommonLoadingState(),
+            ) { companion object }
+
+            companion object
+        }
 
         companion object
     }
