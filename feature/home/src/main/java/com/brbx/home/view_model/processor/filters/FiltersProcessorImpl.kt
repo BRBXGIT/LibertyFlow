@@ -11,7 +11,7 @@ import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.model.State
-import com.brbx.home.view_model.model.filers
+import com.brbx.home.view_model.model.filters
 import com.brbx.home.view_model.model.filtersSheet
 import com.brbx.home.view_model.model.genres
 import com.brbx.home.view_model.model.genresState
@@ -36,24 +36,24 @@ internal class FiltersProcessorImpl(
                 copy { State.filtersSheet.isVisible transform { !it } }
             }
             Intent.Filters.ToggleOngoing -> updateState {
-                copy { State.filtersSheet.filers.isOngoing transform { !it } }
+                copy { State.filtersSheet.filters.isOngoing transform { !it } }
             }
             is Intent.Filters.UpdateYears -> updateState {
-                copy { State.filtersSheet.filers.years set Years(intent.from, intent.to) }
+                copy { State.filtersSheet.filters.years set Years(intent.from, intent.to) }
             }
             is Intent.Filters.UpdateSorting -> updateState {
-                copy { State.filtersSheet.filers.sorting set intent.sorting }
+                copy { State.filtersSheet.filters.sorting set intent.sorting }
             }
             is Intent.Filters.ToggleGenre -> updateState {
                 copy {
-                    State.filtersSheet.filers.genresState.selectedGenres transform {
+                    State.filtersSheet.filters.genresState.selectedGenres transform {
                         it.toggle(element = intent.genre)
                     }
                 }
             }
             is Intent.Filters.ToggleSeason -> updateState {
                 copy {
-                    State.filtersSheet.filers.seasons transform {
+                    State.filtersSheet.filters.seasons transform {
                         it.toggle(element = intent.season)
                     }
                 }
@@ -61,16 +61,16 @@ internal class FiltersProcessorImpl(
             is Intent.Filters.LoadGenres -> {
                 coroutineScope.launch(context = dispatcherIo) {
                     makeNetworkCall(
-                        loadingLens = State.filtersSheet.filers.genresState.loading,
+                        loadingLens = State.filtersSheet.filters.genresState.loading,
                         call = { genresUseCase() },
                     ).onSuccess { genres ->
                         val mapped = genres.map { genre -> genre.toUi() }
                         updateState {
-                            copy { State.filtersSheet.filers.genresState.genres set mapped }
+                            copy { State.filtersSheet.filters.genresState.genres set mapped }
                         }
                     } onException {
                         updateState {
-                            copy { State.filtersSheet.filers.genresState.loading.isException set true }
+                            copy { State.filtersSheet.filters.genresState.loading.isException set true }
                         }
                     }
                 }

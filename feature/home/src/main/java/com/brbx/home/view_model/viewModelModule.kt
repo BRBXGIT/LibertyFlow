@@ -27,14 +27,14 @@ internal val viewModelModule = module {
             catalogProcessor = getCommonPagingProcessor(
                 lens = State.catalog,
                 paramsSelector = { state ->
-                    val filters = state.filtersSheet.filers
+                    val filters = state.filtersSheet.filters
                     CatalogReleasesParameters(
                         search = state.search.search,
                         isOngoing = filters.isOngoing,
                         sorting = filters.sorting,
                         years = filters.years.toDomain(),
                         seasons = filters.seasons,
-                        genres = filters.genresState.genres.map { it.toDomain() },
+                        genres = filters.genresState.selectedGenres.map { it.toDomain() },
                     )
                 },
                 pagingDataFactory = { params ->

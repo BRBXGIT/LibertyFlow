@@ -31,11 +31,11 @@ internal data class State(
     @optics
     data class FiltersSheet(
         val isVisible: Boolean = false,
-        val filers: Filers = Filers(),
+        val filters: Filters = Filters(),
     ) {
         @Immutable
         @optics
-        data class Filers(
+        data class Filters(
             val isOngoing: Boolean = false,
             val sorting: Sorting = Sorting.CreatedAtDesc,
             val years: Years = Years(),

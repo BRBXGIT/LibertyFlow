@@ -34,7 +34,7 @@ internal fun FiltersSheet(
     dispatchIntent: (Intent) -> Unit,
 ) {
     LaunchedEffect(key1 = Unit) {
-        if (filters.filers.genresState.genres.isEmpty()) {
+        if (filters.filters.genresState.genres.isEmpty()) {
             dispatchIntent(Intent.Filters.LoadGenres)
         }
     }
@@ -51,21 +51,21 @@ internal fun FiltersSheet(
             modifier = Modifier.fillMaxSize(),
         ) {
             filterDivider(text = HomeStrings.filters_sheet_is_ongoing)
-            releaseFinished(filters.filers.isOngoing, dispatchIntent)
+            releaseFinished(filters.filters.isOngoing, dispatchIntent)
 
             filterDivider(text = HomeStrings.filters_sheet_sorting)
-            sortingBy(selected = filters.filers.sorting, dispatchIntent)
+            sortingBy(selected = filters.filters.sorting, dispatchIntent)
 
             filterDivider(HomeStrings.filters_sheet_years)
             yearFields(
-                years = filters.filers.years,
+                years = filters.filters.years,
                 dispatchIntent = dispatchIntent,
             )
 
             filterDivider(text = HomeStrings.filters_sheet_seasons)
             selectableFilterItems(
                 items = Season.entries,
-                isSelected = { season -> season in filters.filers.seasons },
+                isSelected = { season -> season in filters.filters.seasons },
                 itemText = { season -> season.toStringRes() },
                 itemKey = { season -> season },
                 onItemClick = { season ->
@@ -74,15 +74,15 @@ internal fun FiltersSheet(
             )
 
             filterDivider(text = HomeStrings.filters_sheet_genres)
-            if (filters.filers.genresState.loading.isLoading) {
+            if (filters.filters.genresState.loading.isLoading) {
                 centeredCircularIndicator()
             } else {
-                if (filters.filers.genresState.loading.isException) {
+                if (filters.filters.genresState.loading.isException) {
                     centeredRetryButton(dispatchIntent)
                 } else {
                     selectableFilterItems(
-                        items = filters.filers.genresState.genres,
-                        isSelected = { genre -> genre in filters.filers.genresState.selectedGenres },
+                        items = filters.filters.genresState.genres,
+                        isSelected = { genre -> genre in filters.filters.genresState.selectedGenres },
                         itemText = { genre -> genre.name.toBrbxText() },
                         itemKey = { genre -> genre.id },
                         onItemClick = { genre ->
