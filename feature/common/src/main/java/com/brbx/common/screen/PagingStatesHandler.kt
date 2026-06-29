@@ -21,6 +21,7 @@ data class PagingHandler(
 internal fun PagingStatesHandler(handler: PagingHandler) {
     var isFirstLoading by rememberSaveable { mutableStateOf(value = true) }
 
+    // TODO Fix bug content showing after error
     LaunchedEffect(key1 = handler.loadState) {
         val loadState = handler.loadState
         val dispatch = handler.dispatchIntent

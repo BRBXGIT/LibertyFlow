@@ -2,6 +2,7 @@ package com.brbx.home.screen.content
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
@@ -16,6 +17,7 @@ import com.brbx.ui_compose.modifiers.brbxAnimateItem
 
 @Composable
 internal fun Content(
+    animeGridState: LazyGridState,
     tile: TileModel?,
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
@@ -28,7 +30,10 @@ internal fun Content(
         onRefresh = items::refresh,
         minimalisticIndicator = isSearching,
     ) {
-        AnimeItemsLazyVerticalGrid(Modifier.fillMaxSize()) {
+        AnimeItemsLazyVerticalGrid(
+            modifier = Modifier.fillMaxSize(),
+            state = animeGridState,
+        ) {
             if (!isSearching) {
                 item(
                     key = ContentKeys.Tile,

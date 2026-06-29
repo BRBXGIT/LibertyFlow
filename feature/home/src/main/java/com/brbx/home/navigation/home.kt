@@ -1,6 +1,5 @@
 package com.brbx.home.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -14,7 +13,6 @@ import com.brbx.common.screen.PagingHandler
 import com.brbx.home.screen.ScreenScaffold
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.view_model.ViewModel
-import com.brbx.ui_compose.theme.mColors
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.home(
@@ -42,9 +40,7 @@ fun NavGraphBuilder.home(
             isLoading = state.catalog.loading.isLoading,
             tile = state.latestWatchingAnime,
             items = catalog,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = mColors.background),
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }

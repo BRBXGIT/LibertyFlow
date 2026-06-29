@@ -2,6 +2,7 @@ package com.brbx.home.screen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -20,10 +21,17 @@ import com.brbx.home.screen.content.Content
 import com.brbx.home.screen.shimmer.ContentShimmer
 import com.brbx.home.view_model.model.Intent
 import com.brbx.mvi_compose.effects.BrbxEffect
+import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
+import com.brbx.ui_compose.components.complex.disappearing_fab.BrbxDisappearingFab
 import com.brbx.ui_compose.containers.complex.scaffold.BrbxShimmerScaffoldAppearances
 import com.brbx.ui_compose.containers.complex.scaffold.rememberCopy
 import com.brbx.ui_compose.containers.complex.snackbar_host.BrbxSnackbarHost
+import com.brbx.ui_compose.state.BrbxScrollDirection
+import com.brbx.ui_compose.state.brbxScrollDirection
+import dev.chiksmedina.solar.OutlineSolar
+import dev.chiksmedina.solar.outline.DesignTools
+import dev.chiksmedina.solar.outline.designtools.Filters
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,12 +50,22 @@ internal fun ScreenScaffold(
     val appearance = BrbxShimmerScaffoldAppearances.default.rememberCopy(
         contentWindowInsets = { rememberInsetsWithNavBar() },
     )
+    val animeGridState = rememberLazyGridState()
+    val isFabVisible =
+        !isError && !isLoading && animeGridState.brbxScrollDirection() == BrbxScrollDirection.Up
     ShimmerScaffold(
         appearance = appearance,
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         isShimmering = isLoading,
         snackbarHost = { BrbxSnackbarHost() },
         isError = isError,
+        floatingActionButton = {
+            BrbxDisappearingFab(
+                visible = isFabVisible,
+                onClick = { dispatchIntent(Intent.Filters.ToggleSheet) },
+                icon = OutlineSolar.DesignTools.Filters.toBrbxIcon(),
+            )
+        },
         topBar = {
             SearchableTopBar(
                 onSearchClick =
@@ -67,11 +85,12 @@ internal fun ScreenScaffold(
             ContentShimmer(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(paddingValues),
             )
         },
         content = { paddingValues ->
             Content(
+                animeGridState = animeGridState,
                 isSearching = searchState.isSearching,
                 isRefreshing = isRefreshing,
                 tile = tile,
