@@ -1,22 +1,27 @@
 package com.brbx.design_system.component.anime_card
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
 import com.brbx.design_system.common.DesignConstants
-import com.brbx.design_system.common.rememberElevationColor
+import com.brbx.ui_compose.common.UnsafeAppearanceCopy
 import com.brbx.ui_compose.components.complex.content_card.content_card.BrbxContentCardAppearances
-import com.brbx.ui_compose.components.complex.content_card.content_card.rememberCopy
+import com.brbx.ui_compose.components.complex.content_card.content_card.copy
 import com.brbx.ui_compose.theme.mTypography
 
 @Immutable
 internal object AnimeCardConstants {
 
-    val animeCardAppearance @Composable get() =
-        BrbxContentCardAppearances.tertiaryElevated.rememberCopy(
+    val Width = 150.dp
+    val Height = 270.dp
+
+    @OptIn(UnsafeAppearanceCopy::class)
+    val AnimeCardAppearance =
+        BrbxContentCardAppearances.tertiaryElevated.copy(
             defaultTitleStyle = { mTypography.bodyMedium },
             defaultDescriptionStyle = { mTypography.bodySmall },
-            containerElevationSpotColor = { rememberElevationColor() },
-            containerElevationAmbientColor = { rememberElevationColor() },
+            containerElevationSpotColor = { remember { DesignConstants.elevationColor } },
+            containerElevationAmbientColor = { remember { DesignConstants.elevationColor } },
             containerElevation = { DesignConstants.elevation }
         )
 }

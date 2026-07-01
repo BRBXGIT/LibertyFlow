@@ -9,6 +9,8 @@
 
     <string name="top_bar_title">Latest updates</string>
 
+    <string name="random_anime_button_text">Random anime</string>
+
     <string name="filters_sheet_years">Years</string>
     <string name="filters_sheet_from_year">From</string>
     <string name="filters_sheet_to_year">To</string>

@@ -7,7 +7,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.brbx.design_system.common.DesignConstants
 import com.brbx.design_system.component.precollection.Precollection
 import com.brbx.design_system.component.precollection.PrecollectionModel
 import com.brbx.ui_compose.common.toBrbxIcon
@@ -33,7 +32,7 @@ fun Tile(
 ) {
     BrbxTile(
         appearance = appearance,
-        modifier = modifier.padding(all = DesignConstants.elevation),
+        modifier = modifier.padding(all = appearance.containerElevation()),
         title = model.title,
         description = model.description,
         trailingContent = {

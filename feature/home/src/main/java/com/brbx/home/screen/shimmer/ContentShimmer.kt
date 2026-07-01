@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.brbx.design_system.component.anime_card.AnimeCardShimmer
+import com.brbx.design_system.component.rainbow_button.RainbowButtonShimmer
 import com.brbx.design_system.component.tile.TileShimmer
 import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
@@ -23,6 +24,17 @@ internal fun ContentShimmer(
         userScrollEnabled = false,
         modifier = modifier,
     ) {
+        item(
+            key = ShimmerKeys.RandomAnimeButton,
+            span = { GridItemSpan(currentLineSpan = maxLineSpan) },
+        ) {
+            RainbowButtonShimmer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .brbxAnimateItem(scope = this)
+            )
+        }
+
         item(
             key = ShimmerKeys.Tile,
             span = { GridItemSpan(currentLineSpan = maxLineSpan) },

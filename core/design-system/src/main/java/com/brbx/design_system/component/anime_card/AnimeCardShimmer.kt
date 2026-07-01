@@ -1,5 +1,6 @@
 package com.brbx.design_system.component.anime_card
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,10 +12,11 @@ import com.brbx.ui_compose.theme.BrbxTheme
 @Composable
 fun AnimeCardShimmer(
     modifier: Modifier = Modifier,
-    appearance: BrbxContentCardAppearance = AnimeCardConstants.animeCardAppearance,
+    appearance: BrbxContentCardAppearance = AnimeCardConstants.AnimeCardAppearance,
 ) =
     BrbxContentCardShimmer(
-        modifier = modifier,
+        modifier = modifier
+            .size(AnimeCardConstants.Width, AnimeCardConstants.Height),
         appearance = appearance,
     )
 

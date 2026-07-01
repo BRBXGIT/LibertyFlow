@@ -9,7 +9,6 @@ import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.domain.network.releases.random.use_case.GetRandomAnimeReleaseUseCase
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.model.State
-import com.brbx.home.view_model.model.commonLoadingState
 import com.brbx.home.view_model.model.randomAnime
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -24,7 +23,7 @@ internal class RandomAnimeProcessorImpl(
             is Intent.GetRandomAnime -> {
                 coroutineScope.launch(context = dispatcherIo) {
                     makeNetworkCall(
-                        loadingLens = State.randomAnime.commonLoadingState,
+                        loadingLens = State.randomAnime,
                         call = { randomAnimeUseCase() },
                     ).onSuccess {
                         // TODO Make navigation to details screen

@@ -2,12 +2,12 @@ package com.brbx.design_system.component.anime_card
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.brbx.coil_helpers.helpers.BrbxRemoteImage
-import com.brbx.design_system.common.DesignConstants
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.components.complex.content_card.content_card.BrbxContentCard
@@ -22,10 +22,12 @@ fun AnimeCard(
     posterPath: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    appearance: BrbxContentCardAppearance = AnimeCardConstants.animeCardAppearance,
+    appearance: BrbxContentCardAppearance = AnimeCardConstants.AnimeCardAppearance,
 ) =
     BrbxContentCard(
-        modifier = modifier.padding(all = DesignConstants.elevation),
+        modifier = modifier
+            .size(AnimeCardConstants.Width, AnimeCardConstants.Height)
+            .padding(all = appearance.containerElevation()),
         appearance = appearance,
         onClick = onClick,
         title = title,

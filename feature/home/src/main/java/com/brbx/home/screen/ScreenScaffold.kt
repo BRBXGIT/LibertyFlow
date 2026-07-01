@@ -40,6 +40,7 @@ internal fun ScreenScaffold(
     dispatchIntent: (Intent) -> Unit,
     searchState: CommonSearchState,
     isLoading: Boolean,
+    isRandomAnimeLoading: Boolean,
     tile: TileModel?,
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
@@ -95,6 +96,8 @@ internal fun ScreenScaffold(
                 isRefreshing = isRefreshing,
                 tile = tile,
                 items = items,
+                dispatchIntent = dispatchIntent,
+                isRandomAnimeLoading = isRandomAnimeLoading,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),

@@ -16,17 +16,11 @@ import com.brbx.domain.network.model.common.Sorting
 @optics
 internal data class State(
     val catalog: CommonPagingState<AnimeItem> = CommonPagingState(),
-    val randomAnime: RandomAnime = RandomAnime(),
+    val randomAnime: CommonLoadingState = CommonLoadingState(),
     val search: CommonSearchState = CommonSearchState(),
     val filtersSheet: FiltersSheet = FiltersSheet(),
     val latestWatchingAnime: TileModel? = null,
 ) {
-    @Immutable
-    @optics
-    data class RandomAnime(val commonLoadingState: CommonLoadingState = CommonLoadingState()) {
-        companion object
-    }
-
     @Immutable
     @optics
     data class FiltersSheet(

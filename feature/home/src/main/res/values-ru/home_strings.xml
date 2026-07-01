@@ -9,6 +9,8 @@
 
     <string name="top_bar_title">Последние обновления</string>
 
+    <string name="random_anime_button_text">Случайный тайтл</string>
+
     <string name="filters_sheet_years">Года</string>
     <string name="filters_sheet_from_year">От</string>
     <string name="filters_sheet_to_year">До</string>

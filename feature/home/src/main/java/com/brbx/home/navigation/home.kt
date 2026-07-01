@@ -47,6 +47,7 @@ fun NavGraphBuilder.home(
             isRefreshing = state.catalog.refreshing.isLoading,
             isLoading = state.catalog.loading.isLoading,
             tile = state.latestWatchingAnime,
+            isRandomAnimeLoading = state.randomAnime.isLoading,
             items = catalog,
             modifier = Modifier.fillMaxSize(),
         )
