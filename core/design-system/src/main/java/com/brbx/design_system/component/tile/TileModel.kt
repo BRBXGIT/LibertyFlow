@@ -13,5 +13,6 @@ data class TileModel(
     val description: BrbxText,
     val icon: BrbxIcon,
     val onClick: () -> Unit,
+    val isPrecollectionVisible: Boolean = false,
     val precollection: PrecollectionModel? = null,
 ) { companion object }

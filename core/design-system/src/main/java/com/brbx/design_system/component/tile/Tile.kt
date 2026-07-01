@@ -1,5 +1,11 @@
 package com.brbx.design_system.component.tile
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +23,7 @@ import com.brbx.ui_compose.components.simple.icon.BrbxIcon
 import com.brbx.ui_compose.containers.complex.container.container_with_badge.BrbxContainerWithBadge
 import com.brbx.ui_compose.containers.complex.container.container_with_badge.BrbxContainerWithBadgeAppearance
 import com.brbx.ui_compose.theme.BrbxTheme
+import com.brbx.ui_compose.theme.bMotion
 import dev.chiksmedina.solar.BoldSolar
 import dev.chiksmedina.solar.bold.Users
 import dev.chiksmedina.solar.bold.users.User
@@ -32,7 +39,9 @@ fun Tile(
 ) {
     BrbxTile(
         appearance = appearance,
-        modifier = modifier.padding(all = appearance.containerElevation()),
+        modifier = modifier
+            .animateContentSize(animationSpec = bMotion.mediumSpatialSpec())
+            .padding(all = appearance.containerElevation()),
         title = model.title,
         description = model.description,
         trailingContent = {
@@ -49,11 +58,19 @@ fun Tile(
         },
         additionalContent = {
             model.precollection?.let { p ->
-                Precollection(
-                    appearance = p.appearance,
-                    model = p,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                AnimatedVisibility(
+                    visible = model.isPrecollectionVisible,
+                    enter = fadeIn(animationSpec = bMotion.nonSpatialMediumSpec()) +
+                            slideInVertically(animationSpec = bMotion.mediumSpatialSpec()),
+                    exit = fadeOut(animationSpec = bMotion.nonSpatialMediumSpec()) +
+                            slideOutVertically(animationSpec = bMotion.mediumSpatialSpec()),
+                ) {
+                    Precollection(
+                        appearance = p.appearance,
+                        model = p,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             }
         },
     )

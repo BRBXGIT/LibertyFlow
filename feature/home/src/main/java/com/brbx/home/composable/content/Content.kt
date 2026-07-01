@@ -1,4 +1,4 @@
-package com.brbx.home.screen.content
+package com.brbx.home.composable.content
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,33 +49,29 @@ internal fun Content(
                     key = ContentKeys.RandomAnimeButtonKey,
                     span = { GridItemSpan(currentLineSpan = maxLineSpan) },
                 ) {
-                    tile?.let {
-                        RainbowButton(
-                            text = HomeStrings.random_anime_button_text.toBrbxText(),
-                            showAnimation = isRandomAnimeLoading,
-                            icon = OutlineSolar.FacesEmotionsStickers.EmojiFunnySquare.toBrbxIcon(),
-                            onClick = { dispatchIntent(Intent.GetRandomAnime) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .brbxAnimateItem(scope = this)
-                        )
-                    }
+                    RainbowButton(
+                        text = HomeStrings.random_anime_button_text.toBrbxText(),
+                        showAnimation = isRandomAnimeLoading,
+                        icon = OutlineSolar.FacesEmotionsStickers.EmojiFunnySquare.toBrbxIcon(),
+                        onClick = { dispatchIntent(Intent.GetRandomAnime) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .brbxAnimateItem(scope = this)
+                    )
                 }
             }
 
-            if (!isSearching) {
+            if (!isSearching && tile != null) {
                 item(
                     key = ContentKeys.Tile,
                     span = { GridItemSpan(currentLineSpan = maxLineSpan) },
                 ) {
-                    tile?.let {
-                        Tile(
-                            model = tile,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .brbxAnimateItem(scope = this)
-                        )
-                    }
+                    Tile(
+                        model = tile,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .brbxAnimateItem(scope = this)
+                    )
                 }
             }
 

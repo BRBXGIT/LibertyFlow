@@ -12,6 +12,5 @@ data class PrecollectionModel(
     val text: BrbxText,
     val icon: BrbxIcon,
     val onClick: () -> Unit,
-    val visile: Boolean = true,
     val appearance: BrbxPrecollectionAppearance = PrecollectionConstants.precollectionAppearance,
 ) { companion object }

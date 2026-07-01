@@ -1,4 +1,4 @@
-package com.brbx.home.screen.content.filters_sheet.composable
+package com.brbx.home.composable.content.filters_sheet.composable
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.brbx.common.model.common.model.Years
 import com.brbx.home.common.HomeStrings
-import com.brbx.home.screen.content.filters_sheet.FiltersSheetKeys
+import com.brbx.home.composable.content.filters_sheet.FiltersSheetKeys
 import com.brbx.home.view_model.model.Intent
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 

@@ -1,4 +1,4 @@
-package com.brbx.home.screen.content.filters_sheet
+package com.brbx.home.composable.content.filters_sheet
 
 internal object FiltersSheetKeys {
     const val GenresIndicatorKey = "GenresIndicator"

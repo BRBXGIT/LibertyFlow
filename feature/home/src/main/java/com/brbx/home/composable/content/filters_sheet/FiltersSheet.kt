@@ -1,4 +1,4 @@
-package com.brbx.home.screen.content.filters_sheet
+package com.brbx.home.composable.content.filters_sheet
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.brbx.domain.network.model.common.Season
 import com.brbx.home.common.HomeStrings
-import com.brbx.home.screen.content.filters_sheet.composable.centeredCircularIndicator
-import com.brbx.home.screen.content.filters_sheet.composable.centeredRetryButton
-import com.brbx.home.screen.content.filters_sheet.composable.filterDivider
-import com.brbx.home.screen.content.filters_sheet.composable.releaseFinished
-import com.brbx.home.screen.content.filters_sheet.composable.selectableFilterItems
-import com.brbx.home.screen.content.filters_sheet.composable.sortingBy
-import com.brbx.home.screen.content.filters_sheet.composable.yearFields
+import com.brbx.home.composable.content.filters_sheet.composable.centeredCircularIndicator
+import com.brbx.home.composable.content.filters_sheet.composable.centeredRetryButton
+import com.brbx.home.composable.content.filters_sheet.composable.filterDivider
+import com.brbx.home.composable.content.filters_sheet.composable.releaseFinished
+import com.brbx.home.composable.content.filters_sheet.composable.selectableFilterItems
+import com.brbx.home.composable.content.filters_sheet.composable.sortingBy
+import com.brbx.home.composable.content.filters_sheet.composable.yearFields
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.model.State
 import com.brbx.ui_compose.common.BrbxText

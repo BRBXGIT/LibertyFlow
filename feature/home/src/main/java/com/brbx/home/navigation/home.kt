@@ -10,8 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.brbx.common.screen.LibertyFlowScreen
 import com.brbx.common.screen.PagingHandler
-import com.brbx.home.screen.ScreenScaffold
-import com.brbx.home.screen.content.filters_sheet.FiltersSheet
+import com.brbx.home.composable.ScreenScaffold
+import com.brbx.home.composable.content.filters_sheet.FiltersSheet
 import com.brbx.home.view_model.model.Intent
 import com.brbx.home.view_model.view_model.ViewModel
 import org.koin.compose.viewmodel.koinViewModel

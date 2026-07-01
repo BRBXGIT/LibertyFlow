@@ -10,7 +10,11 @@ internal sealed interface Intent {
 
     data object GetRandomAnime : Intent
 
-    data object GetActualTile : Intent
+    sealed interface TileIntent : Intent {
+        data object GetTile : TileIntent
+
+        data object TogglePrecollectionVisibility : TileIntent
+    }
 
     @JvmInline value class Catalog(val action: CommonPagingIntent) : Intent
 

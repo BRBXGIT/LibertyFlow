@@ -4,6 +4,7 @@ import arrow.optics.copy
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.design_system.component.precollection.PrecollectionModel
 import com.brbx.design_system.component.tile.TileModel
+import com.brbx.design_system.component.tile.isPrecollectionVisible
 import com.brbx.domain.local_dbs.watching_anime.use_case.anime.model.DomainLatestWatchingAnime
 import com.brbx.domain.local_dbs.watching_anime.use_case.anime.use_case.GetLatestWatchingAnimeUseCase
 import com.brbx.home.common.HomeStrings
@@ -30,24 +31,29 @@ internal class TileProcessorImpl(
     private val dispatcherIo: CoroutineDispatcher,
 ) : TileProcessor {
 
-    override fun LibertyFlowMviScope<State>.process(intent: Intent.GetActualTile) {
+    override fun LibertyFlowMviScope<State>.process(intent: Intent.TileIntent) {
         when (intent) {
-            is Intent.GetActualTile -> {
+            is Intent.TileIntent.GetTile -> {
                 coroutineScope.launch(context = dispatcherIo) {
                     val result = latestWatchedAnimeUseCase()?.toUi(
-                        state = state.value,
                         onClick = { /* TODO navigate to details */ }
-                    ) ?: getThemeTile(state.value)
+                    ) ?: getThemeTile()
                     updateState { copy { State.latestWatchingAnime set result } }
+                }
+            }
+            is Intent.TileIntent.TogglePrecollectionVisibility -> {
+                updateState {
+                    copy {
+                        State.latestWatchingAnime transform { tile ->
+                            tile?.copy { TileModel.isPrecollectionVisible transform { !it } }
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun DomainLatestWatchingAnime.toUi(
-        onClick: (animeId: Int) -> Unit,
-        state: State,
-    ): TileModel =
+    private fun DomainLatestWatchingAnime.toUi(onClick: (animeId: Int) -> Unit): TileModel =
         TileModel(
             title = this.title.toBrbxText(),
             description = HomeStrings.user_watched_tile_description.toBrbxText(
@@ -56,21 +62,19 @@ internal class TileProcessorImpl(
             icon = BoldSolar.ArrowsAction.UndoLeft.toBrbxIcon(),
             onClick = { onClick(this.animeId) },
             precollection = PrecollectionModel(
-                visile = !state.catalog.loading.isLoading,
                 text = HomeStrings.user_watched_tile_precollection_title.toBrbxText(),
                 icon = BoldSolar.Arrows.RoundArrowRight.toBrbxIcon(),
                 onClick = { onClick(this.animeId) },
             )
         )
 
-    private fun getThemeTile(state: State): TileModel =
+    private fun getThemeTile(): TileModel =
         TileModel(
             title = HomeStrings.theme_tile_title.toBrbxText(),
             description = HomeStrings.theme_tile_description.toBrbxText(),
             icon = BoldSolar.DesignTools.Pallete2.toBrbxIcon(),
             onClick = { /* TODO navigate to theme screen */ },
             precollection = PrecollectionModel(
-                visile = !state.catalog.loading.isLoading,
                 text = HomeStrings.theme_tile_precollection_text.toBrbxText(),
                 icon = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),
                 onClick = { /* TODO navigate to theme screen */ },

@@ -17,6 +17,7 @@ fun ShimmerScaffold(
     modifier: Modifier = Modifier,
     appearance: BrbxShimmerScaffoldAppearance = BrbxShimmerScaffoldAppearances.default,
     isError: Boolean,
+    onShimmerEnd: () -> Unit = {},
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
@@ -33,6 +34,7 @@ fun ShimmerScaffold(
     content: @Composable (PaddingValues) -> Unit,
 ) =
     BrbxShimmerScaffold(
+        onShimmeringFinished = onShimmerEnd,
         isError = isError,
         appearance = appearance,
         modifier = modifier,

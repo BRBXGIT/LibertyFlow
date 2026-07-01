@@ -21,7 +21,7 @@ internal class ViewModel(
 ) : LibertyFlowViewModel<State, Intent>(initialState = State()) {
 
     init {
-        dispatchIntent(Intent.GetActualTile)
+        dispatchIntent(Intent.TileIntent.GetTile)
         dispatchIntent(Intent.Catalog(action = CommonPagingIntent.SetUpPaging))
     }
 
@@ -39,7 +39,7 @@ internal class ViewModel(
             is Intent.Catalog -> with(receiver = catalogProcessor) {
                 mviScope.process(intent.action)
             }
-            is Intent.GetActualTile -> with(receiver = tileProcessor) {
+            is Intent.TileIntent -> with(receiver = tileProcessor) {
                 mviScope.process(intent)
             }
         }

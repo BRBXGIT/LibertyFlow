@@ -1,4 +1,4 @@
-package com.brbx.home.screen
+package com.brbx.home.composable
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,8 +17,8 @@ import com.brbx.design_system.component.tile.TileModel
 import com.brbx.design_system.component.top_bar.SearchableTopBar
 import com.brbx.design_system.container.ShimmerScaffold
 import com.brbx.home.common.HomeStrings
-import com.brbx.home.screen.content.Content
-import com.brbx.home.screen.shimmer.ContentShimmer
+import com.brbx.home.composable.content.Content
+import com.brbx.home.composable.shimmer.ContentShimmer
 import com.brbx.home.view_model.model.Intent
 import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.toBrbxIcon
@@ -60,6 +60,7 @@ internal fun ScreenScaffold(
         isShimmering = isLoading,
         snackbarHost = { BrbxSnackbarHost() },
         isError = isError,
+        onShimmerEnd = { dispatchIntent(Intent.TileIntent.TogglePrecollectionVisibility) },
         floatingActionButton = {
             BrbxDisappearingFab(
                 visible = isFabVisible,

@@ -1,4 +1,4 @@
-package com.brbx.home.screen.content
+package com.brbx.home.composable.content
 
 internal object ContentKeys {
 

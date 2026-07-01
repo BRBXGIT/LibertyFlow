@@ -1,4 +1,4 @@
-package com.brbx.home.screen.content.filters_sheet.composable
+package com.brbx.home.composable.content.filters_sheet.composable
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.LazyGridScope

@@ -1,4 +1,4 @@
-package com.brbx.home.screen.content.filters_sheet.composable
+package com.brbx.home.composable.content.filters_sheet.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.brbx.home.common.HomeStrings
-import com.brbx.home.screen.content.filters_sheet.FiltersSheetKeys
+import com.brbx.home.composable.content.filters_sheet.FiltersSheetKeys
 import com.brbx.home.view_model.model.Intent
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.bDimens

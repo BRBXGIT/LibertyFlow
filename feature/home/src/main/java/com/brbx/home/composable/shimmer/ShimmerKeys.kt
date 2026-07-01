@@ -1,4 +1,4 @@
-package com.brbx.home.screen.shimmer
+package com.brbx.home.composable.shimmer
 
 internal object ShimmerKeys {
 
