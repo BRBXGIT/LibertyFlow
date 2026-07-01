@@ -2,7 +2,7 @@ package com.brbx.home.view_model
 
 import androidx.paging.map
 import com.brbx.common.model.common.map.toDomain
-import com.brbx.common.model.common.map.toUi
+import com.brbx.common.model.common.map.toAnimeCardModel
 import com.brbx.common.view_model.processor.paging.getCommonPagingProcessor
 import com.brbx.common.view_model.processor.search.getCommonSearchProcessor
 import com.brbx.domain.network.catalog.releases.model.CatalogReleasesParameters
@@ -39,7 +39,7 @@ internal val viewModelModule = module {
                 },
                 pagingDataFactory = { params ->
                     catalogUseCase(parameters = params).map { pagingData ->
-                        pagingData.map { it.toUi() }
+                        pagingData.map { it.toAnimeCardModel() }
                     }
                 }
             )

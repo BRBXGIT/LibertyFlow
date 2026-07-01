@@ -7,13 +7,13 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
-import com.brbx.common.model.common.model.AnimeItem
-import com.brbx.design_system.component.anime_card.AnimeCard
+import com.brbx.design_system.component.anime_card.AnimeCardModel
 import com.brbx.design_system.component.rainbow_button.RainbowButton
 import com.brbx.design_system.component.tile.Tile
 import com.brbx.design_system.component.tile.TileModel
 import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
 import com.brbx.design_system.container.PullToRefreshContainer
+import com.brbx.design_system.container.animeItems
 import com.brbx.home.common.HomeStrings
 import com.brbx.home.view_model.model.Intent
 import com.brbx.ui_compose.common.toBrbxIcon
@@ -27,7 +27,7 @@ import dev.chiksmedina.solar.outline.facesemotionsstickers.EmojiFunnySquare
 internal fun Content(
     animeGridState: LazyGridState,
     tile: TileModel?,
-    items: LazyPagingItems<AnimeItem>,
+    items: LazyPagingItems<AnimeCardModel>,
     isRefreshing: Boolean,
     isSearching: Boolean,
     isRandomAnimeLoading: Boolean,
@@ -79,21 +79,10 @@ internal fun Content(
                 }
             }
 
-            items(
-                count = items.itemCount,
-                key = { index -> index }
-            ) { index ->
-                val current = items[index]
-                current?.let { anime ->
-                    AnimeCard(
-                        modifier = Modifier.brbxAnimateItem(scope = this),
-                        title = anime.name.russian.toBrbxText(),
-                        description = anime.genresAsString().toBrbxText(),
-                        posterPath = anime.poster.fullPreview(),
-                        onClick = { /* TODO Navigate to details */ },
-                    )
-                }
-            }
+            animeItems(
+                items = items,
+                onItemClick = { /* TODO Navigate to details */ },
+            )
         }
     }
 }

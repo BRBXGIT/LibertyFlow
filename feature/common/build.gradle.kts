@@ -7,6 +7,7 @@ dependencies {
 
     // Core
     implementation(projects.core.domain)
+    implementation(projects.core.designSystem)
 
     // BRBX
     implementation(libs.brbx.mvi.compose)

@@ -11,6 +11,8 @@ dependencies {
     implementation(libs.brbx.coil.helpers)
     // Solar
     implementation(libs.solar)
+    // Paging
+    implementation(libs.androidx.paging.compose)
     // Lottie
     implementation(libs.lottie)
     // Compose preview

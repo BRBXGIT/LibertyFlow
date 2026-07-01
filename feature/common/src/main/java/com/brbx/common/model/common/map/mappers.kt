@@ -1,37 +1,39 @@
 package com.brbx.common.model.common.map
 
-import com.brbx.common.model.common.model.AnimeItem
+import com.brbx.common.common.CommonConstants
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Name
 import com.brbx.common.model.common.model.Poster
 import com.brbx.common.model.common.model.Years
+import com.brbx.design_system.component.anime_card.AnimeCardModel
 import com.brbx.domain.network.model.common.DomainGenre
 import com.brbx.domain.network.model.common.DomainYears
 import com.brbx.domain.network.model.response.common.DomainAnimeItem
 import com.brbx.domain.network.model.response.common.DomainName
 import com.brbx.domain.network.model.response.common.DomainPoster
+import com.brbx.ui_compose.common.toBrbxText
 
-fun DomainGenre.toUi(): Genre =
+fun DomainGenre.toAnimeCardModel(): Genre =
     Genre(
         id = this.id,
         name = this.name,
     )
 
-fun DomainName.toUi(): Name =
+fun DomainName.toAnimeCardModel(): Name =
     Name(
         alternative = this.alternative,
         english = this.english,
         russian = this.main,
     )
 
-fun DomainPoster.toUi(): Poster =
+fun DomainPoster.toAnimeCardModel(): Poster =
     Poster(
         preview = this.preview,
         src = this.src,
         thumbnail = this.thumbnail,
     )
 
-fun DomainYears.toUi(): Years =
+fun DomainYears.toAnimeCardModel(): Years =
     Years(
         from = this.fromYear,
         to = this.toYear,
@@ -49,11 +51,10 @@ fun Years.toDomain(): DomainYears =
         toYear = this.to,
     )
 
-fun DomainAnimeItem.toUi(): AnimeItem =
-    AnimeItem(
-        favoritesCount = this.favoritesCount,
-        genres = this.genres.map { it.toUi() },
+fun DomainAnimeItem.toAnimeCardModel(): AnimeCardModel =
+    AnimeCardModel(
+        genres = this.genres.map { genre -> genre.name },
         id = this.id,
-        name = this.name.toUi(),
-        poster = this.poster.toUi(),
+        name = this.name.main.toBrbxText(),
+        fullPosterPath = CommonConstants.BasePosterPath + this.poster.preview,
     )

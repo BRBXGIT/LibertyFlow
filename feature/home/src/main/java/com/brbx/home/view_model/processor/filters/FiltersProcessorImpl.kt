@@ -1,7 +1,7 @@
 package com.brbx.home.view_model.processor.filters
 
 import arrow.optics.copy
-import com.brbx.common.model.common.map.toUi
+import com.brbx.common.model.common.map.toAnimeCardModel
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.view_model.model.state.isException
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
@@ -64,7 +64,7 @@ internal class FiltersProcessorImpl(
                         loadingLens = State.filtersSheet.filters.genresState.loading,
                         call = { genresUseCase() },
                     ).onSuccess { genres ->
-                        val mapped = genres.map { genre -> genre.toUi() }
+                        val mapped = genres.map { genre -> genre.toAnimeCardModel() }
                         updateState {
                             copy { State.filtersSheet.filters.genresState.genres set mapped }
                         }

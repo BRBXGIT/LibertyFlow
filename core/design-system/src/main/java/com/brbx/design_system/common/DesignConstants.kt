@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.brbx.ui_compose.theme.bElevation
 
-object DesignConstants {
+internal object DesignConstants {
 
     val elevation @Composable get() = bElevation.small2
 

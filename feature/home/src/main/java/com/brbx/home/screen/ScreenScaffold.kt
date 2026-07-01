@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.paging.compose.LazyPagingItems
-import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.view_model.model.intent.CommonSearchIntent
 import com.brbx.common.view_model.model.state.CommonSearchState
+import com.brbx.design_system.component.anime_card.AnimeCardModel
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.tile.TileModel
 import com.brbx.design_system.component.top_bar.SearchableTopBar
@@ -42,7 +42,7 @@ internal fun ScreenScaffold(
     isLoading: Boolean,
     isRandomAnimeLoading: Boolean,
     tile: TileModel?,
-    items: LazyPagingItems<AnimeItem>,
+    items: LazyPagingItems<AnimeCardModel>,
     isRefreshing: Boolean,
     isError: Boolean,
     modifier: Modifier = Modifier,

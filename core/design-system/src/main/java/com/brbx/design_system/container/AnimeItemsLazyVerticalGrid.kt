@@ -13,8 +13,13 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.paging.compose.LazyPagingItems
 import com.brbx.design_system.common.DesignConstants
+import com.brbx.design_system.component.anime_card.AnimeCard
 import com.brbx.design_system.component.anime_card.AnimeCardConstants
+import com.brbx.design_system.component.anime_card.AnimeCardModel
+import com.brbx.design_system.component.anime_card.AnimeCardShimmer
+import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.bDimens
 
 @Composable
@@ -46,3 +51,36 @@ fun AnimeItemsLazyVerticalGrid(
         overscrollEffect = overscrollEffect,
         content = content,
     )
+
+inline fun LazyGridScope.animeItems(
+    items: LazyPagingItems<AnimeCardModel>,
+    crossinline onItemClick: (id: Int) -> Unit,
+    itemModifier: Modifier = Modifier,
+) =
+    items(
+        count = items.itemCount,
+        key = { index -> index },
+    ) { index ->
+        val current = items[index]
+        current?.let { anime ->
+            AnimeCard(
+                model = anime,
+                onClick = { onItemClick(current.id) },
+                modifier = itemModifier.brbxAnimateItem(scope = this),
+            )
+        }
+    }
+
+fun LazyGridScope.animeItemsShimmer(
+    count: Int = 6,
+    itemModifier: Modifier = Modifier,
+) {
+    items(
+        count = count,
+        key = { index -> index },
+    ) {
+        AnimeCardShimmer(
+            modifier = itemModifier.brbxAnimateItem(scope = this)
+        )
+    }
+}
