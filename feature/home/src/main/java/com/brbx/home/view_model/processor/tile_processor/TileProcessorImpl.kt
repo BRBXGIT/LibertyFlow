@@ -64,7 +64,7 @@ internal class TileProcessorImpl(
             precollection = PrecollectionModel(
                 text = HomeStrings.user_watched_tile_precollection_title.toBrbxText(),
                 icon = BoldSolar.Arrows.RoundArrowRight.toBrbxIcon(),
-                onClick = { onClick(this.animeId) },
+                onClick = { onClick(this.animeId) }, // TODO Move to ui
             )
         )
 
@@ -73,7 +73,7 @@ internal class TileProcessorImpl(
             title = HomeStrings.theme_tile_title.toBrbxText(),
             description = HomeStrings.theme_tile_description.toBrbxText(),
             icon = BoldSolar.DesignTools.Pallete2.toBrbxIcon(),
-            onClick = { /* TODO navigate to theme screen */ },
+            onClick = { /* TODO navigate to theme screen */ }, // TODO Move to ui
             precollection = PrecollectionModel(
                 text = HomeStrings.theme_tile_precollection_text.toBrbxText(),
                 icon = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),

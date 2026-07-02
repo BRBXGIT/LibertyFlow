@@ -24,7 +24,7 @@ fun RainbowButtonShimmer(
         RainbowButtonConstants.ButtonAppearance,
 ) =
     BrbxAnimatedBorderContainerShimmer(
-        modifier = modifier,
+        modifier = modifier.padding(all = appearance.shadowElevation()),
         appearance = appearance,
         shimmerAppearance = shimmerAppearance,
     ) {

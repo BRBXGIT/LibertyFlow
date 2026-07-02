@@ -23,7 +23,7 @@ fun TileShimmer(
         TileConstants.iconContainerAppearance
 ) =
     BrbxTileShimmer(
-        modifier = modifier,
+        modifier = modifier.padding(all = appearance.containerElevation()),
         appearance = appearance,
     ) {
         BrbxContainerShimmer(

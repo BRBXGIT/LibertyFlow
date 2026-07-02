@@ -64,7 +64,7 @@ internal fun FiltersSheet(
 
             filterDivider(text = HomeStrings.filters_sheet_seasons)
             selectableFilterItems(
-                items = Season.entries,
+                items = Season.entries.filterNot { it == Season.Unknown },
                 isSelected = { season -> season in filters.filters.seasons },
                 itemText = { season -> season.toStringRes() },
                 itemKey = { season -> season },

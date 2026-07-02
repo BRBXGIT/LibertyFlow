@@ -21,6 +21,7 @@ sealed interface CommonPagingIntent {
             data class SetException(
                 val isException: Boolean,
                 val exception: PagingException? = null,
+                val withRetry: Boolean = true,
             ) : RefreshIntent
         }
     }

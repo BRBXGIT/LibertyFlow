@@ -1,5 +1,6 @@
 package com.brbx.design_system.component.anime_card
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -16,7 +17,8 @@ fun AnimeCardShimmer(
 ) =
     BrbxContentCardShimmer(
         modifier = modifier
-            .size(AnimeCardConstants.Width, AnimeCardConstants.Height),
+            .size(AnimeCardConstants.Width, AnimeCardConstants.Height)
+            .padding(all = appearance.containerElevation()),
         appearance = appearance,
     )
 

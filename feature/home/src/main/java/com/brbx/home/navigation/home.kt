@@ -35,7 +35,7 @@ fun NavGraphBuilder.home(
         navController = navController,
         viewModel = viewModel,
         pagingHandler = PagingHandler(
-            loadState = catalog.loadState.refresh,
+            items = catalog.loadState.refresh,
             dispatchIntent = { intent -> viewModel.dispatchIntent(Intent.Catalog(action = intent)) }
         ),
     ) { dispatchIntent, dispatchBrbxEffect ->

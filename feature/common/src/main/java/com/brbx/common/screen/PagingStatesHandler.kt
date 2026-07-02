@@ -13,7 +13,7 @@ import com.brbx.domain.network.paging.model.PagingException
 
 @Stable
 data class PagingHandler(
-    val loadState: LoadState,
+    val items: LoadState,
     val dispatchIntent: (CommonPagingIntent.Loading) -> Unit,
 )
 
@@ -21,9 +21,8 @@ data class PagingHandler(
 internal fun PagingStatesHandler(handler: PagingHandler) {
     var isFirstLoading by rememberSaveable { mutableStateOf(value = true) }
 
-    // TODO Fix bug content showing after error
-    LaunchedEffect(key1 = handler.loadState) {
-        val loadState = handler.loadState
+    LaunchedEffect(key1 = handler.items) {
+        val loadState = handler.items
         val dispatch = handler.dispatchIntent
 
         if (isFirstLoading) {
@@ -54,7 +53,13 @@ internal fun PagingStatesHandler(handler: PagingHandler) {
                 is LoadState.Error -> {
                     dispatch(CommonPagingIntent.Loading.RefreshIntent.SetRefreshing(false))
                     val exception = loadState.error as PagingException
-                    dispatch(CommonPagingIntent.Loading.RefreshIntent.SetException(true, exception))
+                    dispatch(
+                        CommonPagingIntent.Loading.RefreshIntent.SetException(
+                            isException = true,
+                            exception = exception,
+                            withRetry = false,
+                        )
+                    )
                 }
             }
         }

@@ -6,7 +6,7 @@ import com.brbx.feature.common.R
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxText
 
-fun RequestException.asBrbxText(): BrbxText =
+fun RequestException.toBrbxText(): BrbxText =
     when (this) {
         RequestException.Conflict -> R.string.request_exception_conflict
         RequestException.TooManyRequests -> R.string.request_exception_many_requests
@@ -20,7 +20,7 @@ fun RequestException.asBrbxText(): BrbxText =
         RequestException.NoEmailOrPassword -> R.string.request_exception_no_email_or_pwassword
     }.toBrbxText()
 
-fun PagingException.asBrbxText(): BrbxText =
+fun PagingException.toBrbxText(): BrbxText =
     when (this) {
         is PagingException.Conflict -> R.string.request_exception_conflict
         is PagingException.TooManyRequests -> R.string.request_exception_many_requests

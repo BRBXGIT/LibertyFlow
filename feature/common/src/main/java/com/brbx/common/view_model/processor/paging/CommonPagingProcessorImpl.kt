@@ -3,7 +3,7 @@ package com.brbx.common.view_model.processor.paging
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import arrow.optics.Lens
-import com.brbx.common.strings.asBrbxText
+import com.brbx.common.strings.toBrbxText
 import com.brbx.common.view_model.model.intent.CommonPagingIntent
 import com.brbx.common.view_model.model.state.CommonPagingState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
@@ -67,7 +67,7 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
                                 val exception = intent.exception
                                 if (exception != null) {
                                     postNetworkExceptionSnackbar(
-                                        exception = exception.asBrbxText(),
+                                        exception = exception.toBrbxText(),
                                     ) { process(intent = CommonPagingIntent.SetUpPaging) }
                                 }
                             }
@@ -86,9 +86,13 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
                                 }
                                 val exception = intent.exception
                                 if (exception != null) {
+                                    val onButtonClick: (() -> Unit)? = if (intent.withRetry) {
+                                        { process(intent = CommonPagingIntent.SetUpPaging) }
+                                    } else null
                                     postNetworkExceptionSnackbar(
-                                        exception = exception.asBrbxText(),
-                                    ) { process(intent = CommonPagingIntent.SetUpPaging) }
+                                        exception = exception.toBrbxText(),
+                                        onButtonClick = onButtonClick,
+                                    )
                                 }
                             }
                             is CommonPagingIntent.Loading.RefreshIntent.SetRefreshing -> {

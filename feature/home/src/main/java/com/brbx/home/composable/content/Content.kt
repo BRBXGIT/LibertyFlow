@@ -43,8 +43,10 @@ internal fun Content(
         AnimeItemsLazyVerticalGrid(
             modifier = Modifier.fillMaxSize(),
             state = animeGridState,
+            userScrollEnabled = !isRefreshing,
         ) {
             if (!isSearching) {
+                // TODO Fix bug with 1dp difference between shimmer and content
                 item(
                     key = ContentKeys.RandomAnimeButtonKey,
                     span = { GridItemSpan(currentLineSpan = maxLineSpan) },

@@ -9,20 +9,30 @@ import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.components.complex.snackbar.config.BrbxSnackbarDuration
 import com.brbx.ui_compose.components.complex.snackbar.config.DefaultBrbxSnackbarConfig
 
-inline fun LibertyFlowMviScope<*>.postNetworkExceptionSnackbar(
+fun LibertyFlowMviScope<*>.postNetworkExceptionSnackbar(
     exception: BrbxText,
-    crossinline onButtonClick: () -> Unit,
+    onButtonClick: (() -> Unit)? = null,
 ) {
     postCommonEffect(
-        BrbxEffect.ShowSnackbar(
-            config = DefaultBrbxSnackbarConfig(
-                text = exception,
-                duration = BrbxSnackbarDuration.Infinite,
-                isDismissable = false,
-                buttonText = CommonStrings.retry.toBrbxText(),
-                onButtonClick = { onButtonClick() },
+        if (onButtonClick != null) {
+            BrbxEffect.ShowSnackbar(
+                config = DefaultBrbxSnackbarConfig(
+                    text = exception,
+                    duration = BrbxSnackbarDuration.Infinite,
+                    isDismissable = false,
+                    buttonText = CommonStrings.retry.toBrbxText(),
+                    onButtonClick = { onButtonClick() },
+                )
             )
-        )
+        } else {
+            BrbxEffect.ShowSnackbar(
+                config = DefaultBrbxSnackbarConfig(
+                    text = exception,
+                    duration = BrbxSnackbarDuration.Long,
+                    isDismissable = true,
+                )
+            )
+        }
     )
 }
 

@@ -60,7 +60,9 @@ internal fun ScreenScaffold(
         isShimmering = isLoading,
         snackbarHost = { BrbxSnackbarHost() },
         isError = isError,
-        onShimmerEnd = { dispatchIntent(Intent.TileIntent.TogglePrecollectionVisibility) },
+        onShimmerEnd = { withError ->
+            if (!withError) dispatchIntent(Intent.TileIntent.TogglePrecollectionVisibility)
+        },
         floatingActionButton = {
             BrbxDisappearingFab(
                 visible = isFabVisible,
