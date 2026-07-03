@@ -1,8 +1,8 @@
-package com.brbx.common.view_model.processor.search
+package com.brbx.common.view_model.processor.search.processor
 
 import arrow.optics.Lens
-import com.brbx.common.view_model.model.intent.CommonSearchIntent
-import com.brbx.common.view_model.model.state.CommonSearchState
+import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
+import com.brbx.common.view_model.processor.search.model.CommonSearchState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 
 internal class CommonSearchProcessorImpl<State>(

@@ -2,7 +2,7 @@ package com.brbx.common.view_model.view_model
 
 import arrow.optics.Lens
 import com.brbx.common.model.alias.CommonStrings
-import com.brbx.common.view_model.model.state.CommonLoadingState
+import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxText

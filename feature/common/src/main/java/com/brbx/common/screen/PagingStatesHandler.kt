@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.paging.LoadState
-import com.brbx.common.view_model.model.intent.CommonPagingIntent
+import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.domain.network.paging.model.PagingException
 
 @Stable

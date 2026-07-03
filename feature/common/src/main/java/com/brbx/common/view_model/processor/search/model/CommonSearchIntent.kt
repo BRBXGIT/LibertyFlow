@@ -1,4 +1,4 @@
-package com.brbx.common.view_model.model.intent
+package com.brbx.common.view_model.processor.search.model
 
 sealed interface CommonSearchIntent {
 

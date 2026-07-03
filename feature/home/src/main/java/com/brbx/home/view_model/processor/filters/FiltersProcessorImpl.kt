@@ -1,6 +1,5 @@
 package com.brbx.home.view_model.processor.filters
 
-import arrow.optics.copy
 import com.brbx.common.model.common.map.toAnimeCardModel
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.view_model.model.state.isException
@@ -10,7 +9,7 @@ import com.brbx.domain.network.genres.get.use_case.GetAnimeGenresUseCase
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.state.State
+import com.brbx.home.view_model.model.State
 import com.brbx.home.view_model.model.state.filters
 import com.brbx.home.view_model.model.state.filtersSheet
 import com.brbx.home.view_model.model.state.genres

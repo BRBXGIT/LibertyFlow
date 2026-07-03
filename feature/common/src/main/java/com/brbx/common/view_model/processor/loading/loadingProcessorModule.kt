@@ -1,7 +1,9 @@
 package com.brbx.common.view_model.processor.loading
 
 import arrow.optics.Lens
-import com.brbx.common.view_model.model.state.CommonLoadingState
+import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
+import com.brbx.common.view_model.processor.loading.processor.CommonLoadingProcessor
+import com.brbx.common.view_model.processor.loading.processor.CommonLoadingProcessorImpl
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import org.koin.dsl.module

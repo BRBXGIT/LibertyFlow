@@ -1,7 +1,9 @@
 package com.brbx.common.view_model.processor.search
 
 import arrow.optics.Lens
-import com.brbx.common.view_model.model.state.CommonSearchState
+import com.brbx.common.view_model.processor.search.model.CommonSearchState
+import com.brbx.common.view_model.processor.search.processor.CommonSearchProcessor
+import com.brbx.common.view_model.processor.search.processor.CommonSearchProcessorImpl
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import org.koin.dsl.module

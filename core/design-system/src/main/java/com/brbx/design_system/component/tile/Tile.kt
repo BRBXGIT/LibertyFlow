@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.brbx.design_system.component.precollection.Precollection
-import com.brbx.design_system.component.precollection.PrecollectionModel
 import com.brbx.ui_compose.common.BrbxIcon
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxIcon
@@ -38,8 +37,43 @@ fun Tile(
     icon: BrbxIcon,
     onTileClick: () -> Unit,
     modifier: Modifier = Modifier,
+    appearance: BrbxTileAppearance = TileConstants.tileAppearance,
+    iconContainerAppearance: BrbxContainerWithBadgeAppearance =
+        TileConstants.iconContainerAppearance,
+) {
+    BrbxTile(
+        onClick = onTileClick,
+        appearance = appearance,
+        modifier = modifier
+            .animateContentSize(animationSpec = bMotion.mediumSpatialSpec())
+            .padding(all = appearance.containerElevation()),
+        title = title,
+        description = description,
+        trailingContent = {
+            BrbxContainerWithBadge(
+                appearance = iconContainerAppearance,
+            ) {
+                BrbxIcon(
+                    brbxIcon = icon,
+                    modifier = Modifier
+                        .padding(all = TileConstants.iconPadding)
+                        .size(TileConstants.iconSize)
+                )
+            }
+        },
+    )
+}
+
+@Composable
+fun Tile(
+    title: BrbxText,
+    description: BrbxText,
+    icon: BrbxIcon,
+    precollectionIcon: BrbxIcon?,
+    precollectionText: BrbxText,
+    onTileClick: () -> Unit,
+    modifier: Modifier = Modifier,
     isPrecollectionVisible: Boolean = false,
-    precollectionModel: PrecollectionModel? = null,
     onPrecollectionClick: () -> Unit = {},
     appearance: BrbxTileAppearance = TileConstants.tileAppearance,
     iconContainerAppearance: BrbxContainerWithBadgeAppearance =
@@ -66,20 +100,19 @@ fun Tile(
             }
         },
         additionalContent = {
-            precollectionModel?.let { precollection ->
-                AnimatedVisibility(
-                    visible = isPrecollectionVisible,
-                    enter = fadeIn(animationSpec = bMotion.nonSpatialMediumSpec()) +
-                            slideInVertically(animationSpec = bMotion.mediumSpatialSpec()),
-                    exit = fadeOut(animationSpec = bMotion.nonSpatialMediumSpec()) +
-                            slideOutVertically(animationSpec = bMotion.mediumSpatialSpec()),
-                ) {
-                    Precollection(
-                        onClick = onPrecollectionClick,
-                        model = precollection,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
+            AnimatedVisibility(
+                visible = isPrecollectionVisible,
+                enter = fadeIn(animationSpec = bMotion.nonSpatialMediumSpec()) +
+                        slideInVertically(animationSpec = bMotion.mediumSpatialSpec()),
+                exit = fadeOut(animationSpec = bMotion.nonSpatialMediumSpec()) +
+                        slideOutVertically(animationSpec = bMotion.mediumSpatialSpec()),
+            ) {
+                Precollection(
+                    onClick = onPrecollectionClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    icon = precollectionIcon,
+                    text = precollectionText,
+                )
             }
         },
     )

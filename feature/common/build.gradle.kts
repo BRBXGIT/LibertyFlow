@@ -8,9 +8,12 @@ dependencies {
     // Core
     implementation(projects.core.domain)
     implementation(projects.core.designSystem)
+    implementation(projects.core.common)
 
     // BRBX
     implementation(libs.brbx.mvi.compose)
+    // Solar
+    implementation(libs.solar)
     // Paging
     implementation(libs.androidx.paging.compose)
     // Koin

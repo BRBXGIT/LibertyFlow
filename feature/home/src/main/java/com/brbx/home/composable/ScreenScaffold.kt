@@ -9,8 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.paging.compose.LazyPagingItems
-import com.brbx.common.view_model.model.intent.CommonSearchIntent
-import com.brbx.common.view_model.model.state.CommonSearchState
+import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
+import com.brbx.common.view_model.processor.search.model.CommonSearchState
+import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
+import com.brbx.common.view_model.processor.tile.model.CommonTileState
 import com.brbx.design_system.component.anime_card.AnimeCardModel
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.top_bar.SearchableTopBar
@@ -19,7 +21,6 @@ import com.brbx.home.common.HomeStrings
 import com.brbx.home.composable.content.Content
 import com.brbx.home.composable.shimmer.ContentShimmer
 import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.state.Tile
 import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
@@ -41,7 +42,7 @@ internal fun ScreenScaffold(
     searchState: CommonSearchState,
     isLoading: Boolean,
     isRandomAnimeLoading: Boolean,
-    tile: Tile?,
+    tile: CommonTileState?,
     items: LazyPagingItems<AnimeCardModel>,
     isRefreshing: Boolean,
     isError: Boolean,
@@ -61,7 +62,9 @@ internal fun ScreenScaffold(
         snackbarHost = { BrbxSnackbarHost() },
         isError = isError,
         onShimmerEnd = { withError ->
-            if (!withError) dispatchIntent(Intent.TileIntent.TogglePrecollectionVisibility)
+            if (!withError) {
+                dispatchIntent(Intent.Tile(action = CommonTileIntent.TogglePrecollectionVisibility))
+            }
         },
         floatingActionButton = {
             BrbxDisappearingFab(

@@ -2,7 +2,9 @@ package com.brbx.common.view_model.processor.paging
 
 import androidx.paging.PagingData
 import arrow.optics.Lens
-import com.brbx.common.view_model.model.state.CommonPagingState
+import com.brbx.common.view_model.processor.paging.model.CommonPagingState
+import com.brbx.common.view_model.processor.paging.processor.CommonPagingProcessor
+import com.brbx.common.view_model.processor.paging.processor.CommonPagingProcessorImpl
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope

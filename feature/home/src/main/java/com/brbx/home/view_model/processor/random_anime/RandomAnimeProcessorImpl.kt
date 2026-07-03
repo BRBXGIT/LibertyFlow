@@ -8,7 +8,7 @@ import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.domain.network.releases.random.use_case.GetRandomAnimeReleaseUseCase
 import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.state.State
+import com.brbx.home.view_model.model.State
 import com.brbx.home.view_model.model.state.randomAnime
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch

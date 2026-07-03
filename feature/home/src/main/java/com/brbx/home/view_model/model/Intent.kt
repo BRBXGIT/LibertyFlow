@@ -1,8 +1,9 @@
 package com.brbx.home.view_model.model
 
 import com.brbx.common.model.common.model.Genre
-import com.brbx.common.view_model.model.intent.CommonPagingIntent
-import com.brbx.common.view_model.model.intent.CommonSearchIntent
+import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
+import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
+import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 
@@ -10,11 +11,7 @@ internal sealed interface Intent {
 
     data object GetRandomAnime : Intent
 
-    sealed interface TileIntent : Intent {
-        data object GetTile : TileIntent
-
-        data object TogglePrecollectionVisibility : TileIntent
-    }
+    @JvmInline value class Tile(val action: CommonTileIntent) : Intent
 
     @JvmInline value class Catalog(val action: CommonPagingIntent) : Intent
 

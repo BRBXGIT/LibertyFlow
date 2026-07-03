@@ -3,6 +3,7 @@ package com.brbx.common.view_model.processor
 import com.brbx.common.view_model.processor.loading.loadingProcessorModule
 import com.brbx.common.view_model.processor.paging.pagingProcessorModule
 import com.brbx.common.view_model.processor.search.searchProcessorModule
+import com.brbx.common.view_model.processor.tile.tileProcessorModule
 import org.koin.dsl.module
 
 internal val processorsModule = module {
@@ -10,5 +11,6 @@ internal val processorsModule = module {
         searchProcessorModule,
         loadingProcessorModule,
         pagingProcessorModule,
+        tileProcessorModule,
     )
 }

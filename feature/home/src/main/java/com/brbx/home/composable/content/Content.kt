@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
+import com.brbx.common.view_model.processor.tile.model.CommonTileState
+import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.design_system.component.anime_card.AnimeCardModel
 import com.brbx.design_system.component.rainbow_button.RainbowButton
 import com.brbx.design_system.component.tile.Tile
@@ -16,7 +18,6 @@ import com.brbx.design_system.container.PullToRefreshContainer
 import com.brbx.design_system.container.animeItems
 import com.brbx.home.common.HomeStrings
 import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.state.Tile as HomeTile
 import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
@@ -27,7 +28,7 @@ import dev.chiksmedina.solar.outline.facesemotionsstickers.EmojiFunnySquare
 @Composable
 internal fun Content(
     animeGridState: LazyGridState,
-    tile: HomeTile?,
+    tile: CommonTileState?,
     items: LazyPagingItems<AnimeCardModel>,
     isRefreshing: Boolean,
     isSearching: Boolean,
@@ -70,9 +71,9 @@ internal fun Content(
                     span = { GridItemSpan(currentLineSpan = maxLineSpan) },
                 ) {
                     val onTileClick: () -> Unit = remember(tile) {
-                        when (tile) {
-                            is HomeTile.LatestWatching -> { {}/* TODO Navigate to details */ }
-                            is HomeTile.Theme -> { {}/* TODO Navigate to settings */ }
+                        when (tile.type) {
+                            TileType.Stub.Theme -> { {} }
+                            TileType.Episode.LatestWatched -> { {} }
                         }
                     }
 
@@ -82,7 +83,8 @@ internal fun Content(
                         icon = tile.icon,
                         onTileClick = onTileClick,
                         isPrecollectionVisible = tile.isPrecollectionVisible,
-                        precollectionModel = tile.precollection,
+                        precollectionIcon = tile.precollection.icon,
+                        precollectionText = tile.precollection.label,
                         onPrecollectionClick = onTileClick,
                     )
                 }
