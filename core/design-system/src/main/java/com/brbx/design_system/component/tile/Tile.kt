@@ -70,7 +70,7 @@ fun Tile(
     description: BrbxText,
     icon: BrbxIcon,
     precollectionIcon: BrbxIcon?,
-    precollectionText: BrbxText,
+    precollectionText: BrbxText?,
     onTileClick: () -> Unit,
     modifier: Modifier = Modifier,
     isPrecollectionVisible: Boolean = false,
@@ -100,19 +100,21 @@ fun Tile(
             }
         },
         additionalContent = {
-            AnimatedVisibility(
-                visible = isPrecollectionVisible,
-                enter = fadeIn(animationSpec = bMotion.nonSpatialMediumSpec()) +
-                        slideInVertically(animationSpec = bMotion.mediumSpatialSpec()),
-                exit = fadeOut(animationSpec = bMotion.nonSpatialMediumSpec()) +
-                        slideOutVertically(animationSpec = bMotion.mediumSpatialSpec()),
-            ) {
-                Precollection(
-                    onClick = onPrecollectionClick,
-                    modifier = Modifier.fillMaxWidth(),
-                    icon = precollectionIcon,
-                    text = precollectionText,
-                )
+            precollectionText?.let { text ->
+                AnimatedVisibility(
+                    visible = isPrecollectionVisible,
+                    enter = fadeIn(animationSpec = bMotion.nonSpatialMediumSpec()) +
+                            slideInVertically(animationSpec = bMotion.mediumSpatialSpec()),
+                    exit = fadeOut(animationSpec = bMotion.nonSpatialMediumSpec()) +
+                            slideOutVertically(animationSpec = bMotion.mediumSpatialSpec()),
+                ) {
+                    Precollection(
+                        onClick = onPrecollectionClick,
+                        modifier = Modifier.fillMaxWidth(),
+                        icon = precollectionIcon,
+                        text = text,
+                    )
+                }
             }
         },
     )

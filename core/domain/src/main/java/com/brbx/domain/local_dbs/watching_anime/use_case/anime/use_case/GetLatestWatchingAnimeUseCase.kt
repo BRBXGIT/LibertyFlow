@@ -4,7 +4,6 @@ import com.brbx.domain.local_dbs.watching_anime.repository.WatchedEpisodesReader
 import com.brbx.domain.local_dbs.watching_anime.repository.WatchingAnimeReader
 import com.brbx.domain.local_dbs.watching_anime.use_case.anime.model.DomainLatestWatchingAnime
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.lastOrNull
 
 class GetLatestWatchingAnimeUseCase(
     private val animeReader: WatchingAnimeReader,
@@ -13,8 +12,8 @@ class GetLatestWatchingAnimeUseCase(
     suspend operator fun invoke(): DomainLatestWatchingAnime? {
         val latestAnime = animeReader.getAnime().first().firstOrNull()
         val episodes =
-            episodesReader.getEpisodesIndexes(animeId = latestAnime?.id ?: return null)
-        val latestEpisodeIndex = episodes.lastOrNull()?.lastOrNull() ?: return null
+            episodesReader.getEpisodesIndexes(animeId = latestAnime?.id ?: return null).first()
+        val latestEpisodeIndex = episodes.lastOrNull() ?: return null
         return DomainLatestWatchingAnime(
             animeId = latestAnime.id,
             title = latestAnime.title,

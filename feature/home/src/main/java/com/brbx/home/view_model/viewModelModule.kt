@@ -9,9 +9,9 @@ import com.brbx.common.view_model.processor.tile.getCommonTileProcessor
 import com.brbx.domain.network.catalog.releases.model.CatalogReleasesParameters
 import com.brbx.domain.network.catalog.releases.use_case.GetCatalogAnimeReleasesUseCase
 import com.brbx.home.view_model.model.State
-import com.brbx.home.view_model.model.state.catalog
-import com.brbx.home.view_model.model.state.search
-import com.brbx.home.view_model.model.state.tile
+import com.brbx.home.view_model.model.catalog
+import com.brbx.home.view_model.model.search
+import com.brbx.home.view_model.model.tile
 import com.brbx.home.view_model.processor.processorsModule
 import com.brbx.home.view_model.view_model.ViewModel
 import kotlinx.coroutines.flow.map

@@ -12,13 +12,15 @@ data class CommonTileState(
     val title: BrbxText,
     val description: BrbxText,
     val icon: BrbxIcon,
-    val precollection: Precollection,
+    val precollection: Precollection?,
     val isPrecollectionVisible: Boolean,
 ) {
     @Immutable
     @optics
     data class Precollection(
         val label: BrbxText,
-        val icon: BrbxIcon,
-    )
+        val icon: BrbxIcon?,
+    ) { companion object }
+
+    companion object
 }

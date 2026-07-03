@@ -6,4 +6,8 @@
     <string name="theme_tile_title">Оформление</string>
     <string name="theme_tile_description">Вы можете поменять тему приложения в настройках</string>
     <string name="theme_tile_precollection_text">Перейти</string>
+
+    <string name="powered_by_ani_liberty_tile_title">Powered by AniLiberty</string>
+    <string name="powered_by_ani_liberty_tile_description">Приложение сделано благодаря апи AniLiberty, спасибо!</string>
+    <string name="powered_by_ani_liberty_tile_precollection_text">Сайт AniLiberty</string>
 </resources>

@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="user_watched_tile_description">Кажется вы смотрели этот тайтл последним. Остановились на %1$d эпизоде</string>
-    <string name="user_watched_tile_precollection_title">Продолжить просмотр</string>
-
-    <string name="theme_tile_title">Оформление</string>
-    <string name="theme_tile_description">Вы можете поменять тему приложения в настройках</string>
-    <string name="theme_tile_precollection_text">Перейти</string>
-
     <string name="top_bar_title">Последние обновления</string>
 
     <string name="random_anime_button_text">Случайный тайтл</string>

@@ -8,5 +8,11 @@ sealed interface TileType {
 
     sealed interface Stub : TileType {
         data object Theme : Stub
+
+        data object PoweredByAniLiberty : Stub
+    }
+    
+    sealed interface Recommendation : TileType {
+        data object BasedOnLastWatched : Recommendation
     }
 }

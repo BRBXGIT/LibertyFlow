@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import com.brbx.common.view_model.processor.tile.model.CommonTileState
-import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.design_system.component.anime_card.AnimeCardModel
 import com.brbx.design_system.component.rainbow_button.RainbowButton
 import com.brbx.design_system.component.tile.Tile
@@ -71,10 +70,7 @@ internal fun Content(
                     span = { GridItemSpan(currentLineSpan = maxLineSpan) },
                 ) {
                     val onTileClick: () -> Unit = remember(tile) {
-                        when (tile.type) {
-                            TileType.Stub.Theme -> { {} }
-                            TileType.Episode.LatestWatched -> { {} }
-                        }
+                        {}
                     }
 
                     Tile(
@@ -83,8 +79,8 @@ internal fun Content(
                         icon = tile.icon,
                         onTileClick = onTileClick,
                         isPrecollectionVisible = tile.isPrecollectionVisible,
-                        precollectionIcon = tile.precollection.icon,
-                        precollectionText = tile.precollection.label,
+                        precollectionIcon = tile.precollection?.icon,
+                        precollectionText = tile.precollection?.label,
                         onPrecollectionClick = onTileClick,
                     )
                 }
