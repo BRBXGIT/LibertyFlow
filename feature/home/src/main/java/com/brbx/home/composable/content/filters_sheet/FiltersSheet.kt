@@ -21,7 +21,7 @@ import com.brbx.home.composable.content.filters_sheet.composable.selectableFilte
 import com.brbx.home.composable.content.filters_sheet.composable.sortingBy
 import com.brbx.home.composable.content.filters_sheet.composable.yearFields
 import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.State
+import com.brbx.home.view_model.model.state.State
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.theme.bDimens

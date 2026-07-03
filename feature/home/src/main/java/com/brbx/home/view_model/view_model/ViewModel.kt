@@ -6,7 +6,7 @@ import com.brbx.common.view_model.processor.paging.CommonPagingProcessor
 import com.brbx.common.view_model.processor.search.CommonSearchProcessor
 import com.brbx.common.view_model.view_model.LibertyFlowViewModel
 import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.State
+import com.brbx.home.view_model.model.state.State
 import com.brbx.home.view_model.processor.filters.FiltersProcessor
 import com.brbx.home.view_model.processor.tile_processor.TileProcessor
 import com.brbx.home.view_model.processor.random_anime.RandomAnimeProcessor

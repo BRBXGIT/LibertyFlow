@@ -5,17 +5,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import com.brbx.design_system.component.anime_card.AnimeCardModel
 import com.brbx.design_system.component.rainbow_button.RainbowButton
 import com.brbx.design_system.component.tile.Tile
-import com.brbx.design_system.component.tile.TileModel
 import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
 import com.brbx.design_system.container.PullToRefreshContainer
 import com.brbx.design_system.container.animeItems
 import com.brbx.home.common.HomeStrings
 import com.brbx.home.view_model.model.Intent
+import com.brbx.home.view_model.model.state.Tile as HomeTile
 import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
@@ -26,7 +27,7 @@ import dev.chiksmedina.solar.outline.facesemotionsstickers.EmojiFunnySquare
 @Composable
 internal fun Content(
     animeGridState: LazyGridState,
-    tile: TileModel?,
+    tile: HomeTile?,
     items: LazyPagingItems<AnimeCardModel>,
     isRefreshing: Boolean,
     isSearching: Boolean,
@@ -68,11 +69,21 @@ internal fun Content(
                     key = ContentKeys.Tile,
                     span = { GridItemSpan(currentLineSpan = maxLineSpan) },
                 ) {
+                    val onTileClick: () -> Unit = remember(tile) {
+                        when (tile) {
+                            is HomeTile.LatestWatching -> { {}/* TODO Navigate to details */ }
+                            is HomeTile.Theme -> { {}/* TODO Navigate to settings */ }
+                        }
+                    }
+
                     Tile(
-                        model = tile,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .brbxAnimateItem(scope = this)
+                        title = tile.title,
+                        description = tile.description,
+                        icon = tile.icon,
+                        onTileClick = onTileClick,
+                        isPrecollectionVisible = tile.isPrecollectionVisible,
+                        precollectionModel = tile.precollection,
+                        onPrecollectionClick = onTileClick,
                     )
                 }
             }

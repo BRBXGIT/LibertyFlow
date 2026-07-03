@@ -21,6 +21,7 @@ import dev.chiksmedina.solar.bold.arrows.RoundArrowRight
 @Composable
 fun Precollection(
     model: PrecollectionModel,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     appearance: BrbxPrecollectionAppearance = PrecollectionConstants.precollectionAppearance,
 ) =
@@ -28,7 +29,7 @@ fun Precollection(
         appearance = appearance.rememberCopy(
             contentPadding = { PaddingValues(all = bDimens.micro5) },
         ),
-        onClick = model.onClick,
+        onClick = onClick,
         modifier = modifier,
         text = model.text,
         trailingContent = { BrbxIcon(model.icon, Modifier.size(bDimens.macro2)) },
@@ -39,10 +40,10 @@ fun Precollection(
 private fun PrecollectionPreview() {
     BrbxTheme(lightColorScheme()) {
         Precollection(
+            onClick = {},
             model = PrecollectionModel(
                 text = "Bla bla title text".toBrbxText(),
                 icon = BoldSolar.Arrows.RoundArrowRight.toBrbxIcon(),
-                onClick = {},
             ),
         )
     }
