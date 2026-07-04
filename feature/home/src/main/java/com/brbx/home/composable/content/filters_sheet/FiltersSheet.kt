@@ -78,7 +78,7 @@ internal fun FiltersSheet(
 
             filterDivider(text = HomeStrings.filters_sheet_seasons)
             selectableFilterItems(
-                items = Season.entries.filterNot { it == Season.Unknown },
+                items = Season.entries.filterNot { it == Season.Unknown }.toSet(),
                 isSelected = { season -> season in filters.filters.seasons },
                 itemText = { season -> season.toStringRes() },
                 itemKey = { season -> season },
@@ -130,14 +130,14 @@ private fun FiltersSheetPreview() {
                         isOngoing = true,
                         sorting = Sorting.RatingDesc,
                         years = Years(from = 2020, to = 2024),
-                        seasons = listOf(Season.Winter, Season.Spring),
+                        seasons = setOf(Season.Winter, Season.Spring),
                         genresState = State.FiltersSheet.Filters.Genres(
-                            genres = listOf(
+                            genres = setOf(
                                 Genre(id = 1, name = "Action"),
                                 Genre(id = 2, name = "Comedy"),
                                 Genre(id = 3, name = "Drama"),
                             ),
-                            selectedGenres = listOf(Genre(id = 1, name = "Action")),
+                            selectedGenres = setOf(Genre(id = 1, name = "Action")),
                         ),
                     ),
                 ),

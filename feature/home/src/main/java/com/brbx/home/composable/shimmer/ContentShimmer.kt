@@ -8,10 +8,10 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.brbx.common.composable.utils.animeItemsShimmer
 import com.brbx.design_system.component.rainbow_button.RainbowButtonShimmer
 import com.brbx.design_system.component.tile.TileShimmer
 import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
-import com.brbx.design_system.container.animeItemsShimmer
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.BrbxTheme
 import com.brbx.ui_compose.theme.mColors

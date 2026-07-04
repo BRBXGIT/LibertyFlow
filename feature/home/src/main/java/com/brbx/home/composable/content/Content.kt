@@ -8,13 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
+import com.brbx.common.composable.utils.animeItems
 import com.brbx.common.view_model.processor.tile.model.CommonTileState
-import com.brbx.design_system.component.anime_card.AnimeCardModel
+import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.design_system.component.rainbow_button.RainbowButton
 import com.brbx.design_system.component.tile.Tile
 import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
 import com.brbx.design_system.container.PullToRefreshContainer
-import com.brbx.design_system.container.animeItems
 import com.brbx.home.common.HomeStrings
 import com.brbx.home.view_model.model.Intent
 import com.brbx.ui_compose.common.toBrbxIcon
@@ -28,7 +28,7 @@ import dev.chiksmedina.solar.outline.facesemotionsstickers.EmojiFunnySquare
 internal fun Content(
     animeGridState: LazyGridState,
     tile: CommonTileState?,
-    items: LazyPagingItems<AnimeCardModel>,
+    items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
     isSearching: Boolean,
     isRandomAnimeLoading: Boolean,
@@ -89,6 +89,7 @@ internal fun Content(
             animeItems(
                 items = items,
                 onItemClick = { /* TODO Navigate to details */ },
+                selectedIds = emptySet() // TODO Add selected anime ids
             )
         }
     }

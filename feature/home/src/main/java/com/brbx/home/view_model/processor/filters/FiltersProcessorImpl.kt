@@ -1,7 +1,7 @@
 package com.brbx.home.view_model.processor.filters
 
 import arrow.optics.copy
-import com.brbx.common.model.common.map.toAnimeCardModel
+import com.brbx.common.model.common.map.toUi
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.view_model.processor.loading.model.isException
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
@@ -64,7 +64,7 @@ internal class FiltersProcessorImpl(
                         loadingLens = State.filtersSheet.filters.genresState.loading,
                         call = { genresUseCase() },
                     ).onSuccess { genres ->
-                        val mapped = genres.map { genre -> genre.toAnimeCardModel() }
+                        val mapped = genres.map { genre -> genre.toUi() }.toSet()
                         updateState {
                             copy { State.filtersSheet.filters.genresState.genres set mapped }
                         }
@@ -78,6 +78,6 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun <T> List<T>.toggle(element: T): List<T> =
+    private fun <T> Set<T>.toggle(element: T): Set<T> =
         if (contains(element)) this - element else this + element
 }

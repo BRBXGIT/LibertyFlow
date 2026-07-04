@@ -7,10 +7,11 @@ import com.brbx.design_system.theme.LibertyFlowIcons
 import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
 import dev.chiksmedina.solar.BoldSolar
-import dev.chiksmedina.solar.bold.Arrows
+import dev.chiksmedina.solar.OutlineSolar
 import dev.chiksmedina.solar.bold.DesignTools
-import dev.chiksmedina.solar.bold.arrows.AltArrowRight
 import dev.chiksmedina.solar.bold.designtools.Pallete2
+import dev.chiksmedina.solar.outline.Arrows
+import dev.chiksmedina.solar.outline.arrows.AltArrowRight
 
 internal class StubTileInteractorImpl : StubTileInteractor {
 
@@ -24,7 +25,7 @@ internal class StubTileInteractorImpl : StubTileInteractor {
                 icon = BoldSolar.DesignTools.Pallete2.toBrbxIcon(),
                 precollection = CommonTileState.Precollection(
                     label = CommonStrings.theme_tile_precollection_text.toBrbxText(),
-                    icon = BoldSolar.Arrows.AltArrowRight.toBrbxIcon(),
+                    icon = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),
                 ),
                 isPrecollectionVisible = false,
             )
@@ -36,7 +37,7 @@ internal class StubTileInteractorImpl : StubTileInteractor {
                 icon = LibertyFlowIcons.Multicolored.AniLiberty.toBrbxIcon(),
                 precollection = CommonTileState.Precollection(
                     label = CommonStrings.powered_by_ani_liberty_tile_precollection_text.toBrbxText(),
-                    icon = BoldSolar.Arrows.AltArrowRight.toBrbxIcon(),
+                    icon = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),
                 ),
                 isPrecollectionVisible = false,
             )

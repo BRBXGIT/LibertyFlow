@@ -1,6 +1,6 @@
 package com.brbx.home.view_model.processor.random_anime
 
-import com.brbx.common.strings.toBrbxText
+import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.makeNetworkCall
 import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar

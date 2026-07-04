@@ -13,7 +13,7 @@ import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
 import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
 import com.brbx.common.view_model.processor.tile.model.CommonTileState
-import com.brbx.design_system.component.anime_card.AnimeCardModel
+import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.top_bar.SearchableTopBar
 import com.brbx.design_system.container.ShimmerScaffold
@@ -43,7 +43,7 @@ internal fun ScreenScaffold(
     isLoading: Boolean,
     isRandomAnimeLoading: Boolean,
     tile: CommonTileState?,
-    items: LazyPagingItems<AnimeCardModel>,
+    items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
     isError: Boolean,
     modifier: Modifier = Modifier,

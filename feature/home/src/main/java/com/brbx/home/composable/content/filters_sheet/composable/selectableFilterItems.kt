@@ -15,14 +15,14 @@ import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.mTypography
 
 internal fun <T> LazyGridScope.selectableFilterItems(
-    items: List<T>,
+    items: Set<T>,
     isSelected: (T) -> Boolean,
     itemText: @Composable (T) -> BrbxText,
     onItemClick: (item: T) -> Unit,
     itemKey: (T) -> Any,
 ) {
     items(
-        items = items,
+        items = items.toList(),
         key = itemKey,
     ) { item ->
         val selected = isSelected(item)

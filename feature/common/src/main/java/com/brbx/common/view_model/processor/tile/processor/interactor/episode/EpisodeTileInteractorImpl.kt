@@ -8,10 +8,11 @@ import com.brbx.domain.local_dbs.watching_anime.use_case.anime.use_case.GetLates
 import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
 import dev.chiksmedina.solar.BoldSolar
-import dev.chiksmedina.solar.bold.Arrows
+import dev.chiksmedina.solar.OutlineSolar
 import dev.chiksmedina.solar.bold.ArrowsAction
-import dev.chiksmedina.solar.bold.arrows.AltArrowRight
 import dev.chiksmedina.solar.bold.arrowsaction.UndoLeft
+import dev.chiksmedina.solar.outline.Arrows
+import dev.chiksmedina.solar.outline.arrows.AltArrowRight
 
 internal class EpisodeTileInteractorImpl(
     private val latestWatchingUseCase: GetLatestWatchingAnimeUseCase,
@@ -29,7 +30,7 @@ internal class EpisodeTileInteractorImpl(
                 icon = BoldSolar.ArrowsAction.UndoLeft.toBrbxIcon(),
                 precollection = CommonTileState.Precollection(
                     label = CommonStrings.user_watched_tile_precollection_title.toBrbxText(),
-                    icon = BoldSolar.Arrows.AltArrowRight.toBrbxIcon(),
+                    icon = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),
                 ),
                 isPrecollectionVisible = false,
             )

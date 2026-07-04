@@ -3,7 +3,7 @@ package com.brbx.common.view_model.processor.paging.processor
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import arrow.optics.Lens
-import com.brbx.common.strings.toBrbxText
+import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.common.view_model.processor.paging.model.CommonPagingState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope

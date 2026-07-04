@@ -2,20 +2,20 @@ package com.brbx.home.view_model.model
 
 import androidx.compose.runtime.Immutable
 import arrow.optics.optics
+import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.paging.model.CommonPagingState
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
 import com.brbx.common.view_model.processor.tile.model.CommonTileState
-import com.brbx.design_system.component.anime_card.AnimeCardModel
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 
 @Immutable
 @optics
 internal data class State(
-    val catalog: CommonPagingState<AnimeCardModel> = CommonPagingState(),
+    val catalog: CommonPagingState<AnimeItem> = CommonPagingState(),
     val randomAnime: CommonLoadingState = CommonLoadingState(),
     val search: CommonSearchState = CommonSearchState(),
     val filtersSheet: FiltersSheet = FiltersSheet(),
@@ -33,15 +33,15 @@ internal data class State(
             val isOngoing: Boolean = false,
             val sorting: Sorting = Sorting.CreatedAtDesc,
             val years: Years = Years(),
-            val seasons: List<Season> = emptyList(),
+            val seasons: Set<Season> = emptySet(),
             val genresState: Genres = Genres(),
         ) {
             @Immutable
             @optics
             data class Genres(
-                val genres: List<Genre> = emptyList(),
+                val genres: Set<Genre> = emptySet(),
                 val loading: CommonLoadingState = CommonLoadingState(),
-                val selectedGenres: List<Genre> = emptyList(),
+                val selectedGenres: Set<Genre> = emptySet(),
             ) { companion object }
 
             companion object

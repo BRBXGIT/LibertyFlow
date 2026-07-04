@@ -8,8 +8,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.brbx.common.screen.LibertyFlowScreen
-import com.brbx.common.screen.PagingHandler
+import com.brbx.common.composable.screen.LibertyFlowScreen
+import com.brbx.common.composable.screen.PagingHandler
 import com.brbx.home.composable.ScreenScaffold
 import com.brbx.home.composable.content.filters_sheet.FiltersSheet
 import com.brbx.home.view_model.model.Intent

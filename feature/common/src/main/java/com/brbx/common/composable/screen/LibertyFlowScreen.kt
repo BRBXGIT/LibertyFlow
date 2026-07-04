@@ -1,4 +1,4 @@
-package com.brbx.common.screen
+package com.brbx.common.composable.screen
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
