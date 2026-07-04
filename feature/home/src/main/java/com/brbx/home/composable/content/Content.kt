@@ -89,7 +89,8 @@ internal fun Content(
             animeItems(
                 items = items,
                 onItemClick = { /* TODO Navigate to details */ },
-                selectedIds = emptySet() // TODO Add selected anime ids
+                selectedIds = emptySet(),
+                onItemLongClick = {  }
             )
         }
     }

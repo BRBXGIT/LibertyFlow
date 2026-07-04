@@ -13,7 +13,7 @@ inline fun LazyGridScope.animeItems(
     selectedIds: Set<Int>,
     items: LazyPagingItems<AnimeItem>,
     crossinline onItemClick: (id: Int) -> Unit,
-    crossinline inItemLongClick: (id: Int) -> Unit,
+    crossinline onItemLongClick: (id: Int) -> Unit,
     itemModifier: Modifier = Modifier,
 ) =
     items(
@@ -26,6 +26,7 @@ inline fun LazyGridScope.animeItems(
             AnimeCard(
                 selected = id in selectedIds,
                 onClick = { onItemClick(id) },
+                onLongClick = { onItemLongClick(id) },
                 modifier = itemModifier.brbxAnimateItem(scope = this),
                 posterPath = anime.posterPath.fullPreview(),
                 description = anime.genresAsBrbxText(),
