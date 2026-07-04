@@ -28,5 +28,5 @@ internal object AnimeCardConstants {
             containerElevationAmbientColor = { remember { DesignConstants.elevationColor } },
             containerElevation = { DesignConstants.elevation },
         )
-    val selectedBorderColor @Composable @ReadOnlyComposable get() = mColors.secondaryContainer
+    val selectedBorderColor @Composable @ReadOnlyComposable get() = mColors.tertiary
 }

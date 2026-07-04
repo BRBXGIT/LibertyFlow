@@ -28,7 +28,7 @@ fun AnimeCard(
     val finalAppearance = if (selected) {
         appearance.rememberCopy(
             containerBorder = {
-                BorderStroke(width = 1.dp, color = AnimeCardConstants.selectedBorderColor)
+                BorderStroke(width = 3.dp, color = AnimeCardConstants.selectedBorderColor)
             }
         )
     } else appearance

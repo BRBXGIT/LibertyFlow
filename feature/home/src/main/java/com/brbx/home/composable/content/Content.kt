@@ -19,6 +19,8 @@ import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Name
 import com.brbx.common.model.common.model.Poster
+import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
+import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.design_system.component.rainbow_button.RainbowButton
@@ -43,6 +45,8 @@ internal fun Content(
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
     isSearching: Boolean,
+    selectedIds: Set<Int>,
+    isInSelectionMode: Boolean,
     isRandomAnimeLoading: Boolean,
     dispatchIntent: (Intent) -> Unit,
     modifier: Modifier = Modifier
@@ -69,9 +73,15 @@ internal fun Content(
 
             animeItems(
                 items = items,
-                onItemClick = { /* TODO Navigate to details */ },
-                selectedIds = emptySet(),
-                onItemLongClick = { /* TODO Toggle selected ids set */ },
+                onItemClick = { id ->
+                    if (isInSelectionMode) {
+                        dispatchIntent(getSelectionIntent(id))
+                    } else {
+                        /* TODO Navigate to details */
+                    }
+                },
+                selectedIds = selectedIds,
+                onItemLongClick = { id -> dispatchIntent(getSelectionIntent(id)) },
             )
         }
     }
@@ -119,6 +129,9 @@ private fun LazyGridScope.tileItem(tile: CommonTile?) {
     }
 }
 
+private fun getSelectionIntent(id: Int): Intent.Selection =
+    Intent.Selection(action = CommonSelectionIntent.Selection.ToggleItemSelected(id))
+
 @Preview(showBackground = true)
 @Composable
 private fun ContentPreview() {
@@ -156,7 +169,9 @@ private fun ContentPreview() {
             isRefreshing = false,
             isSearching = false,
             isRandomAnimeLoading = false,
-            dispatchIntent = {}
+            dispatchIntent = {},
+            selectedIds = emptySet(),
+            isInSelectionMode = false,
         )
     }
 }

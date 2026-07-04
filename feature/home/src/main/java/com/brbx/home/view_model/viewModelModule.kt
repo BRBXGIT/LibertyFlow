@@ -5,12 +5,14 @@ import com.brbx.common.model.common.map.toUi
 import com.brbx.common.model.common.map.toDomain
 import com.brbx.common.view_model.processor.paging.getCommonPagingProcessor
 import com.brbx.common.view_model.processor.search.getCommonSearchProcessor
+import com.brbx.common.view_model.processor.selection.getCommonSelectionProcessor
 import com.brbx.common.view_model.processor.tile.getCommonTileProcessor
 import com.brbx.domain.network.catalog.releases.model.CatalogReleasesParameters
 import com.brbx.domain.network.catalog.releases.use_case.GetCatalogAnimeReleasesUseCase
 import com.brbx.home.view_model.model.State
 import com.brbx.home.view_model.model.catalog
 import com.brbx.home.view_model.model.search
+import com.brbx.home.view_model.model.selection
 import com.brbx.home.view_model.model.tile
 import com.brbx.home.view_model.processor.processorsModule
 import com.brbx.home.view_model.view_model.ViewModel
@@ -26,6 +28,7 @@ internal val viewModelModule = module {
             filtersProcessor = get(),
             searchProcessor = getCommonSearchProcessor(lens = State.search),
             tileProcessor = getCommonTileProcessor(lens = State.tile),
+            selectionProcessor = getCommonSelectionProcessor(lens = State.selection),
             catalogProcessor = getCommonPagingProcessor(
                 lens = State.catalog,
                 paramsSelector = { state ->

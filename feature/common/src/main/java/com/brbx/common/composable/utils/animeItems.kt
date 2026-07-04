@@ -1,32 +1,42 @@
 package com.brbx.common.composable.utils
 
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.design_system.component.anime_card.AnimeCard
 import com.brbx.design_system.component.anime_card.AnimeCardShimmer
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 
-inline fun LazyGridScope.animeItems(
+fun LazyGridScope.animeItems(
     selectedIds: Set<Int>,
     items: LazyPagingItems<AnimeItem>,
-    crossinline onItemClick: (id: Int) -> Unit,
-    crossinline onItemLongClick: (id: Int) -> Unit,
+    onItemClick: (id: Int) -> Unit,
+    onItemLongClick: (id: Int) -> Unit,
     itemModifier: Modifier = Modifier,
-) =
+) {
     items(
         count = items.itemCount,
-        key = { index -> index },
+        key = items.itemKey { it.id },
+        contentType = items.itemContentType { "AnimeItem" },
     ) { index ->
         val current = items[index]
         current?.let { anime ->
             val id = current.id
+
+            val currentOnClick by rememberUpdatedState(onItemClick)
+            val currentOnLongClick by rememberUpdatedState(onItemLongClick)
+
             AnimeCard(
-                selected = id in selectedIds,
-                onClick = { onItemClick(id) },
-                onLongClick = { onItemLongClick(id) },
+                selected = selectedIds.contains(id),
+                onClick = remember(id) { { currentOnClick(id) } },
+                onLongClick = remember(id) { { currentOnLongClick(id) } },
                 modifier = itemModifier.brbxAnimateItem(scope = this),
                 posterPath = anime.posterPath.fullPreview(),
                 description = anime.genresAsBrbxText(),
@@ -34,6 +44,7 @@ inline fun LazyGridScope.animeItems(
             )
         }
     }
+}
 
 fun LazyGridScope.animeItemsShimmer(
     count: Int = 6,

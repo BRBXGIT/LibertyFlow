@@ -41,10 +41,11 @@ fun NavGraphBuilder.home(
     ) { dispatchIntent, _ ->
         ScreenScaffold(
             dispatchIntent = dispatchIntent,
+            selectedIds = state.selection.ids,
+            isInSelectionMode = state.selection.isInSelectionMode,
             searchState = state.search,
-            isError = state.catalog.loading.isException,
+            loadingState = state.catalog.loading,
             isRefreshing = state.catalog.refreshing.isLoading,
-            isLoading = state.catalog.loading.isLoading,
             tile = state.tile,
             isRandomAnimeLoading = state.randomAnime.isLoading,
             items = catalog,

@@ -8,7 +8,7 @@ object LibertyFlowIcons {
     }
 
     object Filled {
-
+        val Cross = DesignSystemDrawable.ic_cross_filled
     }
 
     object Multicolored {

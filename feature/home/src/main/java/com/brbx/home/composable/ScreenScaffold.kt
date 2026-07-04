@@ -8,17 +8,22 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.brbx.common.composable.selection_menu.SelectionFabMenu
+import com.brbx.common.composable.selection_menu.SelectionType
 import com.brbx.common.model.common.model.AnimeItem
+import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
 import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
+import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.top_bar.SearchableTopBar
 import com.brbx.design_system.container.ShimmerScaffold
@@ -28,7 +33,6 @@ import com.brbx.home.composable.shimmer.ContentShimmer
 import com.brbx.home.view_model.model.Intent
 import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
-import com.brbx.ui_compose.components.complex.disappearing_fab.BrbxDisappearingFab
 import com.brbx.ui_compose.containers.complex.scaffold.BrbxShimmerScaffoldAppearances
 import com.brbx.ui_compose.containers.complex.scaffold.rememberCopy
 import com.brbx.ui_compose.containers.complex.snackbar_host.BrbxSnackbarHost
@@ -44,13 +48,14 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 internal fun ScreenScaffold(
     dispatchIntent: (Intent) -> Unit,
+    selectedIds: Set<Int>,
+    isInSelectionMode: Boolean,
     searchState: CommonSearchState,
-    isLoading: Boolean,
+    loadingState: CommonLoadingState,
     isRandomAnimeLoading: Boolean,
     tile: CommonTile?,
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
-    isError: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -62,27 +67,28 @@ internal fun ScreenScaffold(
     ShimmerScaffold(
         appearance = appearance,
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        isShimmering = isLoading,
+        isShimmering = loadingState.isLoading,
         snackbarHost = { BrbxSnackbarHost() },
-        isError = isError,
+        isError = loadingState.isException,
         onShimmerEnd = { withError ->
             if (!withError) {
                 dispatchIntent(Intent.Tile(action = CommonTileIntent.TogglePrecollectionVisibility))
             }
         },
         floatingActionButton = {
-            Fab(
-                isVisible = !isError && !isLoading && animeGridState.brbxScrollDirection() == BrbxScrollDirection.Up,
-                onClick = { dispatchIntent(Intent.Filters.ToggleSheet) }
+            SelectionMenu(
+                scrollDirection = animeGridState.brbxScrollDirection(),
+                loadingState = loadingState,
+                isInSelectionMode = isInSelectionMode,
+                dispatchIntent = dispatchIntent,
             )
         },
         topBar = {
             TopBar(
                 searchState = searchState,
-                isError = isError,
-                isLoading = isLoading,
+                loadingState = loadingState,
                 scrollBehavior = scrollBehavior,
-                dispatchIntent = dispatchIntent
+                dispatchIntent = dispatchIntent,
             )
         },
         shimmerContent = { paddingValues ->
@@ -94,6 +100,8 @@ internal fun ScreenScaffold(
         },
         content = { paddingValues ->
             Content(
+                isInSelectionMode = isInSelectionMode,
+                selectedIds = selectedIds,
                 animeGridState = animeGridState,
                 isSearching = searchState.isSearching,
                 isRefreshing = isRefreshing,
@@ -113,8 +121,7 @@ internal fun ScreenScaffold(
 @Composable
 private fun TopBar(
     searchState: CommonSearchState,
-    isError: Boolean,
-    isLoading: Boolean,
+    loadingState: CommonLoadingState,
     scrollBehavior: TopAppBarScrollBehavior,
     dispatchIntent: (Intent) -> Unit,
 ) {
@@ -123,7 +130,7 @@ private fun TopBar(
         onSystemBackClick = { dispatchIntent(Intent.Search(action = CommonSearchIntent.ToggleSearching)) },
         onSearchChange = { dispatchIntent(Intent.Search(action = CommonSearchIntent.UpdateSearch(it))) },
         isSearching = searchState.isSearching,
-        searchIconEnabled = !isError && !isLoading,
+        searchIconEnabled = !loadingState.isException && !loadingState.isLoading,
         title = HomeStrings.top_bar_title.toBrbxText(),
         search = searchState.search,
         scrollBehavior = scrollBehavior,
@@ -131,14 +138,36 @@ private fun TopBar(
 }
 
 @Composable
-private fun Fab(
-    isVisible: Boolean,
-    onClick: () -> Unit,
+private fun SelectionMenu(
+    scrollDirection: BrbxScrollDirection,
+    loadingState: CommonLoadingState,
+    isInSelectionMode: Boolean,
+    dispatchIntent: (Intent) -> Unit,
 ) {
-    BrbxDisappearingFab(
-        visible = isVisible,
-        onClick = onClick,
-        icon = OutlineSolar.DesignTools.Filters.toBrbxIcon(),
+    val isFabVisible = remember(
+        key1 = loadingState,
+        key2 = isInSelectionMode,
+        key3 = scrollDirection,
+    ) {
+        val scrollCondition = scrollDirection == BrbxScrollDirection.Up
+        val loadingCondition = !loadingState.isLoading && !loadingState.isException
+        isInSelectionMode || (loadingCondition && scrollCondition)
+    }
+    SelectionFabMenu(
+        type = SelectionType.AddToAnyList,
+        isInSelectionMode = isInSelectionMode,
+        onSelectionModeChange = { selecting ->
+            if (!selecting) {
+                dispatchIntent(
+                    Intent.Selection(action = CommonSelectionIntent.Selection.DropSelection)
+                )
+            }
+        },
+        isFabVisible = isFabVisible,
+        onCollectionsClick = {  },
+        onFavoritesClick = {  },
+        onFabClick = { dispatchIntent(Intent.Filters.ToggleSheet) },
+        fabIcon = OutlineSolar.DesignTools.Filters.toBrbxIcon(),
     )
 }
 
@@ -150,13 +179,14 @@ private fun ScreenScaffoldPreview() {
         ScreenScaffold(
             dispatchIntent = {},
             searchState = CommonSearchState(),
-            isLoading = false,
             isRandomAnimeLoading = false,
             tile = null,
             items = mockItems,
             isRefreshing = false,
-            isError = false,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            selectedIds = emptySet(),
+            isInSelectionMode = false,
+            loadingState = CommonLoadingState(),
         )
     }
 }

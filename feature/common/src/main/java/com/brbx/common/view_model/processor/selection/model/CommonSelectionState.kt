@@ -10,4 +10,8 @@ data class CommonSelectionState(
     val ids: Set<Int> = emptySet(),
     val isCollectionsSheetVisible: Boolean = false,
     val loadingState: CommonLoadingState = CommonLoadingState(),
-) { companion object }
+) {
+    val isInSelectionMode = ids.isNotEmpty()
+
+    companion object
+}

@@ -37,15 +37,14 @@ internal class CommonSelectionProcessorImpl<State>(
         }
     }
 
+    // TODO Fix long item selection
     private fun LibertyFlowMviScope<State>.processSelection(intent: CommonSelectionIntent.Selection) {
-        updateState {
-            selectionLens.modify(source = this) {
-                when (intent) {
-                    is CommonSelectionIntent.Selection.ToggleItemSelected ->
-                        it.copy(ids = it.ids.toggle(intent.id))
-                    CommonSelectionIntent.Selection.DropSelection ->
-                        it.copy(ids = emptySet())
-                }
+        when (intent) {
+            CommonSelectionIntent.Selection.DropSelection -> updateState {
+                selectionLens.modify(source = this) { it.copy(ids = emptySet()) }
+            }
+            is CommonSelectionIntent.Selection.ToggleItemSelected -> updateState {
+                selectionLens.modify(source = this) { it.copy(ids = it.ids.toggle(element = intent.id)) }
             }
         }
     }
@@ -92,10 +91,11 @@ internal class CommonSelectionProcessorImpl<State>(
         intent: CommonSelectionIntent,
         request: suspend (List<Int>) -> DomainRequestResult<Unit>,
     ) {
+        val selectedIds = selectionLens.get(state.value).ids.toList()
+        if (selectedIds.isEmpty()) return
+
         coroutineScope.launch(context = dispatcherIo) {
             updateState { selectionLens.modify(source = this) { it.copy(ids = emptySet()) } }
-            val selectedIds = selectionLens.get(state.value).ids.toList()
-            if (selectedIds.isEmpty()) return@launch
 
             makeNetworkCall(
                 loadingLens = selectionLens.loadingState,
@@ -103,6 +103,7 @@ internal class CommonSelectionProcessorImpl<State>(
             ).onSuccess {
                 // TODO
             } onException { exception ->
+                updateState { selectionLens.modify(source = this) { it.copy(ids = selectedIds.toSet()) } }
                 postExceptionSnackbar(
                     exception = exception.toBrbxText(),
                     dismissable = true,

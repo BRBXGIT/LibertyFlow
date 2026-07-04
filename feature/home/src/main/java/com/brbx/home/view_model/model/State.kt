@@ -8,6 +8,7 @@ import com.brbx.common.model.common.model.Years
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.paging.model.CommonPagingState
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
+import com.brbx.common.view_model.processor.selection.model.CommonSelectionState
 import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
@@ -19,6 +20,7 @@ internal data class State(
     val randomAnime: CommonLoadingState = CommonLoadingState(),
     val search: CommonSearchState = CommonSearchState(),
     val filtersSheet: FiltersSheet = FiltersSheet(),
+    val selection: CommonSelectionState = CommonSelectionState(),
     val tile: CommonTile? = null,
 ) {
     @Immutable

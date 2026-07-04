@@ -6,5 +6,5 @@ import com.brbx.ui_compose.components.complex.precollection.precollection.BrbxPr
 @Immutable
 internal object PrecollectionConstants {
 
-    val precollectionAppearance = BrbxPrecollectionAppearances.tertiary
+    val precollectionAppearance = BrbxPrecollectionAppearances.secondary
 }

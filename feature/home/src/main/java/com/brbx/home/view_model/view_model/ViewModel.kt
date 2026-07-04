@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.common.view_model.processor.paging.processor.CommonPagingProcessor
 import com.brbx.common.view_model.processor.search.processor.CommonSearchProcessor
+import com.brbx.common.view_model.processor.selection.processor.CommonSelectionProcessor
 import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
 import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.common.view_model.processor.tile.processor.processor.CommonTileProcessor
@@ -18,6 +19,7 @@ internal class ViewModel(
     private val searchProcessor: CommonSearchProcessor<State>,
     private val catalogProcessor: CommonPagingProcessor<State>,
     private val tileProcessor: CommonTileProcessor<State>,
+    private val selectionProcessor: CommonSelectionProcessor<State>,
     private val randomAnimeProcessor: RandomAnimeProcessor,
     private val filtersProcessor: FiltersProcessor,
 ) : LibertyFlowViewModel<State, Intent>(initialState = State()) {
@@ -38,6 +40,9 @@ internal class ViewModel(
                 mviScope.process(intent.action)
             }
             is Intent.Tile -> with(receiver = tileProcessor) {
+                mviScope.process(intent.action)
+            }
+            is Intent.Selection -> with(receiver = selectionProcessor) {
                 mviScope.process(intent.action)
             }
             is Intent.Filters -> with(receiver = filtersProcessor) {
