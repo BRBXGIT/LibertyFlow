@@ -10,7 +10,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
-internal val tileInteractorModule = module {
+internal val tileInteractorsModule = module {
     factoryOf(constructor = ::EpisodeTileInteractorImpl) { bind<EpisodeTileInteractor>() }
     factoryOf(constructor = ::RecommendationTileInteractorImpl) {
         bind<RecommendationTileInteractor>()

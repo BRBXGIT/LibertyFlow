@@ -1,7 +1,7 @@
 package com.brbx.common.view_model.processor.tile.processor.interactor.stub
 
 import com.brbx.common.model.alias.CommonStrings
-import com.brbx.common.view_model.processor.tile.model.CommonTileState
+import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.design_system.theme.LibertyFlowIcons
 import com.brbx.ui_compose.common.toBrbxIcon
@@ -15,27 +15,27 @@ import dev.chiksmedina.solar.outline.arrows.AltArrowRight
 
 internal class StubTileInteractorImpl : StubTileInteractor {
 
-    override suspend fun getTile(): CommonTileState {
+    override suspend fun getTile(): CommonTile {
         val random = (0..10).random()
         return if (random <= 7) {
-            CommonTileState(
+            CommonTile(
                 type = TileType.Stub.Theme,
                 title = CommonStrings.theme_tile_title.toBrbxText(),
                 description = CommonStrings.theme_tile_description.toBrbxText(),
                 icon = BoldSolar.DesignTools.Pallete2.toBrbxIcon(),
-                precollection = CommonTileState.Precollection(
+                precollection = CommonTile.Precollection(
                     label = CommonStrings.theme_tile_precollection_text.toBrbxText(),
                     icon = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),
                 ),
                 isPrecollectionVisible = false,
             )
         } else {
-            CommonTileState(
+            CommonTile(
                 type = TileType.Stub.PoweredByAniLiberty,
                 title = CommonStrings.powered_by_ani_liberty_tile_title.toBrbxText(),
                 description = CommonStrings.powered_by_ani_liberty_tile_description.toBrbxText(),
                 icon = LibertyFlowIcons.Multicolored.AniLiberty.toBrbxIcon(),
-                precollection = CommonTileState.Precollection(
+                precollection = CommonTile.Precollection(
                     label = CommonStrings.powered_by_ani_liberty_tile_precollection_text.toBrbxText(),
                     icon = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),
                 ),

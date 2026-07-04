@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import com.brbx.common.composable.utils.animeItems
-import com.brbx.common.view_model.processor.tile.model.CommonTileState
+import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.design_system.component.rainbow_button.RainbowButton
 import com.brbx.design_system.component.tile.Tile
@@ -27,7 +27,7 @@ import dev.chiksmedina.solar.outline.facesemotionsstickers.EmojiFunnySquare
 @Composable
 internal fun Content(
     animeGridState: LazyGridState,
-    tile: CommonTileState?,
+    tile: CommonTile?,
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
     isSearching: Boolean,
@@ -90,7 +90,7 @@ internal fun Content(
                 items = items,
                 onItemClick = { /* TODO Navigate to details */ },
                 selectedIds = emptySet(),
-                onItemLongClick = {  }
+                onItemLongClick = { /* TODO Toggle selected ids set */ },
             )
         }
     }

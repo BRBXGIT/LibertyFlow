@@ -7,7 +7,7 @@ import com.brbx.ui_compose.common.BrbxText
 
 @Immutable
 @optics
-data class CommonTileState(
+data class CommonTile(
     val type: TileType,
     val title: BrbxText,
     val description: BrbxText,

@@ -12,7 +12,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
 import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
-import com.brbx.common.view_model.processor.tile.model.CommonTileState
+import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.top_bar.SearchableTopBar
@@ -42,7 +42,7 @@ internal fun ScreenScaffold(
     searchState: CommonSearchState,
     isLoading: Boolean,
     isRandomAnimeLoading: Boolean,
-    tile: CommonTileState?,
+    tile: CommonTile?,
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
     isError: Boolean,

@@ -3,6 +3,7 @@ package com.brbx.home.view_model.processor.filters
 import arrow.optics.copy
 import com.brbx.common.model.common.map.toUi
 import com.brbx.common.model.common.model.Years
+import com.brbx.common.utils.toggle
 import com.brbx.common.view_model.processor.loading.model.isException
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.makeNetworkCall
@@ -77,7 +78,4 @@ internal class FiltersProcessorImpl(
             }
         }
     }
-
-    private fun <T> Set<T>.toggle(element: T): Set<T> =
-        if (contains(element)) this - element else this + element
 }

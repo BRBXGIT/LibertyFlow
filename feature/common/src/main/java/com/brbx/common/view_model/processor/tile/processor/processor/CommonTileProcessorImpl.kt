@@ -2,7 +2,7 @@ package com.brbx.common.view_model.processor.tile.processor.processor
 
 import arrow.optics.Lens
 import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
-import com.brbx.common.view_model.processor.tile.model.CommonTileState
+import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.common.view_model.processor.tile.processor.interactor.episode.EpisodeTileInteractor
 import com.brbx.common.view_model.processor.tile.processor.interactor.recommendation.RecommendationTileInteractor
@@ -15,7 +15,7 @@ internal class CommonTileProcessorImpl<State>(
     private val episodeInteractor: EpisodeTileInteractor,
     private val recommendationInteractor: RecommendationTileInteractor,
     private val stubInteractor: StubTileInteractor,
-    private val tileLens: Lens<State, CommonTileState?>,
+    private val tileLens: Lens<State, CommonTile?>,
     private val dispatcherIo: CoroutineDispatcher,
 ) : CommonTileProcessor<State> {
 

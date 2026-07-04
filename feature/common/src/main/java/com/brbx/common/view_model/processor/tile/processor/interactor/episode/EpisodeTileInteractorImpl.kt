@@ -1,7 +1,7 @@
 package com.brbx.common.view_model.processor.tile.processor.interactor.episode
 
 import com.brbx.common.model.alias.CommonStrings
-import com.brbx.common.view_model.processor.tile.model.CommonTileState
+import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.common.view_model.processor.tile.processor.interactor.stub.StubTileInteractor
 import com.brbx.domain.local_dbs.watching_anime.use_case.anime.use_case.GetLatestWatchingAnimeUseCase
@@ -19,16 +19,16 @@ internal class EpisodeTileInteractorImpl(
     private val stubInteractor: StubTileInteractor,
 ) : EpisodeTileInteractor {
 
-    override suspend fun getTile(): CommonTileState {
+    override suspend fun getTile(): CommonTile {
         val latest = latestWatchingUseCase()
         return latest?.let { anime ->
-            CommonTileState(
+            CommonTile(
                 type = TileType.Episode.LatestWatched,
                 title = anime.title.toBrbxText(),
                 description = CommonStrings.user_watched_tile_description
                     .toBrbxText(latest.lastEpisodeIndex),
                 icon = BoldSolar.ArrowsAction.UndoLeft.toBrbxIcon(),
-                precollection = CommonTileState.Precollection(
+                precollection = CommonTile.Precollection(
                     label = CommonStrings.user_watched_tile_precollection_title.toBrbxText(),
                     icon = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),
                 ),
