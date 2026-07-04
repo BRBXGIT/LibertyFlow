@@ -38,9 +38,8 @@ fun NavGraphBuilder.home(
             items = catalog.loadState.refresh,
             dispatchIntent = { intent -> viewModel.dispatchIntent(Intent.Catalog(action = intent)) }
         ),
-    ) { dispatchIntent, dispatchBrbxEffect ->
+    ) { dispatchIntent, _ ->
         ScreenScaffold(
-            dispatchBrbxEffect = dispatchBrbxEffect,
             dispatchIntent = dispatchIntent,
             searchState = state.search,
             isError = state.catalog.loading.isException,

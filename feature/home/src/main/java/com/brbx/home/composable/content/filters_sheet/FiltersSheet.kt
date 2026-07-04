@@ -51,59 +51,72 @@ internal fun FiltersSheet(
         modifier = modifier,
         shape = bShapes.micro4,
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 90.dp),
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(bDimens.micro4),
-            horizontalArrangement = Arrangement.spacedBy(bDimens.micro4),
-            contentPadding = PaddingValues(all = bDimens.micro8),
-        ) {
-            filterDivider(text = HomeStrings.filters_sheet_is_ongoing)
-            releaseFinished(
-                isOngoing = filters.filters.isOngoing,
-                dispatchIntent = dispatchIntent,
-            )
+        FiltersSheetContent(
+            filters = filters.filters,
+            dispatchIntent = dispatchIntent,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
 
-            filterDivider(text = HomeStrings.filters_sheet_sorting)
-            sortingBy(
-                selected = filters.filters.sorting,
-                dispatchIntent = dispatchIntent,
-            )
+@Composable
+private fun FiltersSheetContent(
+    filters: State.FiltersSheet.Filters,
+    dispatchIntent: (Intent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 90.dp),
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(bDimens.micro4),
+        horizontalArrangement = Arrangement.spacedBy(bDimens.micro4),
+        contentPadding = PaddingValues(all = bDimens.micro8),
+    ) {
+        filterDivider(text = HomeStrings.filters_sheet_is_ongoing)
+        releaseFinished(
+            isOngoing = filters.isOngoing,
+            dispatchIntent = dispatchIntent,
+        )
 
-            filterDivider(text = HomeStrings.filters_sheet_years)
-            yearFields(
-                years = filters.filters.years,
-                dispatchIntent = dispatchIntent,
-            )
+        filterDivider(text = HomeStrings.filters_sheet_sorting)
+        sortingBy(
+            selected = filters.sorting,
+            dispatchIntent = dispatchIntent,
+        )
 
-            filterDivider(text = HomeStrings.filters_sheet_seasons)
-            selectableFilterItems(
-                items = Season.entries.filterNot { it == Season.Unknown }.toSet(),
-                isSelected = { season -> season in filters.filters.seasons },
-                itemText = { season -> season.toStringRes() },
-                itemKey = { season -> season },
-                onItemClick = { season ->
-                    dispatchIntent(Intent.Filters.ToggleSeason(season))
-                },
-            )
+        filterDivider(text = HomeStrings.filters_sheet_years)
+        yearFields(
+            years = filters.years,
+            dispatchIntent = dispatchIntent,
+        )
 
-            filterDivider(text = HomeStrings.filters_sheet_genres)
-            if (filters.filters.genresState.loading.isLoading) {
-                centeredCircularIndicator()
+        filterDivider(text = HomeStrings.filters_sheet_seasons)
+        selectableFilterItems(
+            items = Season.entries.filterNot { it == Season.Unknown }.toSet(),
+            isSelected = { season -> season in filters.seasons },
+            itemText = { season -> season.toStringRes() },
+            itemKey = { season -> season },
+            onItemClick = { season ->
+                dispatchIntent(Intent.Filters.ToggleSeason(season))
+            },
+        )
+
+        filterDivider(text = HomeStrings.filters_sheet_genres)
+        if (filters.genresState.loading.isLoading) {
+            centeredCircularIndicator()
+        } else {
+            if (filters.genresState.loading.isException) {
+                centeredRetryButton(dispatchIntent = dispatchIntent)
             } else {
-                if (filters.filters.genresState.loading.isException) {
-                    centeredRetryButton(dispatchIntent = dispatchIntent)
-                } else {
-                    selectableFilterItems(
-                        items = filters.filters.genresState.genres,
-                        isSelected = { genre -> genre in filters.filters.genresState.selectedGenres },
-                        itemText = { genre -> genre.name.toBrbxText() },
-                        itemKey = { genre -> genre.id },
-                        onItemClick = { genre ->
-                            dispatchIntent(Intent.Filters.ToggleGenre(genre))
-                        },
-                    )
-                }
+                selectableFilterItems(
+                    items = filters.genresState.genres,
+                    isSelected = { genre -> genre in filters.genresState.selectedGenres },
+                    itemText = { genre -> genre.name.toBrbxText() },
+                    itemKey = { genre -> genre.id },
+                    onItemClick = { genre ->
+                        dispatchIntent(Intent.Filters.ToggleGenre(genre))
+                    },
+                )
             }
         }
     }
@@ -122,27 +135,22 @@ private fun Season.toStringRes(): BrbxText =
 @Composable
 private fun FiltersSheetPreview() {
     BrbxTheme(colorScheme = lightColorScheme()) {
-        if (true) {
-            FiltersSheet(
-                filters = State.FiltersSheet(
-                    isVisible = true,
-                    filters = State.FiltersSheet.Filters(
-                        isOngoing = true,
-                        sorting = Sorting.RatingDesc,
-                        years = Years(from = 2020, to = 2024),
-                        seasons = setOf(Season.Winter, Season.Spring),
-                        genresState = State.FiltersSheet.Filters.Genres(
-                            genres = setOf(
-                                Genre(id = 1, name = "Action"),
-                                Genre(id = 2, name = "Comedy"),
-                                Genre(id = 3, name = "Drama"),
-                            ),
-                            selectedGenres = setOf(Genre(id = 1, name = "Action")),
-                        ),
+        FiltersSheetContent(
+            filters = State.FiltersSheet.Filters(
+                isOngoing = true,
+                sorting = Sorting.RatingDesc,
+                years = Years(from = 2020, to = 2024),
+                seasons = setOf(Season.Winter, Season.Spring),
+                genresState = State.FiltersSheet.Filters.Genres(
+                    genres = setOf(
+                        Genre(id = 1, name = "Action"),
+                        Genre(id = 2, name = "Comedy"),
+                        Genre(id = 3, name = "Drama"),
                     ),
+                    selectedGenres = setOf(Genre(id = 1, name = "Action")),
                 ),
-                dispatchIntent = {},
-            )
-        }
+            ),
+            dispatchIntent = {},
+        )
     }
 }
