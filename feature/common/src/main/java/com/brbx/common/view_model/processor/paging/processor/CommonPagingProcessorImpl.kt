@@ -7,7 +7,7 @@ import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.common.view_model.processor.paging.model.CommonPagingState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
-import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar
+import com.brbx.common.view_model.view_model.postExceptionSnackbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -66,7 +66,7 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
                                 }
                                 val exception = intent.exception
                                 if (exception != null) {
-                                    postNetworkExceptionSnackbar(
+                                    postExceptionSnackbar(
                                         exception = exception.toBrbxText(),
                                     ) { process(intent = CommonPagingIntent.SetUpPaging) }
                                 }
@@ -86,13 +86,13 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
                                 }
                                 val exception = intent.exception
                                 if (exception != null) {
-                                    val onButtonClick: (() -> Unit)? = if (intent.withRetry) {
-                                        { process(intent = CommonPagingIntent.SetUpPaging) }
-                                    } else null
-                                    postNetworkExceptionSnackbar(
-                                        exception = exception.toBrbxText(),
-                                        onButtonClick = onButtonClick,
-                                    )
+                                    if (intent.withRetry) {
+                                        postExceptionSnackbar(
+                                            exception = exception.toBrbxText(),
+                                        ) { process(intent = CommonPagingIntent.SetUpPaging) }
+                                    } else {
+                                        postExceptionSnackbar(exception = exception.toBrbxText())
+                                    }
                                 }
                             }
                             is CommonPagingIntent.Loading.RefreshIntent.SetRefreshing -> {

@@ -9,30 +9,36 @@ import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.components.complex.snackbar.config.BrbxSnackbarDuration
 import com.brbx.ui_compose.components.complex.snackbar.config.DefaultBrbxSnackbarConfig
 
-fun LibertyFlowMviScope<*>.postNetworkExceptionSnackbar(
+inline fun LibertyFlowMviScope<*>.postExceptionSnackbar(
     exception: BrbxText,
-    onButtonClick: (() -> Unit)? = null,
+    dismissable: Boolean = false,
+    crossinline onButtonClick: () -> Unit,
 ) {
     postCommonEffect(
-        if (onButtonClick != null) {
-            BrbxEffect.ShowSnackbar(
-                config = DefaultBrbxSnackbarConfig(
-                    text = exception,
-                    duration = BrbxSnackbarDuration.Infinite,
-                    isDismissable = false,
-                    buttonText = CommonStrings.retry.toBrbxText(),
-                    onButtonClick = { onButtonClick() },
-                )
+        BrbxEffect.ShowSnackbar(
+            config = DefaultBrbxSnackbarConfig(
+                text = exception,
+                duration = BrbxSnackbarDuration.Infinite,
+                isDismissable = dismissable,
+                buttonText = CommonStrings.retry.toBrbxText(),
+                onButtonClick = { onButtonClick() },
             )
-        } else {
-            BrbxEffect.ShowSnackbar(
-                config = DefaultBrbxSnackbarConfig(
-                    text = exception,
-                    duration = BrbxSnackbarDuration.Long,
-                    isDismissable = true,
-                )
+        )
+    )
+}
+
+fun LibertyFlowMviScope<*>.postExceptionSnackbar(
+    exception: BrbxText,
+    dismissable: Boolean = true,
+) {
+    postCommonEffect(
+        BrbxEffect.ShowSnackbar(
+            config = DefaultBrbxSnackbarConfig(
+                text = exception,
+                duration = BrbxSnackbarDuration.Infinite,
+                isDismissable = dismissable,
             )
-        }
+        )
     )
 }
 

@@ -3,7 +3,7 @@ package com.brbx.home.view_model.processor.random_anime
 import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.makeNetworkCall
-import com.brbx.common.view_model.view_model.postNetworkExceptionSnackbar
+import com.brbx.common.view_model.view_model.postExceptionSnackbar
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.domain.network.releases.random.use_case.GetRandomAnimeReleaseUseCase
@@ -28,7 +28,7 @@ internal class RandomAnimeProcessorImpl(
                     ).onSuccess {
                         // TODO Make navigation to details screen
                     } onException { exception ->
-                        postNetworkExceptionSnackbar(exception.toBrbxText()) {
+                        postExceptionSnackbar(exception.toBrbxText()) {
                             process(Intent.GetRandomAnime)
                         }
                     }
