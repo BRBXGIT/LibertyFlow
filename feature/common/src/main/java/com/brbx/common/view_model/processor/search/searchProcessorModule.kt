@@ -16,7 +16,7 @@ internal val searchProcessorModule = module {
 }
 
 inline fun <reified State> Scope.getCommonSearchProcessor(
-    lens: Lens<State, CommonSearchState>
+    lens: Lens<State, CommonSearchState>,
 ): CommonSearchProcessor<State> {
     @Suppress("UNCHECKED_CAST")
     return get<CommonSearchProcessor<*>> { parametersOf(lens) } as CommonSearchProcessor<State>

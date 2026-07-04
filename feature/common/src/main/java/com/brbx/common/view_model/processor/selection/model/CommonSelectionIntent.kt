@@ -4,7 +4,7 @@ import com.brbx.domain.network.model.common.DomainCollection
 
 sealed interface CommonSelectionIntent {
 
-    sealed interface Selection {
+    sealed interface Selection : CommonSelectionIntent {
         @JvmInline value class ToggleItemSelected(val id: Int) : Selection
 
         data object DropSelection : Selection
@@ -17,7 +17,7 @@ sealed interface CommonSelectionIntent {
             data class Interact(
                 val collection: DomainCollection,
                 val action: SelectionAction,
-            )
+            ) : Collection
 
             data object ToggleSheet : Collection
         }
