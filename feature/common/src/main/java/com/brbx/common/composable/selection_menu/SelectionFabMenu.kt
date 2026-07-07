@@ -15,9 +15,6 @@ import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.components.complex.fab.toggle_disappearing_fab.BrbxToggleDisappearingFab
 import com.brbx.ui_compose.components.simple.icon.BrbxIcon
 import com.brbx.ui_compose.theme.mTypography
-import dev.chiksmedina.solar.OutlineSolar
-import dev.chiksmedina.solar.outline.EssentionalUi
-import dev.chiksmedina.solar.outline.essentionalui.CloseCircle
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

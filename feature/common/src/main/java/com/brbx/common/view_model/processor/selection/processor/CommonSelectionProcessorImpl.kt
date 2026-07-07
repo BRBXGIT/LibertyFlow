@@ -37,7 +37,6 @@ internal class CommonSelectionProcessorImpl<State>(
         }
     }
 
-    // TODO Fix long item selection
     private fun LibertyFlowMviScope<State>.processSelection(intent: CommonSelectionIntent.Selection) {
         when (intent) {
             CommonSelectionIntent.Selection.DropSelection -> updateState {
