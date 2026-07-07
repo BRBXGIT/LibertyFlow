@@ -9,13 +9,13 @@ import com.brbx.common.view_model.processor.selection.getCommonSelectionProcesso
 import com.brbx.common.view_model.processor.tile.getCommonTileProcessor
 import com.brbx.domain.network.catalog.releases.model.CatalogReleasesParameters
 import com.brbx.domain.network.catalog.releases.use_case.GetCatalogAnimeReleasesUseCase
-import com.brbx.home.view_model.model.State
+import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.model.catalog
 import com.brbx.home.view_model.model.search
 import com.brbx.home.view_model.model.selection
 import com.brbx.home.view_model.model.tile
 import com.brbx.home.view_model.processor.processorsModule
-import com.brbx.home.view_model.view_model.ViewModel
+import com.brbx.home.view_model.view_model.HomeViewModel
 import kotlinx.coroutines.flow.map
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -23,14 +23,14 @@ import org.koin.dsl.module
 internal val viewModelModule = module {
     viewModel {
         val catalogUseCase = get<GetCatalogAnimeReleasesUseCase>()
-        ViewModel(
+        HomeViewModel(
             randomAnimeProcessor = get(),
             filtersProcessor = get(),
-            searchProcessor = getCommonSearchProcessor(lens = State.search),
-            tileProcessor = getCommonTileProcessor(lens = State.tile),
-            selectionProcessor = getCommonSelectionProcessor(lens = State.selection),
+            searchProcessor = getCommonSearchProcessor(lens = HomeState.search),
+            tileProcessor = getCommonTileProcessor(lens = HomeState.tile),
+            selectionProcessor = getCommonSelectionProcessor(lens = HomeState.selection),
             catalogProcessor = getCommonPagingProcessor(
-                lens = State.catalog,
+                lens = HomeState.catalog,
                 paramsSelector = { state ->
                     val filters = state.filtersSheet.filters
                     CatalogReleasesParameters(

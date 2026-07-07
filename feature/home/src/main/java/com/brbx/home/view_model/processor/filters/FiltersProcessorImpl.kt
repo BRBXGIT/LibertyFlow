@@ -10,8 +10,8 @@ import com.brbx.common.view_model.view_model.makeNetworkCall
 import com.brbx.domain.network.genres.get.use_case.GetAnimeGenresUseCase
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
-import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.State
+import com.brbx.home.view_model.model.HomeIntent
+import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.model.filters
 import com.brbx.home.view_model.model.filtersSheet
 import com.brbx.home.view_model.model.genres
@@ -31,47 +31,47 @@ internal class FiltersProcessorImpl(
     private val dispatcherIo: CoroutineDispatcher,
 ) : FiltersProcessor {
 
-    override fun LibertyFlowMviScope<State>.process(intent: Intent.Filters) {
+    override fun LibertyFlowMviScope<HomeState>.process(intent: HomeIntent.Filters) {
         when (intent) {
-            Intent.Filters.ToggleSheet -> updateState {
-                copy { State.filtersSheet.isVisible transform { !it } }
+            HomeIntent.Filters.ToggleSheet -> updateState {
+                copy { HomeState.filtersSheet.isVisible transform { !it } }
             }
-            Intent.Filters.ToggleOngoing -> updateState {
-                copy { State.filtersSheet.filters.isOngoing transform { !it } }
+            HomeIntent.Filters.ToggleOngoing -> updateState {
+                copy { HomeState.filtersSheet.filters.isOngoing transform { !it } }
             }
-            is Intent.Filters.UpdateYears -> updateState {
-                copy { State.filtersSheet.filters.years set Years(intent.from, intent.to) }
+            is HomeIntent.Filters.UpdateYears -> updateState {
+                copy { HomeState.filtersSheet.filters.years set Years(intent.from, intent.to) }
             }
-            is Intent.Filters.UpdateSorting -> updateState {
-                copy { State.filtersSheet.filters.sorting set intent.sorting }
+            is HomeIntent.Filters.UpdateSorting -> updateState {
+                copy { HomeState.filtersSheet.filters.sorting set intent.sorting }
             }
-            is Intent.Filters.ToggleGenre -> updateState {
+            is HomeIntent.Filters.ToggleGenre -> updateState {
                 copy {
-                    State.filtersSheet.filters.genresState.selectedGenres transform {
+                    HomeState.filtersSheet.filters.genresState.selectedGenres transform {
                         it.toggle(element = intent.genre)
                     }
                 }
             }
-            is Intent.Filters.ToggleSeason -> updateState {
+            is HomeIntent.Filters.ToggleSeason -> updateState {
                 copy {
-                    State.filtersSheet.filters.seasons transform {
+                    HomeState.filtersSheet.filters.seasons transform {
                         it.toggle(element = intent.season)
                     }
                 }
             }
-            is Intent.Filters.LoadGenres -> {
+            is HomeIntent.Filters.LoadGenres -> {
                 coroutineScope.launch(context = dispatcherIo) {
                     makeNetworkCall(
-                        loadingLens = State.filtersSheet.filters.genresState.loading,
+                        loadingLens = HomeState.filtersSheet.filters.genresState.loading,
                         call = { genresUseCase() },
                     ).onSuccess { genres ->
                         val mapped = genres.map { genre -> genre.toUi() }.toSet()
                         updateState {
-                            copy { State.filtersSheet.filters.genresState.genres set mapped }
+                            copy { HomeState.filtersSheet.filters.genresState.genres set mapped }
                         }
                     } onException {
                         updateState {
-                            copy { State.filtersSheet.filters.genresState.loading.isException set true }
+                            copy { HomeState.filtersSheet.filters.genresState.loading.isException set true }
                         }
                     }
                 }

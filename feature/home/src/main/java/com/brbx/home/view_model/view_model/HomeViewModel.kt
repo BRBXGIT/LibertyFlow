@@ -9,46 +9,51 @@ import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
 import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.common.view_model.processor.tile.processor.processor.CommonTileProcessor
 import com.brbx.common.view_model.view_model.LibertyFlowViewModel
-import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.State
+import com.brbx.home.view_model.model.HomeIntent
+import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.processor.filters.FiltersProcessor
 import com.brbx.home.view_model.processor.random_anime.RandomAnimeProcessor
 
+/**
+ * ViewModel for the Home screen.
+ *
+ * Manages search, catalog paging, tiles, selection, random anime, and filters.
+ */
 @Stable
-internal class ViewModel(
-    private val searchProcessor: CommonSearchProcessor<State>,
-    private val catalogProcessor: CommonPagingProcessor<State>,
-    private val tileProcessor: CommonTileProcessor<State>,
-    private val selectionProcessor: CommonSelectionProcessor<State>,
+internal class HomeViewModel(
+    private val searchProcessor: CommonSearchProcessor<HomeState>,
+    private val catalogProcessor: CommonPagingProcessor<HomeState>,
+    private val tileProcessor: CommonTileProcessor<HomeState>,
+    private val selectionProcessor: CommonSelectionProcessor<HomeState>,
     private val randomAnimeProcessor: RandomAnimeProcessor,
     private val filtersProcessor: FiltersProcessor,
-) : LibertyFlowViewModel<State, Intent>(initialState = State()) {
+) : LibertyFlowViewModel<HomeState, HomeIntent>(initialState = HomeState()) {
 
     init {
         dispatchIntent(
-            Intent.Tile(action = CommonTileIntent.GetTile(type = TileType.Episode.LatestWatched))
+            HomeIntent.Tile(action = CommonTileIntent.GetTile(type = TileType.Episode.LatestWatched))
         )
-        dispatchIntent(Intent.Catalog(action = CommonPagingIntent.SetUpPaging))
+        dispatchIntent(HomeIntent.Catalog(action = CommonPagingIntent.SetUpPaging))
     }
 
-    override fun dispatchIntent(intent: Intent) {
+    override fun dispatchIntent(intent: HomeIntent) {
         when (intent) {
-            is Intent.Search -> with(receiver = searchProcessor) {
+            is HomeIntent.Search -> with(receiver = searchProcessor) {
                 mviScope.process(intent.action)
             }
-            is Intent.Catalog -> with(receiver = catalogProcessor) {
+            is HomeIntent.Catalog -> with(receiver = catalogProcessor) {
                 mviScope.process(intent.action)
             }
-            is Intent.Tile -> with(receiver = tileProcessor) {
+            is HomeIntent.Tile -> with(receiver = tileProcessor) {
                 mviScope.process(intent.action)
             }
-            is Intent.Selection -> with(receiver = selectionProcessor) {
+            is HomeIntent.Selection -> with(receiver = selectionProcessor) {
                 mviScope.process(intent.action)
             }
-            is Intent.Filters -> with(receiver = filtersProcessor) {
+            is HomeIntent.Filters -> with(receiver = filtersProcessor) {
                 mviScope.process(intent)
             }
-            is Intent.GetRandomAnime -> with(receiver = randomAnimeProcessor) {
+            is HomeIntent.GetRandomAnime -> with(receiver = randomAnimeProcessor) {
                 mviScope.process(intent)
             }
         }

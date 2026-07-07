@@ -1,9 +1,12 @@
 package com.brbx.home.composable.shimmer
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,8 +19,13 @@ import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.BrbxTheme
 import com.brbx.ui_compose.theme.mColors
 
+/**
+ * Shimmer placeholder for the Home screen content.
+ *
+ * @param modifier Modifier to be applied to the container.
+ */
 @Composable
-internal fun ContentShimmer(
+internal fun HomeContentShimmer(
     modifier: Modifier = Modifier
 ) {
     AnimeItemsLazyVerticalGrid(
@@ -25,7 +33,7 @@ internal fun ContentShimmer(
         modifier = modifier,
     ) {
         item(
-            key = ShimmerKeys.RandomAnimeButton,
+            key = HomeShimmerKeys.RandomAnimeButton,
             span = { GridItemSpan(currentLineSpan = maxLineSpan) },
         ) {
             RainbowButtonShimmer(
@@ -36,7 +44,7 @@ internal fun ContentShimmer(
         }
 
         item(
-            key = ShimmerKeys.Tile,
+            key = HomeShimmerKeys.Tile,
             span = { GridItemSpan(currentLineSpan = maxLineSpan) },
         ) {
             TileShimmer(
@@ -50,14 +58,16 @@ internal fun ContentShimmer(
     }
 }
 
-@Preview
+@Preview(name = "Light Theme", showBackground = true)
+@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun ContentShimmerPreview() {
-    BrbxTheme(lightColorScheme()) {
+private fun HomeContentShimmerPreview() {
+    val scheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    BrbxTheme(colorScheme = scheme) {
         Box(
             modifier = Modifier.background(mColors.background)
         ) {
-            ContentShimmer()
+            HomeContentShimmer()
         }
     }
 }

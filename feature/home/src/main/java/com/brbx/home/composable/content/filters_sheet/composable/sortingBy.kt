@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.brbx.domain.network.model.common.Sorting
 import com.brbx.home.common.HomeStrings
-import com.brbx.home.view_model.model.Intent
+import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.bDimens
 import com.brbx.ui_compose.theme.mTypography
@@ -22,7 +22,7 @@ private val sortings = listOf(Sorting.RatingDesc, Sorting.CreatedAtDesc)
 
 internal fun LazyGridScope.sortingBy(
     selected: Sorting,
-    dispatchIntent: (Intent) -> Unit
+    dispatchIntent: (HomeIntent) -> Unit
 ) {
     items(
         items = sortings,
@@ -43,7 +43,7 @@ private fun SortingItem(
     modifier: Modifier = Modifier,
     sorting: Sorting,
     selected: Sorting,
-    dispatchIntent: (Intent) -> Unit,
+    dispatchIntent: (HomeIntent) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -52,7 +52,7 @@ private fun SortingItem(
     ) {
         RadioButton(
             selected = sorting == selected,
-            onClick = { dispatchIntent(Intent.Filters.UpdateSorting(sorting)) }
+            onClick = { dispatchIntent(HomeIntent.Filters.UpdateSorting(sorting)) }
         )
 
         Text(

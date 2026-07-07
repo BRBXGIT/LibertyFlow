@@ -1,11 +1,14 @@
 package com.brbx.home.composable.content
 
+import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,7 +22,6 @@ import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Name
 import com.brbx.common.model.common.model.Poster
-import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.view_model.processor.tile.model.TileType
@@ -28,7 +30,7 @@ import com.brbx.design_system.component.tile.Tile
 import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
 import com.brbx.design_system.container.PullToRefreshContainer
 import com.brbx.home.common.HomeStrings
-import com.brbx.home.view_model.model.Intent
+import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
@@ -38,8 +40,22 @@ import dev.chiksmedina.solar.outline.FacesEmotionsStickers
 import dev.chiksmedina.solar.outline.facesemotionsstickers.EmojiFunnySquare
 import kotlinx.coroutines.flow.flowOf
 
+/**
+ * Main content of the Home screen.
+ *
+ * @param animeGridState State of the anime grid.
+ * @param tile Current tile data (e.g. latest watched episode).
+ * @param items Lazy paging items for the anime catalog.
+ * @param isRefreshing Whether the content is currently refreshing.
+ * @param isSearching Whether the user is currently searching.
+ * @param selectedIds Set of selected anime IDs.
+ * @param isInSelectionMode Whether the screen is in selection mode.
+ * @param isRandomAnimeLoading Whether a random anime is being fetched.
+ * @param dispatchIntent Function to dispatch intents.
+ * @param modifier Modifier to be applied to the container.
+ */
 @Composable
-internal fun Content(
+internal fun HomeContent(
     animeGridState: LazyGridState,
     tile: CommonTile?,
     items: LazyPagingItems<AnimeItem>,
@@ -48,7 +64,7 @@ internal fun Content(
     selectedIds: Set<Int>,
     isInSelectionMode: Boolean,
     isRandomAnimeLoading: Boolean,
-    dispatchIntent: (Intent) -> Unit,
+    dispatchIntent: (HomeIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     PullToRefreshContainer(
@@ -65,7 +81,7 @@ internal fun Content(
             if (!isSearching) {
                 randomAnimeButton(
                     isLoading = isRandomAnimeLoading,
-                    onClick = { dispatchIntent(Intent.GetRandomAnime) }
+                    onClick = { dispatchIntent(HomeIntent.GetRandomAnime) }
                 )
 
                 tileItem(tile = tile)
@@ -92,7 +108,7 @@ private fun LazyGridScope.randomAnimeButton(
     onClick: () -> Unit,
 ) {
     item(
-        key = ContentKeys.RandomAnimeButtonKey,
+        key = HomeContentKeys.RandomAnimeButtonKey,
         span = { GridItemSpan(currentLineSpan = maxLineSpan) },
     ) {
         RainbowButton(
@@ -110,7 +126,7 @@ private fun LazyGridScope.randomAnimeButton(
 private fun LazyGridScope.tileItem(tile: CommonTile?) {
     if (tile == null) return
     item(
-        key = ContentKeys.Tile,
+        key = HomeContentKeys.Tile,
         span = { GridItemSpan(currentLineSpan = maxLineSpan) },
     ) {
         val onTileClick: () -> Unit = remember(tile) { {} }
@@ -129,12 +145,13 @@ private fun LazyGridScope.tileItem(tile: CommonTile?) {
     }
 }
 
-private fun getSelectionIntent(id: Int): Intent.Selection =
-    Intent.Selection(action = CommonSelectionIntent.Selection.ToggleItemSelected(id))
+private fun getSelectionIntent(id: Int): HomeIntent.Selection =
+    HomeIntent.Selection(action = CommonSelectionIntent.Selection.ToggleItemSelected(id))
 
-@Preview(showBackground = true)
+@Preview(name = "Light Theme", showBackground = true)
+@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun ContentPreview() {
+private fun HomeContentPreview() {
     val mockItems = flowOf(
         PagingData.from(
             listOf(
@@ -153,9 +170,10 @@ private fun ContentPreview() {
             )
         )
     ).collectAsLazyPagingItems()
+    val scheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
 
-    BrbxTheme(colorScheme = lightColorScheme()) {
-        Content(
+    BrbxTheme(colorScheme = scheme) {
+        HomeContent(
             animeGridState = rememberLazyGridState(),
             tile = CommonTile(
                 type = TileType.Episode.LatestWatched,

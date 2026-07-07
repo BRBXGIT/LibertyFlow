@@ -15,7 +15,7 @@ import com.brbx.domain.network.model.common.Sorting
 
 @Immutable
 @optics
-internal data class State(
+internal data class HomeState(
     val catalog: CommonPagingState<AnimeItem> = CommonPagingState(),
     val randomAnime: CommonLoadingState = CommonLoadingState(),
     val search: CommonSearchState = CommonSearchState(),

@@ -8,19 +8,19 @@ import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 
-internal sealed interface Intent {
+internal sealed interface HomeIntent {
 
-    data object GetRandomAnime : Intent
+    data object GetRandomAnime : HomeIntent
 
-    @JvmInline value class Tile(val action: CommonTileIntent) : Intent
+    @JvmInline value class Tile(val action: CommonTileIntent) : HomeIntent
 
-    @JvmInline value class Catalog(val action: CommonPagingIntent) : Intent
+    @JvmInline value class Catalog(val action: CommonPagingIntent) : HomeIntent
 
-    @JvmInline value class Search(val action: CommonSearchIntent) : Intent
+    @JvmInline value class Search(val action: CommonSearchIntent) : HomeIntent
 
-    @JvmInline value class Selection(val action: CommonSelectionIntent) : Intent
+    @JvmInline value class Selection(val action: CommonSelectionIntent) : HomeIntent
 
-    sealed interface Filters : Intent {
+    sealed interface Filters : HomeIntent {
         @JvmInline value class UpdateSorting(val sorting: Sorting) : Filters
         data class UpdateYears(val from: Int, val to: Int) : Filters
 

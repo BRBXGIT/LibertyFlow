@@ -10,22 +10,22 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.brbx.common.composable.screen.LibertyFlowScreen
 import com.brbx.common.composable.screen.PagingHandler
-import com.brbx.home.composable.ScreenScaffold
-import com.brbx.home.composable.content.filters_sheet.FiltersSheet
-import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.view_model.ViewModel
+import com.brbx.home.composable.HomeScreenScaffold
+import com.brbx.home.composable.content.filters_sheet.HomeFiltersSheet
+import com.brbx.home.view_model.model.HomeIntent
+import com.brbx.home.view_model.view_model.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.home(
     navController: NavController,
 ) = composable<HomeRoute> {
-    val viewModel = koinViewModel<ViewModel>()
+    val viewModel = koinViewModel<HomeViewModel>()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val catalog = state.catalog.pagingData.collectAsLazyPagingItems()
 
     if (state.filtersSheet.isVisible) {
-        FiltersSheet(
+        HomeFiltersSheet(
             filters = state.filtersSheet,
             dispatchIntent = viewModel::dispatchIntent,
         )
@@ -36,10 +36,10 @@ fun NavGraphBuilder.home(
         viewModel = viewModel,
         pagingHandler = PagingHandler(
             items = catalog.loadState.refresh,
-            dispatchIntent = { intent -> viewModel.dispatchIntent(Intent.Catalog(action = intent)) }
+            dispatchIntent = { intent -> viewModel.dispatchIntent(HomeIntent.Catalog(action = intent)) }
         ),
     ) { dispatchIntent, _ ->
-        ScreenScaffold(
+        HomeScreenScaffold(
             dispatchIntent = dispatchIntent,
             selectedIds = state.selection.ids,
             isInSelectionMode = state.selection.isInSelectionMode,

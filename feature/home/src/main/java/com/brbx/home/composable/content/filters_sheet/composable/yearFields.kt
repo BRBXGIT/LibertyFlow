@@ -12,12 +12,12 @@ import androidx.compose.ui.res.stringResource
 import com.brbx.common.model.common.model.Years
 import com.brbx.home.common.HomeStrings
 import com.brbx.home.composable.content.filters_sheet.FiltersSheetKeys
-import com.brbx.home.view_model.model.Intent
+import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 
 internal fun LazyGridScope.yearFields(
     years: Years,
-    dispatchIntent: (Intent) -> Unit,
+    dispatchIntent: (HomeIntent) -> Unit,
 ) {
     item(
         key = FiltersSheetKeys.FromYearKey,
@@ -26,7 +26,7 @@ internal fun LazyGridScope.yearFields(
         YearField(
             labelRes = HomeStrings.filters_sheet_from_year,
             currentValue = years.from,
-            onValueChanged = { dispatchIntent(Intent.Filters.UpdateYears(from = it, to = years.to)) },
+            onValueChanged = { dispatchIntent(HomeIntent.Filters.UpdateYears(from = it, to = years.to)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .brbxAnimateItem(scope = this),
@@ -40,7 +40,7 @@ internal fun LazyGridScope.yearFields(
         YearField(
             labelRes = HomeStrings.filters_sheet_to_year,
             currentValue = years.to,
-            onValueChanged = { dispatchIntent(Intent.Filters.UpdateYears(from = years.from, to = it)) },
+            onValueChanged = { dispatchIntent(HomeIntent.Filters.UpdateYears(from = years.from, to = it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .brbxAnimateItem(scope = this),

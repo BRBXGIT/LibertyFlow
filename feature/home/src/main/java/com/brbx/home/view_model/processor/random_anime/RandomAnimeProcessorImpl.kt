@@ -7,29 +7,32 @@ import com.brbx.common.view_model.view_model.postExceptionSnackbar
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.domain.network.releases.random.use_case.GetRandomAnimeReleaseUseCase
-import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.State
+import com.brbx.home.view_model.model.HomeIntent
+import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.model.randomAnime
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class RandomAnimeProcessorImpl(
     private val randomAnimeUseCase: GetRandomAnimeReleaseUseCase,
     private val dispatcherIo: CoroutineDispatcher,
 ) : RandomAnimeProcessor {
 
-    override fun LibertyFlowMviScope<State>.process(intent: Intent.GetRandomAnime) {
-        when (intent) {
-            is Intent.GetRandomAnime -> {
+    override fun LibertyFlowMviScope<HomeState>.process(homeIntent: HomeIntent.GetRandomAnime) {
+        when (homeIntent) {
+            is HomeIntent.GetRandomAnime -> {
                 coroutineScope.launch(context = dispatcherIo) {
+                    delay(duration = 2000.milliseconds) // Used for animation but Antipattern
                     makeNetworkCall(
-                        loadingLens = State.randomAnime,
+                        loadingLens = HomeState.randomAnime,
                         call = { randomAnimeUseCase() },
                     ).onSuccess {
                         // TODO Make navigation to details screen
                     } onException { exception ->
                         postExceptionSnackbar(exception.toBrbxText()) {
-                            process(Intent.GetRandomAnime)
+                            process(HomeIntent.GetRandomAnime)
                         }
                     }
                 }

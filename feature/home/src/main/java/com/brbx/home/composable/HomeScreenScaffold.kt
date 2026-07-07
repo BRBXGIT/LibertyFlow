@@ -1,11 +1,14 @@
 package com.brbx.home.composable
 
+import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,16 +24,16 @@ import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
+import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.common.view_model.processor.tile.model.CommonTile
 import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
-import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.top_bar.SearchableTopBar
 import com.brbx.design_system.container.ShimmerScaffold
 import com.brbx.home.common.HomeStrings
-import com.brbx.home.composable.content.Content
-import com.brbx.home.composable.shimmer.ContentShimmer
-import com.brbx.home.view_model.model.Intent
+import com.brbx.home.composable.content.HomeContent
+import com.brbx.home.composable.shimmer.HomeContentShimmer
+import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.ui_compose.common.toBrbxIcon
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.containers.complex.scaffold.BrbxShimmerScaffoldAppearances
@@ -44,10 +47,24 @@ import dev.chiksmedina.solar.outline.DesignTools
 import dev.chiksmedina.solar.outline.designtools.Filters
 import kotlinx.coroutines.flow.flowOf
 
+/**
+ * Scaffold for the Home screen.
+ *
+ * @param dispatchIntent Function to dispatch intents.
+ * @param selectedIds Set of selected anime IDs.
+ * @param isInSelectionMode Whether the screen is in selection mode.
+ * @param searchState State of the search.
+ * @param loadingState State of the loading process.
+ * @param isRandomAnimeLoading Whether a random anime is being fetched.
+ * @param tile Current tile data.
+ * @param items Lazy paging items for the anime catalog.
+ * @param isRefreshing Whether the content is currently refreshing.
+ * @param modifier Modifier to be applied to the scaffold.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ScreenScaffold(
-    dispatchIntent: (Intent) -> Unit,
+internal fun HomeScreenScaffold(
+    dispatchIntent: (HomeIntent) -> Unit,
     selectedIds: Set<Int>,
     isInSelectionMode: Boolean,
     searchState: CommonSearchState,
@@ -72,11 +89,11 @@ internal fun ScreenScaffold(
         isError = loadingState.isException,
         onShimmerEnd = { withError ->
             if (!withError) {
-                dispatchIntent(Intent.Tile(action = CommonTileIntent.TogglePrecollectionVisibility))
+                dispatchIntent(HomeIntent.Tile(action = CommonTileIntent.TogglePrecollectionVisibility))
             }
         },
         floatingActionButton = {
-            SelectionMenu(
+            HomeSelectionMenu(
                 scrollDirection = animeGridState.brbxScrollDirection(),
                 loadingState = loadingState,
                 isInSelectionMode = isInSelectionMode,
@@ -84,7 +101,7 @@ internal fun ScreenScaffold(
             )
         },
         topBar = {
-            TopBar(
+            HomeTopBar(
                 searchState = searchState,
                 loadingState = loadingState,
                 scrollBehavior = scrollBehavior,
@@ -92,14 +109,14 @@ internal fun ScreenScaffold(
             )
         },
         shimmerContent = { paddingValues ->
-            ContentShimmer(
+            HomeContentShimmer(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
             )
         },
         content = { paddingValues ->
-            Content(
+            HomeContent(
                 isInSelectionMode = isInSelectionMode,
                 selectedIds = selectedIds,
                 animeGridState = animeGridState,
@@ -119,16 +136,16 @@ internal fun ScreenScaffold(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(
+private fun HomeTopBar(
     searchState: CommonSearchState,
     loadingState: CommonLoadingState,
     scrollBehavior: TopAppBarScrollBehavior,
-    dispatchIntent: (Intent) -> Unit,
+    dispatchIntent: (HomeIntent) -> Unit,
 ) {
     SearchableTopBar(
-        onSearchClick = { dispatchIntent(Intent.Search(action = CommonSearchIntent.ToggleSearching)) },
-        onSystemBackClick = { dispatchIntent(Intent.Search(action = CommonSearchIntent.ToggleSearching)) },
-        onSearchChange = { dispatchIntent(Intent.Search(action = CommonSearchIntent.UpdateSearch(it))) },
+        onSearchClick = { dispatchIntent(HomeIntent.Search(action = CommonSearchIntent.ToggleSearching)) },
+        onSystemBackClick = { dispatchIntent(HomeIntent.Search(action = CommonSearchIntent.ToggleSearching)) },
+        onSearchChange = { dispatchIntent(HomeIntent.Search(action = CommonSearchIntent.UpdateSearch(it))) },
         isSearching = searchState.isSearching,
         searchIconEnabled = !loadingState.isException && !loadingState.isLoading,
         title = HomeStrings.top_bar_title.toBrbxText(),
@@ -138,11 +155,11 @@ private fun TopBar(
 }
 
 @Composable
-private fun SelectionMenu(
+private fun HomeSelectionMenu(
     scrollDirection: BrbxScrollDirection,
     loadingState: CommonLoadingState,
     isInSelectionMode: Boolean,
-    dispatchIntent: (Intent) -> Unit,
+    dispatchIntent: (HomeIntent) -> Unit,
 ) {
     val isFabVisible = remember(
         key1 = loadingState,
@@ -159,24 +176,27 @@ private fun SelectionMenu(
         onSelectionModeChange = { selecting ->
             if (!selecting) {
                 dispatchIntent(
-                    Intent.Selection(action = CommonSelectionIntent.Selection.DropSelection)
+                    HomeIntent.Selection(action = CommonSelectionIntent.Selection.DropSelection)
                 )
             }
         },
         isFabVisible = isFabVisible,
         onCollectionsClick = {  },
         onFavoritesClick = {  },
-        onFabClick = { dispatchIntent(Intent.Filters.ToggleSheet) },
+        onFabClick = { dispatchIntent(HomeIntent.Filters.ToggleSheet) },
         fabIcon = OutlineSolar.DesignTools.Filters.toBrbxIcon(),
     )
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Light Theme", showBackground = true)
+@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun ScreenScaffoldPreview() {
+private fun HomeScreenScaffoldPreview() {
     val mockItems = flowOf(PagingData.from(emptyList<AnimeItem>())).collectAsLazyPagingItems()
-    BrbxTheme(colorScheme = lightColorScheme()) {
-        ScreenScaffold(
+    val scheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+
+    BrbxTheme(colorScheme = scheme) {
+        HomeScreenScaffold(
             dispatchIntent = {},
             searchState = CommonSearchState(),
             isRandomAnimeLoading = false,

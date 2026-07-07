@@ -1,5 +1,7 @@
 package com.brbx.home.composable.content.filters_sheet
 
+import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,33 +28,40 @@ import com.brbx.home.composable.content.filters_sheet.composable.releaseFinished
 import com.brbx.home.composable.content.filters_sheet.composable.selectableFilterItems
 import com.brbx.home.composable.content.filters_sheet.composable.sortingBy
 import com.brbx.home.composable.content.filters_sheet.composable.yearFields
-import com.brbx.home.view_model.model.Intent
-import com.brbx.home.view_model.model.State
+import com.brbx.home.view_model.model.HomeIntent
+import com.brbx.home.view_model.model.HomeState
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.theme.BrbxTheme
 import com.brbx.ui_compose.theme.bDimens
 import com.brbx.ui_compose.theme.bShapes
 
+/**
+ * Bottom sheet for filtering anime in the Home screen.
+ *
+ * @param filters Current filters state.
+ * @param dispatchIntent Function to dispatch intents.
+ * @param modifier Modifier for the sheet.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun FiltersSheet(
-    filters: State.FiltersSheet,
-    dispatchIntent: (Intent) -> Unit,
+internal fun HomeFiltersSheet(
+    filters: HomeState.FiltersSheet,
+    dispatchIntent: (HomeIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(Unit) {
         if (filters.filters.genresState.genres.isEmpty()) {
-            dispatchIntent(Intent.Filters.LoadGenres)
+            dispatchIntent(HomeIntent.Filters.LoadGenres)
         }
     }
 
     ModalBottomSheet(
-        onDismissRequest = { dispatchIntent(Intent.Filters.ToggleSheet) },
+        onDismissRequest = { dispatchIntent(HomeIntent.Filters.ToggleSheet) },
         modifier = modifier,
         shape = bShapes.micro4,
     ) {
-        FiltersSheetContent(
+        HomeFiltersSheetContent(
             filters = filters.filters,
             dispatchIntent = dispatchIntent,
             modifier = Modifier.fillMaxSize()
@@ -60,9 +70,9 @@ internal fun FiltersSheet(
 }
 
 @Composable
-private fun FiltersSheetContent(
-    filters: State.FiltersSheet.Filters,
-    dispatchIntent: (Intent) -> Unit,
+private fun HomeFiltersSheetContent(
+    filters: HomeState.FiltersSheet.Filters,
+    dispatchIntent: (HomeIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -97,7 +107,7 @@ private fun FiltersSheetContent(
             itemText = { season -> season.toStringRes() },
             itemKey = { season -> season },
             onItemClick = { season ->
-                dispatchIntent(Intent.Filters.ToggleSeason(season))
+                dispatchIntent(HomeIntent.Filters.ToggleSeason(season))
             },
         )
 
@@ -114,7 +124,7 @@ private fun FiltersSheetContent(
                     itemText = { genre -> genre.name.toBrbxText() },
                     itemKey = { genre -> genre.id },
                     onItemClick = { genre ->
-                        dispatchIntent(Intent.Filters.ToggleGenre(genre))
+                        dispatchIntent(HomeIntent.Filters.ToggleGenre(genre))
                     },
                 )
             }
@@ -131,17 +141,20 @@ private fun Season.toStringRes(): BrbxText =
         Season.Unknown -> HomeStrings.filters_sheet_season_unknown
     }.toBrbxText()
 
-@Preview(showBackground = true)
+@Preview(name = "Light Theme", showBackground = true)
+@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun FiltersSheetPreview() {
-    BrbxTheme(colorScheme = lightColorScheme()) {
-        FiltersSheetContent(
-            filters = State.FiltersSheet.Filters(
+private fun HomeFiltersSheetPreview() {
+    val scheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+
+    BrbxTheme(colorScheme = scheme) {
+        HomeFiltersSheetContent(
+            filters = HomeState.FiltersSheet.Filters(
                 isOngoing = true,
                 sorting = Sorting.RatingDesc,
                 years = Years(from = 2020, to = 2024),
                 seasons = setOf(Season.Winter, Season.Spring),
-                genresState = State.FiltersSheet.Filters.Genres(
+                genresState = HomeState.FiltersSheet.Filters.Genres(
                     genres = setOf(
                         Genre(id = 1, name = "Action"),
                         Genre(id = 2, name = "Comedy"),

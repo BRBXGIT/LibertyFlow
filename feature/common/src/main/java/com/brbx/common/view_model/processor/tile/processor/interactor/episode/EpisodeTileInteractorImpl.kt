@@ -26,7 +26,7 @@ internal class EpisodeTileInteractorImpl(
                 type = TileType.Episode.LatestWatched,
                 title = anime.title.toBrbxText(),
                 description = CommonStrings.user_watched_tile_description
-                    .toBrbxText(latest.lastEpisodeIndex),
+                    .toBrbxText(anime.lastEpisodeIndex),
                 icon = BoldSolar.ArrowsAction.UndoLeft.toBrbxIcon(),
                 precollection = CommonTile.Precollection(
                     label = CommonStrings.user_watched_tile_precollection_title.toBrbxText(),

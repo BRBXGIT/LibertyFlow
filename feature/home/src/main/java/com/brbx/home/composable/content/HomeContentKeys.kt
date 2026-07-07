@@ -1,7 +1,9 @@
 package com.brbx.home.composable.content
 
-internal object ContentKeys {
-
+/**
+ * Keys for the LazyGrid items in the Home screen.
+ */
+internal object HomeContentKeys {
     const val Tile = "Tile"
     const val RandomAnimeButtonKey = "RandomAnimeButton"
 }

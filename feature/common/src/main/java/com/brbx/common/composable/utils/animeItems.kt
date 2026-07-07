@@ -26,17 +26,14 @@ fun LazyGridScope.animeItems(
         key = items.itemKey { it.id },
         contentType = items.itemContentType { "AnimeItem" },
     ) { index ->
-        val current = items[index]
-        current?.let { anime ->
-            val id = current.id
-
-            val currentOnClick by rememberUpdatedState(onItemClick)
-            val currentOnLongClick by rememberUpdatedState(onItemLongClick)
+        val anime = items[index]
+        if (anime != null) {
+            val id = anime.id
 
             AnimeCard(
                 selected = selectedIds.contains(id),
-                onClick = remember(id) { { currentOnClick(id) } },
-                onLongClick = remember(id) { { currentOnLongClick(id) } },
+                onClick = { onItemClick(id) },
+                onLongClick = { onItemLongClick(id) },
                 modifier = itemModifier.brbxAnimateItem(scope = this),
                 posterPath = anime.posterPath.fullPreview(),
                 description = anime.genresAsBrbxText(),

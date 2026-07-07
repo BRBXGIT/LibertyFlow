@@ -12,14 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.brbx.home.common.HomeStrings
 import com.brbx.home.composable.content.filters_sheet.FiltersSheetKeys
-import com.brbx.home.view_model.model.Intent
+import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.bDimens
 import com.brbx.ui_compose.theme.mTypography
 
 internal fun LazyGridScope.releaseFinished(
     isOngoing: Boolean,
-    dispatchIntent: (Intent) -> Unit
+    dispatchIntent: (HomeIntent) -> Unit
 ) {
     item(
         key = FiltersSheetKeys.ReleaseFinishedKey,
@@ -35,7 +35,7 @@ internal fun LazyGridScope.releaseFinished(
 
 @Composable
 private fun ReleaseFinishedItem(
-    dispatchIntent: (Intent) -> Unit,
+    dispatchIntent: (HomeIntent) -> Unit,
     isOngoing: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -46,7 +46,7 @@ private fun ReleaseFinishedItem(
     ) {
         Checkbox(
             checked = isOngoing,
-            onCheckedChange = { dispatchIntent(Intent.Filters.ToggleOngoing) },
+            onCheckedChange = { dispatchIntent(HomeIntent.Filters.ToggleOngoing) },
         )
 
         Text(

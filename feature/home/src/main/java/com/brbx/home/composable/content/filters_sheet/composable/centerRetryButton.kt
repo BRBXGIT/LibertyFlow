@@ -12,12 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.brbx.common.model.alias.CommonStrings
 import com.brbx.home.composable.content.filters_sheet.FiltersSheetKeys
-import com.brbx.home.view_model.model.Intent
+import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.mTypography
 
 internal fun LazyGridScope.centeredRetryButton(
-    dispatchIntent: (Intent) -> Unit,
+    dispatchIntent: (HomeIntent) -> Unit,
 ) {
     item(
         key = FiltersSheetKeys.GenresIndicatorKey,
@@ -34,7 +34,7 @@ internal fun LazyGridScope.centeredRetryButton(
 
 @Composable
 private fun RetryButtonItem(
-    dispatchIntent: (Intent) -> Unit,
+    dispatchIntent: (HomeIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -42,7 +42,7 @@ private fun RetryButtonItem(
         contentAlignment = Alignment.Center
     ) {
         Button(
-            onClick = { dispatchIntent(Intent.Filters.LoadGenres) }
+            onClick = { dispatchIntent(HomeIntent.Filters.LoadGenres) }
         ) {
             Text(
                 text = stringResource(id = CommonStrings.retry),
