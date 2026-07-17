@@ -1,4 +1,4 @@
-package com.brbx.home.view_model.processor.tile.processor
+package com.brbx.home.view_model.processor.tile
 
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.home.view_model.model.HomeIntent

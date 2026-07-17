@@ -11,9 +11,7 @@ import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.model.randomAnime
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 internal class RandomAnimeProcessorImpl(
     private val randomAnimeUseCase: GetRandomAnimeReleaseUseCase,
@@ -24,9 +22,9 @@ internal class RandomAnimeProcessorImpl(
         when (intent) {
             is HomeIntent.GetRandomAnime -> {
                 coroutineScope.launch(context = dispatcherIo) {
-                    delay(duration = 2000.milliseconds) // Used for animation but Antipattern
                     makeNetworkCall(
                         loadingLens = HomeState.randomAnime,
+                        callDelay = 2_000L,
                         call = { randomAnimeUseCase() },
                     ).onSuccess {
                         // TODO Make navigation to details screen

@@ -10,7 +10,7 @@ import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.processor.filters.FiltersProcessor
 import com.brbx.home.view_model.processor.random_anime.RandomAnimeProcessor
-import com.brbx.home.view_model.processor.tile.processor.TileProcessor
+import com.brbx.home.view_model.processor.tile.TileProcessor
 
 @Stable
 internal class HomeViewModel(
