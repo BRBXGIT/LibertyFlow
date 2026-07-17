@@ -6,11 +6,13 @@ import com.brbx.ui_compose.common.BrbxIcon
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxIcon
 import dev.chiksmedina.solar.BoldSolar
+import dev.chiksmedina.solar.OutlineSolar
 import dev.chiksmedina.solar.bold.Arrows
 import dev.chiksmedina.solar.bold.arrows.AltArrowRight
+import dev.chiksmedina.solar.outline.Arrows
+import dev.chiksmedina.solar.outline.arrows.AltArrowRight
 
 @Immutable
-@optics
 interface Tile {
 
     val title: BrbxText
@@ -23,8 +25,6 @@ interface Tile {
     @optics
     data class Precollection(
         val label: BrbxText,
-        val icon: BrbxIcon? = BoldSolar.Arrows.AltArrowRight.toBrbxIcon(),
+        val icon: BrbxIcon? = OutlineSolar.Arrows.AltArrowRight.toBrbxIcon(),
     ) { companion object }
-
-    companion object
 }

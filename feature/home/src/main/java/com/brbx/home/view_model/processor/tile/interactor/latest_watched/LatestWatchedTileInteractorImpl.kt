@@ -14,7 +14,7 @@ internal class LatestWatchedTileInteractorImpl(
     private val latestWatchingAnimeUseCase: GetLatestWatchingAnimeUseCase,
 ) : LatestWatchedTileInteractor {
 
-    override suspend fun getTile(): Tile? {
+    override suspend fun getTile(): DefaultTile? {
         val latestWatching = latestWatchingAnimeUseCase()
         return latestWatching?.let {
             DefaultTile(

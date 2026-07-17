@@ -1,18 +1,15 @@
 package com.brbx.home.view_model.processor.tile.processor
 
-import arrow.optics.copy
-import com.brbx.common.view_model.processor.tile.model.isPrecollectionVisible
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.home.view_model.model.HomeState
-import com.brbx.home.view_model.model.tile
 import com.brbx.home.view_model.processor.tile.interactor.latest_watched.LatestWatchedTileInteractor
-import com.brbx.home.view_model.processor.tile.interactor.stub.HomeStubTileInteractor
+import com.brbx.home.view_model.processor.tile.interactor.stub.StubTileInteractor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
 internal class TileProcessorImpl(
-    private val stubInteractor: HomeStubTileInteractor,
+    private val stubInteractor: StubTileInteractor,
     private val latestWatchedTileInteractor: LatestWatchedTileInteractor,
     private val dispatcherIo: CoroutineDispatcher,
 ) : TileProcessor {
@@ -23,11 +20,13 @@ internal class TileProcessorImpl(
                 coroutineScope.launch(context = dispatcherIo) {
                     val tile = latestWatchedTileInteractor.getTile() ?:
                         stubInteractor.getTile()
-                    updateState { copy { HomeState.tile set tile } }
+                    updateState { copy(tile = tile) }
                 }
             }
             is HomeIntent.Tile.TogglePrecollectionVisibility -> {
-                updateState { copy { HomeState.tile.isPrecollectionVisible transform { !it } } }
+                updateState {
+                    copy(tile = this.tile?.copy(isPrecollectionVisible = !this.tile.isPrecollectionVisible))
+                }
             }
         }
     }

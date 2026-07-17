@@ -3,8 +3,8 @@ package com.brbx.home.view_model.model
 import androidx.compose.runtime.Immutable
 import arrow.optics.optics
 import com.brbx.common.model.common.model.AnimeItem
+import com.brbx.common.model.common.model.DefaultTile
 import com.brbx.common.model.common.model.Genre
-import com.brbx.common.model.common.model.Tile
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.paging.model.CommonPagingState
@@ -21,7 +21,7 @@ internal data class HomeState(
     val search: CommonSearchState = CommonSearchState(),
     val filtersSheet: FiltersSheet = FiltersSheet(),
     val selection: CommonSelectionState = CommonSelectionState(),
-    val tile: Tile? = null,
+    val tile: DefaultTile? = null,
 ) {
     @Immutable
     @optics

@@ -20,7 +20,7 @@ internal fun LazyGridScope.centeredRetryButton(
     dispatchIntent: (HomeIntent) -> Unit,
 ) {
     item(
-        key = FiltersSheetKeys.GenresIndicatorKey,
+        key = FiltersSheetKeys.GenresRetryButtonKey,
         span = { GridItemSpan(maxLineSpan) }
     ) {
         RetryButtonItem(
