@@ -4,7 +4,6 @@ import com.brbx.common.model.common.model.Genre
 import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
-import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 
@@ -12,7 +11,11 @@ internal sealed interface HomeIntent {
 
     data object GetRandomAnime : HomeIntent
 
-    @JvmInline value class Tile(val action: CommonTileIntent) : HomeIntent
+    sealed interface Tile : HomeIntent {
+        data object GetTile : Tile
+
+        data object TogglePrecollectionVisibility : Tile
+    }
 
     @JvmInline value class Catalog(val action: CommonPagingIntent) : HomeIntent
 

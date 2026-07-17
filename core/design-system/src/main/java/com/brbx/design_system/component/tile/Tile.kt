@@ -29,7 +29,6 @@ import dev.chiksmedina.solar.BoldSolar
 import dev.chiksmedina.solar.bold.Users
 import dev.chiksmedina.solar.bold.users.User
 
-// TODO Add new episodes tile
 @Composable
 fun Tile(
     title: BrbxText,

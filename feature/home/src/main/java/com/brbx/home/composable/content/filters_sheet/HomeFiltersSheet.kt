@@ -36,13 +36,6 @@ import com.brbx.ui_compose.theme.BrbxTheme
 import com.brbx.ui_compose.theme.bDimens
 import com.brbx.ui_compose.theme.bShapes
 
-/**
- * Bottom sheet for filtering anime in the Home screen.
- *
- * @param filters Current filters state.
- * @param dispatchIntent Function to dispatch intents.
- * @param modifier Modifier for the sheet.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeFiltersSheet(

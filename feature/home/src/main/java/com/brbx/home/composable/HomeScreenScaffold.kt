@@ -21,12 +21,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.brbx.common.composable.selection_menu.SelectionFabMenu
 import com.brbx.common.composable.selection_menu.SelectionType
 import com.brbx.common.model.common.model.AnimeItem
+import com.brbx.common.model.common.model.Tile
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
-import com.brbx.common.view_model.processor.tile.model.CommonTile
-import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.top_bar.SearchableTopBar
 import com.brbx.design_system.container.ShimmerScaffold
@@ -47,20 +46,6 @@ import dev.chiksmedina.solar.outline.DesignTools
 import dev.chiksmedina.solar.outline.designtools.Filters
 import kotlinx.coroutines.flow.flowOf
 
-/**
- * Scaffold for the Home screen.
- *
- * @param dispatchIntent Function to dispatch intents.
- * @param selectedIds Set of selected anime IDs.
- * @param isInSelectionMode Whether the screen is in selection mode.
- * @param searchState State of the search.
- * @param loadingState State of the loading process.
- * @param isRandomAnimeLoading Whether a random anime is being fetched.
- * @param tile Current tile data.
- * @param items Lazy paging items for the anime catalog.
- * @param isRefreshing Whether the content is currently refreshing.
- * @param modifier Modifier to be applied to the scaffold.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreenScaffold(
@@ -70,7 +55,7 @@ internal fun HomeScreenScaffold(
     searchState: CommonSearchState,
     loadingState: CommonLoadingState,
     isRandomAnimeLoading: Boolean,
-    tile: CommonTile?,
+    tile: Tile?,
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
     modifier: Modifier = Modifier,
@@ -89,7 +74,7 @@ internal fun HomeScreenScaffold(
         isError = loadingState.isException,
         onShimmerEnd = { withError ->
             if (!withError) {
-                dispatchIntent(HomeIntent.Tile(action = CommonTileIntent.TogglePrecollectionVisibility))
+                dispatchIntent(HomeIntent.Tile.TogglePrecollectionVisibility)
             }
         },
         floatingActionButton = {

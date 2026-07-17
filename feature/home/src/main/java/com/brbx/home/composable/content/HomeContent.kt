@@ -11,22 +11,20 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.brbx.common.composable.utils.animeItems
+import com.brbx.common.composable.utils.tileItem
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Name
 import com.brbx.common.model.common.model.Poster
+import com.brbx.common.model.common.model.Tile
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
-import com.brbx.common.view_model.processor.tile.model.CommonTile
-import com.brbx.common.view_model.processor.tile.model.TileType
 import com.brbx.design_system.component.rainbow_button.RainbowButton
-import com.brbx.design_system.component.tile.Tile
 import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
 import com.brbx.design_system.container.PullToRefreshContainer
 import com.brbx.home.common.HomeStrings
@@ -40,24 +38,10 @@ import dev.chiksmedina.solar.outline.FacesEmotionsStickers
 import dev.chiksmedina.solar.outline.facesemotionsstickers.EmojiFunnySquare
 import kotlinx.coroutines.flow.flowOf
 
-/**
- * Main content of the Home screen.
- *
- * @param animeGridState State of the anime grid.
- * @param tile Current tile data (e.g. latest watched episode).
- * @param items Lazy paging items for the anime catalog.
- * @param isRefreshing Whether the content is currently refreshing.
- * @param isSearching Whether the user is currently searching.
- * @param selectedIds Set of selected anime IDs.
- * @param isInSelectionMode Whether the screen is in selection mode.
- * @param isRandomAnimeLoading Whether a random anime is being fetched.
- * @param dispatchIntent Function to dispatch intents.
- * @param modifier Modifier to be applied to the container.
- */
 @Composable
 internal fun HomeContent(
     animeGridState: LazyGridState,
-    tile: CommonTile?,
+    tile: Tile?,
     items: LazyPagingItems<AnimeItem>,
     isRefreshing: Boolean,
     isSearching: Boolean,
@@ -84,7 +68,13 @@ internal fun HomeContent(
                     onClick = { dispatchIntent(HomeIntent.GetRandomAnime) }
                 )
 
-                tileItem(tile = tile)
+                tile?.let {
+                    tileItem(
+                        tile = tile,
+                        onTileClick = {},
+                        key = HomeContentKeys.Tile,
+                    )
+                }
             }
 
             animeItems(
@@ -123,28 +113,6 @@ private fun LazyGridScope.randomAnimeButton(
     }
 }
 
-private fun LazyGridScope.tileItem(tile: CommonTile?) {
-    if (tile == null) return
-    item(
-        key = HomeContentKeys.Tile,
-        span = { GridItemSpan(currentLineSpan = maxLineSpan) },
-    ) {
-        val onTileClick: () -> Unit = remember(tile) { {} }
-
-        Tile(
-            title = tile.title,
-            description = tile.description,
-            icon = tile.icon,
-            onTileClick = onTileClick,
-            isPrecollectionVisible = tile.isPrecollectionVisible,
-            precollectionIcon = tile.precollection?.icon,
-            precollectionText = tile.precollection?.label,
-            onPrecollectionClick = onTileClick,
-            modifier = Modifier.brbxAnimateItem(scope = this)
-        )
-    }
-}
-
 private fun getSelectionIntent(id: Int): HomeIntent.Selection =
     HomeIntent.Selection(action = CommonSelectionIntent.Selection.ToggleItemSelected(id))
 
@@ -175,14 +143,7 @@ private fun HomeContentPreview() {
     BrbxTheme(colorScheme = scheme) {
         HomeContent(
             animeGridState = rememberLazyGridState(),
-            tile = CommonTile(
-                type = TileType.Episode.LatestWatched,
-                title = "Продолжить просмотр".toBrbxText(),
-                description = "Серия 12".toBrbxText(),
-                icon = OutlineSolar.FacesEmotionsStickers.EmojiFunnySquare.toBrbxIcon(),
-                precollection = null,
-                isPrecollectionVisible = false,
-            ),
+            tile = null,
             items = mockItems,
             isRefreshing = false,
             isSearching = false,

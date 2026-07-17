@@ -19,11 +19,6 @@ import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.BrbxTheme
 import com.brbx.ui_compose.theme.mColors
 
-/**
- * Shimmer placeholder for the Home screen content.
- *
- * @param modifier Modifier to be applied to the container.
- */
 @Composable
 internal fun HomeContentShimmer(
     modifier: Modifier = Modifier

@@ -6,15 +6,13 @@ import com.brbx.common.model.common.map.toDomain
 import com.brbx.common.view_model.processor.paging.getCommonPagingProcessor
 import com.brbx.common.view_model.processor.search.getCommonSearchProcessor
 import com.brbx.common.view_model.processor.selection.getCommonSelectionProcessor
-import com.brbx.common.view_model.processor.tile.getCommonTileProcessor
 import com.brbx.domain.network.catalog.releases.model.CatalogReleasesParameters
 import com.brbx.domain.network.catalog.releases.use_case.GetCatalogAnimeReleasesUseCase
 import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.model.catalog
 import com.brbx.home.view_model.model.search
 import com.brbx.home.view_model.model.selection
-import com.brbx.home.view_model.model.tile
-import com.brbx.home.view_model.processor.processorsModule
+import com.brbx.home.view_model.processor.homeProcessorsModule
 import com.brbx.home.view_model.view_model.HomeViewModel
 import kotlinx.coroutines.flow.map
 import org.koin.core.module.dsl.viewModel
@@ -27,8 +25,8 @@ internal val viewModelModule = module {
             randomAnimeProcessor = get(),
             filtersProcessor = get(),
             searchProcessor = getCommonSearchProcessor(lens = HomeState.search),
-            tileProcessor = getCommonTileProcessor(lens = HomeState.tile),
             selectionProcessor = getCommonSelectionProcessor(lens = HomeState.selection),
+            tileProcessor = get(),
             catalogProcessor = getCommonPagingProcessor(
                 lens = HomeState.catalog,
                 paramsSelector = { state ->
@@ -51,5 +49,5 @@ internal val viewModelModule = module {
         )
     }
 
-    includes(processorsModule)
+    includes(homeProcessorsModule)
 }

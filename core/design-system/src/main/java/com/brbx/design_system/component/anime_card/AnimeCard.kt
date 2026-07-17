@@ -30,6 +30,7 @@ fun AnimeCard(
     selected: Boolean = false,
     appearance: BrbxContentCardAppearance = AnimeCardConstants.AnimeCardAppearance,
 ) {
+    // TODO Move to constants
     val selectedColor = AnimeCardConstants.selectedBorderColor
     val animatedBorderColor by animateColorAsState(
         targetValue = if (selected) selectedColor else Color.Transparent,

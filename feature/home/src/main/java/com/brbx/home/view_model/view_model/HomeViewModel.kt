@@ -5,35 +5,26 @@ import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.common.view_model.processor.paging.processor.CommonPagingProcessor
 import com.brbx.common.view_model.processor.search.processor.CommonSearchProcessor
 import com.brbx.common.view_model.processor.selection.processor.CommonSelectionProcessor
-import com.brbx.common.view_model.processor.tile.model.CommonTileIntent
-import com.brbx.common.view_model.processor.tile.model.TileType
-import com.brbx.common.view_model.processor.tile.processor.processor.CommonTileProcessor
 import com.brbx.common.view_model.view_model.LibertyFlowViewModel
 import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.processor.filters.FiltersProcessor
 import com.brbx.home.view_model.processor.random_anime.RandomAnimeProcessor
+import com.brbx.home.view_model.processor.tile.processor.TileProcessor
 
-/**
- * ViewModel for the Home screen.
- *
- * Manages search, catalog paging, tiles, selection, random anime, and filters.
- */
 @Stable
 internal class HomeViewModel(
     private val searchProcessor: CommonSearchProcessor<HomeState>,
     private val catalogProcessor: CommonPagingProcessor<HomeState>,
-    private val tileProcessor: CommonTileProcessor<HomeState>,
     private val selectionProcessor: CommonSelectionProcessor<HomeState>,
+    private val tileProcessor: TileProcessor,
     private val randomAnimeProcessor: RandomAnimeProcessor,
     private val filtersProcessor: FiltersProcessor,
 ) : LibertyFlowViewModel<HomeState, HomeIntent>(initialState = HomeState()) {
 
     init {
-        dispatchIntent(
-            HomeIntent.Tile(action = CommonTileIntent.GetTile(type = TileType.Episode.LatestWatched))
-        )
         dispatchIntent(HomeIntent.Catalog(action = CommonPagingIntent.SetUpPaging))
+        dispatchIntent(HomeIntent.Tile.GetTile)
     }
 
     override fun dispatchIntent(intent: HomeIntent) {
@@ -44,11 +35,11 @@ internal class HomeViewModel(
             is HomeIntent.Catalog -> with(receiver = catalogProcessor) {
                 mviScope.process(intent.action)
             }
-            is HomeIntent.Tile -> with(receiver = tileProcessor) {
-                mviScope.process(intent.action)
-            }
             is HomeIntent.Selection -> with(receiver = selectionProcessor) {
                 mviScope.process(intent.action)
+            }
+            is HomeIntent.Tile -> with(receiver = tileProcessor) {
+                mviScope.process(intent)
             }
             is HomeIntent.Filters -> with(receiver = filtersProcessor) {
                 mviScope.process(intent)

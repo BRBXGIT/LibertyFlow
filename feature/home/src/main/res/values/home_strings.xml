@@ -19,4 +19,15 @@
     <string name="filters_sheet_season_spring">Spring</string>
     <string name="filters_sheet_season_summer">Summer</string>
     <string name="filters_sheet_season_unknown">Unknown</string>
+
+    <string name="user_watched_tile_description">It seems you watched this title last. You stopped at %1$d episode</string>
+    <string name="user_watched_tile_precollection_title">Continue watching</string>
+
+    <string name="theme_tile_title">Appearance</string>
+    <string name="theme_tile_description">You can change app theme in settings</string>
+    <string name="theme_tile_precollection_text">Go to settings</string>
+
+    <string name="powered_by_ani_liberty_tile_title">Powered by AniLiberty</string>
+    <string name="powered_by_ani_liberty_tile_description">Made with AniLiberty Api, thanks!</string>
+    <string name="powered_by_ani_liberty_tile_precollection_text">Go to their site</string>
 </resources>

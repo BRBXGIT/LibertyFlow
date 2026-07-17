@@ -20,8 +20,8 @@ internal class RandomAnimeProcessorImpl(
     private val dispatcherIo: CoroutineDispatcher,
 ) : RandomAnimeProcessor {
 
-    override fun LibertyFlowMviScope<HomeState>.process(homeIntent: HomeIntent.GetRandomAnime) {
-        when (homeIntent) {
+    override fun LibertyFlowMviScope<HomeState>.process(intent: HomeIntent.GetRandomAnime) {
+        when (intent) {
             is HomeIntent.GetRandomAnime -> {
                 coroutineScope.launch(context = dispatcherIo) {
                     delay(duration = 2000.milliseconds) // Used for animation but Antipattern
