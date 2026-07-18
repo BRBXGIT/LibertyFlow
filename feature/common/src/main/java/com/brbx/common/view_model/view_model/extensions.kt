@@ -6,8 +6,8 @@ import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxText
-import com.brbx.ui_compose.components.complex.snackbar.config.BrbxSnackbarDuration
-import com.brbx.ui_compose.components.complex.snackbar.config.DefaultBrbxSnackbarConfig
+import com.brbx.ui_compose.components.complex.snackbar.common.BrbxSnackbarDuration
+import com.brbx.ui_compose.components.complex.snackbar.snackbar.config.DefaultBrbxInfoSnackbarConfig
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -18,7 +18,7 @@ inline fun LibertyFlowMviScope<*>.postExceptionSnackbar(
 ) {
     postCommonEffect(
         BrbxEffect.ShowSnackbar(
-            config = DefaultBrbxSnackbarConfig(
+            config = DefaultBrbxInfoSnackbarConfig(
                 text = exception,
                 duration = BrbxSnackbarDuration.Infinite,
                 isDismissable = dismissable,
@@ -35,7 +35,7 @@ fun LibertyFlowMviScope<*>.postExceptionSnackbar(
 ) {
     postCommonEffect(
         BrbxEffect.ShowSnackbar(
-            config = DefaultBrbxSnackbarConfig(
+            config = DefaultBrbxInfoSnackbarConfig(
                 text = exception,
                 duration = BrbxSnackbarDuration.Infinite,
                 isDismissable = dismissable,

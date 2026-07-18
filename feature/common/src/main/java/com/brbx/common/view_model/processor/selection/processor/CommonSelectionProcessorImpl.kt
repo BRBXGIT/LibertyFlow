@@ -68,12 +68,12 @@ internal class CommonSelectionProcessorImpl<State>(
             intent = intent,
             loadingSnackbarRes = when (intent.action) {
                 SelectionAction.Add -> CommonStrings.adding_to_favorites
-                SelectionAction.Remove -> CommonStrings.deleting_from_favorites
+                SelectionAction.Delete -> CommonStrings.deleting_from_favorites
             }
         ) { ids ->
             when (intent.action) {
                 SelectionAction.Add -> addToFavoritesUseCase(items = ids)
-                SelectionAction.Remove -> deleteFromFavoritesUseCase(items = ids)
+                SelectionAction.Delete -> deleteFromFavoritesUseCase(items = ids)
             }
         }
     }
@@ -85,13 +85,13 @@ internal class CommonSelectionProcessorImpl<State>(
                     intent = intent,
                     loadingSnackbarRes = when (intent.action) {
                         SelectionAction.Add -> CommonStrings.adding_to_collection
-                        SelectionAction.Remove -> CommonStrings.deleting_from_collection
+                        SelectionAction.Delete -> CommonStrings.deleting_from_collection
                     }
                 ) { ids ->
                     val items = ids.map { CollectionItem(id = it, collection = intent.collection) }
                     when (intent.action) {
                         SelectionAction.Add -> addToCollectionUseCase(items = items)
-                        SelectionAction.Remove -> deleteFromCollectionUseCase(items = items)
+                        SelectionAction.Delete -> deleteFromCollectionUseCase(items = items)
                     }
                 }
             }

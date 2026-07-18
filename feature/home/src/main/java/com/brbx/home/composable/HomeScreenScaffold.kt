@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.brbx.common.composable.selection_menu.SelectionFabMenu
+import com.brbx.common.composable.selection_menu.SelectionToolbar
 import com.brbx.common.composable.selection_menu.SelectionType
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Tile
@@ -70,15 +70,15 @@ internal fun HomeScreenScaffold(
         appearance = appearance,
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         isShimmering = loadingState.isLoading,
-        snackbarHost = { BrbxSnackbarHost() },
         isError = loadingState.isException,
+        snackbarHost = { BrbxSnackbarHost() },
         onShimmerEnd = { withError ->
             if (!withError) {
                 dispatchIntent(HomeIntent.Tile.TogglePrecollectionVisibility)
             }
         },
         floatingActionButton = {
-            HomeSelectionMenu(
+            HomeSelectionToolbar(
                 scrollDirection = animeGridState.brbxScrollDirection(),
                 loadingState = loadingState,
                 isInSelectionMode = isInSelectionMode,
@@ -140,11 +140,12 @@ private fun HomeTopBar(
 }
 
 @Composable
-private fun HomeSelectionMenu(
+private fun HomeSelectionToolbar(
     scrollDirection: BrbxScrollDirection,
     loadingState: CommonLoadingState,
     isInSelectionMode: Boolean,
     dispatchIntent: (HomeIntent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val isFabVisible = remember(
         key1 = loadingState,
@@ -155,8 +156,10 @@ private fun HomeSelectionMenu(
         val loadingCondition = !loadingState.isLoading && !loadingState.isException
         isInSelectionMode || (loadingCondition && scrollCondition)
     }
-    SelectionFabMenu(
-        type = SelectionType.AddToAnyList,
+    val selectionType = remember { SelectionType.AddToAnyList }
+    SelectionToolbar(
+        modifier = modifier,
+        type = selectionType,
         isInSelectionMode = isInSelectionMode,
         onSelectionModeChange = { selecting ->
             if (!selecting) {
@@ -166,8 +169,12 @@ private fun HomeSelectionMenu(
             }
         },
         isFabVisible = isFabVisible,
-        onCollectionsClick = {  },
-        onFavoritesClick = {  },
+        onCollectionsClick = {
+            dispatchIntent(HomeIntent.Selection(action = selectionType.collectionsIntent))
+        },
+        onFavoritesClick = {
+            dispatchIntent(HomeIntent.Selection(action = selectionType.favoritesIntent))
+        },
         onFabClick = { dispatchIntent(HomeIntent.Filters.ToggleSheet) },
         fabIcon = OutlineSolar.DesignTools.Filters.toBrbxIcon(),
     )
