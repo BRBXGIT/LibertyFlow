@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="adding_to_favorites">Добавляем в избранные…</string>
+    <string name="deleting_from_favorites">Удаляем из избранных…</string>
+    <string name="adding_to_collection">Добавляем в выбранную коллекцию…</string>
+    <string name="deleting_from_collection">Удаляем из выбранной коллекции…</string>
+</resources>

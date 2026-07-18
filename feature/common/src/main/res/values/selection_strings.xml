@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="adding_to_favorites">Adding to favorites…</string>
+    <string name="deleting_from_favorites">Deleting to favorites…</string>
+    <string name="adding_to_collection">Adding to selected collection…</string>
+    <string name="deleting_from_collection">Deleting from selected collection…</string>
+</resources>
