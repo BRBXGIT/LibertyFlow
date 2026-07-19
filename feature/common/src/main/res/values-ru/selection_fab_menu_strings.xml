@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="retry">Retry</string>
+    <string name="authorize">Войти</string>
 
     <string name="selection_menu_favorites_add">В избранное</string>
     <string name="selection_menu_favorites_remove">Из избранного</string>

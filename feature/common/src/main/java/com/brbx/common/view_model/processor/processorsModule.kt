@@ -1,5 +1,6 @@
 package com.brbx.common.view_model.processor
 
+import com.brbx.common.view_model.processor.auth.authSheetProcessorModule
 import com.brbx.common.view_model.processor.loading.loadingProcessorModule
 import com.brbx.common.view_model.processor.paging.pagingProcessorModule
 import com.brbx.common.view_model.processor.search.searchProcessorModule
@@ -12,5 +13,6 @@ internal val processorsModule = module {
         loadingProcessorModule,
         pagingProcessorModule,
         selectionProcessorModule,
+        authSheetProcessorModule,
     )
 }

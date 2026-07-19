@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="retry">Retry</string>
+    <string name="authorize">Log in</string>
 
     <string name="selection_menu_favorites_add">Add to favorites</string>
     <string name="selection_menu_favorites_remove">Remove from favorites</string>

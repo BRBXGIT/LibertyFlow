@@ -12,7 +12,9 @@ import com.brbx.common.view_model.processor.selection.model.loadingState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.makeNetworkCall
 import com.brbx.common.view_model.view_model.postExceptionSnackbar
+import com.brbx.common.view_model.view_model.postLoadingSnackbar
 import com.brbx.domain.network.model.result.DomainRequestResult
+import com.brbx.domain.network.model.result.RequestException
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.domain.network.user.lists.collections.collections.model.CollectionItem
@@ -22,12 +24,8 @@ import com.brbx.domain.network.user.lists.favorites.favorites.use_case.UserAddTo
 import com.brbx.domain.network.user.lists.favorites.favorites.use_case.UserDeleteFromFavoritesUseCase
 import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.toBrbxText
-import com.brbx.ui_compose.components.complex.snackbar.common.BrbxSnackbarDuration
-import com.brbx.ui_compose.components.complex.snackbar.loading_snackbar.config.DefaultBrbxLoadingSnackbarConfig
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 internal class CommonSelectionProcessorImpl<State>(
     private val addToFavoritesUseCase: UserAddToFavoritesUseCase,
@@ -95,7 +93,6 @@ internal class CommonSelectionProcessorImpl<State>(
                     }
                 }
             }
-
             CommonSelectionIntent.Lists.Collection.ToggleSheet -> {
                 updateState {
                     selectionLens.modify(source = this) {
@@ -114,33 +111,28 @@ internal class CommonSelectionProcessorImpl<State>(
         val selectedIds = selectionLens.get(state.value).ids.toList()
         if (selectedIds.isEmpty()) return
 
-        val loadingSnackbarId = "loading_snackbar_id"
+        val loadingSnackbarId = "list_loading_snackbar_id"
         coroutineScope.launch(context = dispatcherIo) {
             updateState { selectionLens.modify(source = this) { it.copy(ids = emptySet()) } }
-            postCommonEffect(
-                BrbxEffect.ShowSnackbar(
-                    config = DefaultBrbxLoadingSnackbarConfig(
-                        id = loadingSnackbarId,
-                        text = loadingSnackbarRes.toBrbxText(),
-                        duration = BrbxSnackbarDuration.Infinite,
-                        isDismissable = false,
-                    )
-                )
-            )
-            delay(duration = 2_000.milliseconds) // Animation delay for snackbar (antipattern, maybe will be rewritten)
+            postLoadingSnackbar(text = loadingSnackbarRes.toBrbxText())
 
             makeNetworkCall(
                 loadingLens = selectionLens.loadingState,
+                callDelay = 2_000,
                 call = { request(selectedIds) }
             ).onSuccess {
                 postCommonEffect(BrbxEffect.RemoveSnackbarById(loadingSnackbarId))
-                // TODO
             } onException { exception ->
                 postCommonEffect(BrbxEffect.RemoveSnackbarById(loadingSnackbarId))
                 updateState { selectionLens.modify(source = this) { it.copy(ids = selectedIds.toSet()) } }
                 postExceptionSnackbar(
                     exception = exception.toBrbxText(),
                     dismissable = true,
+                    buttonText = if (exception == RequestException.Unauthorized) {
+                        CommonStrings.authorize.toBrbxText()
+                    } else {
+                        CommonStrings.retry.toBrbxText()
+                    },
                 ) { process(intent) }
             }
         }

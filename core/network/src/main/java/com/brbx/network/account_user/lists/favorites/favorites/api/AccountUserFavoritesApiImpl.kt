@@ -33,6 +33,6 @@ internal class AccountUserFavoritesApiImpl(
 
     private companion object {
 
-        const val FavoritesEndPoint = "account/users/me/favorites"
+        const val FavoritesEndPoint = "accounts/users/me/favorites"
     }
 }
