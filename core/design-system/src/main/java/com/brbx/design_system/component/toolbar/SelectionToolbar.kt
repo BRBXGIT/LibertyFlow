@@ -6,15 +6,17 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import com.brbx.design_system.theme.LibertyFlowIcons
 import com.brbx.ui_compose.common.BrbxIcon
 import com.brbx.ui_compose.common.toBrbxIcon
@@ -40,24 +42,24 @@ fun SelectionToolbar(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(bDimens.micro3)
     ) {
         SelectionActionGroup(
+            modifier = Modifier
+                .height(0.dp)
+                .wrapContentHeight(align = Alignment.CenterVertically, unbounded = true),
             visible = isInSelectionMode,
             favoritesIcon = favoritesIcon,
             collectionsIcon = collectionsIcon,
             onFavoritesClick = onFavoritesClick,
-            onCollectionsClick = onCollectionsClick
+            onCollectionsClick = onCollectionsClick,
         )
-
-        val crossIcon = remember { LibertyFlowIcons.Filled.Cross.toBrbxIcon() }
 
         BrbxToggleDisappearingFab(
             checked = isInSelectionMode,
             onCheckedChange = { onFabClick() },
             visible = isFabVisible,
             icon = fabIcon,
-            checkedIcon = crossIcon,
+            checkedIcon = LibertyFlowIcons.Filled.Cross.toBrbxIcon(),
         )
     }
 }
@@ -71,34 +73,45 @@ private fun SelectionActionGroup(
     onCollectionsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val enterAlpha = bMotion.nonSpatialExtraFastSpec<Float>()
-    val enterSlide = bMotion.fastSpatialSpec<IntOffset>()
-    val exitAlpha = bMotion.nonSpatialExtraFastSpec<Float>()
-    val exitSlide = bMotion.fastSpatialSpec<IntOffset>()
-
     AnimatedVisibility(
         visible = visible,
-        enter = fadeIn(animationSpec = enterAlpha) +
-                slideInHorizontally(animationSpec = enterSlide) { it / 2 },
-        exit = fadeOut(animationSpec = exitAlpha) +
-                slideOutHorizontally(animationSpec = exitSlide) { it / 2 },
-        modifier = modifier
+        enter = fadeIn(animationSpec = bMotion.nonSpatialExtraFastSpec()) +
+                slideInHorizontally(
+                    animationSpec = bMotion.fastSpatialSpec(),
+                    initialOffsetX = { it / 2 },
+                ),
+        exit = fadeOut(animationSpec = bMotion.nonSpatialExtraFastSpec()) +
+                slideOutHorizontally(
+                    animationSpec = bMotion.fastSpatialSpec(),
+                    targetOffsetX = { it / 2 },
+                )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(all = bDimens.micro4)
-                .background(
-                    color = mColors.surfaceContainerHigh,
-                    shape = bShapes.macro2,
-                ),
+            modifier = modifier,
         ) {
-            IconButton(onClick = onFavoritesClick) {
-                BrbxIcon(favoritesIcon)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(all = bDimens.micro4)
+                    .background(
+                        color = mColors.surfaceContainerHigh,
+                        shape = bShapes.macro2,
+                    ),
+            ) {
+                IconButton(
+                    onClick = onFavoritesClick
+                ) {
+                    BrbxIcon(favoritesIcon)
+                }
+                IconButton(
+                    onClick = onCollectionsClick
+                ) {
+                    BrbxIcon(collectionsIcon)
+                }
             }
-            IconButton(onClick = onCollectionsClick) {
-                BrbxIcon(collectionsIcon)
-            }
+
+            Spacer(modifier = Modifier.width(bDimens.micro3))
         }
     }
 }

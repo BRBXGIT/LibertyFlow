@@ -21,6 +21,7 @@ import com.brbx.domain.network.user.lists.collections.collections.use_case.UserA
 import com.brbx.domain.network.user.lists.collections.collections.use_case.UserDeleteFromCollectionUseCase
 import com.brbx.domain.network.user.lists.favorites.favorites.use_case.UserAddToFavoritesUseCase
 import com.brbx.domain.network.user.lists.favorites.favorites.use_case.UserDeleteFromFavoritesUseCase
+import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.toBrbxText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -54,6 +55,7 @@ internal class CommonSelectionProcessorImpl<State>(
     }
 
     private fun LibertyFlowMviScope<State>.handleLists(intent: CommonSelectionIntent.Lists) {
+        postCommonEffect(BrbxEffect.DismissCurrentSnackbar)
         when (intent) {
             is CommonSelectionIntent.Lists.Favorites -> handleFavorites(intent)
             is CommonSelectionIntent.Lists.Collection -> handleCollection(intent)
