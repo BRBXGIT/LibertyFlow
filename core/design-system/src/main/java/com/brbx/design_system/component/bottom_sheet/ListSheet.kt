@@ -51,9 +51,9 @@ fun ListSheetItem(
 ) =
     Row(
         modifier = modifier
+            .clip(shape = bShapes.micro4)
             .clickable(onClick = onClick)
-            .padding(all = bDimens.micro4)
-            .clip(shape = bShapes.micro4),
+            .padding(all = bDimens.micro4),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {

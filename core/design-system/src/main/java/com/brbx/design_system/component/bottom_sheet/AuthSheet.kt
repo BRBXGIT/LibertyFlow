@@ -163,6 +163,7 @@ private fun AuthSheetHeader(
             if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
         }
 
+        // TODO Fix jumping ui when switch tf's
         AuthTextField(
             value = password,
             onValueChange = onPasswordChange,

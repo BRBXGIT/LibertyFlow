@@ -4,11 +4,14 @@ import com.brbx.home.view_model.processor.tile.interactor.latest_watched.LatestW
 import com.brbx.home.view_model.processor.tile.interactor.latest_watched.LatestWatchedTileInteractorImpl
 import com.brbx.home.view_model.processor.tile.interactor.stub.StubTileInteractor
 import com.brbx.home.view_model.processor.tile.interactor.stub.StubTileInteractorImpl
+import com.brbx.home.view_model.processor.tile.interactor.tile_factory.HomeTileFactory
+import com.brbx.home.view_model.processor.tile.interactor.tile_factory.HomeTileFactoryImpl
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 internal val tileInteractorsModule = module {
+    singleOf(constructor = ::HomeTileFactoryImpl) { bind<HomeTileFactory>() }
     singleOf(constructor = ::StubTileInteractorImpl) { bind<StubTileInteractor>() }
     singleOf(constructor = ::LatestWatchedTileInteractorImpl) { bind<LatestWatchedTileInteractor>() }
     singleOf(constructor = ::HomeTileInteractorImpl) { bind<HomeTileInteractor>() }
