@@ -22,75 +22,90 @@ internal class CommonAuthSheetProcessorImpl<State>(
 
     override fun LibertyFlowMviScope<State>.process(intent: CommonAuthSheetIntent) {
         when (intent) {
-            CommonAuthSheetIntent.Authorize -> {
-                val login = authSheetLens.get(state.value).login
-                val password = authSheetLens.get(state.value).password
-                coroutineScope.launch(context = dispatcherIo) {
-                    updateState {
-                        authSheetLens.modify(source = this) {
-                            it.copy(
-                                isAuthSheetVisible = false,
-                                isDataIncorrect = false,
-                            )
-                        }
-                    }
-                    makeNetworkCall(
-                        loadingLens = authSheetLens.loadingState,
-                        callDelay = 1_000L,
-                        call = { authUseCase(login, password) }
-                    ).onException { exception ->
-                        if (exception == RequestException.IncorrectCredentials) {
-                            updateState {
-                                authSheetLens.modify(source = this) {
-                                    it.copy(
-                                        isAuthSheetVisible = true,
-                                        isDataIncorrect = true,
-                                    )
-                                }
-                            }
-                        } else {
-                            postExceptionSnackbar(
-                                exception = exception.toBrbxText(),
-                                dismissable = true,
-                            ) { process(intent) }
-                        }
-                    }
-                }
+            is CommonAuthSheetIntent.Authorize -> handleAuthorize(intent)
+            is CommonAuthSheetIntent.ToggleSheet -> toggleSheet()
+            is CommonAuthSheetIntent.TogglePasswordVisible -> togglePasswordVisibility()
+            is CommonAuthSheetIntent.UpdateLogin -> updateLogin(intent.login)
+            is CommonAuthSheetIntent.UpdatePassword -> updatePassword(intent.password)
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.handleAuthorize(intent: CommonAuthSheetIntent.Authorize) {
+        val authState = authSheetLens.get(state.value)
+        val login = authState.login
+        val password = authState.password
+
+        coroutineScope.launch(context = dispatcherIo) {
+            updateAuthSheet {
+                it.copy(
+                    isAuthSheetVisible = false,
+                    isDataIncorrect = false,
+                )
             }
-            CommonAuthSheetIntent.ToggleSheet -> {
-                updateState {
-                    authSheetLens.modify(source = this) {
-                        it.copy(isAuthSheetVisible = !it.isAuthSheetVisible)
-                    }
-                }
+
+            makeNetworkCall(
+                loadingLens = authSheetLens.loadingState,
+                callDelay = 1_000L,
+                call = { authUseCase(login, password) }
+            ).onException { exception ->
+                handleAuthError(exception, intent)
             }
-            CommonAuthSheetIntent.TogglePasswordVisible -> {
-                updateState {
-                    authSheetLens.modify(source = this) {
-                        it.copy(isPasswordVisible = !it.isPasswordVisible)
-                    }
-                }
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.handleAuthError(
+        exception: RequestException,
+        retryIntent: CommonAuthSheetIntent
+    ) {
+        if (exception == RequestException.IncorrectCredentials) {
+            updateAuthSheet {
+                it.copy(
+                    isAuthSheetVisible = true,
+                    isDataIncorrect = true,
+                )
             }
-            is CommonAuthSheetIntent.UpdateLogin -> {
-                updateState {
-                    authSheetLens.modify(source = this) {
-                        it.copy(
-                            login = intent.login,
-                            isDataIncorrect = false,
-                        )
-                    }
-                }
-            }
-            is CommonAuthSheetIntent.UpdatePassword -> {
-                updateState {
-                    authSheetLens.modify(source = this) {
-                        it.copy(
-                            password = intent.password,
-                            isDataIncorrect = false,
-                        )
-                    }
-                }
-            }
+        } else {
+            postExceptionSnackbar(
+                exception = exception.toBrbxText(),
+                dismissable = true,
+            ) { process(retryIntent) }
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.toggleSheet() {
+        updateAuthSheet {
+            it.copy(isAuthSheetVisible = !it.isAuthSheetVisible)
+        }
+    }
+    private fun LibertyFlowMviScope<State>.togglePasswordVisibility() {
+        updateAuthSheet {
+            it.copy(isPasswordVisible = !it.isPasswordVisible)
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.updateLogin(login: String) {
+        updateAuthSheet {
+            it.copy(
+                login = login,
+                isDataIncorrect = false,
+            )
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.updatePassword(password: String) {
+        updateAuthSheet {
+            it.copy(
+                password = password,
+                isDataIncorrect = false,
+            )
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.updateAuthSheet(
+        modifier: (CommonAuthSheetState) -> CommonAuthSheetState
+    ) {
+        updateState {
+            authSheetLens.modify(source = this, map = modifier)
         }
     }
 }

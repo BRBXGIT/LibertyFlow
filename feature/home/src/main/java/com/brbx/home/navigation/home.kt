@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.brbx.common.composable.auth_sheet.CommonAuthSheet
 import com.brbx.common.composable.screen.LibertyFlowScreen
 import com.brbx.common.composable.screen.PagingHandler
 import com.brbx.home.composable.HomeScreenScaffold
@@ -24,10 +25,22 @@ fun NavGraphBuilder.home(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val catalog = state.catalog.pagingData.collectAsLazyPagingItems()
 
+    val dispatchIntent = viewModel::dispatchIntent
+
     if (state.filtersSheet.isVisible) {
         HomeFiltersSheet(
             filters = state.filtersSheet,
-            dispatchIntent = viewModel::dispatchIntent,
+            dispatchIntent = dispatchIntent,
+        )
+    }
+
+    if (state.authSheetState.isAuthSheetVisible) {
+        CommonAuthSheet(
+            authSheetState = state.authSheetState,
+            dispatchCommonEffect = viewModel::dispatchCommonEffect,
+            dispatchIntent = { authIntent ->
+                viewModel.dispatchIntent(HomeIntent.AuthSheet(authIntent))
+            },
         )
     }
 

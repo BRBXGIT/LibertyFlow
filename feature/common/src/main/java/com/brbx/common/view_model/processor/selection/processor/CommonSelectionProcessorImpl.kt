@@ -8,11 +8,11 @@ import com.brbx.common.utils.toggle
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionState
 import com.brbx.common.view_model.processor.selection.model.SelectionAction
-import com.brbx.common.view_model.processor.selection.model.loadingState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.makeNetworkCall
 import com.brbx.common.view_model.view_model.postExceptionSnackbar
 import com.brbx.common.view_model.view_model.postLoadingSnackbar
+import com.brbx.common.view_model.view_model.removeLoadingSnackbar
 import com.brbx.domain.network.model.result.DomainRequestResult
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.domain.network.model.result.onException
@@ -22,7 +22,6 @@ import com.brbx.domain.network.user.lists.collections.collections.use_case.UserA
 import com.brbx.domain.network.user.lists.collections.collections.use_case.UserDeleteFromCollectionUseCase
 import com.brbx.domain.network.user.lists.favorites.favorites.use_case.UserAddToFavoritesUseCase
 import com.brbx.domain.network.user.lists.favorites.favorites.use_case.UserDeleteFromFavoritesUseCase
-import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.toBrbxText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -34,34 +33,35 @@ internal class CommonSelectionProcessorImpl<State>(
     private val deleteFromCollectionUseCase: UserDeleteFromCollectionUseCase,
     private val selectionLens: Lens<State, CommonSelectionState>,
     private val dispatcherIo: CoroutineDispatcher,
+    private val onUnauthorized: LibertyFlowMviScope<State>.() -> Unit = {},
 ) : CommonSelectionProcessor<State> {
 
     override fun LibertyFlowMviScope<State>.process(intent: CommonSelectionIntent) {
         when (intent) {
-            is CommonSelectionIntent.Selection -> processSelection(intent)
-            is CommonSelectionIntent.Lists -> processLists(intent)
+            is CommonSelectionIntent.Selection -> handleSelection(intent)
+            is CommonSelectionIntent.Lists -> handleLists(intent)
         }
     }
 
-    private fun LibertyFlowMviScope<State>.processSelection(intent: CommonSelectionIntent.Selection) {
+    private fun LibertyFlowMviScope<State>.handleSelection(intent: CommonSelectionIntent.Selection) {
         when (intent) {
-            CommonSelectionIntent.Selection.DropSelection -> updateState {
-                selectionLens.modify(source = this) { it.copy(ids = emptySet()) }
+            CommonSelectionIntent.Selection.DropSelection -> updateSelectionState {
+                it.copy(ids = emptySet())
             }
-            is CommonSelectionIntent.Selection.ToggleItemSelected -> updateState {
-                selectionLens.modify(source = this) { it.copy(ids = it.ids.toggle(element = intent.id)) }
+            is CommonSelectionIntent.Selection.ToggleItemSelected -> updateSelectionState {
+                it.copy(ids = it.ids.toggle(element = intent.id))
             }
         }
     }
 
-    private fun LibertyFlowMviScope<State>.processLists(intent: CommonSelectionIntent.Lists) {
+    private fun LibertyFlowMviScope<State>.handleLists(intent: CommonSelectionIntent.Lists) {
         when (intent) {
-            is CommonSelectionIntent.Lists.Favorites -> processFavorites(intent)
-            is CommonSelectionIntent.Lists.Collection -> processCollection(intent)
+            is CommonSelectionIntent.Lists.Favorites -> handleFavorites(intent)
+            is CommonSelectionIntent.Lists.Collection -> handleCollection(intent)
         }
     }
 
-    private fun LibertyFlowMviScope<State>.processFavorites(intent: CommonSelectionIntent.Lists.Favorites) {
+    private fun LibertyFlowMviScope<State>.handleFavorites(intent: CommonSelectionIntent.Lists.Favorites) {
         executeRequest(
             intent = intent,
             loadingSnackbarRes = when (intent.action) {
@@ -76,7 +76,7 @@ internal class CommonSelectionProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.processCollection(intent: CommonSelectionIntent.Lists.Collection) {
+    private fun LibertyFlowMviScope<State>.handleCollection(intent: CommonSelectionIntent.Lists.Collection) {
         when (intent) {
             is CommonSelectionIntent.Lists.Collection.Interact -> {
                 executeRequest(
@@ -93,13 +93,13 @@ internal class CommonSelectionProcessorImpl<State>(
                     }
                 }
             }
-            CommonSelectionIntent.Lists.Collection.ToggleSheet -> {
-                updateState {
-                    selectionLens.modify(source = this) {
-                        it.copy(isCollectionsSheetVisible = !it.isCollectionsSheetVisible)
-                    }
-                }
-            }
+            CommonSelectionIntent.Lists.Collection.ToggleSheet -> toggleCollectionsSheet()
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.toggleCollectionsSheet() {
+        updateSelectionState {
+            it.copy(isCollectionsSheetVisible = !it.isCollectionsSheetVisible)
         }
     }
 
@@ -113,18 +113,17 @@ internal class CommonSelectionProcessorImpl<State>(
 
         val loadingSnackbarId = "list_loading_snackbar_id"
         coroutineScope.launch(context = dispatcherIo) {
-            updateState { selectionLens.modify(source = this) { it.copy(ids = emptySet()) } }
+            updateSelectionState { it.copy(ids = emptySet()) }
             postLoadingSnackbar(text = loadingSnackbarRes.toBrbxText())
 
             makeNetworkCall(
-                loadingLens = selectionLens.loadingState,
                 callDelay = 2_000,
                 call = { request(selectedIds) }
             ).onSuccess {
-                postCommonEffect(BrbxEffect.RemoveSnackbarById(loadingSnackbarId))
+                removeLoadingSnackbar(loadingSnackbarId)
             } onException { exception ->
-                postCommonEffect(BrbxEffect.RemoveSnackbarById(loadingSnackbarId))
-                updateState { selectionLens.modify(source = this) { it.copy(ids = selectedIds.toSet()) } }
+                removeLoadingSnackbar(loadingSnackbarId)
+                updateSelectionState { it.copy(ids = selectedIds.toSet()) }
                 postExceptionSnackbar(
                     exception = exception.toBrbxText(),
                     dismissable = true,
@@ -133,8 +132,22 @@ internal class CommonSelectionProcessorImpl<State>(
                     } else {
                         CommonStrings.retry.toBrbxText()
                     },
-                ) { process(intent) }
+                ) {
+                    if (exception == RequestException.Unauthorized) {
+                        onUnauthorized()
+                    } else {
+                        process(intent)
+                    }
+                }
             }
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.updateSelectionState(
+        modifier: (CommonSelectionState) -> CommonSelectionState
+    ) {
+        updateState {
+            selectionLens.modify(source = this, map = modifier)
         }
     }
 }

@@ -11,4 +11,5 @@ import org.koin.dsl.module
 internal val tileInteractorsModule = module {
     singleOf(constructor = ::StubTileInteractorImpl) { bind<StubTileInteractor>() }
     singleOf(constructor = ::LatestWatchedTileInteractorImpl) { bind<LatestWatchedTileInteractor>() }
+    singleOf(constructor = ::HomeTileInteractorImpl) { bind<HomeTileInteractor>() }
 }

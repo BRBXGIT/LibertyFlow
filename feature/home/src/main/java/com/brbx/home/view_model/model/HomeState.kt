@@ -6,6 +6,7 @@ import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.DefaultTile
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
+import com.brbx.common.view_model.processor.auth.model.CommonAuthSheetState
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.paging.model.CommonPagingState
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
@@ -19,8 +20,9 @@ internal data class HomeState(
     val catalog: CommonPagingState<AnimeItem> = CommonPagingState(),
     val randomAnime: CommonLoadingState = CommonLoadingState(),
     val search: CommonSearchState = CommonSearchState(),
-    val filtersSheet: FiltersSheet = FiltersSheet(),
+    val authSheetState: CommonAuthSheetState = CommonAuthSheetState(),
     val selection: CommonSelectionState = CommonSelectionState(),
+    val filtersSheet: FiltersSheet = FiltersSheet(),
     val tile: DefaultTile? = null,
 ) {
     @Immutable

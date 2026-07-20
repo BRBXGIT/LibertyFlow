@@ -18,14 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.brbx.common.composable.selection_menu.SelectionToolbar
-import com.brbx.common.composable.selection_menu.SelectionType
+import com.brbx.common.composable.selection_toolbar.CommonSelectionToolbar
+import com.brbx.common.composable.selection_toolbar.SelectionType
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Tile
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
-import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
 import com.brbx.design_system.component.top_bar.SearchableTopBar
 import com.brbx.design_system.container.ShimmerScaffold
@@ -156,27 +155,16 @@ private fun HomeSelectionToolbar(
         val loadingCondition = !loadingState.isLoading && !loadingState.isException
         isInSelectionMode || (loadingCondition && scrollCondition)
     }
-    val selectionType = remember { SelectionType.AddToAnyList }
-    SelectionToolbar(
-        modifier = modifier,
-        type = selectionType,
+    CommonSelectionToolbar(
+        type = SelectionType.AddToAnyList,
         isInSelectionMode = isInSelectionMode,
-        onSelectionModeChange = { selecting ->
-            if (!selecting) {
-                dispatchIntent(
-                    HomeIntent.Selection(action = CommonSelectionIntent.Selection.DropSelection)
-                )
-            }
-        },
         isFabVisible = isFabVisible,
-        onCollectionsClick = {
-            dispatchIntent(HomeIntent.Selection(action = selectionType.collectionsIntent))
-        },
-        onFavoritesClick = {
-            dispatchIntent(HomeIntent.Selection(action = selectionType.favoritesIntent))
-        },
-        onFabClick = { dispatchIntent(HomeIntent.Filters.ToggleSheet) },
         fabIcon = OutlineSolar.DesignTools.Filters.toBrbxIcon(),
+        modifier = modifier,
+        onFabClick = { dispatchIntent(HomeIntent.Filters.ToggleSheet) },
+        dispatchIntent = { selectionIntent ->
+            dispatchIntent(HomeIntent.Selection(selectionIntent))
+        },
     )
 }
 

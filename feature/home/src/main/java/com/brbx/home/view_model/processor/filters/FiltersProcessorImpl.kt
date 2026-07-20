@@ -2,12 +2,15 @@ package com.brbx.home.view_model.processor.filters
 
 import arrow.optics.copy
 import com.brbx.common.model.common.map.toUi
+import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.utils.toggle
 import com.brbx.common.view_model.processor.loading.model.isException
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.makeNetworkCall
 import com.brbx.domain.network.genres.get.use_case.GetAnimeGenresUseCase
+import com.brbx.domain.network.model.common.Season
+import com.brbx.domain.network.model.common.Sorting
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.home.view_model.model.HomeIntent
@@ -33,48 +36,95 @@ internal class FiltersProcessorImpl(
 
     override fun LibertyFlowMviScope<HomeState>.process(intent: HomeIntent.Filters) {
         when (intent) {
-            HomeIntent.Filters.ToggleSheet -> updateState {
-                copy { HomeState.filtersSheet.isVisible transform { !it } }
+            HomeIntent.Filters.ToggleSheet -> toggleFiltersSheet()
+            HomeIntent.Filters.ToggleOngoing -> toggleOngoing()
+            is HomeIntent.Filters.UpdateYears -> updateYears(intent.from, intent.to)
+            is HomeIntent.Filters.UpdateSorting -> updateSorting(intent.sorting)
+            is HomeIntent.Filters.ToggleGenre -> toggleGenre(intent.genre)
+            is HomeIntent.Filters.ToggleSeason -> toggleSeason(intent.season)
+            HomeIntent.Filters.LoadGenres -> loadGenres()
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.toggleFiltersSheet() {
+        updateState {
+            copy {
+                HomeState.filtersSheet.isVisible transform Boolean::not
             }
-            HomeIntent.Filters.ToggleOngoing -> updateState {
-                copy { HomeState.filtersSheet.filters.isOngoing transform { !it } }
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.toggleOngoing() {
+        updateState {
+            copy {
+                HomeState.filtersSheet.filters.isOngoing transform Boolean::not
             }
-            is HomeIntent.Filters.UpdateYears -> updateState {
-                copy { HomeState.filtersSheet.filters.years set Years(intent.from, intent.to) }
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.updateYears(from: Int, to: Int) {
+        updateState {
+            copy {
+                HomeState.filtersSheet.filters.years set Years(from, to)
             }
-            is HomeIntent.Filters.UpdateSorting -> updateState {
-                copy { HomeState.filtersSheet.filters.sorting set intent.sorting }
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.updateSorting(sorting: Sorting) {
+        updateState {
+            copy {
+                HomeState.filtersSheet.filters.sorting set sorting
             }
-            is HomeIntent.Filters.ToggleGenre -> updateState {
-                copy {
-                    HomeState.filtersSheet.filters.genresState.selectedGenres transform {
-                        it.toggle(element = intent.genre)
-                    }
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.toggleGenre(genre: Genre) {
+        updateState {
+            copy {
+                HomeState.filtersSheet.filters.genresState.selectedGenres transform {
+                    it.toggle(element = genre)
                 }
             }
-            is HomeIntent.Filters.ToggleSeason -> updateState {
-                copy {
-                    HomeState.filtersSheet.filters.seasons transform {
-                        it.toggle(element = intent.season)
-                    }
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.toggleSeason(season: Season) {
+        updateState {
+            copy {
+                HomeState.filtersSheet.filters.seasons transform {
+                    it.toggle(season)
                 }
             }
-            is HomeIntent.Filters.LoadGenres -> {
-                coroutineScope.launch(context = dispatcherIo) {
-                    makeNetworkCall(
-                        loadingLens = HomeState.filtersSheet.filters.genresState.loading,
-                        call = { genresUseCase() },
-                    ).onSuccess { genres ->
-                        val mapped = genres.map { genre -> genre.toUi() }.toSet()
-                        updateState {
-                            copy { HomeState.filtersSheet.filters.genresState.genres set mapped }
-                        }
-                    } onException {
-                        updateState {
-                            copy { HomeState.filtersSheet.filters.genresState.loading.isException set true }
-                        }
-                    }
-                }
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.loadGenres() {
+        coroutineScope.launch(dispatcherIo) {
+
+            makeNetworkCall(
+                loadingLens = HomeState.filtersSheet.filters.genresState.loading,
+                call = genresUseCase::invoke,
+            ).onSuccess { genres ->
+                val mapped = genres.map { genre -> genre.toUi() }
+                onGenresLoaded(genres = mapped)
+            } onException {
+                onGenresLoadingFailed()
+            }
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.onGenresLoaded(genres: List<Genre>) {
+        updateState {
+            copy {
+                HomeState.filtersSheet.filters.genresState.genres set genres.toSet()
+            }
+        }
+    }
+
+    private fun LibertyFlowMviScope<HomeState>.onGenresLoadingFailed() {
+        updateState {
+            copy {
+                HomeState.filtersSheet.filters.genresState.loading.isException set true
             }
         }
     }

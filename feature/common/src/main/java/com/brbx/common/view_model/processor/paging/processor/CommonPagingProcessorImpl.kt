@@ -27,88 +27,73 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     override fun LibertyFlowMviScope<State>.process(intent: CommonPagingIntent) {
         when (intent) {
-            CommonPagingIntent.SetUpPaging -> {
-                val pagingFlow = state
-                    .map { paramsSelector(it) }
-                    .distinctUntilChanged()
-                    .debounce(timeout = debounceMillis.milliseconds)
-                    .flatMapLatest { params ->
-                        pagingDataFactory(params)
-                    }
-                    .cachedIn(coroutineScope)
+            is CommonPagingIntent.SetUpPaging -> handleSetUpPaging()
+            is CommonPagingIntent.Loading.LoadingIntent.SetLoading -> setLoading(intent.loading)
+            is CommonPagingIntent.Loading.LoadingIntent.SetException -> setLoadingException(intent)
+            is CommonPagingIntent.Loading.RefreshIntent.SetRefreshing -> setRefreshing(intent.refreshing)
+            is CommonPagingIntent.Loading.RefreshIntent.SetException -> setRefreshException(intent)
+        }
+    }
 
-                updateState {
-                    pagingLens.modify(source = this) { it.copy(pagingData = pagingFlow) }
-                }
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    private fun LibertyFlowMviScope<State>.handleSetUpPaging() {
+        val pagingFlow = state
+            .map { paramsSelector(it) }
+            .distinctUntilChanged()
+            .debounce(timeout = debounceMillis.milliseconds)
+            .flatMapLatest { params -> pagingDataFactory(params) }
+            .cachedIn(coroutineScope)
+
+        updatePagingState {
+            it.copy(pagingData = pagingFlow)
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.setLoading(isLoading: Boolean) = updatePagingState {
+        it.copy(loading = it.loading.copy(isLoading = isLoading))
+    }
+
+    private fun LibertyFlowMviScope<State>.setLoadingException(
+        intent: CommonPagingIntent.Loading.LoadingIntent.SetException
+    ) {
+        updatePagingState {
+            it.copy(loading = it.loading.copy(isException = intent.isException))
+        }
+
+        intent.exception?.let { exception ->
+            postExceptionSnackbar(exception = exception.toBrbxText()) {
+                process(intent = CommonPagingIntent.SetUpPaging)
             }
-            is CommonPagingIntent.Loading -> {
-                when (intent) {
-                    is CommonPagingIntent.Loading.LoadingIntent -> {
-                        when (intent) {
-                            is CommonPagingIntent.Loading.LoadingIntent.SetLoading -> {
-                                updateState {
-                                    pagingLens.modify(source = this) {
-                                        it.copy(
-                                            loading =
-                                                it.loading.copy(isLoading = intent.loading)
-                                        )
-                                    }
-                                }
-                            }
-                            is CommonPagingIntent.Loading.LoadingIntent.SetException -> {
-                                updateState {
-                                    pagingLens.modify(source = this) {
-                                        it.copy(
-                                            loading =
-                                                it.loading.copy(isException = intent.isException)
-                                        )
-                                    }
-                                }
-                                val exception = intent.exception
-                                if (exception != null) {
-                                    postExceptionSnackbar(
-                                        exception = exception.toBrbxText(),
-                                    ) { process(intent = CommonPagingIntent.SetUpPaging) }
-                                }
-                            }
-                        }
-                    }
-                    is CommonPagingIntent.Loading.RefreshIntent -> {
-                        when (intent) {
-                            is CommonPagingIntent.Loading.RefreshIntent.SetException -> {
-                                updateState {
-                                    pagingLens.modify(source = this) {
-                                        it.copy(
-                                            refreshing =
-                                                it.refreshing.copy(isException = intent.isException)
-                                        )
-                                    }
-                                }
-                                val exception = intent.exception
-                                if (exception != null) {
-                                    if (intent.withRetry) {
-                                        postExceptionSnackbar(
-                                            exception = exception.toBrbxText(),
-                                        ) { process(intent = CommonPagingIntent.SetUpPaging) }
-                                    } else {
-                                        postExceptionSnackbar(exception = exception.toBrbxText())
-                                    }
-                                }
-                            }
-                            is CommonPagingIntent.Loading.RefreshIntent.SetRefreshing -> {
-                                updateState {
-                                    pagingLens.modify(source = this) {
-                                        it.copy(
-                                            refreshing =
-                                                it.refreshing.copy(isLoading = intent.refreshing)
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.setRefreshing(isRefreshing: Boolean) = updatePagingState {
+        it.copy(refreshing = it.refreshing.copy(isLoading = isRefreshing))
+    }
+
+    private fun LibertyFlowMviScope<State>.setRefreshException(
+        intent: CommonPagingIntent.Loading.RefreshIntent.SetException
+    ) {
+        updatePagingState {
+            it.copy(refreshing = it.refreshing.copy(isException = intent.isException))
+        }
+
+        intent.exception?.let { exception ->
+            if (intent.withRetry) {
+                postExceptionSnackbar(exception = exception.toBrbxText()) {
+                    process(intent = CommonPagingIntent.SetUpPaging)
                 }
+            } else {
+                postExceptionSnackbar(exception = exception.toBrbxText())
             }
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.updatePagingState(
+        modifier: (CommonPagingState<PagingItem>) -> CommonPagingState<PagingItem>
+    ) {
+        updateState {
+            pagingLens.modify(source = this, map = modifier)
         }
     }
 }

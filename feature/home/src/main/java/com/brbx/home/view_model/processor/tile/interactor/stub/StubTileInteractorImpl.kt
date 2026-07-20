@@ -9,29 +9,35 @@ import com.brbx.ui_compose.common.toBrbxText
 import dev.chiksmedina.solar.BoldSolar
 import dev.chiksmedina.solar.bold.DesignTools
 import dev.chiksmedina.solar.bold.designtools.Pallete2
+import kotlin.random.Random
 
 internal class StubTileInteractorImpl : StubTileInteractor {
 
-    override suspend fun getTile(): DefaultTile? {
-        val random = (1..10).random()
-        return if (random < 8) {
-            DefaultTile(
-                title = HomeStrings.theme_tile_title.toBrbxText(),
-                description = HomeStrings.theme_tile_description.toBrbxText(),
-                icon = BoldSolar.DesignTools.Pallete2.toBrbxIcon(),
-                precollection = Tile.Precollection(
-                    label = HomeStrings.theme_tile_precollection_text.toBrbxText(),
-                ),
-            )
+    override suspend fun getTile(): DefaultTile {
+        return if (Random.nextInt(until = 10) < 8) {
+            createThemeTile()
         } else {
-            DefaultTile(
-                title = HomeStrings.powered_by_ani_liberty_tile_title.toBrbxText(),
-                description = HomeStrings.powered_by_ani_liberty_tile_description.toBrbxText(),
-                icon = LibertyFlowIcons.Multicolored.AniLiberty.toBrbxIcon(),
-                precollection = Tile.Precollection(
-                    label = HomeStrings.powered_by_ani_liberty_tile_precollection_text.toBrbxText(),
-                ),
-            )
+            createAniLibertyTile()
         }
     }
+
+    private fun createThemeTile(): DefaultTile =
+        DefaultTile(
+            title = HomeStrings.theme_tile_title.toBrbxText(),
+            description = HomeStrings.theme_tile_description.toBrbxText(),
+            icon = BoldSolar.DesignTools.Pallete2.toBrbxIcon(),
+            precollection = Tile.Precollection(
+                label = HomeStrings.theme_tile_precollection_text.toBrbxText(),
+            ),
+        )
+
+    private fun createAniLibertyTile(): DefaultTile =
+        DefaultTile(
+            title = HomeStrings.powered_by_ani_liberty_tile_title.toBrbxText(),
+            description = HomeStrings.powered_by_ani_liberty_tile_description.toBrbxText(),
+            icon = LibertyFlowIcons.Multicolored.AniLiberty.toBrbxIcon(),
+            precollection = Tile.Precollection(
+                label = HomeStrings.powered_by_ani_liberty_tile_precollection_text.toBrbxText(),
+            ),
+        )
 }

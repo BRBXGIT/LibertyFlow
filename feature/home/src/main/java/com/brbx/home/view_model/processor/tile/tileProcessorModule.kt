@@ -7,8 +7,7 @@ import org.koin.dsl.module
 internal val tileProcessorModule = module {
     single<TileProcessor> {
         TileProcessorImpl(
-            stubInteractor = get(),
-            latestWatchedTileInteractor = get(),
+            homeTileInteractor = get(),
             dispatcherIo = getDispatcherIo(),
         )
     }

@@ -11,12 +11,20 @@ internal class CommonSearchProcessorImpl<State>(
 
     override fun LibertyFlowMviScope<State>.process(intent: CommonSearchIntent) {
         when (intent) {
-            CommonSearchIntent.ToggleSearching -> updateState {
-                searchLens.modify(source = this) { it.copy(isSearching = !it.isSearching) }
+            CommonSearchIntent.ToggleSearching -> updateSearchState {
+                it.copy(isSearching = !it.isSearching)
             }
-            is CommonSearchIntent.UpdateSearch -> updateState {
-                searchLens.modify(source = this) { it.copy(search = intent.search) }
+            is CommonSearchIntent.UpdateSearch -> updateSearchState {
+                it.copy(search = intent.search)
             }
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.updateSearchState(
+        modifier: (CommonSearchState) -> CommonSearchState
+    ) {
+        updateState {
+            searchLens.modify(source = this, map = modifier)
         }
     }
 }

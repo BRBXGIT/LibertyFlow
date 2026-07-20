@@ -31,6 +31,21 @@ inline fun LibertyFlowMviScope<*>.postExceptionSnackbar(
     )
 }
 
+fun LibertyFlowMviScope<*>.postExceptionSnackbar(
+    exception: BrbxText,
+    dismissable: Boolean = true,
+) {
+    postCommonEffect(
+        BrbxEffect.ShowSnackbar(
+            config = DefaultBrbxInfoSnackbarConfig(
+                text = exception,
+                duration = BrbxSnackbarDuration.Infinite,
+                isDismissable = dismissable,
+            )
+        )
+    )
+}
+
 fun LibertyFlowMviScope<*>.postLoadingSnackbar(
     text: BrbxText,
     loadingSnackbarId: String = "loading_snackbar_id",
@@ -47,29 +62,24 @@ fun LibertyFlowMviScope<*>.postLoadingSnackbar(
     )
 }
 
-fun LibertyFlowMviScope<*>.postExceptionSnackbar(
-    exception: BrbxText,
-    dismissable: Boolean = true,
+fun LibertyFlowMviScope<*>.removeLoadingSnackbar(
+    loadingSnackbarId: String = "loading_snackbar_id",
 ) {
-    postCommonEffect(
-        BrbxEffect.ShowSnackbar(
-            config = DefaultBrbxInfoSnackbarConfig(
-                text = exception,
-                duration = BrbxSnackbarDuration.Infinite,
-                isDismissable = dismissable,
-            )
-        )
-    )
+    postCommonEffect(BrbxEffect.RemoveSnackbarById(loadingSnackbarId))
 }
 
 suspend inline fun <State, R> LibertyFlowMviScope<State>.makeNetworkCall(
-    loadingLens: Lens<State, CommonLoadingState>,
+    loadingLens: Lens<State, CommonLoadingState>? = null,
     callDelay: Long = 0L,
     crossinline call: suspend () -> R,
 ): R {
-    updateState { loadingLens.modify(source = this) { it.copy(isLoading = true, isException = false) } }
+    loadingLens?.let {
+        updateState { loadingLens.modify(source = this) { it.copy(isLoading = true, isException = false) } }
+    }
     val result = call()
     delay(duration = callDelay.milliseconds)
-    updateState { loadingLens.modify(source = this) { it.copy(isLoading = false) } }
+    loadingLens?.let {
+        updateState { loadingLens.modify(source = this) { it.copy(isLoading = false) } }
+    }
     return result
 }

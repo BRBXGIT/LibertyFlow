@@ -1,6 +1,7 @@
 package com.brbx.home.view_model.view_model
 
 import androidx.compose.runtime.Stable
+import com.brbx.common.view_model.processor.auth.processor.CommonAuthSheetProcessor
 import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.common.view_model.processor.paging.processor.CommonPagingProcessor
 import com.brbx.common.view_model.processor.search.processor.CommonSearchProcessor
@@ -17,6 +18,7 @@ internal class HomeViewModel(
     private val searchProcessor: CommonSearchProcessor<HomeState>,
     private val catalogProcessor: CommonPagingProcessor<HomeState>,
     private val selectionProcessor: CommonSelectionProcessor<HomeState>,
+    private val authProcessor: CommonAuthSheetProcessor<HomeState>,
     private val tileProcessor: TileProcessor,
     private val randomAnimeProcessor: RandomAnimeProcessor,
     private val filtersProcessor: FiltersProcessor,
@@ -29,6 +31,9 @@ internal class HomeViewModel(
 
     override fun dispatchIntent(intent: HomeIntent) {
         when (intent) {
+            is HomeIntent.AuthSheet -> with(receiver = authProcessor) {
+                mviScope.process(intent.action)
+            }
             is HomeIntent.Search -> with(receiver = searchProcessor) {
                 mviScope.process(intent.action)
             }

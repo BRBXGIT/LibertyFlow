@@ -11,12 +11,20 @@ internal class CommonLoadingProcessorImpl<State>(
 
     override fun LibertyFlowMviScope<State>.process(intent: CommonLoadingIntent) {
         when (intent) {
-            is CommonLoadingIntent.SetException -> updateState {
-                loadingLens.modify(source = this) { it.copy(isException = intent.exception) }
+            is CommonLoadingIntent.SetException -> updateLoadingState {
+                it.copy(isException = intent.exception)
             }
-            is CommonLoadingIntent.SetLoading -> updateState {
-                loadingLens.modify(source = this) { it.copy(isLoading = intent.loading) }
+            is CommonLoadingIntent.SetLoading -> updateLoadingState {
+                it.copy(isLoading = intent.loading)
             }
+        }
+    }
+
+    private fun LibertyFlowMviScope<State>.updateLoadingState(
+        modifier: (CommonLoadingState) -> CommonLoadingState
+    ) {
+        updateState {
+            loadingLens.modify(source = this, map = modifier)
         }
     }
 }
