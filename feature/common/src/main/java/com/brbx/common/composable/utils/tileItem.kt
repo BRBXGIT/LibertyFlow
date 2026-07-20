@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.ui.Modifier
 import com.brbx.common.model.common.model.Tile
-import com.brbx.design_system.component.tile.Tile
+import com.brbx.design_system.component.card.tile.Tile
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 
 fun LazyGridScope.tileItem(

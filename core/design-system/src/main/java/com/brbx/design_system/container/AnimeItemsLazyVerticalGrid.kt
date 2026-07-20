@@ -14,7 +14,7 @@ import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.brbx.design_system.common.DesignConstants
-import com.brbx.design_system.component.anime_card.AnimeCardConstants
+import com.brbx.design_system.component.card.anime_card.AnimeCardConstants
 import com.brbx.ui_compose.theme.bDimens
 
 @Composable

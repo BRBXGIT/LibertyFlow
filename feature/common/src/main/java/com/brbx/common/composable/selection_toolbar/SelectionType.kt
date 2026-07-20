@@ -2,6 +2,7 @@ package com.brbx.common.composable.selection_toolbar
 
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.common.view_model.processor.selection.model.SelectionAction
+import com.brbx.domain.network.model.common.Collection
 import com.brbx.ui_compose.common.BrbxIcon
 import com.brbx.ui_compose.common.toBrbxIcon
 import dev.chiksmedina.solar.OutlineSolar
@@ -37,3 +38,21 @@ enum class SelectionType(
         collectionsIntent = CommonSelectionIntent.Lists.Collection.ToggleSheet,
     ),
 }
+
+fun SelectionType.collectionsInteractionIntent(
+    collection: Collection,
+): CommonSelectionIntent.Lists.Collection.Interact =
+    when (this) {
+        SelectionType.DeleteFromCollectionAddToFavorites -> {
+            CommonSelectionIntent.Lists.Collection.Interact(
+                collection = collection,
+                action = SelectionAction.Delete,
+            )
+        }
+        else -> {
+            CommonSelectionIntent.Lists.Collection.Interact(
+                collection = collection,
+                action = SelectionAction.Add,
+            )
+        }
+    }

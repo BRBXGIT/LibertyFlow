@@ -1,6 +1,6 @@
 package com.brbx.libertyflow.navigation
 
-import com.brbx.design_system.component.nav_bar.model.NavBarItemModel
+import com.brbx.design_system.component.bar.nav_bar.model.NavBarItemModel
 import com.brbx.home.navigation.HomeRoute
 import com.brbx.libertyflow.model.AppDrawable
 import com.brbx.libertyflow.model.AppString

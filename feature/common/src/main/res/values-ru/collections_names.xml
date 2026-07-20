@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="collection_planned">В планах</string>
+    <string name="collection_watched">Просмотрено</string>
+    <string name="collection_watching">Смотрю</string>
+    <string name="collection_postponed">Отложено</string>
+    <string name="collection_abandoned">Брошено</string>
+</resources>

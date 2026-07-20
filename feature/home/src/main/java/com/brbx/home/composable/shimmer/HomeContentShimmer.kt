@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brbx.common.composable.utils.animeItemsShimmer
 import com.brbx.design_system.component.rainbow_button.RainbowButtonShimmer
-import com.brbx.design_system.component.tile.TileShimmer
+import com.brbx.design_system.component.card.tile.TileShimmer
 import com.brbx.design_system.container.AnimeItemsLazyVerticalGrid
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 import com.brbx.ui_compose.theme.BrbxTheme

@@ -80,6 +80,7 @@ internal class CommonSelectionProcessorImpl<State>(
     private fun LibertyFlowMviScope<State>.handleCollection(intent: CommonSelectionIntent.Lists.Collection) {
         when (intent) {
             is CommonSelectionIntent.Lists.Collection.Interact -> {
+                toggleCollectionsSheet()
                 executeRequest(
                     intent = intent,
                     loadingSnackbarRes = when (intent.action) {

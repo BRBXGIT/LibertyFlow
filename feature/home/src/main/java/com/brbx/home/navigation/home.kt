@@ -8,9 +8,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.brbx.common.composable.auth_sheet.CommonAuthSheet
+import com.brbx.common.composable.bottom_sheet.auth_sheet.CommonAuthSheet
+import com.brbx.common.composable.bottom_sheet.collections_sheet.CollectionsSheet
 import com.brbx.common.composable.screen.LibertyFlowScreen
 import com.brbx.common.composable.screen.PagingHandler
+import com.brbx.common.composable.selection_toolbar.collectionsInteractionIntent
+import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
+import com.brbx.home.common.HomeConstants
 import com.brbx.home.composable.HomeScreenScaffold
 import com.brbx.home.composable.content.filters_sheet.HomeFiltersSheet
 import com.brbx.home.view_model.model.HomeIntent
@@ -27,22 +31,35 @@ fun NavGraphBuilder.home(
 
     val dispatchIntent = viewModel::dispatchIntent
 
-    if (state.filtersSheet.isVisible) {
-        HomeFiltersSheet(
-            filters = state.filtersSheet,
-            dispatchIntent = dispatchIntent,
-        )
-    }
+    HomeFiltersSheet(
+        filters = state.filtersSheet,
+        dispatchIntent = dispatchIntent,
+    )
 
-    if (state.authSheetState.isAuthSheetVisible) {
-        CommonAuthSheet(
-            authSheetState = state.authSheetState,
-            dispatchCommonEffect = viewModel::dispatchCommonEffect,
-            dispatchIntent = { authIntent ->
-                viewModel.dispatchIntent(HomeIntent.AuthSheet(authIntent))
-            },
-        )
-    }
+    CommonAuthSheet(
+        authSheetState = state.authSheetState,
+        dispatchCommonEffect = viewModel::dispatchCommonEffect,
+        dispatchIntent = { authIntent ->
+            dispatchIntent(HomeIntent.AuthSheet(action = authIntent))
+        },
+    )
+
+    CollectionsSheet(
+        visible = state.selection.isCollectionsSheetVisible,
+        onItemClick = { collection ->
+            val selectionIntent = HomeConstants
+                .ToolbarSelectionType
+                .collectionsInteractionIntent(collection)
+            dispatchIntent(HomeIntent.Selection(action = selectionIntent))
+        },
+        onDismissRequest = {
+            dispatchIntent(
+                HomeIntent.Selection(
+                    action = CommonSelectionIntent.Lists.Collection.ToggleSheet
+                )
+            )
+        },
+    )
 
     LibertyFlowScreen(
         navController = navController,

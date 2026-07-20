@@ -49,6 +49,7 @@ internal fun HomeFiltersSheet(
     }
 
     LibertyFlowBottomSheet(
+        visible = filters.isVisible,
         modifier = modifier,
         onDismissRequest = { dispatchIntent(HomeIntent.Filters.ToggleSheet) }
     ) {

@@ -13,16 +13,19 @@ import com.brbx.ui_compose.theme.bShapes
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibertyFlowBottomSheet(
+    visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     state: SheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    ModalBottomSheet(
-        sheetState = state,
-        onDismissRequest = onDismissRequest,
-        modifier = modifier,
-        shape = bShapes.micro4,
-        content = content,
-    )
+    if (visible) {
+        ModalBottomSheet(
+            sheetState = state,
+            onDismissRequest = onDismissRequest,
+            modifier = modifier,
+            shape = bShapes.micro4,
+            content = content,
+        )
+    }
 }

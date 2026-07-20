@@ -19,15 +19,15 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.brbx.common.composable.selection_toolbar.CommonSelectionToolbar
-import com.brbx.common.composable.selection_toolbar.SelectionType
 import com.brbx.common.model.common.model.AnimeItem
 import com.brbx.common.model.common.model.Tile
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 import com.brbx.common.view_model.processor.search.model.CommonSearchIntent
 import com.brbx.common.view_model.processor.search.model.CommonSearchState
-import com.brbx.design_system.component.nav_bar.state.rememberInsetsWithNavBar
-import com.brbx.design_system.component.top_bar.SearchableTopBar
+import com.brbx.design_system.component.bar.nav_bar.state.rememberInsetsWithNavBar
+import com.brbx.design_system.component.bar.top_bar.SearchableTopBar
 import com.brbx.design_system.container.ShimmerScaffold
+import com.brbx.home.common.HomeConstants
 import com.brbx.home.common.HomeStrings
 import com.brbx.home.composable.content.HomeContent
 import com.brbx.home.composable.shimmer.HomeContentShimmer
@@ -156,7 +156,7 @@ private fun HomeSelectionToolbar(
         isInSelectionMode || (loadingCondition && scrollCondition)
     }
     CommonSelectionToolbar(
-        type = SelectionType.AddToAnyList,
+        type = HomeConstants.ToolbarSelectionType,
         isInSelectionMode = isInSelectionMode,
         isFabVisible = isFabVisible,
         fabIcon = OutlineSolar.DesignTools.Filters.toBrbxIcon(),

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,8 +33,11 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -68,6 +72,7 @@ data class AuthSheetTexts(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthSheet(
+    visible: Boolean,
     login: String,
     password: String,
     isPasswordVisible: Boolean,
@@ -87,6 +92,7 @@ fun AuthSheet(
     )
 
     LibertyFlowBottomSheet(
+        visible = visible,
         onDismissRequest = onDismissRequest,
         state = bottomSheetState,
         modifier = modifier
@@ -128,6 +134,8 @@ private fun AuthSheetHeader(
     onTogglePasswordVisibility: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -144,7 +152,11 @@ private fun AuthSheetHeader(
             isError = isDataIncorrect,
             label = texts.emailLabel,
             leadingIcon = OutlineSolar.Users.User,
-            keyboardType = KeyboardType.Email
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next,
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            )
         )
 
         val visualTransformation = remember(isPasswordVisible) {
@@ -159,6 +171,10 @@ private fun AuthSheetHeader(
             leadingIcon = OutlineSolar.Security.LockPassword,
             keyboardType = KeyboardType.Password,
             visualTransformation = visualTransformation,
+            imeAction = ImeAction.Done,
+            keyboardActions = KeyboardActions(
+                onDone = { focusManager.clearFocus() }
+            ),
             trailingIcon = {
                 PasswordTrailingIcon(
                     isPasswordVisible = isPasswordVisible,
@@ -180,6 +196,8 @@ private fun AuthTextField(
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
+    imeAction: ImeAction = ImeAction.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     TextField(
         value = value,
@@ -199,8 +217,10 @@ private fun AuthTextField(
         },
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = keyboardType
-        )
+            keyboardType = keyboardType,
+            imeAction = imeAction
+        ),
+        keyboardActions = keyboardActions
     )
 }
 

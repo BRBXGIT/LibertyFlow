@@ -1,16 +1,13 @@
 package com.brbx.common.composable.utils
 
 import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.brbx.common.model.common.model.AnimeItem
-import com.brbx.design_system.component.anime_card.AnimeCard
-import com.brbx.design_system.component.anime_card.AnimeCardShimmer
+import com.brbx.design_system.component.card.anime_card.AnimeCard
+import com.brbx.design_system.component.card.anime_card.AnimeCardShimmer
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.modifiers.brbxAnimateItem
 

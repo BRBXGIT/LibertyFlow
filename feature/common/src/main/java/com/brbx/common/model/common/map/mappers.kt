@@ -5,6 +5,7 @@ import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Name
 import com.brbx.common.model.common.model.Poster
 import com.brbx.common.model.common.model.Years
+import com.brbx.domain.network.model.common.DomainCollection
 import com.brbx.domain.network.model.common.DomainGenre
 import com.brbx.domain.network.model.common.DomainYears
 import com.brbx.domain.network.model.response.common.DomainAnimeItem
@@ -61,6 +62,15 @@ fun DomainAnimeItem.toUi(): AnimeItem =
         name = this.name.toUi(),
         posterPath = this.poster.toUi(),
     )
+
+fun DomainCollection.toBrbxText(): BrbxText =
+    when (this) {
+        DomainCollection.Planned -> R.string.collection_planned
+        DomainCollection.Watched -> R.string.collection_watched
+        DomainCollection.Watching -> R.string.collection_watching
+        DomainCollection.Postponed -> R.string.collection_postponed
+        DomainCollection.Abandoned -> R.string.collection_abandoned
+    }.toBrbxText()
 
 fun RequestException.toBrbxText(): BrbxText =
     when (this) {

@@ -11,9 +11,9 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.brbx.design_system.component.nav_bar.composable.NavBar
-import com.brbx.design_system.component.nav_bar.model.NavBarDestination
-import com.brbx.design_system.component.nav_bar.model.NavBarItemModel
+import com.brbx.design_system.component.bar.nav_bar.composable.NavBar
+import com.brbx.design_system.component.bar.nav_bar.model.NavBarDestination
+import com.brbx.design_system.component.bar.nav_bar.model.NavBarItemModel
 import com.brbx.home.navigation.HomeRoute
 import com.brbx.home.navigation.home
 import com.brbx.ui_compose.theme.mColors

@@ -4,8 +4,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
-import com.brbx.common.view_model.processor.selection.model.SelectionAction
-import com.brbx.design_system.component.toolbar.SelectionToolbar
+import com.brbx.design_system.component.bar.toolbar.SelectionToolbar
 import com.brbx.ui_compose.common.BrbxIcon
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -26,10 +25,10 @@ fun CommonSelectionToolbar(
         collectionsIcon = type.collectionsIcon,
         fabIcon = fabIcon,
         onFavoritesClick = {
-            dispatchIntent(CommonSelectionIntent.Lists.Favorites(action = SelectionAction.Add))
+            dispatchIntent(type.favoritesIntent)
         },
         onCollectionsClick = {
-            dispatchIntent(CommonSelectionIntent.Lists.Collection.ToggleSheet)
+            dispatchIntent(type.collectionsIntent)
         },
         onFabClick = {
             if (isInSelectionMode) {
