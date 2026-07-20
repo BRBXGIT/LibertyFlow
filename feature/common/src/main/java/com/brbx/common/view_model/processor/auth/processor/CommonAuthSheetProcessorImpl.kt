@@ -64,6 +64,13 @@ internal class CommonAuthSheetProcessorImpl<State>(
                     }
                 }
             }
+            CommonAuthSheetIntent.TogglePasswordVisible -> {
+                updateState {
+                    authSheetLens.modify(source = this) {
+                        it.copy(isPasswordVisible = !it.isPasswordVisible)
+                    }
+                }
+            }
             is CommonAuthSheetIntent.UpdateLogin -> {
                 updateState {
                     authSheetLens.modify(source = this) {

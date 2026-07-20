@@ -11,6 +11,6 @@ class UserAuthUseCase(
     suspend operator fun invoke(
         login: String,
         password: String,
-    ): DomainRequestResult<DomainToken> =
+    ): DomainRequestResult<DomainToken> = // TODO Rewrite to Unit
         repository.auth(form = DomainAuthForm(login, password))
 }

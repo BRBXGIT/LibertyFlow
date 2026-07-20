@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -18,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
+import com.brbx.design_system.component.bottom_sheet.LibertyFlowBottomSheet
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
 import com.brbx.home.common.HomeStrings
@@ -34,7 +34,6 @@ import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxText
 import com.brbx.ui_compose.theme.BrbxTheme
 import com.brbx.ui_compose.theme.bDimens
-import com.brbx.ui_compose.theme.bShapes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,10 +48,9 @@ internal fun HomeFiltersSheet(
         }
     }
 
-    ModalBottomSheet(
-        onDismissRequest = { dispatchIntent(HomeIntent.Filters.ToggleSheet) },
+    LibertyFlowBottomSheet(
         modifier = modifier,
-        shape = bShapes.micro4,
+        onDismissRequest = { dispatchIntent(HomeIntent.Filters.ToggleSheet) }
     ) {
         HomeFiltersSheetContent(
             filters = filters.filters,

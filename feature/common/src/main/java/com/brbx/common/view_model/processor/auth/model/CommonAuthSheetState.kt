@@ -9,6 +9,7 @@ import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
 data class CommonAuthSheetState(
     val isAuthSheetVisible: Boolean = false,
     val isDataIncorrect: Boolean = false,
+    val isPasswordVisible: Boolean = false,
     val login: String = "",
     val password: String = "",
     val loadingState: CommonLoadingState = CommonLoadingState(),

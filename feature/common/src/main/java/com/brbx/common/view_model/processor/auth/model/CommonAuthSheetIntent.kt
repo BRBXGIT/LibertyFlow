@@ -4,6 +4,8 @@ sealed interface CommonAuthSheetIntent {
 
     data object ToggleSheet : CommonAuthSheetIntent
 
+    data object TogglePasswordVisible : CommonAuthSheetIntent
+
     data object Authorize : CommonAuthSheetIntent
 
     @JvmInline

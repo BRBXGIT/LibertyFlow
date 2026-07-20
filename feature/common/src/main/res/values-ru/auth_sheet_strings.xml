@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_title">Авторизация</string>
+    <string name="email_tf_label">Логин или email</string>
+    <string name="password_tf_label">Пароль</string>
+    <string name="authorize_label">Авторизоваться</string>
+    <string name="new_user_label">Новый пользователь?   </string>
+    <string name="registration_label">Регистрация</string>
+</resources>
