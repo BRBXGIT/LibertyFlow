@@ -1,6 +1,7 @@
 package com.brbx.common.view_model.processor.auth.processor
 
 import arrow.optics.Lens
+import com.brbx.common.model.alias.CommonStrings
 import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.processor.auth.model.CommonAuthSheetIntent
 import com.brbx.common.view_model.processor.auth.model.CommonAuthSheetState
@@ -8,9 +9,12 @@ import com.brbx.common.view_model.processor.auth.model.loadingState
 import com.brbx.common.view_model.view_model.LibertyFlowMviScope
 import com.brbx.common.view_model.view_model.makeNetworkCall
 import com.brbx.common.view_model.view_model.postExceptionSnackbar
+import com.brbx.common.view_model.view_model.postLoadingSnackbar
+import com.brbx.common.view_model.view_model.removeLoadingSnackbar
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.user.auth.use_case.UserAuthUseCase
+import com.brbx.ui_compose.common.toBrbxText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
@@ -43,13 +47,19 @@ internal class CommonAuthSheetProcessorImpl<State>(
                 )
             }
 
+            val authSnackbarId = "auth_snackbar_id"
+            postLoadingSnackbar(
+                text = CommonStrings.auth_snackbar_label.toBrbxText(),
+                loadingSnackbarId = authSnackbarId,
+            )
             makeNetworkCall(
                 loadingLens = authSheetLens.loadingState,
                 callDelay = 1_000L,
                 call = { authUseCase(login, password) }
             ).onException { exception ->
-                handleAuthError(exception, intent)
+                handleAuthError(exception, retryIntent = intent)
             }
+            removeLoadingSnackbar(loadingSnackbarId = authSnackbarId)
         }
     }
 
@@ -57,7 +67,9 @@ internal class CommonAuthSheetProcessorImpl<State>(
         exception: RequestException,
         retryIntent: CommonAuthSheetIntent
     ) {
-        if (exception == RequestException.IncorrectCredentials) {
+        val incorrectDataException = exception == RequestException.IncorrectCredentials ||
+            exception == RequestException.NoEmailOrPassword
+        if (incorrectDataException) {
             updateAuthSheet {
                 it.copy(
                     isAuthSheetVisible = true,

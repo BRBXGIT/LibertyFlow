@@ -6,4 +6,5 @@
     <string name="authorize_label">Authorize</string>
     <string name="new_user_label">New user?   </string>
     <string name="registration_label">Registration</string>
+    <string name="auth_snackbar_label">Getting you authenticated…</string>
 </resources>

@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -250,10 +252,11 @@ private fun AuthSheetFooter(
         verticalArrangement = Arrangement.spacedBy(bDimens.micro4),
         modifier = modifier
     ) {
+        val shape = bShapes.micro2
         Button(
             onClick = onAuthorizeClick,
             modifier = Modifier.fillMaxWidth(),
-            shape = bShapes.micro4
+            shape = shape,
         ) {
             Text(text = texts.authorizeButton.asString())
         }
@@ -264,7 +267,7 @@ private fun AuthSheetFooter(
                 .fillMaxWidth()
                 .background(
                     color = mColors.surfaceContainerHighest,
-                    shape = bShapes.micro4
+                    shape = shape,
                 )
                 .padding(vertical = bDimens.micro6),
             contentAlignment = Alignment.Center
@@ -290,5 +293,7 @@ private fun AuthSheetFooter(
                 )
             }
         }
+
+        Spacer(Modifier.height(0.dp))
     }
 }

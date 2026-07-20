@@ -16,7 +16,6 @@ import com.brbx.common.view_model.view_model.removeLoadingSnackbar
 import com.brbx.domain.network.model.result.DomainRequestResult
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.domain.network.model.result.onException
-import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.domain.network.user.lists.collections.collections.model.CollectionItem
 import com.brbx.domain.network.user.lists.collections.collections.use_case.UserAddToCollectionUseCase
 import com.brbx.domain.network.user.lists.collections.collections.use_case.UserDeleteFromCollectionUseCase
@@ -114,15 +113,15 @@ internal class CommonSelectionProcessorImpl<State>(
         val loadingSnackbarId = "list_loading_snackbar_id"
         coroutineScope.launch(context = dispatcherIo) {
             updateSelectionState { it.copy(ids = emptySet()) }
-            postLoadingSnackbar(text = loadingSnackbarRes.toBrbxText())
+            postLoadingSnackbar(
+                text = loadingSnackbarRes.toBrbxText(),
+                loadingSnackbarId = loadingSnackbarId,
+            )
 
             makeNetworkCall(
                 callDelay = 2_000,
                 call = { request(selectedIds) }
-            ).onSuccess {
-                removeLoadingSnackbar(loadingSnackbarId)
-            } onException { exception ->
-                removeLoadingSnackbar(loadingSnackbarId)
+            ).onException { exception ->
                 updateSelectionState { it.copy(ids = selectedIds.toSet()) }
                 postExceptionSnackbar(
                     exception = exception.toBrbxText(),
@@ -140,6 +139,7 @@ internal class CommonSelectionProcessorImpl<State>(
                     }
                 }
             }
+            removeLoadingSnackbar(loadingSnackbarId)
         }
     }
 
