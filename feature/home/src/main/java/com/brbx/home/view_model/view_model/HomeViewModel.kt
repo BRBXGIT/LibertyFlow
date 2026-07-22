@@ -31,27 +31,16 @@ internal class HomeViewModel(
 
     override fun dispatchIntent(intent: HomeIntent) {
         when (intent) {
-            is HomeIntent.AuthSheet -> with(receiver = authProcessor) {
-                mviScope.process(intent.action)
-            }
-            is HomeIntent.Search -> with(receiver = searchProcessor) {
-                mviScope.process(intent.action)
-            }
-            is HomeIntent.Catalog -> with(receiver = catalogProcessor) {
-                mviScope.process(intent.action)
-            }
-            is HomeIntent.Selection -> with(receiver = selectionProcessor) {
-                mviScope.process(intent.action)
-            }
-            is HomeIntent.Tile -> with(receiver = tileProcessor) {
-                mviScope.process(intent)
-            }
-            is HomeIntent.Filters -> with(receiver = filtersProcessor) {
-                mviScope.process(intent)
-            }
-            is HomeIntent.GetRandomAnime -> with(receiver = randomAnimeProcessor) {
-                mviScope.process(intent)
-            }
+            // Common
+            is HomeIntent.AuthSheet -> authProcessor(intent.action)
+            is HomeIntent.Search -> searchProcessor(intent.action)
+            is HomeIntent.Catalog -> catalogProcessor(intent.action)
+            is HomeIntent.Selection -> selectionProcessor(intent.action)
+
+            // Home
+            is HomeIntent.Tile -> tileProcessor(intent)
+            is HomeIntent.Filters -> filtersProcessor(intent)
+            is HomeIntent.GetRandomAnime -> randomAnimeProcessor(intent)
         }
     }
 }

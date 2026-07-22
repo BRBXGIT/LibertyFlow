@@ -6,8 +6,7 @@ import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.utils.toggle
 import com.brbx.common.view_model.processor.loading.model.isException
-import com.brbx.common.view_model.view_model.LibertyFlowMviScope
-import com.brbx.common.view_model.view_model.makeNetworkCall
+import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
 import com.brbx.domain.network.genres.get.use_case.GetAnimeGenresUseCase
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting
@@ -32,9 +31,10 @@ import kotlinx.coroutines.launch
 internal class FiltersProcessorImpl(
     private val genresUseCase: GetAnimeGenresUseCase,
     private val dispatcherIo: CoroutineDispatcher,
-) : FiltersProcessor {
+) : LibertyFlowIntentProcessor<HomeState, HomeIntent.Filters>(),
+    FiltersProcessor {
 
-    override fun LibertyFlowMviScope<HomeState>.process(intent: HomeIntent.Filters) {
+    override fun process(intent: HomeIntent.Filters) {
         when (intent) {
             HomeIntent.Filters.ToggleSheet -> toggleFiltersSheet()
             HomeIntent.Filters.ToggleOngoing -> toggleOngoing()
@@ -46,7 +46,7 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.toggleFiltersSheet() {
+    private fun toggleFiltersSheet() {
         updateState {
             copy {
                 HomeState.filtersSheet.isVisible transform Boolean::not
@@ -54,7 +54,7 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.toggleOngoing() {
+    private fun toggleOngoing() {
         updateState {
             copy {
                 HomeState.filtersSheet.filters.isOngoing transform Boolean::not
@@ -62,7 +62,7 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.updateYears(from: Int, to: Int) {
+    private fun updateYears(from: Int, to: Int) {
         updateState {
             copy {
                 HomeState.filtersSheet.filters.years set Years(from, to)
@@ -70,7 +70,7 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.updateSorting(sorting: Sorting) {
+    private fun updateSorting(sorting: Sorting) {
         updateState {
             copy {
                 HomeState.filtersSheet.filters.sorting set sorting
@@ -78,7 +78,7 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.toggleGenre(genre: Genre) {
+    private fun toggleGenre(genre: Genre) {
         updateState {
             copy {
                 HomeState.filtersSheet.filters.genresState.selectedGenres transform {
@@ -88,7 +88,7 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.toggleSeason(season: Season) {
+    private fun toggleSeason(season: Season) {
         updateState {
             copy {
                 HomeState.filtersSheet.filters.seasons transform {
@@ -98,9 +98,8 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.loadGenres() {
+    private fun loadGenres() {
         coroutineScope.launch(dispatcherIo) {
-
             makeNetworkCall(
                 loadingLens = HomeState.filtersSheet.filters.genresState.loading,
                 call = genresUseCase::invoke,
@@ -113,7 +112,7 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.onGenresLoaded(genres: List<Genre>) {
+    private fun onGenresLoaded(genres: List<Genre>) {
         updateState {
             copy {
                 HomeState.filtersSheet.filters.genresState.genres set genres.toSet()
@@ -121,7 +120,7 @@ internal class FiltersProcessorImpl(
         }
     }
 
-    private fun LibertyFlowMviScope<HomeState>.onGenresLoadingFailed() {
+    private fun onGenresLoadingFailed() {
         updateState {
             copy {
                 HomeState.filtersSheet.filters.genresState.loading.isException set true

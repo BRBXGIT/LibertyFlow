@@ -15,7 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.time.Duration.Companion.milliseconds
 
-abstract class LibertyFlowIntentProcessor<State, Intent : Any> :
+abstract class LibertyFlowIntentProcessor<State, in Intent : Any> :
     BrbxIntentProcessor<LibertyFlowMviScope<State>, State, Intent, BrbxEffect, Unit>() {
 
     // Scope's properties
