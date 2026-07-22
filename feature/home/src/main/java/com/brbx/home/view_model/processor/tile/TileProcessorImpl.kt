@@ -1,6 +1,6 @@
 package com.brbx.home.view_model.processor.tile
 
-import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
+import com.brbx.common.view_model.view_model.processor.LibertyFlowIntentProcessor
 import com.brbx.home.view_model.model.HomeIntent
 import com.brbx.home.view_model.model.HomeState
 import com.brbx.home.view_model.processor.tile.interactor.HomeTileInteractor

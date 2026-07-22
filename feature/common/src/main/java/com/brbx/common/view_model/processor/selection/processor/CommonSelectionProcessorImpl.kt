@@ -8,7 +8,8 @@ import com.brbx.common.utils.toggle
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionState
 import com.brbx.common.view_model.processor.selection.model.SelectionAction
-import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
+import com.brbx.common.view_model.view_model.model.LibertyFlowCommonEffect
+import com.brbx.common.view_model.view_model.processor.LibertyFlowIntentProcessor
 import com.brbx.domain.network.model.result.DomainRequestResult
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.domain.network.model.result.onException
@@ -29,7 +30,6 @@ internal class CommonSelectionProcessorImpl<State>(
     private val deleteFromCollectionUseCase: UserDeleteFromCollectionUseCase,
     private val selectionLens: Lens<State, CommonSelectionState>,
     private val dispatcherIo: CoroutineDispatcher,
-    private val onUnauthorized: () -> Unit = {},
 ) : LibertyFlowIntentProcessor<State, CommonSelectionIntent>(),
     CommonSelectionProcessor<State> {
 
@@ -125,7 +125,7 @@ internal class CommonSelectionProcessorImpl<State>(
                     },
                 ) {
                     if (exception == RequestException.Unauthorized) {
-                        onUnauthorized()
+                        postCommonEffect(LibertyFlowCommonEffect.RequireAuth)
                     } else {
                         process(intent)
                     }

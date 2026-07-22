@@ -13,7 +13,9 @@ import com.brbx.common.composable.bottom_sheet.collections_sheet.CollectionsShee
 import com.brbx.common.composable.screen.LibertyFlowScreen
 import com.brbx.common.composable.screen.PagingHandler
 import com.brbx.common.composable.selection_toolbar.collectionsInteractionIntent
+import com.brbx.common.view_model.processor.auth.model.CommonAuthSheetIntent
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
+import com.brbx.common.view_model.view_model.model.LibertyFlowCommonEffect
 import com.brbx.home.common.HomeConstants
 import com.brbx.home.composable.HomeScreenScaffold
 import com.brbx.home.composable.content.filters_sheet.HomeFiltersSheet
@@ -68,6 +70,13 @@ fun NavGraphBuilder.home(
             items = catalog.loadState.refresh,
             dispatchIntent = { intent -> viewModel.dispatchIntent(HomeIntent.Catalog(action = intent)) }
         ),
+        onCustomEffect = { effect ->
+            when (effect) {
+                is LibertyFlowCommonEffect.RequireAuth -> {
+                    dispatchIntent(HomeIntent.AuthSheet(action = CommonAuthSheetIntent.ToggleSheet))
+                }
+            }
+        }
     ) { dispatchIntent, _ ->
         HomeScreenScaffold(
             dispatchIntent = dispatchIntent,

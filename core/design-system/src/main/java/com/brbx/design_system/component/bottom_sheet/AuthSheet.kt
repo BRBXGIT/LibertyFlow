@@ -231,20 +231,16 @@ private fun PasswordTrailingIcon(
     isPasswordVisible: Boolean,
     onPasswordVisibleChange: () -> Unit,
 ) {
-    val enterWithBounce = bMotion.enterStructuralSpec<IntOffset>()
-    val enterWithoutBounce = bMotion.exitStructuralSpec<IntOffset>()
-    val exitSpatial = bMotion.exitStructuralSpec<IntOffset>()
+    val spec = bMotion.enterStructuralSpec<IntOffset>()
     val alphaSpec = bMotion.nonSpatialExtraFastSpec<Float>()
 
     AnimatedContent(
         targetState = isPasswordVisible,
         transitionSpec = {
-            val direction = if (targetState) -1 else 1
-            val currentEnterSpatial = if (targetState) enterWithBounce else enterWithoutBounce
-
-            val enter = slideInHorizontally(animationSpec = currentEnterSpatial) { (it / 2) * direction } +
+            val direction = -1
+            val enter = slideInHorizontally(animationSpec = spec) { (it / 2) * direction } +
                     fadeIn(animationSpec = alphaSpec)
-            val exit = slideOutHorizontally(animationSpec = exitSpatial) { -(it / 2) * direction } +
+            val exit = slideOutHorizontally(animationSpec = spec) { -(it / 2) * direction } +
                     fadeOut(animationSpec = alphaSpec)
             enter togetherWith exit
         },

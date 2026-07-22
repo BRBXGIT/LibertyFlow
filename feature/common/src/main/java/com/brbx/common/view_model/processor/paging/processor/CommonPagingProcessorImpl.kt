@@ -6,7 +6,7 @@ import arrow.optics.Lens
 import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.common.view_model.processor.paging.model.CommonPagingState
-import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
+import com.brbx.common.view_model.view_model.processor.LibertyFlowIntentProcessor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

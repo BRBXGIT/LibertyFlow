@@ -3,7 +3,7 @@ package com.brbx.common.view_model.processor.loading.processor
 import arrow.optics.Lens
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingIntent
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
-import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
+import com.brbx.common.view_model.view_model.processor.LibertyFlowIntentProcessor
 
 internal class CommonLoadingProcessorImpl<State>(
     private val loadingLens: Lens<State, CommonLoadingState>

@@ -1,7 +1,7 @@
 package com.brbx.home.view_model.processor.random_anime
 
 import com.brbx.common.model.common.map.toBrbxText
-import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
+import com.brbx.common.view_model.view_model.processor.LibertyFlowIntentProcessor
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.model.result.onSuccess
 import com.brbx.domain.network.releases.random.use_case.GetRandomAnimeReleaseUseCase

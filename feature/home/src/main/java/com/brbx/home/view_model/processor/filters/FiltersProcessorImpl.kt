@@ -6,7 +6,7 @@ import com.brbx.common.model.common.model.Genre
 import com.brbx.common.model.common.model.Years
 import com.brbx.common.utils.toggle
 import com.brbx.common.view_model.processor.loading.model.isException
-import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
+import com.brbx.common.view_model.view_model.processor.LibertyFlowIntentProcessor
 import com.brbx.domain.network.genres.get.use_case.GetAnimeGenresUseCase
 import com.brbx.domain.network.model.common.Season
 import com.brbx.domain.network.model.common.Sorting

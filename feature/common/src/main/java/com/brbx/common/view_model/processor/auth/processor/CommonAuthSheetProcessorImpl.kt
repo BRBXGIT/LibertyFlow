@@ -6,7 +6,7 @@ import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.processor.auth.model.CommonAuthSheetIntent
 import com.brbx.common.view_model.processor.auth.model.CommonAuthSheetState
 import com.brbx.common.view_model.processor.auth.model.loadingState
-import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
+import com.brbx.common.view_model.view_model.processor.LibertyFlowIntentProcessor
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.user.auth.use_case.UserAuthUseCase

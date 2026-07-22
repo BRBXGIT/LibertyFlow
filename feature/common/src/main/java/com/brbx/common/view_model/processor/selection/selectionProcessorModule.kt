@@ -12,7 +12,6 @@ import org.koin.dsl.module
 internal val selectionProcessorModule = module {
     factory<CommonSelectionProcessor<*>> { params ->
         val lens = params.get<Lens<Any, CommonSelectionState>>()
-        val onUnauthorized = params.getOrNull<() -> Unit>() ?: {}
 
         CommonSelectionProcessorImpl(
             addToFavoritesUseCase = get(),
@@ -21,17 +20,15 @@ internal val selectionProcessorModule = module {
             deleteFromCollectionUseCase = get(),
             selectionLens = lens,
             dispatcherIo = getDispatcherIo(),
-            onUnauthorized = onUnauthorized,
         )
     }
 }
 
 inline fun <reified State> Scope.getCommonSelectionProcessor(
     lens: Lens<State, CommonSelectionState>,
-    noinline onUnauthorized: () -> Unit = {},
 ): CommonSelectionProcessor<State> {
     @Suppress("UNCHECKED_CAST")
     return get<CommonSelectionProcessor<*>> {
-        parametersOf(lens, onUnauthorized)
+        parametersOf(lens)
     } as CommonSelectionProcessor<State>
 }

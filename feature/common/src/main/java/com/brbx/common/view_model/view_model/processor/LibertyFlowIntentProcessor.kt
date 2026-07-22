@@ -1,9 +1,11 @@
-package com.brbx.common.view_model.view_model
+package com.brbx.common.view_model.view_model.processor
 
 import arrow.optics.Lens
 import com.brbx.common.model.alias.CommonStrings
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingState
+import com.brbx.common.view_model.view_model.view_model.LibertyFlowMviScope
 import com.brbx.mvi.processor.BrbxIntentProcessor
+import com.brbx.mvi_compose.effects.BrbxCommonEffect
 import com.brbx.mvi_compose.effects.BrbxEffect
 import com.brbx.ui_compose.common.BrbxText
 import com.brbx.ui_compose.common.toBrbxText
@@ -16,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.time.Duration.Companion.milliseconds
 
 abstract class LibertyFlowIntentProcessor<State, in Intent : Any> :
-    BrbxIntentProcessor<LibertyFlowMviScope<State>, State, Intent, BrbxEffect, Unit>() {
+    BrbxIntentProcessor<LibertyFlowMviScope<State>, State, Intent, BrbxCommonEffect, Unit>() {
 
     // Scope's properties
     protected val state: StateFlow<State> get() = scope.state
@@ -24,7 +26,7 @@ abstract class LibertyFlowIntentProcessor<State, in Intent : Any> :
 
     // Scope's methods
     protected fun updateState(transform: State.() -> State) { scope.updateState(transform) }
-    protected fun postCommonEffect(effect: BrbxEffect) { scope.postCommonEffect(effect) }
+    protected fun postCommonEffect(effect: BrbxCommonEffect) { scope.postCommonEffect(effect) }
     protected fun postLocalEffect(effect: Unit) { scope.postLocalEffect(effect) }
 
     // TODO Move helpers to delegates
