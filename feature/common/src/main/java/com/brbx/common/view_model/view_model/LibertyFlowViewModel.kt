@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable
-abstract class LibertyFlowViewModel<State, in Intent : Any>(
+abstract class LibertyFlowViewModel<State, Intent : Any>(
     initialState: State,
 ) : BrbxMviViewModel<LibertyFlowMviScope<State> ,State, Intent, BrbxEffect, Unit>(initialState) {
 

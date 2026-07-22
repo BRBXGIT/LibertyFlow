@@ -1,6 +1,6 @@
 package com.brbx.common.view_model.processor.loading.processor
 
 import com.brbx.common.view_model.processor.loading.model.CommonLoadingIntent
-import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
+import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessorContract
 
-interface CommonLoadingProcessor<State> : LibertyFlowIntentProcessor<State, CommonLoadingIntent>
+interface CommonLoadingProcessor<State> : LibertyFlowIntentProcessorContract<State, CommonLoadingIntent>
