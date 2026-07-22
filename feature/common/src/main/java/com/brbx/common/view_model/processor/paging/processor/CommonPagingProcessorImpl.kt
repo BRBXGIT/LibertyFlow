@@ -6,8 +6,7 @@ import arrow.optics.Lens
 import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.processor.paging.model.CommonPagingIntent
 import com.brbx.common.view_model.processor.paging.model.CommonPagingState
-import com.brbx.common.view_model.view_model.LibertyFlowMviScope
-import com.brbx.common.view_model.view_model.postExceptionSnackbar
+import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -22,10 +21,10 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
     private val paramsSelector: (State) -> Params,
     private val pagingDataFactory: (Params) -> Flow<PagingData<PagingItem>>,
     private val debounceMillis: Long,
-) : CommonPagingProcessor<State> {
+) : LibertyFlowIntentProcessor<State, CommonPagingIntent>(),
+    CommonPagingProcessor<State> {
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    override fun LibertyFlowMviScope<State>.process(intent: CommonPagingIntent) {
+    override fun process(intent: CommonPagingIntent) {
         when (intent) {
             is CommonPagingIntent.SetUpPaging -> handleSetUpPaging()
             is CommonPagingIntent.Loading.LoadingIntent.SetLoading -> setLoading(intent.loading)
@@ -36,7 +35,7 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
     }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    private fun LibertyFlowMviScope<State>.handleSetUpPaging() {
+    private fun handleSetUpPaging() {
         val pagingFlow = state
             .map { paramsSelector(it) }
             .distinctUntilChanged()
@@ -44,16 +43,14 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
             .flatMapLatest { params -> pagingDataFactory(params) }
             .cachedIn(coroutineScope)
 
-        updatePagingState {
-            it.copy(pagingData = pagingFlow)
-        }
+        updatePagingState { it.copy(pagingData = pagingFlow) }
     }
 
-    private fun LibertyFlowMviScope<State>.setLoading(isLoading: Boolean) = updatePagingState {
-        it.copy(loading = it.loading.copy(isLoading = isLoading))
+    private fun setLoading(isLoading: Boolean) {
+        updatePagingState { it.copy(loading = it.loading.copy(isLoading = isLoading)) }
     }
 
-    private fun LibertyFlowMviScope<State>.setLoadingException(
+    private fun setLoadingException(
         intent: CommonPagingIntent.Loading.LoadingIntent.SetException
     ) {
         updatePagingState {
@@ -67,11 +64,13 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.setRefreshing(isRefreshing: Boolean) = updatePagingState {
-        it.copy(refreshing = it.refreshing.copy(isLoading = isRefreshing))
+    private fun setRefreshing(isRefreshing: Boolean) {
+        updatePagingState {
+            it.copy(refreshing = it.refreshing.copy(isLoading = isRefreshing))
+        }
     }
 
-    private fun LibertyFlowMviScope<State>.setRefreshException(
+    private fun setRefreshException(
         intent: CommonPagingIntent.Loading.RefreshIntent.SetException
     ) {
         updatePagingState {
@@ -89,11 +88,7 @@ internal class CommonPagingProcessorImpl<State, PagingItem : Any, Params>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.updatePagingState(
-        modifier: (CommonPagingState<PagingItem>) -> CommonPagingState<PagingItem>
-    ) {
-        updateState {
-            pagingLens.modify(source = this, map = modifier)
-        }
-    }
+    private fun updatePagingState(
+        map: (CommonPagingState<PagingItem>) -> CommonPagingState<PagingItem>
+    ) { updateLensState(pagingLens, map) }
 }

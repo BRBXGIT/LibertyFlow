@@ -6,11 +6,7 @@ import com.brbx.common.model.common.map.toBrbxText
 import com.brbx.common.view_model.processor.auth.model.CommonAuthSheetIntent
 import com.brbx.common.view_model.processor.auth.model.CommonAuthSheetState
 import com.brbx.common.view_model.processor.auth.model.loadingState
-import com.brbx.common.view_model.view_model.LibertyFlowMviScope
-import com.brbx.common.view_model.view_model.makeNetworkCall
-import com.brbx.common.view_model.view_model.postExceptionSnackbar
-import com.brbx.common.view_model.view_model.postLoadingSnackbar
-import com.brbx.common.view_model.view_model.removeLoadingSnackbar
+import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.domain.network.model.result.onException
 import com.brbx.domain.network.user.auth.use_case.UserAuthUseCase
@@ -22,9 +18,10 @@ internal class CommonAuthSheetProcessorImpl<State>(
     private val authSheetLens: Lens<State, CommonAuthSheetState>,
     private val authUseCase: UserAuthUseCase,
     private val dispatcherIo: CoroutineDispatcher,
-) : CommonAuthSheetProcessor<State> {
+) : LibertyFlowIntentProcessor<State, CommonAuthSheetIntent>(),
+    CommonAuthSheetProcessor<State> {
 
-    override fun LibertyFlowMviScope<State>.process(intent: CommonAuthSheetIntent) {
+    override fun process(intent: CommonAuthSheetIntent) {
         when (intent) {
             is CommonAuthSheetIntent.Authorize -> handleAuthorize(intent)
             is CommonAuthSheetIntent.ToggleSheet -> toggleSheet()
@@ -34,7 +31,7 @@ internal class CommonAuthSheetProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.handleAuthorize(intent: CommonAuthSheetIntent.Authorize) {
+    private fun handleAuthorize(intent: CommonAuthSheetIntent.Authorize) {
         val authState = authSheetLens.get(state.value)
         val login = authState.login
         val password = authState.password
@@ -63,7 +60,7 @@ internal class CommonAuthSheetProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.handleAuthError(
+    private fun handleAuthError(
         exception: RequestException,
         retryIntent: CommonAuthSheetIntent
     ) {
@@ -84,18 +81,15 @@ internal class CommonAuthSheetProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.toggleSheet() {
-        updateAuthSheet {
-            it.copy(isAuthSheetVisible = !it.isAuthSheetVisible)
-        }
-    }
-    private fun LibertyFlowMviScope<State>.togglePasswordVisibility() {
-        updateAuthSheet {
-            it.copy(isPasswordVisible = !it.isPasswordVisible)
-        }
+    private fun toggleSheet() {
+        updateAuthSheet { it.copy(isAuthSheetVisible = !it.isAuthSheetVisible) }
     }
 
-    private fun LibertyFlowMviScope<State>.updateLogin(login: String) {
+    private fun togglePasswordVisibility() {
+        updateAuthSheet { it.copy(isPasswordVisible = !it.isPasswordVisible) }
+    }
+
+    private fun updateLogin(login: String) {
         updateAuthSheet {
             it.copy(
                 login = login,
@@ -104,7 +98,7 @@ internal class CommonAuthSheetProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.updatePassword(password: String) {
+    private fun updatePassword(password: String) {
         updateAuthSheet {
             it.copy(
                 password = password,
@@ -113,11 +107,7 @@ internal class CommonAuthSheetProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.updateAuthSheet(
-        modifier: (CommonAuthSheetState) -> CommonAuthSheetState
-    ) {
-        updateState {
-            authSheetLens.modify(source = this, map = modifier)
-        }
+    private fun updateAuthSheet(map: (CommonAuthSheetState) -> CommonAuthSheetState) {
+        updateLensState(authSheetLens, map)
     }
 }

@@ -27,6 +27,7 @@ abstract class LibertyFlowIntentProcessor<State, Intent : Any> :
     protected fun postCommonEffect(effect: BrbxEffect) { scope.postCommonEffect(effect) }
     protected fun postLocalEffect(effect: Unit) { scope.postLocalEffect(effect) }
 
+    // TODO Move helpers to delegates
     // State helpers
     protected fun <Child> updateLensState(
         lens: Lens<State, Child>,

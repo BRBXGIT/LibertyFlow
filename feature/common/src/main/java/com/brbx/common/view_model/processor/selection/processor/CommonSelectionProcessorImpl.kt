@@ -8,11 +8,7 @@ import com.brbx.common.utils.toggle
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionIntent
 import com.brbx.common.view_model.processor.selection.model.CommonSelectionState
 import com.brbx.common.view_model.processor.selection.model.SelectionAction
-import com.brbx.common.view_model.view_model.LibertyFlowMviScope
-import com.brbx.common.view_model.view_model.makeNetworkCall
-import com.brbx.common.view_model.view_model.postExceptionSnackbar
-import com.brbx.common.view_model.view_model.postLoadingSnackbar
-import com.brbx.common.view_model.view_model.removeLoadingSnackbar
+import com.brbx.common.view_model.view_model.LibertyFlowIntentProcessor
 import com.brbx.domain.network.model.result.DomainRequestResult
 import com.brbx.domain.network.model.result.RequestException
 import com.brbx.domain.network.model.result.onException
@@ -33,17 +29,18 @@ internal class CommonSelectionProcessorImpl<State>(
     private val deleteFromCollectionUseCase: UserDeleteFromCollectionUseCase,
     private val selectionLens: Lens<State, CommonSelectionState>,
     private val dispatcherIo: CoroutineDispatcher,
-    private val onUnauthorized: LibertyFlowMviScope<State>.() -> Unit = {},
-) : CommonSelectionProcessor<State> {
+    private val onUnauthorized: () -> Unit = {},
+) : LibertyFlowIntentProcessor<State, CommonSelectionIntent>(),
+    CommonSelectionProcessor<State> {
 
-    override fun LibertyFlowMviScope<State>.process(intent: CommonSelectionIntent) {
+    override fun process(intent: CommonSelectionIntent) {
         when (intent) {
             is CommonSelectionIntent.Selection -> handleSelection(intent)
             is CommonSelectionIntent.Lists -> handleLists(intent)
         }
     }
 
-    private fun LibertyFlowMviScope<State>.handleSelection(intent: CommonSelectionIntent.Selection) {
+    private fun handleSelection(intent: CommonSelectionIntent.Selection) {
         when (intent) {
             CommonSelectionIntent.Selection.DropSelection -> updateSelectionState {
                 it.copy(ids = emptySet())
@@ -54,7 +51,7 @@ internal class CommonSelectionProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.handleLists(intent: CommonSelectionIntent.Lists) {
+    private fun handleLists(intent: CommonSelectionIntent.Lists) {
         postCommonEffect(BrbxEffect.DismissCurrentSnackbar)
         when (intent) {
             is CommonSelectionIntent.Lists.Favorites -> handleFavorites(intent)
@@ -62,50 +59,42 @@ internal class CommonSelectionProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.handleFavorites(intent: CommonSelectionIntent.Lists.Favorites) {
-        executeRequest(
-            intent = intent,
-            loadingSnackbarRes = when (intent.action) {
-                SelectionAction.Add -> CommonStrings.adding_to_favorites
-                SelectionAction.Delete -> CommonStrings.deleting_from_favorites
-            }
-        ) { ids ->
-            when (intent.action) {
-                SelectionAction.Add -> addToFavoritesUseCase(items = ids)
-                SelectionAction.Delete -> deleteFromFavoritesUseCase(items = ids)
-            }
+    private fun handleFavorites(intent: CommonSelectionIntent.Lists.Favorites) {
+        val (snackbarRes, useCaseCall) = intent.action.mapToPair(
+            onAdd = CommonStrings.adding_to_favorites to addToFavoritesUseCase::invoke,
+            onDelete = CommonStrings.deleting_from_favorites to deleteFromFavoritesUseCase::invoke
+        )
+
+        executeRequest(intent = intent, loadingSnackbarRes = snackbarRes) { ids ->
+            useCaseCall(ids)
         }
     }
 
-    private fun LibertyFlowMviScope<State>.handleCollection(intent: CommonSelectionIntent.Lists.Collection) {
+    private fun handleCollection(intent: CommonSelectionIntent.Lists.Collection) {
         when (intent) {
             is CommonSelectionIntent.Lists.Collection.Interact -> {
                 toggleCollectionsSheet()
-                executeRequest(
-                    intent = intent,
-                    loadingSnackbarRes = when (intent.action) {
-                        SelectionAction.Add -> CommonStrings.adding_to_collection
-                        SelectionAction.Delete -> CommonStrings.deleting_from_collection
-                    }
-                ) { ids ->
+
+                val (snackbarRes, useCaseCall) = intent.action.mapToPair(
+                    onAdd = CommonStrings.adding_to_collection to addToCollectionUseCase::invoke,
+                    onDelete = CommonStrings.deleting_from_collection to deleteFromCollectionUseCase::invoke
+                )
+                executeRequest(intent = intent, loadingSnackbarRes = snackbarRes) { ids ->
                     val items = ids.map { CollectionItem(id = it, collection = intent.collection) }
-                    when (intent.action) {
-                        SelectionAction.Add -> addToCollectionUseCase(items = items)
-                        SelectionAction.Delete -> deleteFromCollectionUseCase(items = items)
-                    }
+                    useCaseCall(items)
                 }
             }
             CommonSelectionIntent.Lists.Collection.ToggleSheet -> toggleCollectionsSheet()
         }
     }
 
-    private fun LibertyFlowMviScope<State>.toggleCollectionsSheet() {
+    private fun toggleCollectionsSheet() {
         updateSelectionState {
             it.copy(isCollectionsSheetVisible = !it.isCollectionsSheetVisible)
         }
     }
 
-    private fun LibertyFlowMviScope<State>.executeRequest(
+    private fun executeRequest(
         intent: CommonSelectionIntent,
         @StringRes loadingSnackbarRes: Int,
         request: suspend (List<Int>) -> DomainRequestResult<Unit>,
@@ -146,11 +135,16 @@ internal class CommonSelectionProcessorImpl<State>(
         }
     }
 
-    private fun LibertyFlowMviScope<State>.updateSelectionState(
-        modifier: (CommonSelectionState) -> CommonSelectionState
-    ) {
-        updateState {
-            selectionLens.modify(source = this, map = modifier)
+    private fun updateSelectionState(
+        map: (CommonSelectionState) -> CommonSelectionState
+    ) { updateLensState(selectionLens, map) }
+
+    private fun <T> SelectionAction.mapToPair(
+        onAdd: Pair<Int, suspend (T) -> DomainRequestResult<Unit>>,
+        onDelete: Pair<Int, suspend (T) -> DomainRequestResult<Unit>>,
+    ): Pair<Int, suspend (T) -> DomainRequestResult<Unit>> =
+        when (this) {
+            SelectionAction.Add -> onAdd
+            SelectionAction.Delete -> onDelete
         }
-    }
 }
